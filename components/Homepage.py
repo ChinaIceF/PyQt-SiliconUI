@@ -93,12 +93,12 @@ class WidgetSticker(SiSticker):
 
         self.button_github = SiButtonFlat(self)
         self.button_github.resize(32, 32)
-        self.button_github.load('./svg/darkmode/fi-rr-link.svg')
+        self.button_github.load(SiGlobal.icons.get('fi-rr-link'))
         self.button_github.setHint('前往 GitHub')
 
         self.button_example = SiButtonFlat(self)
         self.button_example.resize(32, 32)
-        self.button_example.load('./svg/darkmode/fi-rr-presentation.svg')
+        self.button_example.load(SiGlobal.icons.get('fi-rr-presentation'))
         self.button_example.setHint('查看使用样例')
 
         self.head.addItem(self.button_github, side = 'right')
@@ -186,7 +186,7 @@ class GlazeSticker(WidgetSticker):
         self.glaze_example = SiOptionButton(self)
         self.glaze_example.resize(500, 0)
         self.glaze_example.setText('Glaze 样例', '使用 Silicon Glaze 帮助您高效构建界面', '确定')
-        self.glaze_example.setIcon('./svg/darkmode/fi-rr-apps-add.svg')
+        self.glaze_example.setIcon(SiGlobal.icons.get('fi-rr-apps-add'))
 
 
         self.body.addItem(self.glaze_example, 'top')
@@ -242,7 +242,7 @@ class SiHomePage(SiFrame):
         self.sticker_project.setTitle('访问项目主页')
         self.sticker_project.setContent('  访问 GitHub 项目主页，以获取最新版本，参与 Silicon UI 的开发，报告错误，建言献策')
         self.sticker_project.bgimage.setStyleSheet("background-image: url('./img/wiki.png');border-radius:6px")
-        self.sticker_project.bottom_button.load('./svg/darkmode/fi-rr-link.svg')
+        self.sticker_project.bottom_button.load(SiGlobal.icons.get('fi-rr-link'))
         self.sticker_project.bottom_button.setHint('前往 GitHub')
 
         self.sticker_wiki = SiStickerWithBottomButton(self)
@@ -250,7 +250,7 @@ class SiHomePage(SiFrame):
         self.sticker_wiki.setTitle('应用示例')
         self.sticker_wiki.setContent('  学习并快速上手 Silicon UI，了解如何开发你的第一件作品')
         self.sticker_wiki.bgimage.setStyleSheet("background-image: url('./img/github.png');border-radius:6px")
-        self.sticker_wiki.bottom_button.load('./svg/darkmode/fi-rr-link.svg')
+        self.sticker_wiki.bottom_button.load(SiGlobal.icons.get('fi-rr-link'))
         self.sticker_wiki.bottom_button.setHint('前往 GitHub')
 
         self.addH(300)

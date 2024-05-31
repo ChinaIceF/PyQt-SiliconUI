@@ -28,7 +28,7 @@ class GlazeExample(silicon.SiFrame):
 
         self.example_silicon_option_basic = silicon.SiOption(self.stack_basics)
         self.example_silicon_option_basic.setText('基类 Silicon 选项', '所有预设组合控件的基类，梦开始的地方')
-        self.example_silicon_option_basic.setIcon('./svg/darkmode/fi-rr-rectangle-panoramic.svg')
+        self.example_silicon_option_basic.setIcon(SiGlobal.icons.get('fi-rr-rectangle-panoramic'))
 
         self.stack_basics_link = silicon.SiOptionSourceCode(self.stack_basics)
         self.stack_basics_link.setURL('https://github.com/ChinaIceF/PyQt-SiliconUI')
@@ -44,21 +44,21 @@ class GlazeExample(silicon.SiFrame):
 
         self.example_silicon_option_button = silicon.SiOptionButton(self.stack_buttons)
         self.example_silicon_option_button.setText('具有按钮的 Silicon 选项', '这是一个具有按钮的 Silicon 选项', '确定')
-        self.example_silicon_option_button.setIcon('./svg/darkmode/fi-rr-apps.svg')
+        self.example_silicon_option_button.setIcon(SiGlobal.icons.get('fi-rr-apps'))
 
         self.example_silicon_option_button_highlighted = silicon.SiOptionButton(self.stack_buttons)
         self.example_silicon_option_button_highlighted.setText('强调选项', '允许将按钮设为高亮，突出重点', '高亮按钮')
-        self.example_silicon_option_button_highlighted.setIcon('./svg/darkmode/fi-rr-apps-add.svg')
+        self.example_silicon_option_button_highlighted.setIcon(SiGlobal.icons.get('fi-rr-apps-add'))
         self.example_silicon_option_button_highlighted.setStrong(True)
         self.example_silicon_option_button_highlighted.setEmphasize(False)
 
         self.example_silicon_option_button_hold = silicon.SiOptionButtonHoldtoConfirm(self.stack_buttons)
         self.example_silicon_option_button_hold.setText('长按确定按钮', '避免手滑导致的不必要问题', '确定')
-        self.example_silicon_option_button_hold.setIcon('./svg/darkmode/fi-rr-apps-delete.svg')
+        self.example_silicon_option_button_hold.setIcon(SiGlobal.icons.get('fi-rr-apps-delete'))
 
         self.example_silicon_option_button_unavailable = silicon.SiOptionButton(self.stack_buttons)
         self.example_silicon_option_button_unavailable.setText('禁用', '可将选项设为禁用', '不可用选项')
-        self.example_silicon_option_button_unavailable.setIcon('./svg/darkmode/fi-rr-ban.svg')
+        self.example_silicon_option_button_unavailable.setIcon(SiGlobal.icons.get('fi-rr-ban'))
         self.example_silicon_option_button_unavailable.setUsability(False)
 
         self.stack_buttons_link = silicon.SiOptionSourceCode(self.stack_buttons)
@@ -78,15 +78,15 @@ class GlazeExample(silicon.SiFrame):
 
         self.example_silicon_option_switch = silicon.SiOptionSwitch(self.stack_switches)
         self.example_silicon_option_switch.setText('具有开关的 Silicon 选项', '单击开关，切换状态',)
-        self.example_silicon_option_switch.setIcon('./svg/darkmode/fi-rr-interactive.svg')
+        self.example_silicon_option_switch.setIcon(SiGlobal.icons.get('fi-rr-interactive'))
 
         self.example_silicon_option_switch_sender = silicon.SiOptionSwitch(self.stack_switches)
         self.example_silicon_option_switch_sender.setText('绑定开关事件', '开关发射一个布尔值信号',)
-        self.example_silicon_option_switch_sender.setIcon('./svg/darkmode/fi-rr-interactive.svg')
+        self.example_silicon_option_switch_sender.setIcon(SiGlobal.icons.get('fi-rr-interactive'))
 
         self.example_silicon_option_switch_receiver = silicon.SiOptionSwitch(self.stack_switches)
         self.example_silicon_option_switch_receiver.setText('被绑定开关', '',)
-        self.example_silicon_option_switch_receiver.setIcon('./svg/darkmode/fi-rr-interactive.svg')
+        self.example_silicon_option_switch_receiver.setIcon(SiGlobal.icons.get('fi-rr-interactive'))
         self.example_silicon_option_switch_receiver.setUsability(False)
 
         self.example_silicon_option_switch_sender.switch.click_signal.connect(self.example_silicon_option_switch_receiver.setUsability)
@@ -107,7 +107,7 @@ class GlazeExample(silicon.SiFrame):
 
         self.example_silicon_option_sliderbar = silicon.SiOptionSliderBar(self.stack_sliderbars)
         self.example_silicon_option_sliderbar.setText('一个 Silicon SliderBar 滑条', '滑动以设置值',)
-        self.example_silicon_option_sliderbar.setIcon('./svg/darkmode/fi-rr-settings-sliders.svg')
+        self.example_silicon_option_sliderbar.setIcon(SiGlobal.icons.get('fi-rr-settings-sliders'))
 
         self.example_sliderbar_text = QLabel(self)
         self.example_sliderbar_text.resize(64, 32)
@@ -117,13 +117,13 @@ class GlazeExample(silicon.SiFrame):
 
         self.example_silicon_option_sliderbar_with_label = silicon.SiOptionSliderBar(self.stack_sliderbars)
         self.example_silicon_option_sliderbar_with_label.setText('绑定 Silicon SliderBar 的滑条值变化信号', '拖动滑条，观察值变化',)
-        self.example_silicon_option_sliderbar_with_label.setIcon('./svg/darkmode/fi-rr-settings-sliders.svg')
+        self.example_silicon_option_sliderbar_with_label.setIcon(SiGlobal.icons.get('fi-rr-settings-sliders'))
         self.example_silicon_option_sliderbar_with_label.sliderbar.value_change_signal.connect(lambda x: self.example_sliderbar_text.setText(str(round(x, 4))))
         self.example_silicon_option_sliderbar_with_label.addItem(self.example_sliderbar_text)
 
         self.example_silicon_option_sliderbar_dispersed = silicon.SiOptionSliderBar(self.stack_sliderbars)
         self.example_silicon_option_sliderbar_dispersed.setText('离散取值滑条', '取值不连续，这是含8个档位的示例',)
-        self.example_silicon_option_sliderbar_dispersed.setIcon('./svg/darkmode/fi-rr-settings-sliders.svg')
+        self.example_silicon_option_sliderbar_dispersed.setIcon(SiGlobal.icons.get('fi-rr-settings-sliders'))
         self.example_silicon_option_sliderbar_dispersed.sliderbar.slider.setDispersed(range(0,8))
 
         self.stack_sliderbars_link = silicon.SiOptionSourceCode(self.stack_sliderbars)
@@ -142,7 +142,7 @@ class GlazeExample(silicon.SiFrame):
 
         self.example_silicon_option_inputbox = silicon.SiOptionInputBox(self.stack_inputboxes)
         self.example_silicon_option_inputbox.setText('输入框', '接收用户输入的文字内容',)
-        self.example_silicon_option_inputbox.setIcon('./svg/darkmode/fi-rr-cursor-text.svg')
+        self.example_silicon_option_inputbox.setIcon(SiGlobal.icons.get('fi-rr-cursor-text'))
 
 
         self.example_silicon_option_inputbox_button = silicon.SiButton(self.stack_inputboxes)
@@ -152,7 +152,7 @@ class GlazeExample(silicon.SiFrame):
         self.example_silicon_option_inputbox_with_button = silicon.SiOptionInputBox(self.stack_inputboxes)
         self.example_silicon_option_inputbox_with_button.addItem(self.example_silicon_option_inputbox_button, reverse = True)
         self.example_silicon_option_inputbox_with_button.setText('结合按钮', '也可以简单地附加一个按钮',)
-        self.example_silicon_option_inputbox_with_button.setIcon('./svg/darkmode/fi-rr-cursor-text.svg')
+        self.example_silicon_option_inputbox_with_button.setIcon(SiGlobal.icons.get('fi-rr-cursor-text'))
 
         self.stack_inputboxes_link = silicon.SiOptionSourceCode(self.stack_inputboxes)
         self.stack_inputboxes_link.setURL('https://github.com/ChinaIceF/PyQt-SiliconUI')
@@ -169,7 +169,7 @@ class GlazeExample(silicon.SiFrame):
 
         self.example_silicon_popup_interfaces = silicon.SiOptionButton(self.popup_interfaces)
         self.example_silicon_popup_interfaces.setText('二级界面', '单击按钮打开二级界面测试', '打开二级界面')
-        self.example_silicon_popup_interfaces.setIcon('./svg/darkmode/fi-rr-layers.svg')
+        self.example_silicon_popup_interfaces.setIcon(SiGlobal.icons.get('fi-rr-layers'))
         self.example_silicon_popup_interfaces.button.clicked.connect(SiGlobal.overlay.show_animation)
 
         self.popup_interfaces_link = silicon.SiOptionSourceCode(self.popup_interfaces)
@@ -199,11 +199,11 @@ class GlazeExample(silicon.SiFrame):
 
         self.inputpass = silicon.SiOptionInputBox(self.basics)
         self.inputpass.setText('通行证秘钥', '秘钥形如 XXXXX-XXXXX-XXXXX',)
-        self.inputpass.setIcon('./svg/darkmode/fi-rr-fingerprint.svg')
+        self.inputpass.setIcon(SiGlobal.icons.get('fi-rr-fingerprint'))
 
         self.proxy = silicon.SiOptionInputBox(self.basics)
         self.proxy.setText('代理', '代理服务器 IP，无可留空',)
-        self.proxy.setIcon('./svg/darkmode/fi-rr-data-transfer.svg')
+        self.proxy.setIcon(SiGlobal.icons.get('fi-rr-data-transfer'))
 
         self.basics.addItem(self.inputpass)
         self.basics.addItem(self.proxy)
@@ -213,7 +213,7 @@ class GlazeExample(silicon.SiFrame):
 
         self.try_to_update = silicon.SiOptionSwitch(self.advances)
         self.try_to_update.setText('自动更新通行证', '每次创建新连接时尝试向主机请求更新',)
-        self.try_to_update.setIcon('./svg/darkmode/fi-rr-network.svg')
+        self.try_to_update.setIcon(SiGlobal.icons.get('fi-rr-network'))
 
         self.advances.addItem(self.try_to_update)
 
