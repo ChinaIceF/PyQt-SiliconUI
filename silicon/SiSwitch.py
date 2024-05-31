@@ -44,6 +44,8 @@ class SiSwitch(QLabel):
         self.timer.setInterval(int(1000 / self.fps))
         self.timer.timeout.connect(self.process)
 
+        self.initialize_stylesheet()
+
     def stepLength(self, dis):
         return abs(dis) * 0.2 + 1
 
@@ -114,7 +116,3 @@ class SiSwitch(QLabel):
                 return
 
             self.changeStatus(not self.status, signal = True)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        self.initialize_stylesheet()
