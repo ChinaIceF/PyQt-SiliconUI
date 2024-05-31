@@ -65,7 +65,7 @@ class SiComboBox(QLabel):
         self.combobox_bar = QLabel(self.combobox_frame)
         self.combobox_text = QLabel(self.combobox_bar)
         self.combobox_icon = QSvgWidget(self.combobox_bar)
-        self.combobox_icon.load('./svg/darkmode/fi-rr-angle-small-down.svg')
+        self.combobox_icon.load(SiGlobal.icons.get('fi-rr-angle-small-down'))
         
         self.combobox_text.setAlignment(QtCore.Qt.AlignVCenter)
         self.combobox_text.setFont(SiFont.font_L1)

@@ -154,6 +154,10 @@ class SiOptionLink(SiOption):
     def load(self, path):
         self.button.load(path)
 
+    def setHint(self, hint):
+        self.button.hint = hint
+
+
 class SiOptionSourceCode(SiOptionLink):  # 源代码
     def __init__(self, parent):
         super().__init__(parent)
@@ -163,9 +167,8 @@ class SiOptionSourceCode(SiOptionLink):  # 源代码
 
         self._setMinimumHeight(64)
         self.setText('源代码', '')
-        self.setIcon('./svg/darkmode/fi-rr-circle-small.svg')
-        self.load('./svg/darkmode/fi-rr-link.svg')
-        self.connect(lambda : os.system('start {}'.format(self.url)))
+        self.setIcon(SiGlobal.icons.get('fi-rr-circle-small'))
+        self.load(SiGlobal.icons.get('fi-rr-link'))
         self.setEmphasize(False)
 
     def setURL(self, url):

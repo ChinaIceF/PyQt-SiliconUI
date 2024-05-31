@@ -78,7 +78,7 @@ class SiStackArea(QLabel):
 
         self.details_icon = SiStackIcon(self.icon_layout, self.setShowing, 0)
         self.details_icon.setGeometry(8, 12, 40, 40)
-        self.details_icon.setIcon('./svg/darkmode/fi-rr-menu-burger.svg')
+        self.details_icon.setIcon(SiGlobal.icons.get('fi-rr-menu-burger'))
         self.details_icon.setStatus(False)
         self.icon_layout.addItem(self.details_icon, 'top')
 
