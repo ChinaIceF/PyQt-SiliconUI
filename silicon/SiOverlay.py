@@ -11,6 +11,16 @@ from .SiAnimationObject import *
 from .SiLayout import *
 from .SiButton import *
 
+class SubInterface(object):
+    def __init__(self):
+        self.width = 700
+        self.body = None
+        self.operation = None
+        self.name = None
+
+    def get(self):
+        return self.body, self.operation, self.width, self.name
+
 class OverlayShowUpAnimation(SiAnimation):
     def __init__(self, parent):
         super().__init__()
@@ -62,36 +72,17 @@ class SiOverlay(QLabel):
         self.body_frame = QLabel(self.frame)  # 内容框架
         self.body_frame.setStyleSheet('background-color:#252229; border-radius:8px')
 
-        self.opreate_frame = QLabel(self.frame)  # 下方按钮框架
-        self.opreate_frame.setStyleSheet('''background-color:#342F39;
+        self.operate_frame = QLabel(self.frame)  # 下方按钮框架
+        self.operate_frame.setStyleSheet('''background-color:#342F39;
                     border-top-left-radius:8px;
                     border-top-right-radius:8px ''')
 
-        self.opreate_layout = SiLayoutH(self.opreate_frame)
+        self.body = None
+        self.operation = None
 
-        self.body = QLabel(self.frame)  # 内容
+        self.width = 700
 
-        self.init_opreate()
-
-    def init_opreate(self):
-        self.btn1 = SiButton(self)
-        self.btn1.resize(128, 32)
-        self.btn1.setText('取消')
-        self.btn1.setStrong(False)
-
-        self.btn2 = SiButton(self)
-        self.btn2.resize(128, 32)
-        self.btn2.setText('应用')
-        self.btn2.setStrong(True)
-
-        self.btn3 = SiButton(self)
-        self.btn3.resize(128, 32)
-        self.btn3.setText('检查可用性')
-        self.btn3.setStrong(False)
-
-        self.opreate_layout.addItem(self.btn1, 'left')
-        self.opreate_layout.addItem(self.btn2, 'right')
-        self.opreate_layout.addItem(self.btn3, 'right')
+        self.subinterface = []
 
     def showup_animation_handler(self, delta):
         v = delta + self.showup_animation.current
@@ -107,14 +98,17 @@ class SiOverlay(QLabel):
 
     def moveFrame(self, v):
         w = self.geometry().width()
-        bw = self.body.geometry().width()
+        bw = self.width
         mx = (w - bw) // 2
         self.frame.move(mx, int(v + self.y_interval))
 
     def resizeEvent(self, event):
         size = event.size() # 这里 size 传入的是主界面的宽和高
         w, h = size.width(), size.height()
-        bw = self.body.geometry().width()  # 内容的宽度决定了frame及其子对象的宽度
+        self.refreshSize(w, h)
+
+    def refreshSize(self, w, h):
+        bw = self.width  # 宽度设置决定了frame及其子对象的宽度
 
         mx = (w - bw) // 2
         my = self.y_interval
@@ -126,10 +120,13 @@ class SiOverlay(QLabel):
 
         self.background.resize(w, h)
         self.frame.setGeometry(mx, my, mw, mh)
-        self.opreate_frame.setGeometry(0, h - oh - my, mw, oh)
-        self.opreate_layout.setGeometry(oi, 0, mw - 2 * oi, oh)
+        self.operate_frame.setGeometry(0, h - oh - my, mw, oh)
         self.body_frame.setGeometry(0, 0, mw, mh)
-        self.body.setGeometry(0, 0, mw, mh - oh)
+        try:
+            self.operation.setGeometry(oi, 0, mw - 2 * oi, oh)
+            self.body.setGeometry(0, 0, mw, mh - oh)
+        except:
+            print('SiOverlay 重设大小出错')
 
     def show_animation(self):
         self.showup_animation.setTarget(0)
@@ -138,3 +135,29 @@ class SiOverlay(QLabel):
     def hide_animation(self):
         self.showup_animation.setTarget(self.geometry().height())
         self.showup_animation.try_to_start()
+
+    def addInterface(self, interface):
+        body, operation, width, name = interface.get()
+
+        body.setParent(self.frame)
+        operation.setParent(self.operate_frame)
+
+        body.setVisible(False)
+        operation.setVisible(False)
+
+        self.subinterface.append(interface)
+
+    def setInterface(self, name):
+        for interface in self.subinterface:
+            body, operation, width, name_ = interface.get()
+            body.setVisible(False)
+            operation.setVisible(False)
+
+        for interface in self.subinterface:
+            if interface.name == name:
+                body, operation, width, name = interface.get()
+                self.body, self.operation, self.width = body, operation, width
+                self.body.setVisible(True)
+                self.operation.setVisible(True)
+                self.refreshSize(self.geometry().width(), self.geometry().height())
+                return

@@ -16,6 +16,7 @@ from silicon.SiSwitch import *
 from silicon.SiSliderBar import *
 from silicon.SiInputBox import *
 from silicon.SiOption import *
+from silicon.SiInfo import *
 
 class SiPixButton(QLabel):
     def __init__(self, parent):
@@ -283,13 +284,12 @@ class SiHomePage(SiFrame):
         self.sticker_sliders.resize(550, 128)
         self.sticker_sliders.setTitle('滑动条')
 
-
-
         # 四个 sticker 添加到 layout
         self.layout_widgets_A.addItem(self.sticker_buttons, 'left')
         self.layout_widgets_A.addItem(self.sticker_switches, 'left')
         self.layout_widgets_B.addItem(self.sticker_inputboxes, 'left')
         self.layout_widgets_B.addItem(self.sticker_sliders, 'left')
+
 
         # 添加到 Stack
         self.widgets_stack.addItem(self.layout_widgets_A)
@@ -314,6 +314,48 @@ class SiHomePage(SiFrame):
 
         # 添加到 Frame
         self.addItem(self.glazes_stack)
+
+        # ============== Stack 开始 ===============
+
+        self.info_stack = SiStack(self)
+        self.info_stack.setTitle('提示信息')
+        self.info_stack.resize(916, 0)
+
+        self.info_layout = SiLayoutH(self.info_stack)
+        self.info_layout.resize(0, 176)
+
+        self.info_bar_A = SiInfo(self.info_layout)
+        self.info_bar_A.setFixedWidth(184)
+        self.info_bar_A.setType(0)
+        self.info_bar_A.setContent('提示', '·  你可以创建提示信息<br>·  提示信息支持<strong>富文本</strong><br>·  这段信息过长的时候会自动换行并自动设置高度，你只需要锁定一个宽度')
+
+        self.info_bar_B = SiInfo(self.info_layout)
+        self.info_bar_B.setFixedWidth(184)
+        self.info_bar_B.setType(1)
+        self.info_bar_B.setContent('已完成', '提示信息已经创建完成')
+
+        self.info_bar_C = SiInfo(self.info_layout)
+        self.info_bar_C.setFixedWidth(184)
+        self.info_bar_C.setType(2)
+        self.info_bar_C.setContent('警告', '为什么创建这么多的提示信息，还要堆在一起')
+
+        self.info_bar_D = SiInfo(self.info_layout)
+        self.info_bar_D.setFixedWidth(184)
+        self.info_bar_D.setType(3)
+        self.info_bar_D.setContent('错误', '我们在Bug中发现了少量代码（雾')
+
+        # 添加到 Layout
+        self.info_layout.addItem(self.info_bar_A, 'left')
+        self.info_layout.addItem(self.info_bar_B, 'left')
+        self.info_layout.addItem(self.info_bar_C, 'left')
+        self.info_layout.addItem(self.info_bar_D, 'left')
+
+        # 添加到 Stack
+        self.info_stack.addItem(self.info_layout)
+
+        # 添加到 Frame
+        self.addItem(self.info_stack)
+
 
 
         self.adjustSize()

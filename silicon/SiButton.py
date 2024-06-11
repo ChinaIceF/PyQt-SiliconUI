@@ -9,43 +9,88 @@ from . import SiGlobal
 
 import time
 
-class SiButtonFlat(QLabel):
+class ClickableLabel(QLabel):
     clicked = QtCore.pyqtSignal()
 
     def __init__(self, parent):
         super().__init__(parent)
         self.setStyleSheet('')
-        self.parent = parent
 
-        self.hint = ''
-
-        self.icon = QSvgWidget(self)
-        self.icon_w = 16
-        self.icon_h = 16
+        self.highlight_alpha = 12
+        self.clicked_alpha = 40
+        self.radius = 6
+        self.has_hover_animation = True
 
         self.button = QPushButton(self)
-        self.button.clicked.connect(self.clicked.emit)  # 绑定信号
-        self.button.setStyleSheet('border-radius:6px;background-color:rgba(255, 255, 255, 0)')
+        self.button.clicked.connect(self._clickedAnimation)
+        self.button.clicked.connect(self.clicked.emit)  # 绑定信号到本体
+        self.setAlpha(0)
 
-        self.target_alpha = 0
-        self.current_alpha = 0
-
-        self.animation = SiAnimationObject.SiAnimation(self.distance, self.stepLength, 1000 / 60, lambda : self.distance() == 0)
+        self.animation = FlatButtonAnimation(self)
         self.animation.ticked.connect(self.change_color)
 
-    def setHint(self, hint):
-        self.hint = hint
+    def _clickedAnimation(self):
+        self.animation.stop()
+        self.animation.setCurrent(self.clicked_alpha)
+        self.animation.setTarget(self.highlight_alpha)
+        self.setAlpha(self.clicked_alpha)
+        self.animation.try_to_start()
+
+    def setHoverAnimation(self, b):
+        self.has_hover_animation = b
+
+    def change_color(self, delta_alpha):
+        alpha = self.animation.current + delta_alpha
+        self.animation.setCurrent(alpha)
+        self.setAlpha(alpha)
+
+    def setAlpha(self, alpha):
+        self.button.setStyleSheet('border-radius:{}px;background-color:rgba(255, 255, 255, {})'.format(self.radius, alpha))
+
+    def enterEvent(self, event):
+        if self.has_hover_animation:
+            self.animation.setTarget(self.highlight_alpha)
+            self.animation.try_to_start()
+
+    def leaveEvent(self, event):
+        if self.has_hover_animation:
+            self.animation.setTarget(0)
+            self.animation.try_to_start()
+
+    def resizeEvent(self, event):
+        w = event.size().width()
+        h = event.size().height()
+        self.button.resize(w, h)
+
+
+class FlatButtonAnimation(SiAnimationObject.SiAnimation):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
 
     def stepLength(self, dis):
         return 2 if dis > 0 else -2
 
     def distance(self):
-        return self.target_alpha - self.current_alpha
+        return self.target - self.current
 
-    def change_color(self, delta_alpha):
-        self.current_alpha += delta_alpha
-        self.current_alpha = max(0, self.current_alpha)
-        self.button.setStyleSheet('border-radius:6px;background-color:rgba(255, 255, 255, {})'.format(self.current_alpha))
+    def isCompleted(self):
+        return self.distance() == 0
+
+class SiButtonFlat(ClickableLabel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+        self.hint = ''
+
+        self.icon = QSvgWidget(self)
+        self.icon.lower()
+        self.icon_w = 16
+        self.icon_h = 16
+
+    def setHint(self, hint):
+        self.hint = hint
 
     def setIconSize(self, w, h):
         self.icon_w = w
@@ -53,44 +98,48 @@ class SiButtonFlat(QLabel):
 
     def load(self, path):
         self.icon.load(path)
-    '''
-    def mousePressEvent(self, event):
-        print('pressed')
-        self.target_alpha = 30
-        self.tryStartAnimation()
-        #self.clicked.emit()
-
-    def mouseReleaseEvent(self, event):
-        print('released')
-        self.target_alpha = 12
-        self.tryStartAnimation()
-    '''
 
     def enterEvent(self, event):
-        self.target_alpha = 12
-        self.tryStartAnimation()
-
-        SiGlobal.floating_window.show_animation()
-        SiGlobal.floating_window.setText(self.hint)
+        super().enterEvent(event)
+        if self.hint != '':
+            SiGlobal.floating_window.show_animation()
+            SiGlobal.floating_window.setText(self.hint)
 
     def leaveEvent(self, event):
-        self.target_alpha = 0
-        self.tryStartAnimation()
-
-        SiGlobal.floating_window.hide_animation()
-
-    def tryStartAnimation(self):
-        if self.animation.isActive() == False:
-            self.animation.start()
+        super().leaveEvent(event)
+        if self.hint != '':
+            SiGlobal.floating_window.hide_animation()
 
     def resizeEvent(self, event):
+        super().resizeEvent(event)
         w = event.size().width()
         h = event.size().height()
-
         self.icon.setGeometry((w - self.icon_w) // 2, (h - self.icon_h) // 2, self.icon_w, self.icon_h)
-        self.button.resize(w, h)
 
 
+class SiButtonFlatWithLabel(SiButtonFlat):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+        self.label = QLabel(self)
+        self.label.lower()
+        self.label.setFont(SiFont.font_L1)
+        self.label.setFixedHeight(32)
+        self.label.setStyleSheet('color:#ffffff; padding-left: 12px;')
+        self.label.setAlignment(QtCore.Qt.AlignVCenter)
+
+    def setText(self, text):
+        self.label.setText(text)
+        self.label.adjustSize()
+        self.resize(self.label.width() + 16 + 8, 32)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        size = event.size()
+        w, h = size.width(), size.height()
+        self.icon.move(8, (h-16)//2)
+        self.label.move(16, 0)
 
 
 class SiButton(QLabel):

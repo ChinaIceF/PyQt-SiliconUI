@@ -111,6 +111,8 @@ class SiSliderBar(QLabel):
     def hint_handler(self, value):
         SiGlobal.floating_window.setText(str(value), flash = False)  # 滑动时不触发闪烁动画，避免一片白
 
+    def setDispersed(self, levels):
+        self.slider.setDispersed(levels)
 
     def animationHandler(self, target_value):
         self.target_value = int(target_value * self.slider.max_x()) / self.slider.max_x()

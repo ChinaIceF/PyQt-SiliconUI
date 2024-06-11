@@ -110,8 +110,9 @@ class SiScrollArea(QLabel):
     def wheelEvent(self, event: QWheelEvent):
         strength = 100
 
-        if self.animation.isActive() == False:    # 如果线程没在运行，就启动
-            self.animation.start()
+        if self.animation.isActive() == False:      # 如果线程没在运行
+            if self.scrollbar.isVisible() == True:  # 而且现在有必要滚动，就启动
+                self.animation.start()
 
         temp = self.target_y
 

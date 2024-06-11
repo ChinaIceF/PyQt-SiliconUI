@@ -79,11 +79,11 @@ class UserInterface(QMainWindow):
 
         self.logo = QLabel(self)
         self.logo.setPixmap(QPixmap('./img/logo.png'))
-        self.logo.setGeometry(64, 16, 32, 32)
+        self.logo.setGeometry(64+4, 16+4, 24, 24)
 
         self.window_title = QLabel(self)
         self.window_title.setStyleSheet('color:#cfcfcf')
-        self.window_title.setGeometry(96 + 16, 0, 500, 64)
+        self.window_title.setGeometry(104, 0, 500, 64)
         self.window_title.setText('Silicon 画廊 - 测试界面')
         self.window_title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.window_title.setFont(silicon.SiFont.font_L1_bold)
@@ -101,6 +101,11 @@ class UserInterface(QMainWindow):
         self.glaze_example.attachFrame(Components.Glaze.GlazeExample(self.glaze_example))
         self.glaze_example.scrollarea.scrollbar.raise_()
 
+        self.widgets_example = silicon.SiStackOption(self)
+        self.widgets_example.setTitle('控件')
+        self.widgets_example.attachFrame(Components.Widgets.WidgetsExample(self.widgets_example))
+        self.widgets_example.scrollarea.scrollbar.raise_()
+
         self.options = silicon.SiStackOption(self)
         self.options.setTitle('设置')
         self.options.attachFrame(Components.Options.Options(self.options))
@@ -108,5 +113,6 @@ class UserInterface(QMainWindow):
 
         # 添加到 stackarea
         self.stackarea.addStack(self.homepage, SiGlobal.icons.get('fi-rr-home'), '主页面')
+        self.stackarea.addStack(self.widgets_example, SiGlobal.icons.get('fi-rr-layout-fluid'), '控件')
         self.stackarea.addStack(self.glaze_example, SiGlobal.icons.get('fi-rr-list'), 'Silicon Glaze 示例')
         self.stackarea.addStack(self.options, SiGlobal.icons.get('fi-rr-settings'), '设置', 'bottom')

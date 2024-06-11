@@ -8,9 +8,9 @@ class SiFrame(QLabel):
 
         self.items = []
         self.h = 0
-        self.interval = 48
+        self.interval = 64
         self.delta = 16  # 每个 item 之间的间隔
-        self.rightside_interval = 48 # 右边界的距离
+        self.rightside_interval = 64 # 右边界的距离
 
     def getH(self):
         return self.h

@@ -13,7 +13,8 @@ import os
 import silicon
 import silicon.SiGlobal as SiGlobal
 
-
+from .sub_example_A import *
+from .sub_example_B import *
 
 class GlazeExample(silicon.SiFrame):
     def __init__(self, parent):
@@ -30,11 +31,17 @@ class GlazeExample(silicon.SiFrame):
         self.example_silicon_option_basic.setText('基类 Silicon 选项', '所有预设组合控件的基类，梦开始的地方')
         self.example_silicon_option_basic.setIcon(SiGlobal.icons.get('fi-rr-rectangle-panoramic'))
 
+        self.example_silicon_option_basic_unavailable = silicon.SiOption(self.stack_basics)
+        self.example_silicon_option_basic_unavailable.setText('禁用', '可将选项设为禁用')
+        self.example_silicon_option_basic_unavailable.setIcon(SiGlobal.icons.get('fi-rr-ban'))
+        self.example_silicon_option_basic_unavailable.setUsability(False)
+
         self.stack_basics_link = silicon.SiOptionSourceCode(self.stack_basics)
         self.stack_basics_link.setURL('https://github.com/ChinaIceF/PyQt-SiliconUI')
 
         # 添加
         self.stack_basics.addItem(self.example_silicon_option_basic)
+        self.stack_basics.addItem(self.example_silicon_option_basic_unavailable)
         self.stack_basics.addItem(self.stack_basics_link)
 
         ## ================ Stack 开始 ===================
@@ -56,11 +63,6 @@ class GlazeExample(silicon.SiFrame):
         self.example_silicon_option_button_hold.setText('长按确定按钮', '避免手滑导致的不必要问题', '确定')
         self.example_silicon_option_button_hold.setIcon(SiGlobal.icons.get('fi-rr-apps-delete'))
 
-        self.example_silicon_option_button_unavailable = silicon.SiOptionButton(self.stack_buttons)
-        self.example_silicon_option_button_unavailable.setText('禁用', '可将选项设为禁用', '不可用选项')
-        self.example_silicon_option_button_unavailable.setIcon(SiGlobal.icons.get('fi-rr-ban'))
-        self.example_silicon_option_button_unavailable.setUsability(False)
-
         self.stack_buttons_link = silicon.SiOptionSourceCode(self.stack_buttons)
         self.stack_buttons_link.setURL('https://github.com/ChinaIceF/PyQt-SiliconUI')
 
@@ -68,7 +70,6 @@ class GlazeExample(silicon.SiFrame):
         self.stack_buttons.addItem(self.example_silicon_option_button)
         self.stack_buttons.addItem(self.example_silicon_option_button_highlighted)
         self.stack_buttons.addItem(self.example_silicon_option_button_hold)
-        self.stack_buttons.addItem(self.example_silicon_option_button_unavailable)
         self.stack_buttons.addItem(self.stack_buttons_link)
 
         ## ================ Stack 开始 ===================
@@ -162,22 +163,59 @@ class GlazeExample(silicon.SiFrame):
         self.stack_inputboxes.addItem(self.example_silicon_option_inputbox_with_button)
         self.stack_inputboxes.addItem(self.stack_inputboxes_link)
 
+
+        ## ================ Stack 开始 ===================
+
+        self.stack_combobox = silicon.SiStack(self)
+        self.stack_combobox.setTitle('下拉菜单 silicon.SiOptionComboBox')
+
+        self.example_combobox = silicon.SiOptionComboBox(self.stack_combobox)
+        self.example_combobox.setText('下拉菜单', '一个下拉菜单示例，选择你最喜欢的科目')
+        self.example_combobox.setIcon(SiGlobal.icons.get('fi-rr-align-left'))
+        self.example_combobox.addOption('语文', 1)
+        self.example_combobox.addOption('数学', 2)
+        self.example_combobox.addOption('英语', 3)
+        self.example_combobox.addOption('物理', 4)
+        self.example_combobox.addOption('化学', 5)
+        self.example_combobox.addOption('生物学', 6)
+        self.example_combobox.addOption('历史', 7)
+        self.example_combobox.addOption('地理', 8)
+        self.example_combobox.addOption('思想政治', 9)
+        self.example_combobox.setOption('语文')
+
+
+        self.stack_combobox.addItem(self.example_combobox)
+
         ## ================ Stack 开始 ===================
 
         self.popup_interfaces = silicon.SiStack(self)
         self.popup_interfaces.setTitle('二级界面')
 
         self.example_silicon_popup_interfaces = silicon.SiOptionButton(self.popup_interfaces)
-        self.example_silicon_popup_interfaces.setText('二级界面', '单击按钮打开二级界面测试', '打开二级界面')
+        self.example_silicon_popup_interfaces.setText('二级界面示例·其一', '一个网络通行证设置示例，包括高级设置', '打开')
         self.example_silicon_popup_interfaces.setIcon(SiGlobal.icons.get('fi-rr-layers'))
+        self.example_silicon_popup_interfaces.button.clicked.connect(lambda : SiGlobal.overlay.setInterface('example_a'))
         self.example_silicon_popup_interfaces.button.clicked.connect(SiGlobal.overlay.show_animation)
+
+        self.example_silicon_popup_interfaces_b = silicon.SiOptionButton(self.popup_interfaces)
+        self.example_silicon_popup_interfaces_b.setText('二级界面示例·其二', '一个文件备份设置示例，包含了多个设置组以及提示信息', '打开')
+        self.example_silicon_popup_interfaces_b.setIcon(SiGlobal.icons.get('fi-rr-layers'))
+        self.example_silicon_popup_interfaces_b.button.clicked.connect(lambda : SiGlobal.overlay.setInterface('example_b'))
+        self.example_silicon_popup_interfaces_b.button.clicked.connect(SiGlobal.overlay.show_animation)
 
         self.popup_interfaces_link = silicon.SiOptionSourceCode(self.popup_interfaces)
         self.popup_interfaces_link.setURL('https://github.com/ChinaIceF/PyQt-SiliconUI')
 
         # 添加
         self.popup_interfaces.addItem(self.example_silicon_popup_interfaces)
+        self.popup_interfaces.addItem(self.example_silicon_popup_interfaces_b)
         self.popup_interfaces.addItem(self.popup_interfaces_link)
+
+
+
+
+
+
 
 
         self.addItem(self.stack_basics)
@@ -185,44 +223,8 @@ class GlazeExample(silicon.SiFrame):
         self.addItem(self.stack_switches)
         self.addItem(self.stack_sliderbars)
         self.addItem(self.stack_inputboxes)
+        self.addItem(self.stack_combobox)
         self.addItem(self.popup_interfaces)
 
-
-        # 二级界面测试
-
-        self.option2 = silicon.SiStackOption(self)
-        self.option2.setTitle('设置通行证')
-
-        self.frame2 = silicon.SiFrame(self.option2)
-
-        self.basics = silicon.SiStack(self.frame2)
-
-        self.inputpass = silicon.SiOptionInputBox(self.basics)
-        self.inputpass.setText('通行证秘钥', '秘钥形如 XXXXX-XXXXX-XXXXX',)
-        self.inputpass.setIcon(SiGlobal.icons.get('fi-rr-fingerprint'))
-
-        self.proxy = silicon.SiOptionInputBox(self.basics)
-        self.proxy.setText('代理', '代理服务器 IP，无可留空',)
-        self.proxy.setIcon(SiGlobal.icons.get('fi-rr-data-transfer'))
-
-        self.basics.addItem(self.inputpass)
-        self.basics.addItem(self.proxy)
-
-        self.advances = silicon.SiStack(self.frame2)
-        self.advances.setTitle('高级')
-
-        self.try_to_update = silicon.SiOptionSwitch(self.advances)
-        self.try_to_update.setText('自动更新通行证', '每次创建新连接时尝试向主机请求更新',)
-        self.try_to_update.setIcon(SiGlobal.icons.get('fi-rr-network'))
-
-        self.advances.addItem(self.try_to_update)
-
-        self.frame2.addItem(self.basics)
-        self.frame2.addItem(self.advances)
-
-        self.option2.attachFrame(self.frame2)
-
-        # TODO: 多个二级界面的支持
-        SiGlobal.overlay.body = self.option2
-        SiGlobal.overlay.body.resize(700, 1000)
-        SiGlobal.overlay.body.setParent(SiGlobal.overlay.frame)
+        SiGlobal.overlay.addInterface(SubInterface_A(self, 'example_a'))
+        SiGlobal.overlay.addInterface(SubInterface_B(self, 'example_b'))

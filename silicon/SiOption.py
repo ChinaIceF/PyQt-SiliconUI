@@ -10,6 +10,7 @@ from .SiSwitch import *
 from .SiComboBox import *
 from .SiSliderBar import *
 from .SiInputBox import *
+from .SiMenu import *
 
 import os
 
@@ -299,7 +300,33 @@ class SiOptionInputBox(SiOption):
         # 把遮罩置顶
         self.mask.raise_()
 
-class SiOptionComboBox(QWidget):
+
+class SiOptionComboBox(SiOption):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+        # 设定大小
+        self.btwidth = 192
+        self.btheight = 32
+
+        # 实例化输入框
+        self.combobox = SiComboBox(self)
+        self.combobox.setGeometry(0, 0, self.btwidth, self.btheight)
+
+        # 把输入框添加到基类的 items 中
+        self.items.append(self.combobox)
+
+        # 把遮罩置顶
+        self.mask.raise_()
+
+    def addOption(self, name, value):
+        self.combobox.addOption(name, value)
+
+    def setOption(self, name):
+        self.combobox.setOption(name)
+
+class SiOptionComboBox_(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent

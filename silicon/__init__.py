@@ -28,3 +28,5 @@ from .SiScrollArea import *
 from .SiStackArea import *
 from .SiStackOption import *
 from .SiStyle import *
+from .SiInfo import *
+from .SiLabel import *

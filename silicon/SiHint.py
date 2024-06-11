@@ -96,7 +96,6 @@ class FloatingWindow(QWidget):
     def setText(self, text, flash = True):
         text = str(text)
         self.label.setText(text)
-        metrics = QFontMetrics(font_L1)
 
         w = self.label.fontMetrics().width(text)
 

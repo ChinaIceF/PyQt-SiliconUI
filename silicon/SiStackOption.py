@@ -5,15 +5,15 @@ from PyQt5.QtGui import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .SiFont import *
 from .SiScrollArea import *
-        
+
 class SiStackOption(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
         self.setStyleSheet('')
-        
+
         self.title_height = 96
-        
+
         self.scrollarea = SiScrollArea(self)
         self.scrollarea.setGeometry(0, self.title_height, 0, 0)
 
@@ -27,7 +27,7 @@ class SiStackOption(QLabel):
 
     def setTitle(self, title):  # 如果不运行这个方法，这个组就没有标题
         self.title = QLabel(self)
-        self.title.setGeometry(48, 32, 0, self.title_height)  # 底下自己调整
+        self.title.setGeometry(64, 32, 0, self.title_height)  # 底下自己调整
         self.title.setFont(font_L3_bold)
         self.title.setStyleSheet('color: #fafafa')
         self.title.setText(title)
@@ -36,14 +36,6 @@ class SiStackOption(QLabel):
     def resizeEvent(self, event):
         w = event.size().width()
         h = event.size().height()
-    
+
         self.resize(w, h)
         self.scrollarea.resize(w, h - self.title_height)
-    
-    
-    
-    
-    
-    
-    
-    

@@ -6,7 +6,7 @@ from PyQt5.QtSvg import QSvgWidget
 
 from .SiFont import *
 from .SiButton import *
-from .SiLayout import SiLayoutH
+from .SiLayout import SiLayoutH, SiLayoutV
 
 class SiSticker(QLabel):
     def __init__(self, parent):
@@ -37,8 +37,20 @@ class SiSticker(QLabel):
         self.content.setAlignment(Qt.AlignTop)
         self.content.setWordWrap(True)
 
+        self.layout = SiLayoutV(self)
+        self.layout.move(24, 64)
+
+    def addItem(self, obj, **kwargs):
+        self.layout.addItem(obj, **kwargs)
+        self.adjustSize()
+
+    def adjustSize(self):
+        h = self.layout.height() + 64 + 16
+        self.resize(self.width(), h)
+
     def setTitle(self, title):
         self.title.setText(title)
+        self.title.adjustSize()
 
     def setContent(self, content):
         self.content.setText(content)
@@ -52,6 +64,7 @@ class SiSticker(QLabel):
         self.surface.resize(w, h - 3)
         self.head.setGeometry(24, 16, w - 48, 32)
         self.content.setGeometry(24, 16 + 32 + 16, w - 48, h - 64 - 16)
+        self.layout.resize(w - 48, self.layout.height())
 
 
 class SiStickerWithTitleButton(SiSticker):

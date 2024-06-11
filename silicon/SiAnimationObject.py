@@ -11,11 +11,14 @@ from . import SiGlobal
 class SiAnimation(QObject):
     ticked = pyqtSignal(object) # 动画进行一刻的信号
 
-    def __init__(self, distance = None, stepLength = None, interval = 1000 / SiGlobal.fps, isCompleted = None):
+    def __init__(self, distance = None,
+                       stepLength = None,
+                       interval = 1000 / SiGlobal.fps,
+                       isCompleted = None):
         super().__init__()
         self.distance_ = distance            # 获取与目标参数还差多少
         self.stepLength_ = stepLength        # 计算这一步的步长
-        self.interval = interval            # 每一刻的时间间隔，单位 ms
+        self.interval = interval             # 每一刻的时间间隔，单位 ms
         self.isCompleted_ = isCompleted
 
         self.target = 0
@@ -27,13 +30,13 @@ class SiAnimation(QObject):
 
     def setTarget(self, target):
         self.target = target
-        
+
     def setCurrent(self, current):
         self.current = current
 
     def distance(self):
         return self.distance_()
-    
+
     def stepLength(self, dis):
         return self.stepLength_(dis)
 
@@ -41,15 +44,16 @@ class SiAnimation(QObject):
         return self.isCompleted_()
 
     def process(self):
+        # 如果已经到达既定位置，终止计时器
+        if self.isCompleted():
+            self.stop()
+            return
+
         dis = self.distance()
         steplength = self.stepLength(dis)
 
         # 发射信号
         self.ticked.emit(steplength)
-
-        # 如果已经到达既定位置，终止计时器
-        if self.isCompleted():
-            self.stop()
 
     def isActive(self):
         return self.timer.isActive()
