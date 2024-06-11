@@ -1,7 +1,7 @@
 <p align="center">  
 
   <a href="#">
-    <img src="https://github.com/chinaicef/PyQt-SiliconUI/assets/readme/silicon_main.png" alt="Logo"  >
+    ![silicon_main.png](https://github.com/chinaicef/PyQt-SiliconUI/assets/readme/silicon_main.png)
   </a>
   
   <h2 align="center">PyQt-SiliconUI</h2>
