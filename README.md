@@ -45,7 +45,7 @@
 >>>>> ......  
 
 ### 在其他 PyQt5 项目中使用
-Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任意 PyQt5 项目中调用它们，并根据你的喜好进行自定义
+Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任意 PyQt5 项目中调用它们，并据你喜好进行自定义
 
 ## License
 本项目使用 GPL-3.0 License，详见[这里](LICENSE)
