@@ -22,6 +22,12 @@ class SiInputBoxLineEdit(QLineEdit):
         self.focus_changed.emit(False)
 
 class SiInputBox(QLabel):
+    textChanged = pyqtSignal(str)
+    textEdited = pyqtSignal(str)
+    returnPressed = pyqtSignal()
+    editingFinished = pyqtSignal()
+    selectionChanged = pyqtSignal()
+    cursorPositionChanged = pyqtSignal(int, int)
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -30,9 +36,15 @@ class SiInputBox(QLabel):
 
         self.highlight_bg = QLabel(self)
         self.bg = QLabel(self)
-
         self.line_edit = SiInputBoxLineEdit(self)
         self.line_edit.setFont(font_L1)
+        self.line_edit.textChanged.connect(self.textChanged.emit)
+        self.line_edit.textEdited.connect(self.textEdited.emit)
+        self.line_edit.returnPressed.connect(self.returnPressed.emit)
+        self.line_edit.editingFinished.connect(self.editingFinished.emit)
+        self.line_edit.selectionChanged.connect(self.selectionChanged.emit)
+        self.line_edit.cursorPositionChanged.connect(self.cursorPositionChanged.emit)
+
         self.line_edit.setStyleSheet('''
             QLineEdit {
                 background-color: transparent;
@@ -48,13 +60,18 @@ class SiInputBox(QLabel):
         self.line_edit.focus_changed.connect(self.focus_handler)
         self.line_edit.returnPressed.connect(self.line_edit.clearFocus)
 
-        self.highlight_bg.setStyleSheet('background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #52389a, stop:1 #9c4e8b); border-radius:4px')
-        self.bg.setStyleSheet('''background-color:#252229;
-                    border-top-left-radius:4px;
-                    border-top-right-radius:4px;
-                    border-bottom-left-radius:2px;
-                    border-bottom-right-radius:2px
-                    ''')
+        self.highlight_bg.setStyleSheet('''
+            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                              stop:0 #52389a, stop:1 #9c4e8b);
+            border-radius:4px ''')
+
+        self.bg.setStyleSheet('''
+            background-color:#252229;
+            border-top-left-radius:4px;
+            border-top-right-radius:4px;
+            border-bottom-left-radius:2px;
+            border-bottom-right-radius:2px
+            ''')
 
     def mousePressEvent(self, event):
         self.line_edit.clearFocus()

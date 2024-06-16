@@ -25,8 +25,8 @@ from .SiOption import *
 from .SiFrame import *
 from .SiStack import *
 from .SiScrollArea import *
-from .SiStackArea import *
-from .SiStackOption import *
+from .SiTab import *
+from .SiTabArea import *
 from .SiStyle import *
 from .SiInfo import *
 from .SiLabel import *

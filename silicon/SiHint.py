@@ -47,7 +47,8 @@ class FloatingTransparencyAnimation(SiAnimation):
 
 class FloatingWindow(QWidget):
     def __init__(self, parent=None):
-        super(FloatingWindow, self).__init__(parent, Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        super(FloatingWindow, self).__init__(parent,
+            Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         self.status = False
@@ -75,7 +76,9 @@ class FloatingWindow(QWidget):
     def initUI(self):
 
         self.background = QLabel(self)
-        self.background.setStyleSheet('background-color:#ef413a47; border-radius: 6px;')
+        self.background.setStyleSheet('''
+            background-color:#ef413a47;
+            border-radius: 6px; ''')
 
         # 创建QGraphicsDropShadowEffect对象
         shadow = QGraphicsDropShadowEffect()
@@ -91,7 +94,9 @@ class FloatingWindow(QWidget):
         self.label.setFont(font_L1)
 
         self.highlight = QLabel(self)
-        self.highlight.setStyleSheet('background-color:rgba(255, 255, 255, 1); border-radius: 6px')
+        self.highlight.setStyleSheet('''
+            background-color:rgba(255, 255, 255, 1);
+            border-radius: 6px ''')
 
     def setText(self, text, flash = True):
         text = str(text)
@@ -104,14 +109,18 @@ class FloatingWindow(QWidget):
 
         if flash == True:
             a = 128
-            self.highlight.setStyleSheet('background-color:rgba(255, 255, 255, {}); border-radius: 6px'.format(a))
+            self.highlight.setStyleSheet('''
+                background-color:rgba(255, 255, 255, {});
+                border-radius: 6px'''.format(a))
             self.highlight_animation.setTarget(0)
             self.highlight_animation.setCurrent(a)
             self.highlight_animation.try_to_start()
 
     def highlight_delta_handler(self, delta):
         alpha = self.highlight_animation.current + delta
-        self.highlight.setStyleSheet('background-color:rgba(255, 255, 255, {}); border-radius: 6px'.format(alpha / 255))
+        self.highlight.setStyleSheet('''
+            background-color:rgba(255, 255, 255, {});
+            border-radius: 6px '''.format(alpha / 255))
         self.highlight_animation.setCurrent(alpha)
 
     def resize_delta_handler(self, delta):
@@ -132,12 +141,15 @@ class FloatingWindow(QWidget):
 
         w, h = size.width(), size.height()
 
-        self.highlight.setGeometry(self.shadow_radius, self.shadow_radius,
-                                    w - 2 * self.shadow_radius, h - 2 * self.shadow_radius)
-        self.background.setGeometry(self.shadow_radius, self.shadow_radius,
-                                    w - 2 * self.shadow_radius, h - 2 * self.shadow_radius)
-        self.label.setGeometry(self.interval + self.shadow_radius,
-                                    self.shadow_radius, w - dw, h - dh)
+        self.highlight.setGeometry(
+            self.shadow_radius,         self.shadow_radius,
+            w - 2 * self.shadow_radius, h - 2 * self.shadow_radius)
+        self.background.setGeometry(
+            self.shadow_radius,         self.shadow_radius,
+            w - 2 * self.shadow_radius, h - 2 * self.shadow_radius)
+        self.label.setGeometry(
+            self.interval + self.shadow_radius, self.shadow_radius,
+            w - dw,                             h - dh)
 
 
     def refresh_position(self):

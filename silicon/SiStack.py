@@ -28,7 +28,7 @@ class SiStack(QLabel):
         self.title_highlight.setStyleSheet('background-color: #609c4e8b; border-radius: 4px')
         self.title_highlight.lower()
 
-        self.addH(self.title.geometry().height() + self.interval)
+        self.addH(self.title.height() + self.interval)
 
     def getH(self):
         return self.h
@@ -42,7 +42,7 @@ class SiStack(QLabel):
         self.items.append(option)
 
         g = option.geometry()
-        option.setGeometry(0, self.h + extra_interval, self.geometry().width(), g.height())
+        option.setGeometry(0, self.h + extra_interval, self.width(), g.height())
         self.addH(g.height() + self.interval + extra_interval)
         self.adjustSize()
 

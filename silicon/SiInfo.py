@@ -37,7 +37,9 @@ class SiInfo(QLabel):
 
     def setType(self, type):
         self.type = type
-        self.background.setStyleSheet('border-radius: 6px; background-color:{}'.format(self.color[self.type]))
+        self.background.setStyleSheet('''
+            border-radius: 6px;
+            background-color:{} '''.format(self.color[self.type]))
 
     def setContent(self, title, discription):
         self.title.setText(title)

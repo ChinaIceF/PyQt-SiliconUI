@@ -14,13 +14,19 @@ class SiSticker(QLabel):
         self.parent = parent
 
         self.substrate = QLabel(self)
-        self.substrate.setStyleSheet('background-color:#1C191F; border-radius:6px')
+        self.substrate.setStyleSheet('''background-color:#1C191F;
+                                        border-radius:6px       ''')
 
         self.bgimage = QLabel(self)
-        self.bgimage.setStyleSheet('background-color:#2C2930; border-radius:6px')
+        self.bgimage.setStyleSheet('''background-color:#2C2930;
+                                      border-radius:6px         ''')
 
         self.surface = QLabel(self)
-        self.surface.setStyleSheet('background-color:qlineargradient(x1:0, y1:0, x2:0, y2:0.6, stop:0 #2C2930, stop:1 #002C2930); border-radius:6px')
+        self.surface.setStyleSheet('''
+            border-radius:6px;
+            background-color:qlineargradient(x1:0, y1:0, x2:0, y2:0.6,
+                                             stop:0 #2C2930, stop:1 #002C2930);
+            ''')
 
         self.head = SiLayoutH(self)  # 头
 
@@ -40,12 +46,16 @@ class SiSticker(QLabel):
         self.layout = SiLayoutV(self)
         self.layout.move(24, 64)
 
-    def addItem(self, obj, **kwargs):
-        self.layout.addItem(obj, **kwargs)
+    def setInterval(self, interval):
+        self.layout.setInterval(interval)
+
+    def addItem(self, obj, *args, **kwargs):
+        self.layout.addItem(obj, *args, **kwargs)
         self.adjustSize()
 
     def adjustSize(self):
-        h = self.layout.height() + 64 + 16
+        self.layout.adjustSize()
+        h = self.layout.height() + 64 + 32
         self.resize(self.width(), h)
 
     def setTitle(self, title):
@@ -63,7 +73,7 @@ class SiSticker(QLabel):
         self.bgimage.resize(w, h - 3)
         self.surface.resize(w, h - 3)
         self.head.setGeometry(24, 16, w - 48, 32)
-        self.content.setGeometry(24, 16 + 32 + 16, w - 48, h - 64 - 16)
+        self.content.setGeometry(24, 16 + 32 + 16, w - 48, h - 64 - 32)
         self.layout.resize(w - 48, self.layout.height())
 
 

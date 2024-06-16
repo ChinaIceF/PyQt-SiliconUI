@@ -48,7 +48,7 @@ class Operation_A(silicon.SiLayoutH):
         self.addItem(self.btn2, 'right')
         self.addItem(self.btn3, 'right')
 
-class Body_A(silicon.SiStackOption):
+class Body_A(silicon.SiTab):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent

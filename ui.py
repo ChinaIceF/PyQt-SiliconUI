@@ -24,6 +24,8 @@ SiGlobal.icons = icons.ICON_DICT('./icons/icons.dat')
 class UserInterface(QMainWindow):
     def __init__(self):
         super().__init__()
+        # 设置最小宽度
+        self.setMinimumWidth(860)
 
         # 初始化 Hint 提示条
         self.floating_window = FloatingWindow()
@@ -50,16 +52,14 @@ class UserInterface(QMainWindow):
     def resizeEvent(self, event):
         w = event.size().width()
         h = event.size().height()
-        if w < 600:
-            return
         self.stackarea.setGeometry(0, 0, w, h)
         self.overlay.setGeometry(0, 0, w, h)
 
     def initUI(self):
 
-        # 结构
-        # silicon.SiStackArea
-        #     silicon.SiStackOption （里面包含一个标题和一个silicon.SiScrollArea）
+        # 对象从属关系
+        # silicon.SiTabArea
+        #     silicon.SiTab （里面包含一个标题和一个silicon.SiScrollArea）
         #         silicon.SiFrame
         #             silicon.SiStack
         #                 silicon.SiOptionButton
@@ -74,7 +74,7 @@ class UserInterface(QMainWindow):
         self.setGeometry(0, 0, 1200, 700)
         self.setWindowTitle("Silicon UI 测试界面")
 
-        self.stackarea = silicon.SiStackArea(self)
+        self.stackarea = silicon.SiTabArea(self)
         self.stackarea.setGeometry(0, 0, 1200, 600)
 
         self.logo = QLabel(self)
@@ -90,29 +90,29 @@ class UserInterface(QMainWindow):
 
         # ========== 初始化各个界面 ==========
 
-        self.homepage = silicon.SiStackOption(self)
+        self.homepage = silicon.SiTab(self)
         self.homepage.setTitleHeight(0)
         self.homepage.scrollarea.rightside_interval = 0
         self.homepage.attachFrame(Components.Homepage.SiHomePage(self.homepage))
         self.homepage.scrollarea.scrollbar.raise_()
 
-        self.glaze_example = silicon.SiStackOption(self)
+        self.glaze_example = silicon.SiTab(self)
         self.glaze_example.setTitle('Silicon Glaze 示例')
         self.glaze_example.attachFrame(Components.Glaze.GlazeExample(self.glaze_example))
         self.glaze_example.scrollarea.scrollbar.raise_()
 
-        self.widgets_example = silicon.SiStackOption(self)
+        self.widgets_example = silicon.SiTab(self)
         self.widgets_example.setTitle('控件')
         self.widgets_example.attachFrame(Components.Widgets.WidgetsExample(self.widgets_example))
         self.widgets_example.scrollarea.scrollbar.raise_()
 
-        self.options = silicon.SiStackOption(self)
+        self.options = silicon.SiTab(self)
         self.options.setTitle('设置')
         self.options.attachFrame(Components.Options.Options(self.options))
         self.options.scrollarea.scrollbar.raise_()
 
         # 添加到 stackarea
-        self.stackarea.addStack(self.homepage, SiGlobal.icons.get('fi-rr-home'), '主页面')
-        self.stackarea.addStack(self.widgets_example, SiGlobal.icons.get('fi-rr-layout-fluid'), '控件')
-        self.stackarea.addStack(self.glaze_example, SiGlobal.icons.get('fi-rr-list'), 'Silicon Glaze 示例')
-        self.stackarea.addStack(self.options, SiGlobal.icons.get('fi-rr-settings'), '设置', 'bottom')
+        self.stackarea.addTab(self.homepage, SiGlobal.icons.get('fi-rr-home'), '主页面')
+        self.stackarea.addTab(self.widgets_example, SiGlobal.icons.get('fi-rr-layout-fluid'), '控件')
+        self.stackarea.addTab(self.glaze_example, SiGlobal.icons.get('fi-rr-list'), 'Silicon Glaze 示例')
+        self.stackarea.addTab(self.options, SiGlobal.icons.get('fi-rr-settings'), '设置', 'bottom')

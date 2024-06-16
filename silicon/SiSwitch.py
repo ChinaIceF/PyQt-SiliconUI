@@ -6,7 +6,8 @@ import time
 
 
 class SiSwitch(QLabel):
-    click_signal = QtCore.pyqtSignal(bool)
+    clicked = QtCore.pyqtSignal()
+    stateChanged = QtCore.pyqtSignal(bool)
     animation_refreshed = QtCore.pyqtSignal(int)
 
     def __init__(self, parent):
@@ -94,7 +95,8 @@ class SiSwitch(QLabel):
             self.startAnimation()
 
         if signal == True:
-            self.click_signal.emit(self.status)
+            self.clicked.emit()
+            self.stateChanged.emit(self.status)
 
     def change_position(self, distance):
         g = self.switch_lever.geometry()

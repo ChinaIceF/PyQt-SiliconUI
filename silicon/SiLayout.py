@@ -54,19 +54,36 @@ class SiLayoutV(QLabel):
             obj.move((w - ow)//2 if self.align_center else 0, h - oh - bottom_used)
             bottom_used += oh + self.interval
 
-        self.setMinimumSize(0, top_used + bottom_used)
+        total_used = top_used + bottom_used
+        total_used -= 0 if self.contents_top == [] else self.interval
+        total_used -= 0 if self.contents_bottom == [] else self.interval
+
+        self.setMinimumSize(0, total_used)
 
     def resizeEvent(self, event):
         self.refresh_components()
 
     def adjustSize(self):
-        prefered_w, prefered_h = 0, -self.interval
+
+        top_used = 0
+        bottom_used = 0
+        for obj in self.contents_top:
+            top_used += obj.height() + self.interval
+        for obj in self.contents_bottom:
+            bottom_used += obj.height() + self.interval
+        total_used = top_used + bottom_used
+        total_used -= 0 if self.contents_top == [] else self.interval
+        total_used -= 0 if self.contents_bottom == [] else self.interval
+        prefered_h = total_used
+
+        prefered_w = 0
         for obj in (self.contents_top + self.contents_bottom):
-            size = obj.geometry()
-            w, h = size.width(), size.height()
-            if w > prefered_w:
-                prefered_w = w   # 找最大的宽度
-            prefered_h += h + self.interval
+            if obj.width() > prefered_w:
+                prefered_w = obj.width()   # 找最大的宽度
+
+        prefered_w = max(prefered_w, self.width())
+        prefered_h = max(prefered_h, self.height())
+
         self.resize(prefered_w, prefered_h)
 
 class SiLayoutH(QLabel):
@@ -95,6 +112,7 @@ class SiLayoutH(QLabel):
         if side == 'right':
             self.contents_right.append(item)
         self.refresh_components()
+        self.adjustSize()
 
     def refresh_components(self):
         size = self.geometry()
@@ -115,17 +133,35 @@ class SiLayoutH(QLabel):
             obj.move(w - ow - right_used, (h - oh) // 2 if self.align_center else 0)
             right_used += ow + self.interval
 
-        self.setMinimumSize(left_used + right_used, 0)
+        total_used = left_used + right_used
+        total_used -= 0 if self.contents_left == [] else self.interval
+        total_used -= 0 if self.contents_right == [] else self.interval
+
+        self.setMinimumSize(total_used, 0)
 
     def resizeEvent(self, event):
+        super().resizeEvent(event)
         self.refresh_components()
 
     def adjustSize(self):
-        prefered_w, prefered_h = -self.interval, 0
+        left_used = 0
+        right_used = 0
+        for obj in self.contents_left:
+            left_used += obj.width() + self.interval
+        for obj in self.contents_right:
+            right_used += obj.width() + self.interval
+        total_used = left_used + right_used
+        total_used -= 0 if self.contents_left == [] else self.interval
+        total_used -= 0 if self.contents_right == [] else self.interval
+        prefered_w = total_used
+
+        prefered_h = 0
         for obj in (self.contents_left + self.contents_right):
-            size = obj.geometry()
-            w, h = size.width(), size.height()
-            if h > prefered_h:
-                prefered_h = h   # 找最大的高度
-            prefered_w += w + self.interval
+            if obj.height() > prefered_h:
+                prefered_h = obj.height()   # 找最大的宽度
+
+
+        prefered_w = max(prefered_w, self.width())
+        prefered_h = max(prefered_h, self.height())
+
         self.resize(prefered_w, prefered_h)

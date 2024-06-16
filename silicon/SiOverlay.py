@@ -13,13 +13,13 @@ from .SiButton import *
 
 class SubInterface(object):
     def __init__(self):
-        self.width = 700
+        self.width_ = 700
         self.body = None
         self.operation = None
         self.name = None
 
     def get(self):
-        return self.body, self.operation, self.width, self.name
+        return self.body, self.operation, self.width_, self.name
 
 class OverlayShowUpAnimation(SiAnimation):
     def __init__(self, parent):
@@ -48,7 +48,18 @@ class Background(QLabel):
         super().mousePressEvent(event)
         if event.button() == QtCore.Qt.LeftButton:
             self.clicked.emit()
+        event.ignore()
 
+    def mouseReleaseEvent(self, event):
+        super().mouseReleaseEvent(event)
+        event.ignore()
+
+    def enterEvent(self, event):
+        super().enterEvent(event)
+        event.ignore()
+
+    def leaveEvent(self, event):
+        super().leaveEvent(event)
         event.ignore()
 
 
@@ -58,6 +69,7 @@ class SiOverlay(QLabel):
         self.parent = parent
 
         self.y_interval = 128  # 中间框架的上留白
+        self.width_ = 700
 
         self.showup_animation = OverlayShowUpAnimation(self)
         self.showup_animation.ticked.connect(self.showup_animation_handler)
@@ -80,25 +92,24 @@ class SiOverlay(QLabel):
         self.body = None
         self.operation = None
 
-        self.width = 700
-
         self.subinterface = []
 
     def showup_animation_handler(self, delta):
         v = delta + self.showup_animation.current
         self.moveFrame(v)
 
-        alpha = (1 - v / self.geometry().height()) * 0.5
+        alpha = (1 - v / self.height()) * 0.5
         if alpha == 0:
             self.hide()
         else:
             self.show()
-        self.background.setStyleSheet('background-color:rgba(0, 0, 0, {})'.format((1 - v / self.geometry().height()) * 0.5))
+        self.background.setStyleSheet(
+            'background-color:rgba(0, 0, 0, {})'.format((1-v/self.height())*0.5))
         self.showup_animation.setCurrent(v)
 
     def moveFrame(self, v):
-        w = self.geometry().width()
-        bw = self.width
+        w = self.width()
+        bw = self.width_
         mx = (w - bw) // 2
         self.frame.move(mx, int(v + self.y_interval))
 
@@ -108,7 +119,7 @@ class SiOverlay(QLabel):
         self.refreshSize(w, h)
 
     def refreshSize(self, w, h):
-        bw = self.width  # 宽度设置决定了frame及其子对象的宽度
+        bw = self.width_  # 宽度设置决定了frame及其子对象的宽度
 
         mx = (w - bw) // 2
         my = self.y_interval
@@ -133,7 +144,7 @@ class SiOverlay(QLabel):
         self.showup_animation.try_to_start()
 
     def hide_animation(self):
-        self.showup_animation.setTarget(self.geometry().height())
+        self.showup_animation.setTarget(self.height())
         self.showup_animation.try_to_start()
 
     def addInterface(self, interface):
@@ -156,8 +167,8 @@ class SiOverlay(QLabel):
         for interface in self.subinterface:
             if interface.name == name:
                 body, operation, width, name = interface.get()
-                self.body, self.operation, self.width = body, operation, width
+                self.body, self.operation, self.width_ = body, operation, width
                 self.body.setVisible(True)
                 self.operation.setVisible(True)
-                self.refreshSize(self.geometry().width(), self.geometry().height())
+                self.refreshSize(self.width(), self.height())
                 return

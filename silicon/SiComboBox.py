@@ -9,6 +9,9 @@ from .SiMenu import *
 from .SiButton import *
 
 class SiComboBox(ClickableLabel):
+    valueChanged = pyqtSignal(object)
+    textChanged = pyqtSignal(str)
+
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -34,6 +37,8 @@ class SiComboBox(ClickableLabel):
 
         self.menu = SiMenu(None)
         self.menu.textChanged.connect(lambda x: self.label.setText(x))
+        self.menu.textChanged.connect(self.textChanged.emit)
+        self.menu.valueChanged.connect(self.valueChanged.emit)
 
         self.clicked.connect(self.popup)
 

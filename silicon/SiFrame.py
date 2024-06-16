@@ -8,9 +8,10 @@ class SiFrame(QLabel):
 
         self.items = []
         self.h = 0
-        self.interval = 64
+        self.margin = 64 # 两侧间距
         self.delta = 16  # 每个 item 之间的间隔
-        self.rightside_interval = 64 # 右边界的距离
+        self.stop_resize_threshold_width = 800  # 宽度超过这个值，就停止拉长内容，转而中置
+        self.max_width_policy = True
 
     def getH(self):
         return self.h
@@ -21,7 +22,7 @@ class SiFrame(QLabel):
     def addItem(self, stack, addH = True):
         self.items.append(stack)
         stack.setParent(self)
-        stack.move(self.interval, self.h)
+        stack.move(self.margin, self.h)
 
         g = stack.geometry()
         if addH:
@@ -44,4 +45,9 @@ class SiFrame(QLabel):
             except:
                 pass
             g = item.geometry()
-            item.resize(w - self.interval - self.rightside_interval, g.height())
+            new_w = w - self.margin * 2
+            threshold = self.stop_resize_threshold_width
+            if new_w <= threshold or self.max_width_policy == False:
+                item.setGeometry(self.margin, g.y(), new_w, g.height())
+            else:
+                item.setGeometry((w - threshold)//2, g.y(), threshold, g.height())

@@ -18,7 +18,7 @@ class SubInterface_B(silicon.SiOverlay.SubInterface):
     def __init__(self, parent, name):
         super().__init__()
         self.parent = parent
-        self.width = 724
+        self.width_ = 740
         self.body = Body_B(parent)
         self.operation = Operation_B(parent)
         self.name = name
@@ -48,7 +48,7 @@ class Operation_B(silicon.SiLayoutH):
         self.addItem(self.btn2, 'right')
         self.addItem(self.btn3, 'right')
 
-class Body_B(silicon.SiStackOption):
+class Body_B(silicon.SiTab):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -88,6 +88,13 @@ class Body_B(silicon.SiStackOption):
         self.independency.setText('按备份时间创建目录', '每次备份储存在独立文件夹，这可能导致较大的储存占用',)
         self.independency.setIcon(SiGlobal.icons.get('fi-rr-folder'))
 
+        self.mode = silicon.SiOptionComboBox(self.stack_settings)
+        self.mode.setText('储存模式', '选择创建备份时的行为',)
+        self.mode.setIcon(SiGlobal.icons.get('fi-rr-folder'))
+        self.mode.addOption('源文件', 0)
+        self.mode.addOption('创建压缩文件', 1)
+        self.mode.setOption('源文件')
+
         self.info_layout_v = silicon.SiLayoutV(self.stack_settings)
         self.info_layout_v.setCenter(True)
 
@@ -114,6 +121,7 @@ class Body_B(silicon.SiStackOption):
         # 添加
         self.stack_settings.addItem(self.frequency)
         self.stack_settings.addItem(self.independency)
+        self.stack_settings.addItem(self.mode)
         self.stack_settings.addItem(self.info_layout_v, 16)
 
 

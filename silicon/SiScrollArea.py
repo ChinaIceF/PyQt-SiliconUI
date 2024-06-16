@@ -21,7 +21,7 @@ class SiScrollBar(QLabel):
     def mousePressEvent(self, event):
         self.start_pos = self.frameGeometry().topLeft() - event.pos()
         self.start_pos = QCursor.pos()
-        self.anchor = self.parent.target_y * self.geometry().height() / self.parent.geometry().height()
+        self.anchor = self.parent.target_y * self.height() / self.parent.height()
 
 
     def mouseMoveEvent(self, event: QMouseEvent):
@@ -30,20 +30,23 @@ class SiScrollBar(QLabel):
 
         newpos = QCursor.pos() - self.start_pos
         newy = abs(self.anchor) + newpos.y()
-        max_y = self.parent.geometry().height() - self.geometry().height()
+        max_y = self.parent.height() - self.height()
 
         y = int(max(0, min(newy, max_y)))
         #print(y, event.pos().y())
 
-        #self.move(self.geometry().x(), y)
+        #self.move(self.x(), y)
         self.value_change_to_parent.emit(self.value(y))
         event.accept()
 
     def value(self, y):
-        max_y = self.parent.geometry().height() - self.geometry().height()
+        max_y = self.parent.height() - self.height()
 
         return y / max_y
 
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.raise_()
 
 class SiScrollArea(QLabel):
     def __init__(self, parent):
@@ -52,7 +55,6 @@ class SiScrollArea(QLabel):
         self.content = None
 
         self.target_y = 0
-
         self.rightside_interval = 48
 
         self.scrollbar = SiScrollBar(self)
@@ -66,7 +68,7 @@ class SiScrollArea(QLabel):
         return (abs(dis) * 1/6 + 1) * (1 if dis > 0 else -1)
 
     def distance(self):
-        return self.target_y - self.content.geometry().y()
+        return self.target_y - self.content.y()
 
     def bar_pos_to_target_y(self, p):
         self.target_y = -int(p * (self.content.height() - self.height()))
@@ -83,7 +85,8 @@ class SiScrollArea(QLabel):
         g = self.geometry()
         g_content = self.content.geometry()
 
-        self.content.setGeometry(g_content.x(), g_content.y(), g.width(), g_content.height())
+        self.content.setGeometry(
+            g_content.x(), g_content.y(), g.width(), g_content.height())
 
         h = g.height() * g.height() / g_content.height()
 
@@ -96,16 +99,16 @@ class SiScrollArea(QLabel):
         self.refresh_bar_geometry()
 
     def change_position(self, y):
-        self.content.move(0, int(self.content.geometry().y() + y))
+        self.content.move(0, int(self.content.y() + y))
         self.refresh_bar_geometry()
 
     def refresh_bar_geometry(self):
-        available_range = self.geometry().height() - self.scrollbar.geometry().height()
-        rollable_range = self.content.geometry().height() - self.geometry().height()
-        rolled = abs(self.content.geometry().y())
+        available_range = self.height() - self.scrollbar.height()
+        rollable_range = self.content.height() - self.height()
+        rolled = abs(self.content.y())
 
         bar_y =  available_range * rolled / rollable_range
-        self.scrollbar.move(self.geometry().width() - 8, int(bar_y))
+        self.scrollbar.move(self.width() - 8, int(bar_y))
 
     def wheelEvent(self, event: QWheelEvent):
         strength = 100
@@ -122,8 +125,8 @@ class SiScrollArea(QLabel):
         elif angleDelta.y() < 0:
             temp -= strength
 
-        h = self.content.geometry().height()
-        h_me = self.geometry().height()
+        h = self.content.height()
+        h_me = self.height()
         if temp < -h + h_me:
             temp = -h + h_me
         if temp > 0:
@@ -134,5 +137,5 @@ class SiScrollArea(QLabel):
     def resizeEvent(self, event):
         w = event.size().width()
 
-        self.content.resize(w, self.content.geometry().height())
+        self.content.resize(w, self.content.height())
         self.refresh_components()

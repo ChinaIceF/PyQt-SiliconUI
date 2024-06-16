@@ -55,17 +55,24 @@ class SingleOption(QLabel):
         self.parent = parent
         self.name = name
         self.value = value
+
+        self.clicked.connect(self.parent._changeHandler)
+
         self.resize(self.parent.geometry().width(), 32)
         self.setText(name)
         self.setFont(font_L1)
-        self.setStyleSheet('padding-left: 12px; padding-right: 12px; color:#ffffff')
+        self.setStyleSheet('''
+            padding-left: 12px;
+            padding-right: 12px;
+            color:#ffffff; ''')
 
         self.colorbar = QLabel(self)
         self.colorbar.lower()
-        self.colorbar.setStyleSheet('background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #3052389a, stop:1 #309c4e8b); border-radius:6px')
         self.colorbar.setVisible(False)
-
-        self.clicked.connect(self.parent._changeHandler)
+        self.colorbar.setStyleSheet('''
+            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                              stop:0 #3052389a, stop:1 #309c4e8b);
+            border-radius:6px; ''')
 
         self.animation = OptionHoverAnimation(self)
         self.animation.ticked.connect(self._hoverAnimationHandler)
@@ -152,9 +159,11 @@ class SiMenu(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-        self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
-        self.setAttribute(Qt.WA_TranslucentBackground)
         self.setMouseTracking(True)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowFlags(Qt.Popup |
+                            Qt.FramelessWindowHint |
+                            Qt.NoDropShadowWindowHint)
         self.status = False    # 展开为 True
 
         self.menubody = MenuBody(self)
@@ -246,19 +255,21 @@ class SiMenu(QWidget):
         margin = self.margin   # 弹出缝比目录左右宽多少
         g = self.menubody.geometry()
         w, h = g.width(), self.menubody.preferred_height
-        x, y, direction = self._adjustedPopupPosAndDirection(x, y, w, h)  # 获取最佳弹出位置和方向
+        x, y, direction = self._adjustedPopupPosAndDirection(x, y, w, h)
 
         self.direction = direction
-        self.setGeometry(x, y, w + 2 * margin, self.menubody.preferred_height + 2 * margin)
+        self.setGeometry(
+            x, y, w + 2 * margin, self.menubody.preferred_height + 2 * margin)
+
         if self.isReversed() == False:
             self.menubody.setGeometry(margin, margin, w, 0)  # 内容就绪
         else:
-            self.menubody.setGeometry(margin, self.menubody.preferred_height - margin, w, 0)
+            self.menubody.setGeometry(
+                margin, self.menubody.preferred_height - margin, w, 0)
 
         # 设置动画的起点和终点，动画操作对象是目录
         self.popup_animation.setCurrent(0)
         self.popup_animation.setTarget(self.menubody.preferred_height)
-
         self.popup_animation.try_to_start()
 
     def closeup(self):

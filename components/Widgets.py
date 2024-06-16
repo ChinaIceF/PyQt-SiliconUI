@@ -13,8 +13,123 @@ import os
 import silicon
 import silicon.SiGlobal as SiGlobal
 from silicon import *
+from silicon.SiSticker import SiSticker
 
-# 简单加俩按钮
+class WidgetsExampleDisplayer(QLabel):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        widgets_sticker_width = 580
+        status_sticker_width = 320
+
+        self.layout = SiLayoutH(self)
+
+        self.sticker_widgets = WidgetSticker(self)
+        self.sticker_widgets.setFixedWidth(widgets_sticker_width)
+
+        self.sticker_status = SiSticker(self)
+        self.sticker_status.setFixedWidth(status_sticker_width)
+        self.sticker_status.setTitle('信号表')
+        self.sticker_status.setInterval(0)
+        self.sticker_status.setMinimumSize(status_sticker_width, 64)
+        self.sticker_status.setVisible(False)
+
+        self.layout.addItem(self.sticker_widgets)
+        self.layout.addItem(self.sticker_status)
+
+    def setTitle(self, title):
+        self.sticker_widgets.setTitle(title)
+
+    def addItem(self, item):
+        self.sticker_widgets.addItem(item)
+        self.layout.adjustSize()
+        self.adjustSize()
+
+    def addValueStatus(self, name, signals :list, note = '', width = 128):
+        self.sticker_status.setVisible(True)
+        new_type = SiLabel(self)
+        new_type.resize(6, 18)
+        new_type.setStyleSheet('background-color: #664976; border-radius: 3px')
+        new_type.setHint('具参信号')
+
+        new_status = SiLabel(self)
+        new_status.setHint(note)
+        new_status.setStyleSheet('''
+            padding-left: 4px; padding-right: 4px; padding-top: 2px; padding-bottom: 2px;
+            color: #ffffff;
+            border-radius: 4px ''')
+        new_status.setText(name)
+
+        new_value = SiLabelHasUpdateAnimation(self)
+        new_value.setFixedWidth(width)
+        new_value.setFixedHeight(24)
+        new_value.setStyleSheet('''
+            padding-left: 4px; padding-right: 4px; padding-top: 2px; padding-bottom: 2px;
+            color: #e0e0e0;
+            text-align: right;
+            border-radius: 4px ''')
+        new_value.setAlignment(Qt.AlignRight)
+        new_value.setAutoAdjustSize(False)
+
+        for signal in signals:
+            signal.connect(new_value.setText)
+            signal.connect(new_value.activate)
+
+        layout = SiLayoutH(self)
+        layout.setInterval(4)
+        layout.setFixedWidth(self.sticker_status.width() - 48)
+        layout.setCenter(True)
+        layout.addItem(new_type)
+        layout.addItem(new_status)
+        layout.addItem(new_value, 'right')
+
+        self.sticker_status.addItem(layout)
+        self.layout.adjustSize()
+        self.adjustSize()
+
+    def addSignalStatus(self, name, signals :list, note = ''):
+        self.sticker_status.setVisible(True)
+        new_type = SiLabel(self)
+        new_type.resize(6, 18)
+        new_type.setStyleSheet('background-color: #3D6D76; border-radius: 3px')
+        new_type.setHint('信号')
+
+        new_status = SiLabelHasUpdateAnimation(self)
+        new_status.setHint(note)
+        new_status.setStyleSheet('''
+            padding-left: 4px;
+            padding-right: 4px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            color: #ffffff;
+            border-radius: 4px ''')
+        new_status.setText(name)
+        for signal in signals:
+            signal.connect(new_status.activate)
+
+        layout = SiLayoutH(self)
+        layout.setCenter(True)
+        layout.setInterval(4)
+        layout.addItem(new_type)
+        layout.addItem(new_status)
+
+        self.sticker_status.addItem(layout)
+        self.layout.adjustSize()
+        self.adjustSize()
+
+    def resizeEvent(self, event):
+        size = event.size()
+        w, h = size.width(), size.height()
+
+        self.layout.resize(w, h)
+
+    def adjustSize(self):
+        h = max(self.sticker_widgets.height(), self.sticker_status.height())
+        self.resize(self.width(), h)
+        self.sticker_widgets.resize(self.sticker_widgets.width(), h)
+        self.sticker_status.resize(self.sticker_status.width(), h)
+
+
 class WidgetSticker(silicon.SiSticker.SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
@@ -38,17 +153,17 @@ class WidgetsExample(silicon.SiFrame):
         super().__init__(parent)
         self.parent = parent
         self.setStyleSheet('')
+        self.max_width_policy = False  # 取消过长中置
 
-        w = 660
+        widgets_width = 580
 
         ## ================ Stack 开始 ===================
 
         self.stack_labels = silicon.SiStack(self)
         self.stack_labels.setTitle('标签')
 
-        self.sticker_label = WidgetSticker(self.stack_labels)
+        self.sticker_label = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_label.setTitle('文字标签')
-        self.sticker_label.setFixedWidth(w)
 
         self.label_with_no_hint = silicon.SiLabel(self)
         self.label_with_no_hint.setText('测试标签')
@@ -62,9 +177,8 @@ class WidgetsExample(silicon.SiFrame):
         self.sticker_label.addItem(self.label_with_hint)
 
 
-        self.sticker_pixlabel_with_hint = WidgetSticker(self.stack_labels)
+        self.sticker_pixlabel_with_hint = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_pixlabel_with_hint.setTitle('图片标签')
-        self.sticker_pixlabel_with_hint.setFixedWidth(w)
 
         self.layout_pixlabel = SiLayoutH(self)
 
@@ -98,9 +212,8 @@ class WidgetsExample(silicon.SiFrame):
         self.stack_buttons = silicon.SiStack(self)
         self.stack_buttons.setTitle('按钮')
 
-        self.sticker_button_normal = WidgetSticker(self.stack_labels)
+        self.sticker_button_normal = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_button_normal.setTitle('标准按钮')
-        self.sticker_button_normal.setFixedWidth(w)
 
         self.layout_button_normal = SiLayoutH(self)
 
@@ -121,15 +234,20 @@ class WidgetsExample(silicon.SiFrame):
         self.layout_button_normal.addItem(self.button_normal_A, 'left')
         self.layout_button_normal.addItem(self.button_normal_B, 'left')
         self.layout_button_normal.addItem(self.button_normal_C, 'left')
-        self.layout_button_normal.setFixedHeight(32)
 
         # 添加到 sticker
         self.sticker_button_normal.addItem(self.layout_button_normal)
+        self.sticker_button_normal.addSignalStatus('clicked',
+            [self.button_normal_A.clicked,
+             self.button_normal_B.clicked,
+             self.button_normal_C.clicked,], '被点击时触发')
+        self.sticker_button_normal.addSignalStatus('holdStateChanged',
+            [self.button_normal_A.holdStateChanged,
+             self.button_normal_B.holdStateChanged,
+             self.button_normal_C.holdStateChanged,], '当按钮被按下 / 松开时触发')
 
-
-        self.sticker_button_icon = WidgetSticker(self.stack_labels)
+        self.sticker_button_icon = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_button_icon.setTitle('图标按钮')
-        self.sticker_button_icon.setFixedWidth(w)
 
         self.button_icon = SiButtonFlat(self)
         self.button_icon.setHint('我是按钮示例')
@@ -141,9 +259,8 @@ class WidgetsExample(silicon.SiFrame):
 
 
 
-        self.sticker_button_label = WidgetSticker(self.stack_labels)
+        self.sticker_button_label = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_button_label.setTitle('标签按钮')
-        self.sticker_button_label.setFixedWidth(w)
 
         self.button_label = ClickableLabel(self)
         self.button_label.setStyleSheet('color: #ffffff; padding: 8px')
@@ -173,9 +290,8 @@ class WidgetsExample(silicon.SiFrame):
 
 
 
-        self.sticker_button_icon_label = WidgetSticker(self.stack_labels)
+        self.sticker_button_icon_label = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_button_icon_label.setTitle('图标标签按钮')
-        self.sticker_button_icon_label.setFixedWidth(w)
 
         self.button_icon_label = SiButtonFlatWithLabel(self)
         self.button_icon_label.setFixedHeight(32)
@@ -198,20 +314,28 @@ class WidgetsExample(silicon.SiFrame):
         self.stack_menus = silicon.SiStack(self)
         self.stack_menus.setTitle('菜单')
 
-        self.sticker_combobox = WidgetSticker(self.stack_menus)
+        self.sticker_combobox = WidgetsExampleDisplayer(self.stack_menus)
         self.sticker_combobox.setTitle('下拉菜单')
-        self.sticker_combobox.setFixedWidth(w)
 
         self.combobox = SiComboBox(self)
         self.combobox.resize(128, 32)
-        self.combobox.addOption('唱', 1)
-        self.combobox.addOption('跳', 2)
-        self.combobox.addOption('Rap', 3)
-        self.combobox.addOption('篮球', 4)
+        self.combobox.addOption('唱', 114)
+        self.combobox.addOption('跳', 514)
+        self.combobox.addOption('Rap', 1919)
+        self.combobox.addOption('篮球', 810)
         self.combobox.setOption('篮球')
 
         # 添加到 Sticker
         self.sticker_combobox.addItem(self.combobox)
+        self.sticker_combobox.addSignalStatus('clicked',
+            [self.combobox.clicked], '被点击时触发')
+        self.sticker_combobox.addSignalStatus('holdStateChanged',
+            [self.combobox.holdStateChanged], '当按钮被按下 / 松开时触发')
+        self.sticker_combobox.addValueStatus('valueChanged',
+            [self.combobox.valueChanged], '变更选项时触发，值为选项设定值')
+        self.sticker_combobox.addValueStatus('textChanged',
+            [self.combobox.textChanged], '变更选项时触发，值为选项设定文字')
+
 
         # 添加到 Stack
         self.stack_menus.addItem(self.sticker_combobox)
@@ -222,15 +346,18 @@ class WidgetsExample(silicon.SiFrame):
         self.stack_switchs = silicon.SiStack(self)
         self.stack_switchs.setTitle('开关')
 
-        self.sticker_switch = WidgetSticker(self.stack_switchs)
+        self.sticker_switch = WidgetsExampleDisplayer(self.stack_switchs)
         self.sticker_switch.setTitle('开关')
-        self.sticker_switch.setFixedWidth(w)
 
         self.switch = SiSwitch(self)
         self.switch.resize(150, 32)
 
         # 添加到 Sticker
         self.sticker_switch.addItem(self.switch)
+        self.sticker_switch.addSignalStatus('clicked',
+            [self.switch.clicked], '被点击时触发')
+        self.sticker_switch.addValueStatus('stateChanged',
+            [self.switch.stateChanged], '被点击时触发，值为开关状态')
 
         # 添加到 Stack
         self.stack_switchs.addItem(self.sticker_switch)
@@ -241,20 +368,21 @@ class WidgetsExample(silicon.SiFrame):
         self.stack_sliderbar = silicon.SiStack(self)
         self.stack_sliderbar.setTitle('滑动条')
 
-        self.sticker_sliderbar_free = WidgetSticker(self.stack_sliderbar)
+        self.sticker_sliderbar_free = WidgetsExampleDisplayer(self.stack_sliderbar)
         self.sticker_sliderbar_free.setTitle('连续滑动条')
-        self.sticker_sliderbar_free.setFixedWidth(w)
 
         self.sliderbar_free = SiSliderBar(self)
         self.sliderbar_free.resize(500, 32)
 
         # 添加到 Sticker
         self.sticker_sliderbar_free.addItem(self.sliderbar_free)
+        self.sticker_sliderbar_free.addValueStatus('valueChanged',
+            [self.sliderbar_free.valueChanged], '值改变时触发，值为滑动条当前值')
 
 
-        self.sticker_sliderbar_levelized = WidgetSticker(self.stack_sliderbar)
+
+        self.sticker_sliderbar_levelized = WidgetsExampleDisplayer(self.stack_sliderbar)
         self.sticker_sliderbar_levelized.setTitle('分档滑动条')
-        self.sticker_sliderbar_levelized.setFixedWidth(w)
 
         self.sliderbar_levelized = SiSliderBar(self)
         self.sliderbar_levelized.resize(500, 32)
@@ -262,6 +390,8 @@ class WidgetsExample(silicon.SiFrame):
 
         # 添加到 Sticker
         self.sticker_sliderbar_levelized.addItem(self.sliderbar_levelized)
+        self.sticker_sliderbar_levelized.addValueStatus('valueChanged',
+            [self.sliderbar_levelized.valueChanged], '值改变时触发，值为滑动条当前值')
 
         # 添加到 Stack
         self.stack_sliderbar.addItem(self.sticker_sliderbar_free)
@@ -273,15 +403,26 @@ class WidgetsExample(silicon.SiFrame):
         self.stack_inputboxes = silicon.SiStack(self)
         self.stack_inputboxes.setTitle('输入框')
 
-        self.sticker_inputboxes = WidgetSticker(self.stack_inputboxes)
+        self.sticker_inputboxes = WidgetsExampleDisplayer(self.stack_inputboxes)
         self.sticker_inputboxes.setTitle('输入框')
-        self.sticker_inputboxes.setFixedWidth(w)
 
         self.inputbox = SiInputBox(self)
         self.inputbox.resize(300, 32)
 
         # 添加到 Sticker
         self.sticker_inputboxes.addItem(self.inputbox)
+        self.sticker_inputboxes.addSignalStatus('returnPressed',
+            [self.inputbox.returnPressed], '当回车按下时触发')
+        self.sticker_inputboxes.addSignalStatus('editingFinished',
+            [self.inputbox.editingFinished], '编辑已完成时触发')
+        self.sticker_inputboxes.addSignalStatus('selectionChanged',
+            [self.inputbox.selectionChanged], '选区改变时触发')
+        self.sticker_inputboxes.addValueStatus('cursorPositionChanged',
+            [self.inputbox.cursorPositionChanged], '光标移动时触发，值为光标位置', width = 96)
+        self.sticker_inputboxes.addValueStatus('textChanged',
+            [self.inputbox.textChanged], '文本改变时触发')
+        self.sticker_inputboxes.addValueStatus('textEdited',
+            [self.inputbox.textEdited], '文本被编辑时触发')
 
         # 添加到 Stack
         self.stack_inputboxes.addItem(self.sticker_inputboxes)

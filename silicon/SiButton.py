@@ -7,61 +7,9 @@ from . import SiStyle
 from . import SiAnimationObject
 from . import SiGlobal
 
+from silicon.SiLabel import SiLabel
+
 import time
-
-class ClickableLabel(QLabel):
-    clicked = QtCore.pyqtSignal()
-
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.setStyleSheet('')
-
-        self.highlight_alpha = 12
-        self.clicked_alpha = 40
-        self.radius = 6
-        self.has_hover_animation = True
-
-        self.button = QPushButton(self)
-        self.button.clicked.connect(self._clickedAnimation)
-        self.button.clicked.connect(self.clicked.emit)  # 绑定信号到本体
-        self.setAlpha(0)
-
-        self.animation = FlatButtonAnimation(self)
-        self.animation.ticked.connect(self.change_color)
-
-    def _clickedAnimation(self):
-        self.animation.stop()
-        self.animation.setCurrent(self.clicked_alpha)
-        self.animation.setTarget(self.highlight_alpha)
-        self.setAlpha(self.clicked_alpha)
-        self.animation.try_to_start()
-
-    def setHoverAnimation(self, b):
-        self.has_hover_animation = b
-
-    def change_color(self, delta_alpha):
-        alpha = self.animation.current + delta_alpha
-        self.animation.setCurrent(alpha)
-        self.setAlpha(alpha)
-
-    def setAlpha(self, alpha):
-        self.button.setStyleSheet('border-radius:{}px;background-color:rgba(255, 255, 255, {})'.format(self.radius, alpha))
-
-    def enterEvent(self, event):
-        if self.has_hover_animation:
-            self.animation.setTarget(self.highlight_alpha)
-            self.animation.try_to_start()
-
-    def leaveEvent(self, event):
-        if self.has_hover_animation:
-            self.animation.setTarget(0)
-            self.animation.try_to_start()
-
-    def resizeEvent(self, event):
-        w = event.size().width()
-        h = event.size().height()
-        self.button.resize(w, h)
-
 
 class FlatButtonAnimation(SiAnimationObject.SiAnimation):
     def __init__(self, parent):
@@ -76,6 +24,99 @@ class FlatButtonAnimation(SiAnimationObject.SiAnimation):
 
     def isCompleted(self):
         return self.distance() == 0
+
+class ButtonHasHoldSignal(QPushButton):
+    holdStateChanged = QtCore.pyqtSignal(bool)
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.holding = False
+        self.ignore_click_event = False
+
+    def setIgnoreClickEvent(self, v):
+        self.ignore_click_event = v
+
+    def isHolding(self):
+        return self.holding
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        self.holding = True
+        self.holdStateChanged.emit(True)
+
+    def mouseReleaseEvent(self, event):
+        if self.ignore_click_event == False:
+            super().mouseReleaseEvent(event)
+        self.holding = False
+        self.holdStateChanged.emit(False)
+
+
+class ClickableLabel(SiLabel):
+    clicked = QtCore.pyqtSignal()
+    holdStateChanged = QtCore.pyqtSignal(bool)
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        #self.setStyleSheet('')
+
+        self.highlight_alpha = 12
+        self.clicked_alpha = 40
+        self.radius = 6
+        self.has_hover_animation = True
+
+        self.button = ButtonHasHoldSignal(self)
+        self.button.clicked.connect(self._clickedAnimation)
+        self.button.clicked.connect(self.clicked.emit)
+        self.button.holdStateChanged.connect(self.holdStateChanged.emit)
+        self.setAlpha(0)
+
+        self.animation = FlatButtonAnimation(self)
+        self.animation.ticked.connect(self.change_color)
+
+    def _clickedAnimation(self):
+        self.animation.stop()
+        self.animation.setCurrent(self.clicked_alpha)
+        self.animation.setTarget(self.highlight_alpha)
+        self.setAlpha(self.clicked_alpha)
+        self.animation.try_to_start()
+
+    def isHolding(self):
+        return self.button.holding
+
+    def setHoverAnimation(self, b):
+        self.has_hover_animation = b
+
+    def change_color(self, delta_alpha):
+        alpha = self.animation.current + delta_alpha
+        self.animation.setCurrent(alpha)
+        self.setAlpha(alpha)
+
+    def setAlpha(self, alpha):
+        self.button.setStyleSheet('''
+            border-radius: {}px;
+            background-color:rgba(255, 255, 255, {})
+            '''.format(self.radius, alpha))
+
+    def enterEvent(self, event):
+        super().enterEvent(event)
+        if self.has_hover_animation:
+            self.animation.setTarget(self.highlight_alpha)
+            self.animation.try_to_start()
+
+    def leaveEvent(self, event):
+        super().leaveEvent(event)
+        if self.has_hover_animation:
+            self.animation.setTarget(0)
+            self.animation.try_to_start()
+
+    def resizeEvent(self, event):
+        w = event.size().width()
+        h = event.size().height()
+        self.button.resize(w, h)
+
+class SiButtonLabel(ClickableLabel):
+    def __init__(self, parent):
+        super().__init__(parent)
 
 class SiButtonFlat(ClickableLabel):
     def __init__(self, parent):
@@ -114,8 +155,8 @@ class SiButtonFlat(ClickableLabel):
         super().resizeEvent(event)
         w = event.size().width()
         h = event.size().height()
-        self.icon.setGeometry((w - self.icon_w) // 2, (h - self.icon_h) // 2, self.icon_w, self.icon_h)
-
+        self.icon.setGeometry((w - self.icon_w) // 2, (h - self.icon_h) // 2,
+                              self.icon_w           , self.icon_h)
 
 class SiButtonFlatWithLabel(SiButtonFlat):
     def __init__(self, parent):
@@ -141,9 +182,29 @@ class SiButtonFlatWithLabel(SiButtonFlat):
         self.icon.move(8, (h-16)//2)
         self.label.move(16, 0)
 
+class ClickableLabelForButton(ClickableLabel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.button.setStyleSheet('''
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
+            background-color:rgba(255, 255, 255, 0)
+            ''')
+
+    def setAlpha(self, alpha):
+        self.button.setStyleSheet('''
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
+            background-color:rgba(255, 255, 255, {})
+            '''.format(alpha))
 
 class SiButton(QLabel):
     clicked = QtCore.pyqtSignal()
+    holdStateChanged = QtCore.pyqtSignal(bool)
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -153,38 +214,50 @@ class SiButton(QLabel):
 
         self.frame = QLabel(self)
         self.layer_back = QLabel(self.frame)
-        self.layer_front = QLabel(self.frame)
-        self.highlight = QLabel(self.frame)
-        self.highlight.setVisible(False)
-        self.layer_front.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        self.layer_front = ClickableLabelForButton(self.frame)
+        self.layer_front.setAlignment(QtCore.Qt.AlignHCenter |
+                                      QtCore.Qt.AlignVCenter)
         self.layer_front.setFont(SiFont.font_L1_bold)
 
+        self.layer_front.clicked.connect(self.clicked.emit)
+        self.layer_front.holdStateChanged.connect(self.holdStateChanged.emit)
+
         self.initialize_stylesheet()
+
+    def isHolding(self):
+        return self.layer_front.isHolding()
 
     def setStrong(self, status):
         self.initialize_stylesheet(status)
 
     def initialize_stylesheet(self, strong = False):
         if strong:
-            self.layer_back.setStyleSheet('background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #372456, stop:1 #562b49); border-radius: 4px')
-            self.highlight.setStyleSheet('background-color:#10ffffff; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px')
-            self.layer_front.setStyleSheet('background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #52389a, stop:1 #9c4e8b)  ; color:#d8c1c2; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px')
+            self.layer_back.setStyleSheet('''
+                background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                                 stop:0 #372456, stop:1 #562b49);
+                border-radius: 4px''')
+
+            self.layer_front.setStyleSheet('''
+                background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                                  stop:0 #52389a, stop:1 #9c4e8b);
+                color: #e2e2e2;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+                border-bottom-left-radius: 2px;
+                border-bottom-right-radius: 2px ''')
+
         else:
-            self.layer_back.setStyleSheet('background-color:#2f2b34; border-radius: 4px')
-            self.highlight.setStyleSheet('background-color:#10ffffff; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px')
-            self.layer_front.setStyleSheet('background-color: #493f4e; color:#e2e2e2; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px')
+            self.layer_back.setStyleSheet('''
+                background-color: #2c2930;
+                border-radius: 4px ''')
 
-    def enterEvent(self, event):
-        self.highlight.setVisible(True)
-        super().enterEvent(event)
-
-    def leaveEvent(self, event):
-        self.highlight.setVisible(False)
-        super().leaveEvent(event)
-
-    def mousePressEvent(self, event):
-        if event.button() == QtCore.Qt.LeftButton:
-            self.clicked.emit()
+            self.layer_front.setStyleSheet('''
+                background-color: #49454d;
+                color: #e2e2e2;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+                border-bottom-left-radius: 2px;
+                border-bottom-right-radius: 2px ''')
 
     def resizeEvent(self, event):
         w = event.size().width()
@@ -193,11 +266,9 @@ class SiButton(QLabel):
         self.frame.resize(w, h)
         self.layer_back.resize(w, h)
         self.layer_front.resize(w, h - 3)
-        self.highlight.resize(w, h - 3)
 
     def setText(self, text):
         self.layer_front.setText(text)
-
 
 class SiButtonHoldThread(QtCore.QThread):
     progress_changed = QtCore.pyqtSignal()
@@ -216,13 +287,17 @@ class SiButtonHoldThread(QtCore.QThread):
         # 前进动画
         while time.time() - time_start_waiting <= 0.5:
 
-            while self.parent.isHolding():
-
+            while self.parent.isHolding() and self.parent.progress <= 1:
                 time_start_waiting = time.time()
                 self.parent.progress += self.delta()
                 self.progress_changed.emit()
                 #print(self.parent.progress)
                 time.sleep(1/60)
+
+            if self.parent.progress > 1:
+                self.parent.layer_front.button.clicked.emit()
+                time.sleep(10/60)
+                break
 
             time.sleep(1/60)
 
@@ -235,57 +310,56 @@ class SiButtonHoldThread(QtCore.QThread):
         self.parent.progress = 0
         self.progress_changed.emit()
 
-
 class SiButtonHoldtoConfirm(SiButton):
 
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
 
-        self.holding = False
         self.progress = 0
 
         self.thread = SiButtonHoldThread(self)
         self.thread.progress_changed.connect(self.paintProgress)
 
-        self.layer_back.setStyleSheet('background-color:#6a3246; border-radius: 4px')
-        self.highlight.setStyleSheet('background-color:#10ffffff; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px')
-        self.layer_front.setStyleSheet('background-color:#9F3652; color:#d8c1c2; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px')
+        self.layer_back.setStyleSheet('''
+            background-color:#6a3246;
+            border-radius: 4px''')
+        self.layer_front.setStyleSheet('''
+            background-color:#9F3652;
+            color:#d8c1c2;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px
+            ''')
+
+        self.layer_front.button.setIgnoreClickEvent(True)
+        self.holdStateChanged.connect(self._holdAnimationHandler)
 
         self.paintProgress()
 
     def enterEvent(self, event):
         super().enterEvent(event)
         SiGlobal.floating_window.show_animation()
-        SiGlobal.floating_window.setText('Hold to confirm')
+        SiGlobal.floating_window.setText('长按以确定')
 
     def leaveEvent(self, event):
         super().enterEvent(event)
         SiGlobal.floating_window.hide_animation()
 
-    def mousePressEvent(self, event):
-        super().mousePressEvent(event)
-        self.holding = True
-
-        if self.thread.isRunning() == False:    # 如果线程没在运行，就启动
-            self.thread.start()
-
-    def mouseReleaseEvent(self, event):
-        super().mousePressEvent(event)
-        self.holding = False
-
-    def isHolding(self):
-        return self.holding
+    def _holdAnimationHandler(self, _):
+        if self.isHolding() == True:
+            if self.thread.isRunning() == False:    # 如果线程没在运行，就启动
+                self.thread.start()
 
     def paintProgress(self):
         p = self.progress
-        self.layer_front.setStyleSheet(
-            '''
-            background-color:qlineargradient(x1:{}, y1:0, x2:{}, y2:0, stop:0 #D82A5A, stop:1 #9F3652);
+        self.layer_front.setStyleSheet('''
+            background-color:qlineargradient(x1:{}, y1:0, x2:{}, y2:0,
+                                             stop:0 #D82A5A, stop:1 #9F3652);
             color:#fafafa;
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;
             border-bottom-left-radius: 2px;
             border-bottom-right-radius: 2px
-            '''.format(p-0.01, p)
-            )
+            '''.format(p-0.01, p))

@@ -29,7 +29,7 @@ class SiSlider(QLabel):
 
     def enterEvent(self, event):
         SiGlobal.floating_window.show_animation()
-        SiGlobal.floating_window.setText(self.value())
+        SiGlobal.floating_window.setText(self.getValue())
 
     def leaveEvent(self, event):
         SiGlobal.floating_window.hide_animation()
@@ -48,7 +48,6 @@ class SiSlider(QLabel):
         x = max(0, min(newpos.x(), max_x))
 
         if self.dispersed == False:  # 连续
-            #self.move(x, self.geometry().y())
             self.value_change.emit(x / max_x)
             self.dragged.emit(x / max_x)
             event.accept()
@@ -59,11 +58,21 @@ class SiSlider(QLabel):
             d = max_x / (n - 1)   # 每个档位之间的间隔
             current_level = int((x + d / 2) // d)    # 所处档位
 
-            #self.move(current_level * d, self.geometry().y())
             self.value_change.emit(self.levels[current_level])
             self.dragged.emit(current_level * d / self.max_x())
             event.accept()
             return
+
+    def getValue(self):
+        x = self.x()
+        max_x = self.max_x()
+        if self.dispersed == False:  # 连续
+            return x / max_x
+        else:  # 离散
+            n = len(self.levels)
+            d = max_x / (n - 1)   # 每个档位之间的间隔
+            current_level = int((x + d / 2) // d)    # 所处档位
+            return self.levels[current_level]
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
@@ -79,7 +88,7 @@ class SiSlider(QLabel):
         return self.parent.geometry().width() - self.geometry().width()
 
 class SiSliderBar(QLabel):
-    value_change_signal = pyqtSignal(float)
+    valueChanged = pyqtSignal(float)
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -88,7 +97,7 @@ class SiSliderBar(QLabel):
         self.value_bar = QLabel(self)
         self.background_bar = QLabel(self)
         self.slider = SiSlider(self)
-        self.slider.value_change.connect(self.value_change_signal.emit)
+        self.slider.value_change.connect(lambda x : self.valueChanged.emit(round(x, 11)))
         self.slider.dragged.connect(self.animationHandler)
 
         self.target_value = 0
@@ -103,7 +112,7 @@ class SiSliderBar(QLabel):
                                         border-radius: 2px''')
         self.slider.setStyleSheet('border-radius: 4px;background-color:#52389a;')
 
-        self.value_change_signal.connect(self.hint_handler)
+        self.valueChanged.connect(self.hint_handler)
 
         self.bar_width = 32
         self.bar_height = 8

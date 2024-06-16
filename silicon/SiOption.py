@@ -27,8 +27,8 @@ class SiOption(QWidget):
 
         # 背景
         self.background = QLabel(self)
-        self.background.setStyleSheet("background-color:#322e36; border-radius: 4px")
-        self.background.setStyleSheet("background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #322e36, stop:1 #37303c); border-radius: 4px;")
+        self.background.setStyleSheet("background-color:#353138; border-radius: 4px")
+        #self.background.setStyleSheet("background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #322e36, stop:1 #37303c); border-radius: 4px;")
 
         # 实例化图标
         self.icon = QSvgWidget(self)
@@ -48,13 +48,6 @@ class SiOption(QWidget):
         self.mask = QLabel(self)
         self.mask.setStyleSheet("background-color:#7f252229; border-radius: 4px")
         self.mask.setVisible(False)
-
-    def setEmphasize(self, status):
-        if status:
-            self.background.setStyleSheet("background-color:qlineargradient(x1:0, y1:-1, x2:1, y2:2, stop:0 #352a47, stop:1 #442C3F); border-radius: 4px;")
-        else:
-            self.background.setStyleSheet("background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #322e36, stop:1 #37303c); border-radius: 4px;")
-
 
     def _setMinimumHeight(self, h):
         self.textbar.setMinimumHeight(h - 32)
@@ -128,7 +121,7 @@ class SiOption(QWidget):
 
         # 重新设置自己的尺寸
         g = self.geometry()
-        self.resize(g.width(), self.textbar.geometry().height() + 32)  #应用到这个框本身
+        self.resize(g.width(), self.textbar.height() + 32)  #应用到这个框本身
 
 class SiOptionLink(SiOption):
     def __init__(self, parent):
@@ -170,7 +163,6 @@ class SiOptionSourceCode(SiOptionLink):  # 源代码
         self.setText('源代码', '')
         self.setIcon(SiGlobal.icons.get('fi-rr-circle-small'))
         self.load(SiGlobal.icons.get('fi-rr-link'))
-        self.setEmphasize(False)
 
     def setURL(self, url):
         self.url = url
@@ -268,7 +260,7 @@ class SiOptionSliderBar(SiOption):
         self.parent = parent
 
         # 设置大小
-        self.sliwidth = 256
+        self.sliwidth = 320
         self.sliheight = 16
 
         # 实例化滑动条
@@ -300,7 +292,6 @@ class SiOptionInputBox(SiOption):
         # 把遮罩置顶
         self.mask.raise_()
 
-
 class SiOptionComboBox(SiOption):
     def __init__(self, parent):
         super().__init__(parent)
@@ -325,124 +316,3 @@ class SiOptionComboBox(SiOption):
 
     def setOption(self, name):
         self.combobox.setOption(name)
-
-class SiOptionComboBox_(QWidget):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.parent = parent
-
-        # 背景
-        self.background = QLabel(self)
-        self.background.setStyleSheet("background-color:#322e36; border-radius: 4px")
-        self.background.setStyleSheet("background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #322e36, stop:1 #37303c); border-radius: 4px")
-
-        # 规定按钮的几何关系
-        self.btwidth = 128
-        self.btheight = 32
-
-        # 实例化图标
-        self.icon = QSvgWidget(self)
-        self.icon.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.icon.setFixedSize(24, 24)
-
-        # 实例化文字
-        self.textbar = QLabel(self)
-        self.textbar.setStyleSheet("background-color:transparent; color:#fafafa;")
-        self.textbar.setAlignment(QtCore.Qt.AlignVCenter)
-        self.textbar.setFont(SiFont.font_L1)
-        self.textbar.setWordWrap(True)  # 自动换行
-
-        # 实例化按钮
-        self.button = SiComboBox(self)
-        self.button.setGeometry(0, 0, self.btwidth, self.btheight)
-        self.button.initialize_stylesheet()
-        self.button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.button.setFixedSize(self.btwidth, self.btheight)
-
-        # 设置对齐方式
-        self.textbar.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
-        self.button.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
-
-        # 创建水平布局
-        h_layout = QHBoxLayout()
-
-        # 图标垂直布局
-        vbox_icon = QVBoxLayout()
-        vbox_icon.setContentsMargins(0, 0, 0, 0)  # 移除布局边距
-        vbox_icon.setSpacing(0)  # 移除标签间的间隔
-        vbox_icon.addStretch(1)
-        vbox_icon.addWidget(self.icon)
-        vbox_icon.addStretch(1)
-        #vbox_icon.setMinimumWidth(80)
-
-        # 按钮垂直布局
-        vbox_btn = QVBoxLayout()
-        vbox_btn.setContentsMargins(0, 0, 0, 0)  # 移除布局边距
-        vbox_btn.setSpacing(0)  # 移除标签间的间隔
-        vbox_btn.addStretch(1)
-        vbox_btn.addWidget(self.button)
-        vbox_btn.addStretch(1)
-
-        #设置两个占位的空Qlabel，用于图标的对齐
-        a1 = QLabel(self)
-        a1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        a1.setFixedSize(28, 24)
-
-        a2 = QLabel(self)
-        a2.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        a2.setFixedSize(28, 24)
-
-        # 将标签添加到布局中
-        h_layout.addWidget(a1)
-        h_layout.addLayout(vbox_icon)
-        h_layout.addWidget(a2)
-        h_layout.addWidget(self.textbar)
-        h_layout.addLayout(vbox_btn)
-
-        # 设置布局
-        self.setLayout(h_layout)
-
-        # 可用遮罩
-        self.mask = QLabel(self)
-        self.mask.setStyleSheet("background-color:#7f252229; border-radius: 4px")
-        self.mask.setVisible(False)
-
-    def setUsability(self, status):
-        self.mask.setVisible(not status)
-
-
-    def setStrongButton(self, option):
-        self.button.initialize_stylesheet(option)
-
-    def resizeEvent(self, event):
-        self.layout().setContentsMargins(0, 0, 0, 0)  # 移除布局边距
-        self.layout().setSpacing(0)  # 移除标签间的间隔
-
-        total_width = event.size().width()
-
-        self.icon.setMinimumWidth(24)
-        self.icon.setMaximumWidth(24)
-
-        self.textbar.setMinimumWidth(256)
-
-        self.button.setMinimumWidth(32 + self.btwidth)
-        self.button.setMaximumWidth(32 + self.btwidth)
-
-        self.background.setGeometry(0, 0, event.size().width(), event.size().height())
-        self.mask.setGeometry(0, 0, event.size().width(), event.size().height())
-
-    def setText(self, title, discription):
-        if discription == '':
-            self.textbar.setText("<font color='#fafafa'>{}</font>".format(title))
-        else:
-            self.textbar.setText("<font color='#fafafa'>{}</font><br><font color='#afafaf'>{}</font>".format(title, discription.replace('\n', '<br>')))
-
-        # 根据文本多少，自适应调节高度
-        self.textbar.adjustSize()
-
-        # 重新设置自己的尺寸
-        g = self.geometry()
-        self.setGeometry(g.x(), g.y(), g.width(), self.textbar.geometry().height() + 32)  #应用到这个框本身
-
-    def setIcon(self, path):
-        self.icon.load(path)

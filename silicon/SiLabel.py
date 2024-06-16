@@ -7,6 +7,22 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from . import SiFont
 from . import SiStyle
 from . import SiGlobal
+from . import SiAnimationObject
+
+
+class LabelTextUpdateAnimation(SiAnimationObject.SiAnimation):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+    def stepLength(self, dis):
+        return 2 if dis > 0 else -2
+
+    def distance(self):
+        return self.target - self.current
+
+    def isCompleted(self):
+        return self.distance() == 0
 
 
 class SiLabel(QLabel):
@@ -14,15 +30,20 @@ class SiLabel(QLabel):
         super().__init__(parent)
         self.parent = parent
         self.hint = ''
+        self.autoAdjustSize = True
         self.setFont(SiFont.font_L1)
         self.setStyleSheet('color:#ffffff')
+
+    def setAutoAdjustSize(self, b):
+        self.autoAdjustSize = b
 
     def setHint(self, hint):
         self.hint = hint
 
     def setText(self, text):
-        super().setText(text)
-        self.adjustSize()
+        super().setText(str(text))
+        if self.autoAdjustSize == True:
+            self.adjustSize()
 
     def enterEvent(self, event):
         super().enterEvent(event)
@@ -34,6 +55,39 @@ class SiLabel(QLabel):
         super().leaveEvent(event)
         if self.hint != '':
             SiGlobal.floating_window.hide_animation()
+
+
+class SiLabelHasUpdateAnimation(SiLabel):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.animation = LabelTextUpdateAnimation(self)
+        self.animation.ticked.connect(self._changedAnimationHandler)
+
+    def setAlpha(self, alpha):
+        self.setStyleSheet(self.show_stylesheet + ''';
+            border-radius: 4px;
+            background-color:rgba(255, 255, 255, {});
+            '''.format(alpha / 255))
+
+    def _changedAnimationHandler(self, delta):
+        alpha = self.animation.current + delta
+        self.animation.setCurrent(alpha)
+        self.setAlpha(alpha)
+
+    def activate(self, *any_args):
+        self.animation.setCurrent(40)
+        self.animation.setTarget(0)
+        self.animation.try_to_start()
+
+    def setText(self, text, ani = False):
+        super().setText(text)
+        if ani == True:
+            self.activate()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.show_stylesheet = self.styleSheet()
 
 
 class SiPixLabel(SiLabel):
@@ -61,7 +115,8 @@ class SiPixLabel(SiLabel):
         self.target = QPixmap(self.size())
         self.target.fill(Qt.transparent)
 
-        p = QPixmap(self.path).scaled(w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        p = QPixmap(self.path).scaled(
+            w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
 
         painter = QPainter(self.target)
         painter.setRenderHint(QPainter.Antialiasing, True)
@@ -69,7 +124,9 @@ class SiPixLabel(SiLabel):
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
         path = QPainterPath()
-        path.addRoundedRect(0, 0, self.width(), self.height(), self.radius, self.radius)
+        path.addRoundedRect(0, 0,
+                            self.width(), self.height(),
+                            self.radius, self.radius)
 
         painter.setClipPath(path)
         painter.drawPixmap(0, 0, p)
