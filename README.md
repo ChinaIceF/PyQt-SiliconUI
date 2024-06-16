@@ -35,14 +35,14 @@
 * **ui.py**，文件名取决于你的调用方式，重要的是其中应包含 Silicon 应用的构建类，并调用 components 文件夹以构建各个界面
 同时，你也需注意控件和对象间的从属关系，以 Glaze 为例，它中控件的从属关系如下
 
-> silicon.SiTabArea
->  silicon.SiTab （里面包含一个标题和一个silicon.SiScrollArea）
->   silicon.SiFrame
->    silicon.SiStack
->     silicon.SiOptionButton
->     silicon.SiOptionSwitch
->     silicon.SiOptionComboBox
->     ......
+> silicon.SiTabArea  
+>  silicon.SiTab （里面包含一个标题和一个silicon.SiScrollArea）  
+>   silicon.SiFrame   
+>    silicon.SiStack  
+>     silicon.SiOptionButton  
+>     silicon.SiOptionSwitch  
+>     silicon.SiOptionComboBox  
+>     ......  
 
 ### 在其他 PyQt5 项目中使用
 Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任意 PyQt5 项目中调用它们，并根据你的喜好进行自定义
