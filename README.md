@@ -22,8 +22,8 @@
 
 ## 如何使用
 ### 运行 Silicon Gallery
-下载源代码，解压并运行 ``start.py``，即可体验 Silicon UI 现有的功能和效果  
-在 Silicon Gallery 中，你可以了解：
+    下载源代码，解压并运行 ``start.py``，即可体验 Silicon UI 现有的功能和效果  
+    在 Silicon Gallery 中，你可以了解：
 * 各种控件以及其样式
 * 控件的信号属性
 * 应用快速构建器（Silicon Glaze）的示例
