@@ -31,12 +31,12 @@
 
 ### 创建相似的 Silicon 应用
 在 ``./ui.py`` 中，展示了一般 Silicon 应用的构建方法，其工作目录应具有以下结构：  
-* **components 文件夹**，其中存放各个选项卡的界面
+* **components文件夹**，其中存放各个选项卡的界面
 * **ui.py**，文件名取决于你的调用方式，重要的是其中应包含 Silicon 应用的构建类，并调用 components 文件夹以构建各个界面
 同时，你也需注意控件和对象间的从属关系，以 Glaze 为例，它中控件的从属关系如下
 
 > silicon.SiTabArea  
->> silicon.SiTab （里面包含一个标题和一个silicon.SiScrollArea）  
+>> silicon.SiTab
 >>> silicon.SiFrame   
 >>>> silicon.SiStack  
 >>>>> silicon.SiOptionButton  
@@ -48,7 +48,7 @@
 Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任意 PyQt5 项目中调用它们，并据你喜好进行自定义
 
 ## License
-本项目使用 GPL-3.0 License，详见[这里](LICENSE)
+本项目采用 GPL-3.0 License，详见[这里](LICENSE)
 
 ## 声明
 * 请注意，Silicon Gallery 使用了 FLATICON 的图标，**这些图标不应被认为是 Silicon UI 的一部分**，你可以前往 [FLATICON的网站](https://flaticon.com) 免注册、免下载其他文件、免费获取这些图标，但应在使用时注意遵守他们的有关条款规定  
