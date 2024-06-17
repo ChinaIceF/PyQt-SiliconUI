@@ -37,6 +37,10 @@ class WidgetsExampleDisplayer(QLabel):
         self.layout.addItem(self.sticker_widgets)
         self.layout.addItem(self.sticker_status)
 
+    def setCodeURL(self, url):
+        self.sticker_widgets.button_github.clicked.connect(
+            lambda : os.system('start {}'.format(url)))
+
     def setTitle(self, title):
         self.sticker_widgets.setTitle(title)
 
@@ -139,13 +143,15 @@ class WidgetSticker(silicon.SiSticker.SiSticker):
         self.button_github.load(SiGlobal.icons.get('fi-rr-link'))
         self.button_github.setHint('查看源代码')
 
-        self.button_example = SiButtonFlat(self)
-        self.button_example.resize(32, 32)
-        self.button_example.load(SiGlobal.icons.get('fi-rr-bug'))
-        self.button_example.setHint('报告问题')
+        self.button_report_bug = SiButtonFlat(self)
+        self.button_report_bug.resize(32, 32)
+        self.button_report_bug.load(SiGlobal.icons.get('fi-rr-bug'))
+        self.button_report_bug.setHint('报告问题')
+        self.button_report_bug.clicked.connect(
+            lambda : os.system('start https://github.com/ChinaIceF/PyQt-SiliconUI/issues/new'))
 
         self.head.addItem(self.button_github, side = 'right')
-        self.head.addItem(self.button_example, side = 'right')
+        self.head.addItem(self.button_report_bug, side = 'right')
 
 
 class WidgetsExample(silicon.SiFrame):
@@ -164,6 +170,8 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_label = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_label.setTitle('文字标签')
+        self.sticker_label.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiLabel.py')
 
         self.label_with_no_hint = silicon.SiLabel(self)
         self.label_with_no_hint.setText('测试标签')
@@ -179,6 +187,8 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_pixlabel_with_hint = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_pixlabel_with_hint.setTitle('图片标签')
+        self.sticker_pixlabel_with_hint.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiLabel.py')
 
         self.layout_pixlabel = SiLayoutH(self)
 
@@ -214,6 +224,8 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_button_normal = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_button_normal.setTitle('标准按钮')
+        self.sticker_button_normal.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiButton.py')
 
         self.layout_button_normal = SiLayoutH(self)
 
@@ -241,13 +253,15 @@ class WidgetsExample(silicon.SiFrame):
             [self.button_normal_A.clicked,
              self.button_normal_B.clicked,
              self.button_normal_C.clicked,], '被点击时触发')
-        self.sticker_button_normal.addSignalStatus('holdStateChanged',
+        self.sticker_button_normal.addValueStatus('holdStateChanged',
             [self.button_normal_A.holdStateChanged,
              self.button_normal_B.holdStateChanged,
              self.button_normal_C.holdStateChanged,], '当按钮被按下 / 松开时触发')
 
         self.sticker_button_icon = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_button_icon.setTitle('图标按钮')
+        self.sticker_button_icon.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiButton.py')
 
         self.button_icon = SiButtonFlat(self)
         self.button_icon.setHint('我是按钮示例')
@@ -261,6 +275,8 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_button_label = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_button_label.setTitle('标签按钮')
+        self.sticker_button_label.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiButton.py')
 
         self.button_label = ClickableLabel(self)
         self.button_label.setStyleSheet('color: #ffffff; padding: 8px')
@@ -292,6 +308,8 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_button_icon_label = WidgetsExampleDisplayer(self.stack_labels)
         self.sticker_button_icon_label.setTitle('图标标签按钮')
+        self.sticker_button_icon_label.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiButton.py')
 
         self.button_icon_label = SiButtonFlatWithLabel(self)
         self.button_icon_label.setFixedHeight(32)
@@ -316,21 +334,23 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_combobox = WidgetsExampleDisplayer(self.stack_menus)
         self.sticker_combobox.setTitle('下拉菜单')
+        self.sticker_combobox.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiComboBox.py')
 
         self.combobox = SiComboBox(self)
-        self.combobox.resize(128, 32)
-        self.combobox.addOption('唱', 114)
-        self.combobox.addOption('跳', 514)
-        self.combobox.addOption('Rap', 1919)
-        self.combobox.addOption('篮球', 810)
-        self.combobox.setOption('篮球')
+        self.combobox.resize(160, 32)
+        self.combobox.addOption('练习两年半', 2.5)
+        self.combobox.addOption('鸡你太美', 114514)
+        self.combobox.addOption('你干嘛嗨嗨呦', 1919)
+        self.combobox.addOption('你好烦', 810)
+        self.combobox.setOption('练习两年半')
 
         # 添加到 Sticker
         self.sticker_combobox.addItem(self.combobox)
         self.sticker_combobox.addSignalStatus('clicked',
             [self.combobox.clicked], '被点击时触发')
-        self.sticker_combobox.addSignalStatus('holdStateChanged',
-            [self.combobox.holdStateChanged], '当按钮被按下 / 松开时触发')
+        self.sticker_combobox.addValueStatus('holdStateChanged',
+            [self.combobox.holdStateChanged], '被按下 / 松开时触发')
         self.sticker_combobox.addValueStatus('valueChanged',
             [self.combobox.valueChanged], '变更选项时触发，值为选项设定值')
         self.sticker_combobox.addValueStatus('textChanged',
@@ -348,6 +368,8 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_switch = WidgetsExampleDisplayer(self.stack_switchs)
         self.sticker_switch.setTitle('开关')
+        self.sticker_switch.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiSwitch.py')
 
         self.switch = SiSwitch(self)
         self.switch.resize(150, 32)
@@ -370,6 +392,8 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_sliderbar_free = WidgetsExampleDisplayer(self.stack_sliderbar)
         self.sticker_sliderbar_free.setTitle('连续滑动条')
+        self.sticker_sliderbar_free.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiSliderBar.py')
 
         self.sliderbar_free = SiSliderBar(self)
         self.sliderbar_free.resize(500, 32)
@@ -383,6 +407,8 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_sliderbar_levelized = WidgetsExampleDisplayer(self.stack_sliderbar)
         self.sticker_sliderbar_levelized.setTitle('分档滑动条')
+        self.sticker_sliderbar_levelized.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiSliderBar.py')
 
         self.sliderbar_levelized = SiSliderBar(self)
         self.sliderbar_levelized.resize(500, 32)
@@ -405,22 +431,20 @@ class WidgetsExample(silicon.SiFrame):
 
         self.sticker_inputboxes = WidgetsExampleDisplayer(self.stack_inputboxes)
         self.sticker_inputboxes.setTitle('输入框')
+        self.sticker_inputboxes.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiInputBox.py')
 
         self.inputbox = SiInputBox(self)
         self.inputbox.resize(300, 32)
 
         # 添加到 Sticker
         self.sticker_inputboxes.addItem(self.inputbox)
-        self.sticker_inputboxes.addSignalStatus('returnPressed',
-            [self.inputbox.returnPressed], '当回车按下时触发')
         self.sticker_inputboxes.addSignalStatus('editingFinished',
             [self.inputbox.editingFinished], '编辑已完成时触发')
         self.sticker_inputboxes.addSignalStatus('selectionChanged',
             [self.inputbox.selectionChanged], '选区改变时触发')
         self.sticker_inputboxes.addValueStatus('cursorPositionChanged',
             [self.inputbox.cursorPositionChanged], '光标移动时触发，值为光标位置', width = 96)
-        self.sticker_inputboxes.addValueStatus('textChanged',
-            [self.inputbox.textChanged], '文本改变时触发')
         self.sticker_inputboxes.addValueStatus('textEdited',
             [self.inputbox.textEdited], '文本被编辑时触发')
 

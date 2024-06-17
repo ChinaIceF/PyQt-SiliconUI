@@ -18,6 +18,7 @@ from silicon.SiInputBox import *
 from silicon.SiOption import *
 from silicon.SiInfo import *
 
+# 用到模糊
 class SiPixButton(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
@@ -59,7 +60,7 @@ class SiPixButton(QLabel):
         self.discription.setGraphicsEffect(shadow)
 
     def setPixmap(self, path):
-        t= '''
+        self.button.setStyleSheet('''
         QPushButton {
             border-radius:6px;
             background-color:transparent;
@@ -71,9 +72,12 @@ class SiPixButton(QLabel):
         QPushButton:pressed {
             border-radius:6px;
             background-color:#02ffffff;
-        }'''
-        self.button.setStyleSheet(t)
-        self.image_label.setStyleSheet('background-image: url({}); border-radius:6px; border: 1px solid #2A252D'.format(path))
+        }''')
+
+        self.image_label.setStyleSheet('''
+            background-image: url({});
+            border-radius:6px;
+            border: 1px solid #2A252D '''.format(path))
 
     def setText(self, title, discri):
         self.title.setText(title)
@@ -96,11 +100,15 @@ class WidgetSticker(SiSticker):
         self.button_github.resize(32, 32)
         self.button_github.load(SiGlobal.icons.get('fi-rr-link'))
         self.button_github.setHint('前往 GitHub')
+        self.button_github.clicked.connect(
+            lambda : os.system('start https://github.com/ChinaIceF/PyQt-SiliconUI'))
 
         self.button_example = SiButtonFlat(self)
         self.button_example.resize(32, 32)
         self.button_example.load(SiGlobal.icons.get('fi-rr-presentation'))
         self.button_example.setHint('查看使用样例')
+        self.button_example.clicked.connect(
+            lambda : os.system('start https://github.com/ChinaIceF/PyQt-SiliconUI'))
 
         self.head.addItem(self.button_github, side = 'right')
         self.head.addItem(self.button_example, side = 'right')
@@ -113,7 +121,6 @@ class WidgetSticker(SiSticker):
         w, h = size.width(), size.height()
 
         self.body.setGeometry(24, 16 + 32 + 16, w - 48, h - 64 - 16)
-
 
 class WidgetSticker_Buttons(WidgetSticker):
     def __init__(self, parent):
@@ -156,7 +163,6 @@ class WidgetSticker_Switches(WidgetSticker):
 
         self.body.addItem(self.widgets, 'top')
 
-
 class WidgetSticker_Sliders(WidgetSticker):
     def __init__(self, parent):
         super().__init__(parent)
@@ -198,7 +204,6 @@ class GlazeSticker(WidgetSticker):
 
         self.glaze_example.resize(w - 48, self.glaze_example.geometry().height())
 
-
 class SiHomePage(SiFrame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -228,7 +233,11 @@ class SiHomePage(SiFrame):
 
         self.theme_image_hover = QLabel(self)
         self.theme_image_hover.setGeometry(0, 100, 0, 200)
-        self.theme_image_hover.setStyleSheet('background-image:none; background-color:qlineargradient(x1:0, y1:1, x2:0, y2:0, stop:0 #ff252229, stop:1 #00252229)')
+        self.theme_image_hover.setStyleSheet('''
+            background-image:none;
+            background-color: qlineargradient(x1:0, y1:1, x2:0, y2:0,
+                                              stop:0 #ff252229, stop:1 #00252229)
+            ''')
 
         self.interval = 64
         self.delta = 48
@@ -245,6 +254,8 @@ class SiHomePage(SiFrame):
         self.sticker_project.bgimage.setStyleSheet("background-image: url('./img/wiki.png');border-radius:6px")
         self.sticker_project.bottom_button.load(SiGlobal.icons.get('fi-rr-link'))
         self.sticker_project.bottom_button.setHint('前往 GitHub')
+        self.sticker_project.bottom_button.clicked.connect(
+            lambda : os.system('start https://github.com/ChinaIceF/PyQt-SiliconUI'))
 
         self.sticker_wiki = SiStickerWithBottomButton(self)
         self.sticker_wiki.setGeometry(64 + 196 + 32, 148, 196, 256)
@@ -253,6 +264,8 @@ class SiHomePage(SiFrame):
         self.sticker_wiki.bgimage.setStyleSheet("background-image: url('./img/github.png');border-radius:6px")
         self.sticker_wiki.bottom_button.load(SiGlobal.icons.get('fi-rr-link'))
         self.sticker_wiki.bottom_button.setHint('前往 GitHub')
+        self.sticker_wiki.bottom_button.clicked.connect(
+            lambda : os.system('start https://github.com/ChinaIceF/PyQt-SiliconUI'))
 
         self.addH(300)
 
