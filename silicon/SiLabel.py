@@ -9,6 +9,8 @@ from . import SiStyle
 from . import SiGlobal
 from . import SiAnimationObject
 
+from .SiGlobal import *
+
 
 class LabelTextUpdateAnimation(SiAnimationObject.SiAnimation):
     def __init__(self, parent):
@@ -32,7 +34,7 @@ class SiLabel(QLabel):
         self.hint = ''
         self.autoAdjustSize = True
         self.setFont(SiFont.font_L1)
-        self.setStyleSheet('color:#ffffff')
+        self.setStyleSheet('color:{}'.format(colorset.TEXT_GRAD_HEX[0]))
 
     def setAutoAdjustSize(self, b):
         self.autoAdjustSize = b

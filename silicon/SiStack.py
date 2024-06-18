@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QLabel
 from .SiFont import *
+from .SiGlobal import *
 
 class SiStack(QLabel):
     def __init__(self, parent):
@@ -18,14 +19,16 @@ class SiStack(QLabel):
         self.title = QLabel(self)
         self.title.setGeometry(0, 0, 700, 24)  # 底下自己调整
         self.title.setFont(font_L2_bold)
-        self.title.setStyleSheet('color: #fafafa')
+        self.title.setStyleSheet('color: {}'.format(colorset.TEXT_GRAD_HEX[0]))
         self.title.setText(title)
         self.title.adjustSize()
 
         g = self.title.geometry()
         self.title_highlight = QLabel(self)
         self.title_highlight.setGeometry(0, 12, g.width() + 6, 13)
-        self.title_highlight.setStyleSheet('background-color: #609c4e8b; border-radius: 4px')
+        self.title_highlight.setStyleSheet('''
+            background-color: {};
+            border-radius: 4px'''.format(colorset.STK_HL_HEX))
         self.title_highlight.lower()
 
         self.addH(self.title.height() + self.interval)

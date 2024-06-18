@@ -3,8 +3,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 from .SiFont import *
 from .SiScrollArea import *
+from .SiGlobal import *
 
 class SiTab(QLabel):
     def __init__(self, parent):
@@ -29,7 +31,7 @@ class SiTab(QLabel):
         self.title = QLabel(self)
         self.title.setGeometry(64, 32, 0, self.title_height)  # 底下自己调整
         self.title.setFont(font_L3_bold)
-        self.title.setStyleSheet('color: #fafafa')
+        self.title.setStyleSheet('color: {}'.format(colorset.TEXT_GRAD_HEX[0]))
         self.title.setText(title)
         self.title.adjustSize()
 

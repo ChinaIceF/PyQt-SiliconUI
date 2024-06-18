@@ -15,6 +15,8 @@ import silicon.SiGlobal as SiGlobal
 from silicon import *
 from silicon.SiSticker import SiSticker
 
+from silicon.SiGlobal import *
+
 class WidgetsExampleDisplayer(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
@@ -60,8 +62,8 @@ class WidgetsExampleDisplayer(QLabel):
         new_status.setHint(note)
         new_status.setStyleSheet('''
             padding-left: 4px; padding-right: 4px; padding-top: 2px; padding-bottom: 2px;
-            color: #ffffff;
-            border-radius: 4px ''')
+            color: {};
+            border-radius: 4px '''.format(colorset.TEXT_GRAD_HEX[0]))
         new_status.setText(name)
 
         new_value = SiLabelHasUpdateAnimation(self)
@@ -69,9 +71,9 @@ class WidgetsExampleDisplayer(QLabel):
         new_value.setFixedHeight(24)
         new_value.setStyleSheet('''
             padding-left: 4px; padding-right: 4px; padding-top: 2px; padding-bottom: 2px;
-            color: #e0e0e0;
+            color: {};
             text-align: right;
-            border-radius: 4px ''')
+            border-radius: 4px '''.format(colorset.TEXT_GRAD_HEX[1]))
         new_value.setAlignment(Qt.AlignRight)
         new_value.setAutoAdjustSize(False)
 
@@ -105,8 +107,8 @@ class WidgetsExampleDisplayer(QLabel):
             padding-right: 4px;
             padding-top: 2px;
             padding-bottom: 2px;
-            color: #ffffff;
-            border-radius: 4px ''')
+            color: {};
+            border-radius: 4px '''.format(colorset.TEXT_GRAD_HEX[0]))
         new_status.setText(name)
         for signal in signals:
             signal.connect(new_status.activate)

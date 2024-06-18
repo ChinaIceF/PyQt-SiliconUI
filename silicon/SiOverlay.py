@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
 from .SiAnimationObject import *
 from .SiLayout import *
 from .SiButton import *
+from .SiGlobal import *
 
 class SubInterface(object):
     def __init__(self):
@@ -82,12 +83,15 @@ class SiOverlay(QLabel):
         self.frame = QLabel(self)  # 框架
 
         self.body_frame = QLabel(self.frame)  # 内容框架
-        self.body_frame.setStyleSheet('background-color:#252229; border-radius:8px')
+        self.body_frame.setStyleSheet('''
+            background-color: {};
+            border-radius:8px'''.format(colorset.BG_GRAD_HEX[1]))
 
         self.operate_frame = QLabel(self.frame)  # 下方按钮框架
-        self.operate_frame.setStyleSheet('''background-color:#342F39;
-                    border-top-left-radius:8px;
-                    border-top-right-radius:8px ''')
+        self.operate_frame.setStyleSheet('''
+            background-color:{};
+            border-top-left-radius:8px;
+            border-top-right-radius:8px '''.format(colorset.BG_GRAD_HEX[3]))
 
         self.body = None
         self.operation = None

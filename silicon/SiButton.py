@@ -7,6 +7,7 @@ from . import SiStyle
 from . import SiAnimationObject
 from . import SiGlobal
 
+from .SiGlobal import colorset
 from silicon.SiLabel import SiLabel
 
 import time
@@ -49,7 +50,6 @@ class ButtonHasHoldSignal(QPushButton):
             super().mouseReleaseEvent(event)
         self.holding = False
         self.holdStateChanged.emit(False)
-
 
 class ClickableLabel(SiLabel):
     clicked = QtCore.pyqtSignal()
@@ -167,7 +167,10 @@ class SiButtonFlatWithLabel(SiButtonFlat):
         self.label.lower()
         self.label.setFont(SiFont.font_L1)
         self.label.setFixedHeight(32)
-        self.label.setStyleSheet('color:#ffffff; padding-left: 12px;')
+        self.label.setStyleSheet('''
+            color:{};
+            padding-left: 12px;
+            '''.format(colorset.TEXT_GRAD_HEX[0]))
         self.label.setAlignment(QtCore.Qt.AlignVCenter)
 
     def setText(self, text):
@@ -234,30 +237,33 @@ class SiButton(QLabel):
         if strong:
             self.layer_back.setStyleSheet('''
                 background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                                 stop:0 #372456, stop:1 #562b49);
-                border-radius: 4px''')
+                                                 stop:0 {}, stop:1 {});
+                border-radius: 4px'''.format(*colorset.BTN_HL_HEX[2:4]))
 
             self.layer_front.setStyleSheet('''
                 background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                                  stop:0 #52389a, stop:1 #9c4e8b);
-                color: #e2e2e2;
+                                                  stop:0 {}, stop:1 {});
+                color: {};
                 border-top-left-radius: 4px;
                 border-top-right-radius: 4px;
                 border-bottom-left-radius: 2px;
-                border-bottom-right-radius: 2px ''')
+                border-bottom-right-radius: 2px '''.format(*colorset.BTN_HL_HEX[0:2], colorset.BTN_HL_TEXT_HEX))
 
         else:
             self.layer_back.setStyleSheet('''
-                background-color: #2c2930;
-                border-radius: 4px ''')
+                background-color: {};
+                border-radius: 4px '''.format(colorset.BTN_NORM_HEX[1]))
 
             self.layer_front.setStyleSheet('''
-                background-color: #49454d;
-                color: #e2e2e2;
+                background-color: {};
+                color: {};
                 border-top-left-radius: 4px;
                 border-top-right-radius: 4px;
                 border-bottom-left-radius: 2px;
-                border-bottom-right-radius: 2px ''')
+                border-bottom-right-radius: 2px '''.format(
+                    colorset.BTN_NORM_HEX[0],
+                    colorset.BTN_NORM_TEXT_HEX,
+                ))
 
     def resizeEvent(self, event):
         w = event.size().width()
@@ -322,16 +328,16 @@ class SiButtonHoldtoConfirm(SiButton):
         self.thread.progress_changed.connect(self.paintProgress)
 
         self.layer_back.setStyleSheet('''
-            background-color:#6a3246;
-            border-radius: 4px''')
+            background-color:{};
+            border-radius: 4px'''.format(colorset.BTN_HOLD_HEX[2]))
         self.layer_front.setStyleSheet('''
-            background-color:#9F3652;
-            color:#d8c1c2;
+            background-color:{};
+            color:{};
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;
             border-bottom-left-radius: 2px;
             border-bottom-right-radius: 2px
-            ''')
+            '''.format(colorset.BTN_HOLD_HEX[1], colorset.BTN_HOLD_TEXT_HEX))
 
         self.layer_front.button.setIgnoreClickEvent(True)
         self.holdStateChanged.connect(self._holdAnimationHandler)
@@ -356,10 +362,11 @@ class SiButtonHoldtoConfirm(SiButton):
         p = self.progress
         self.layer_front.setStyleSheet('''
             background-color:qlineargradient(x1:{}, y1:0, x2:{}, y2:0,
-                                             stop:0 #D82A5A, stop:1 #9F3652);
-            color:#fafafa;
+                                             stop:0 {}, stop:1 {});
+            color:{};
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;
             border-bottom-left-radius: 2px;
             border-bottom-right-radius: 2px
-            '''.format(p-0.01, p))
+            '''.format(p-0.01, p,
+                       *colorset.BTN_HOLD_HEX[0:2], colorset.BTN_HOLD_TEXT_HEX))

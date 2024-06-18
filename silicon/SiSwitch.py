@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QLabel
 from . import SiFont
 import time
 
+from .SiGlobal import *
 
 class SiSwitch(QLabel):
     clicked = QtCore.pyqtSignal()
@@ -26,7 +27,6 @@ class SiSwitch(QLabel):
         self.status_label.setFont(SiFont.font_L1)
         self.status_label.setGeometry(0, 0, self.status_width, 24)
         self.status_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-        self.status_label.setStyleSheet('color:#ffffff')
         self.status_label.setText('关闭')
 
         # 按钮的框架
@@ -76,9 +76,9 @@ class SiSwitch(QLabel):
 
 
     def initialize_stylesheet(self):
-        self.status_label.setStyleSheet('color:#d2d2d2')
-        self.switch_frame.setStyleSheet('border: 1px solid #d2d2d2; border-radius: 10px')
-        self.switch_lever.setStyleSheet('background-color:#d2d2d2; border-radius: 7px')
+        self.status_label.setStyleSheet('color: {}'.format(colorset.SWC_HEX[0]))
+        self.switch_frame.setStyleSheet('border: 1px solid {}; border-radius: 10px'.format(colorset.SWC_HEX[0]))
+        self.switch_lever.setStyleSheet('background-color:{}; border-radius: 7px'.format(colorset.SWC_HEX[0]))
 
     def changeStatus(self, status, signal = False):
         self.status = status
@@ -103,12 +103,17 @@ class SiSwitch(QLabel):
         self.switch_lever.move(int(g.x() + distance), g.y())
 
         if (g.x() + distance - 3) / 20 >= 0.5:
-            self.switch_frame.setStyleSheet('background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #52389a, stop:1 #9c4e8b); border-radius: 10px')
-            self.switch_lever.setStyleSheet('background-color:#df000000; border-radius: 7px')
+            self.switch_frame.setStyleSheet('''
+                background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                                  stop:0 {}, stop:1 {});
+                border-radius: 10px'''.format(*colorset.THEME_HEX))
+            self.switch_lever.setStyleSheet('''
+                background-color:{};
+                border-radius: 7px'''.format(colorset.SWC_HEX[1]))
 
         else:
-            self.switch_frame.setStyleSheet('border: 1px solid #d2d2d2; border-radius: 10px')
-            self.switch_lever.setStyleSheet('background-color:#d2d2d2; border-radius: 7px')
+            self.switch_frame.setStyleSheet('border: 1px solid {}; border-radius: 10px'.format(colorset.SWC_HEX[0]))
+            self.switch_lever.setStyleSheet('background-color:{}; border-radius: 7px'.format(colorset.SWC_HEX[0]))
 
 
     def mousePressEvent(self, event):

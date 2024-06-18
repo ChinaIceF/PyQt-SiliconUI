@@ -6,6 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import numpy
 
 from . import SiGlobal
+from .SiGlobal import *
 from .SiFont import *
 
 class SiInfo(QLabel):
@@ -13,7 +14,7 @@ class SiInfo(QLabel):
         super().__init__(parent)
         self.parent = parent
         self.type = 0
-        self.color = ['#6b39a8', '#338145', '#a87539', '#a83e39']
+        self.color = colorset.INF_HEX
 
         self.interval_h = 10
         self.interval_w = 16

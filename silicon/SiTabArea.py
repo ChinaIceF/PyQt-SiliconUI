@@ -10,6 +10,7 @@ from . import SiGlobal
 from . import SiAnimationObject
 from .SiButton import *
 from .SiLayout import *
+from .SiGlobal import *
 
 class TabButton(QLabel):
     def __init__(self, parent, func, index):
@@ -23,7 +24,10 @@ class TabButton(QLabel):
         self.button.setStyleSheet(SiStyle._button_flat_qss)
 
         self.colorbar = QLabel(self)
-        self.colorbar.setStyleSheet('background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #52389a, stop:1 #9c4e8b); border-radius:2px')
+        self.colorbar.setStyleSheet('''
+            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                              stop:0 {}, stop:1 {});
+            border-radius:2px'''.format(*colorset.THEME_HEX))
         self.colorbar.setGeometry(0, 10, 4, 20)
 
         self.button.clicked.connect(lambda : func(self.index))
@@ -31,7 +35,7 @@ class TabButton(QLabel):
 
     def setStatus(self, status):
         if status == True:
-            self.setStyleSheet('background-color:#252229 ;border-radius:6px')
+            self.setStyleSheet('background-color:{} ;border-radius:6px'.format(colorset.BG_GRAD_HEX[1]))
             self.colorbar.setVisible(True)
         else:
             self.setStyleSheet('')
@@ -62,11 +66,14 @@ class SiTabArea(QLabel):
 
         self.bg = QLabel(self)
         self.bg.setGeometry(0, 0, 0, 0)
-        self.bg.setStyleSheet('background-color:#1c191f')   #252229
+        self.bg.setStyleSheet('background-color: {}'.format(colorset.BG_GRAD_HEX[0]))
 
         self.content_bg = QLabel(self)
         self.content_bg.setGeometry(self.icon_area_w + self.interval, self.title_interval, 0, 0)
-        self.content_bg.setStyleSheet('background-color:#252229; border-top-left-radius:6px; border:1px solid #2A252D')
+        self.content_bg.setStyleSheet('''
+            background-color: {};
+            border-top-left-radius:6px;
+            border:1px solid {}'''.format(colorset.BG_GRAD_HEX[1], colorset.BG_GRAD_HEX[2]))
 
         self.content_area = QLabel(self)
         self.content_area.setGeometry(self.icon_area_w + self.interval, self.title_interval, 0, 0)

@@ -6,9 +6,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import numpy
 
 from . import SiGlobal
+
 from .SiFont import *
 from .SiLayout import *
 from .SiAnimationObject import *
+from .SiGlobal import *
+
 
 class OptionHoverAnimation(SiAnimation):
     def __init__(self, parent):
@@ -64,15 +67,17 @@ class SingleOption(QLabel):
         self.setStyleSheet('''
             padding-left: 12px;
             padding-right: 12px;
-            color:#ffffff; ''')
+            color:{}; '''.format(colorset.TEXT_GRAD_HEX[0]))
 
         self.colorbar = QLabel(self)
         self.colorbar.lower()
         self.colorbar.setVisible(False)
         self.colorbar.setStyleSheet('''
             background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                              stop:0 #3052389a, stop:1 #309c4e8b);
-            border-radius:6px; ''')
+                                              stop:0 #30{}, stop:1 #30{});
+            border-radius:6px; '''.format(
+                colorset.THEME_HEX[0][1:], colorset.THEME_HEX[1][1:] # 去井号
+            ))
 
         self.animation = OptionHoverAnimation(self)
         self.animation.ticked.connect(self._hoverAnimationHandler)
@@ -83,8 +88,8 @@ class SingleOption(QLabel):
         self.setStyleSheet('''
             padding-left: 12px;
             padding-right: 12px;
-            color:#ffffff;
-            background-color:rgba(255, 255, 255, {})'''.format(alpha))
+            color:{};
+            background-color:rgba(255, 255, 255, {})'''.format(colorset.TEXT_GRAD_HEX[0], alpha))
 
     def enterEvent(self, event):
         super().enterEvent(event)
@@ -119,7 +124,9 @@ class MenuBody(QLabel):
         self.layout.interval = 2
         self.preferred_height = 0
 
-        self.setStyleSheet('background-color: #2C2930; border-radius: 6px')
+        self.setStyleSheet('''
+            background-color: {};
+            border-radius: 6px'''.format(colorset.BG_GRAD_HEX[2]))
 
     def addOption(self, name, value):
         new_option = SingleOption(self, name, value)
@@ -169,7 +176,6 @@ class SiMenu(QWidget):
         self.menubody = MenuBody(self)
         self.popup_animation = PopupAnimation(self)
         self.popup_animation.ticked.connect(self._popupAnimationHandler)
-        self.setStyleSheet('background-color:#ff0000')
 
         shadow = QGraphicsDropShadowEffect()
         shadow.setColor(QColor(0, 0, 0, 128))

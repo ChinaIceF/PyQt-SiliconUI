@@ -8,6 +8,7 @@ from PyQt5.QtGui import *
 
 from .SiFont import *
 from .SiAnimationObject import *
+from .SiGlobal import *
 from . import SiGlobal
 
 class SiSlider(QLabel):
@@ -29,7 +30,7 @@ class SiSlider(QLabel):
 
     def enterEvent(self, event):
         SiGlobal.floating_window.show_animation()
-        SiGlobal.floating_window.setText(self.getValue())
+        SiGlobal.floating_window.setText(round(self.getValue(), 11))
 
     def leaveEvent(self, event):
         SiGlobal.floating_window.hide_animation()
@@ -48,7 +49,7 @@ class SiSlider(QLabel):
         x = max(0, min(newpos.x(), max_x))
 
         if self.dispersed == False:  # 连续
-            self.value_change.emit(x / max_x)
+            self.value_change.emit(round(x / max_x, 11))
             self.dragged.emit(x / max_x)
             event.accept()
             return
@@ -97,7 +98,7 @@ class SiSliderBar(QLabel):
         self.value_bar = QLabel(self)
         self.background_bar = QLabel(self)
         self.slider = SiSlider(self)
-        self.slider.value_change.connect(lambda x : self.valueChanged.emit(round(x, 11)))
+        self.slider.value_change.connect(self.valueChanged.emit)
         self.slider.dragged.connect(self.animationHandler)
 
         self.target_value = 0
@@ -106,11 +107,18 @@ class SiSliderBar(QLabel):
         self.animation = SiAnimation(self.distance, self.stepLength, 1000 / SiGlobal.fps, lambda : abs(self.distance()) == 0)
         self.animation.ticked.connect(self.changePosition)
 
-        self.background_bar.setStyleSheet('background-color:#252229; border-radius: 2px')
-        self.value_bar.setStyleSheet('''background-color:
-                                        qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #52389a, stop:1 #9c4e8b);
-                                        border-radius: 2px''')
-        self.slider.setStyleSheet('border-radius: 4px;background-color:#52389a;')
+        self.background_bar.setStyleSheet('''
+            background-color:{};
+            border-radius: 2px'''.format(colorset.BG_GRAD_HEX[1]))
+
+        self.value_bar.setStyleSheet('''
+            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                              stop:0 {}, stop:1 {});
+            border-radius: 2px'''.format(*colorset.THEME_HEX))
+
+        self.slider.setStyleSheet('''
+            border-radius: 4px;
+            background-color: {}'''.format(colorset.THEME_HEX[0]))
 
         self.valueChanged.connect(self.hint_handler)
 
@@ -156,8 +164,10 @@ class SiSliderBar(QLabel):
         g = self.geometry()
         self.slider.move(int((g.width() - self.bar_width) * v), (g.height() - self.bar_height) // 2)
         p = g.width()/self.bar_width
-        self.slider.setStyleSheet('''border-radius: 4px;background-color:
-            qlineargradient(x1:{}, y1:0, x2:{}, y2:0, stop:0 #52389a, stop:1 #9c4e8b);'''.format(-v * p, (1-v) * p))
+        self.slider.setStyleSheet('''
+            background-color: qlineargradient(x1:{}, y1:0, x2:{}, y2:0,
+                                              stop:0 {}, stop:1 {});
+            border-radius: 4px;'''.format(-v * p, (1-v) * p, *colorset.THEME_HEX))
 
 
     def resizeEvent(self, event):

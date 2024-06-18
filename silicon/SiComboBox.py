@@ -7,6 +7,7 @@ from . import SiFont
 from . import SiGlobal
 from .SiMenu import *
 from .SiButton import *
+from .SiGlobal import colorset
 
 class SiComboBox(ClickableLabel):
     valueChanged = pyqtSignal(object)
@@ -26,12 +27,12 @@ class SiComboBox(ClickableLabel):
         self.label = QLabel(self)
         self.label.lower()
         self.label.setStyleSheet('''
-            background-color:#252229;
+            background-color:{};
             padding-left: 12px;
             padding-right: 12px;
             border-radius: 4px;
-            color: #ffffff;
-            ''')
+            color: {};
+            '''.format(colorset.BG_GRAD_HEX[1], colorset.TEXT_GRAD_HEX[0]))
         self.label.setFont(SiFont.font_L1)
         self.label.setText('测试文字')
 

@@ -5,9 +5,9 @@ from PyQt5.QtGui import QScreen, QCursor, QFontMetrics
 
 import random
 
-from silicon.SiAnimationObject import *
-from silicon.SiFont import *
-
+from .SiAnimationObject import *
+from .SiFont import *
+from .SiGlobal import colorset
 
 class FloatingSizeAnimation(SiAnimation):
     def __init__(self, parent):
@@ -77,8 +77,8 @@ class FloatingWindow(QWidget):
 
         self.background = QLabel(self)
         self.background.setStyleSheet('''
-            background-color:#ef413a47;
-            border-radius: 6px; ''')
+            background-color:{};
+            border-radius: 6px; '''.format(colorset.HINT_HEX[1]))
 
         # 创建QGraphicsDropShadowEffect对象
         shadow = QGraphicsDropShadowEffect()
@@ -88,7 +88,9 @@ class FloatingWindow(QWidget):
         self.setGraphicsEffect(shadow)
 
         self.label = QLabel(self)
-        self.label.setStyleSheet('background-color:transparent; color:#ffffff')
+        self.label.setStyleSheet('''
+            background-color:transparent;
+            color:{} '''.format(colorset.HINT_HEX[0]))
         self.label.move(8,0)
         self.label.setAlignment(Qt.AlignVCenter)
         self.label.setFont(font_L1)

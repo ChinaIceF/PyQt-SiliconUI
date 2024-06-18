@@ -3,7 +3,7 @@ import io
 from PyQt5.QtCore import QTemporaryFile, QByteArray, QIODevice
 
 class ICON_DICT(object):
-    def __init__(self, library_path):
+    def __init__(self, library_path, color = None):
 
         # ！注意！  你不应使用这些文件，他们已经过加密处理
         # 如果你需要这些图标文件，你可以直接在 flaticon.com 免费获取他们
@@ -20,6 +20,7 @@ class ICON_DICT(object):
         datas = []
         for item in items[1:]:
             name, data = item.split('###')
+            data = data.replace('/>', ' fill="{}" />'.format(color))
             names.append(name)
             datas.append(data)
         self.icons = dict(zip(names, datas))

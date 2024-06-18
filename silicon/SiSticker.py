@@ -7,6 +7,7 @@ from PyQt5.QtSvg import QSvgWidget
 from .SiFont import *
 from .SiButton import *
 from .SiLayout import SiLayoutH, SiLayoutV
+from .SiGlobal import *
 
 class SiSticker(QLabel):
     def __init__(self, parent):
@@ -14,31 +15,33 @@ class SiSticker(QLabel):
         self.parent = parent
 
         self.substrate = QLabel(self)
-        self.substrate.setStyleSheet('''background-color:#1C191F;
-                                        border-radius:6px       ''')
+        self.substrate.setStyleSheet('''
+            background-color: {};
+            border-radius:6px '''.format(colorset.BG_GRAD_HEX[0]))
 
         self.bgimage = QLabel(self)
-        self.bgimage.setStyleSheet('''background-color:#2C2930;
-                                      border-radius:6px         ''')
+        self.bgimage.setStyleSheet('''
+            background-color: {};
+            border-radius:6px '''.format(colorset.BG_GRAD_HEX[2]))
 
         self.surface = QLabel(self)
         self.surface.setStyleSheet('''
             border-radius:6px;
             background-color:qlineargradient(x1:0, y1:0, x2:0, y2:0.6,
-                                             stop:0 #2C2930, stop:1 #002C2930);
-            ''')
+                                             stop:0 {}, stop:1 #00{});
+            '''.format(colorset.BG_GRAD_HEX[2], colorset.BG_GRAD_HEX[2][1:]))
 
         self.head = SiLayoutH(self)  # 头
 
         self.title = QLabel(self)
-        self.title.setStyleSheet('color:#ffffff')
+        self.title.setStyleSheet('color: {}'.format(colorset.TEXT_GRAD_HEX[0]))
         self.title.setFont(font_L2_bold)
         self.title.setAlignment(Qt.AlignVCenter)
 
         self.head.addItem(self.title, side = 'left')
 
         self.content = QLabel(self)
-        self.content.setStyleSheet('color:#ffffff')
+        self.content.setStyleSheet('color: {}'.format(colorset.TEXT_GRAD_HEX[0]))
         self.content.setFont(font_L1)
         self.content.setAlignment(Qt.AlignTop)
         self.content.setWordWrap(True)

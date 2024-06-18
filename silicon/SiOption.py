@@ -13,6 +13,7 @@ from .SiInputBox import *
 from .SiMenu import *
 
 import os
+from .SiGlobal import *
 
 # 基类 SiOption, 添加于 2024.4.4
 # 所有的 SiOption 都继承这个类，该类提供了图标，文字，颜色管理，布局管理
@@ -27,8 +28,9 @@ class SiOption(QWidget):
 
         # 背景
         self.background = QLabel(self)
-        self.background.setStyleSheet("background-color:#353138; border-radius: 4px")
-        #self.background.setStyleSheet("background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #322e36, stop:1 #37303c); border-radius: 4px;")
+        self.background.setStyleSheet('''
+            background-color: {};
+            border-radius: 4px'''.format(colorset.BG_GRAD_HEX[2]))
 
         # 实例化图标
         self.icon = QSvgWidget(self)
@@ -37,7 +39,7 @@ class SiOption(QWidget):
 
         # 实例化文字
         self.textbar = QLabel(self)
-        self.textbar.setStyleSheet("background-color:transparent; color:#fafafa;")
+        self.textbar.setStyleSheet("background-color:transparent;")
         self.textbar.setAlignment(QtCore.Qt.AlignVCenter)
         self.textbar.setFont(SiFont.font_L1)  # 设置字体
         self.textbar.setWordWrap(False)  ## 不自动换行
@@ -46,7 +48,9 @@ class SiOption(QWidget):
 
         # 可用遮罩
         self.mask = QLabel(self)
-        self.mask.setStyleSheet("background-color:#7f252229; border-radius: 4px")
+        self.mask.setStyleSheet('''
+            background-color:#7f{};
+            border-radius: 4px'''.format(colorset.BG_GRAD_HEX[1][1:]))
         self.mask.setVisible(False)
 
     def _setMinimumHeight(self, h):
@@ -112,9 +116,11 @@ class SiOption(QWidget):
     def setText(self, title, subtitle):
         # 根据是否有副标题，设置两种文字显示方式
         if subtitle == '':
-            self.textbar.setText("<font color='#fafafa'>{}</font>".format(title))
+            self.textbar.setText("<font color='{}'>{}</font>".format(
+                colorset.OPT_TITLE_HEX, title))
         else:
-            self.textbar.setText("<font color='#fafafa'><strong>{}</strong></font><br><font color='#afafaf'>{}</font>".format(title, subtitle.replace('\n', '<br>')))
+            self.textbar.setText("<font color='{}'><strong>{}</strong></font><br><font color='{}'>{}</font>".format(
+                colorset.OPT_TITLE_HEX, title, colorset.OPT_DISCRIPTION_HEX, subtitle.replace('\n', '<br>')))
 
         # 根据文本多少，自适应调节高度
         self.textbar.adjustSize()

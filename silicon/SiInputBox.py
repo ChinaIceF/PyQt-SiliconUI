@@ -3,8 +3,9 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .SiFont import *
 
+from .SiFont import *
+from .SiGlobal import *
 
 class SiInputBoxLineEdit(QLineEdit):
     focus_changed = QtCore.pyqtSignal(bool)
@@ -62,16 +63,16 @@ class SiInputBox(QLabel):
 
         self.highlight_bg.setStyleSheet('''
             background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                              stop:0 #52389a, stop:1 #9c4e8b);
-            border-radius:4px ''')
+                                              stop:0 {}, stop:1 {});
+            border-radius:4px '''.format(*colorset.THEME_HEX))
 
         self.bg.setStyleSheet('''
-            background-color:#252229;
+            background-color:{};
             border-top-left-radius:4px;
             border-top-right-radius:4px;
             border-bottom-left-radius:2px;
             border-bottom-right-radius:2px
-            ''')
+            '''.format(colorset.BG_GRAD_HEX[1]))
 
     def mousePressEvent(self, event):
         self.line_edit.clearFocus()

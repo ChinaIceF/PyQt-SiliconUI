@@ -13,13 +13,14 @@ import os
 import silicon
 from silicon.SiHint import *
 from silicon.SiOverlay import *
+from silicon.SiGlobal import *
 import silicon.SiGlobal as SiGlobal
 
 import components as Components
 
 # 加载图标
 import icons
-SiGlobal.icons = icons.ICON_DICT('./icons/icons.dat')
+SiGlobal.icons = icons.ICON_DICT('./icons/icons.dat', SiGlobal.colorset.SVG_HEX)
 
 class UserInterface(QMainWindow):
     def __init__(self):
@@ -42,7 +43,6 @@ class UserInterface(QMainWindow):
 
         # 叠加层置顶
         self.overlay.raise_()
-
 
     def showEvent(self, event):
         self.overlay.showup_animation.setCurrent(self.geometry().height())
@@ -67,12 +67,11 @@ class UserInterface(QMainWindow):
         #                 silicon.SiOptionComboBox
         #                 ......
 
+        # 初始化窗口
 
-        # ========== 初始化窗口 ==========
-
-        self.setAttribute(Qt.WA_TranslucentBackground)  # 设置窗口背景透明
+        self.setAttribute(Qt.WA_TranslucentBackground)
         self.setGeometry(0, 0, 1200, 700)
-        self.setWindowTitle("Silicon UI 测试界面")
+        self.setWindowTitle("Silicon Gallery")
 
         self.stackarea = silicon.SiTabArea(self)
         self.stackarea.setGeometry(0, 0, 1200, 600)
@@ -82,14 +81,13 @@ class UserInterface(QMainWindow):
         self.logo.setGeometry(64+4, 16+4, 24, 24)
 
         self.window_title = QLabel(self)
-        self.window_title.setStyleSheet('color:#cfcfcf')
+        self.window_title.setStyleSheet('color: {}'.format(colorset.TEXT_GRAD_HEX[1]))
         self.window_title.setGeometry(104, 0, 500, 64)
-        self.window_title.setText('Silicon 画廊 - 测试界面')
+        self.window_title.setText('Silicon Gallery')
         self.window_title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.window_title.setFont(silicon.SiFont.font_L1_bold)
 
-        # ========== 初始化各个界面 ==========
-
+        # 初始化各个界面
         self.homepage = silicon.SiTab(self)
         self.homepage.setTitleHeight(0)
         self.homepage.scrollarea.rightside_interval = 0
