@@ -104,6 +104,11 @@ class UserInterface(QMainWindow):
         self.widgets_example.attachFrame(Components.Widgets.WidgetsExample(self.widgets_example))
         self.widgets_example.scrollarea.scrollbar.raise_()
 
+        self.experiment_field = silicon.SiTab(self)
+        self.experiment_field.setTitle('实验场')
+        self.experiment_field.attachFrame(Components.ExperimentField.ExperimentField(self.experiment_field))
+        self.experiment_field.scrollarea.scrollbar.raise_()
+
         self.options = silicon.SiTab(self)
         self.options.setTitle('设置')
         self.options.attachFrame(Components.Options.Options(self.options))
@@ -113,4 +118,5 @@ class UserInterface(QMainWindow):
         self.stackarea.addTab(self.homepage, SiGlobal.icons.get('fi-rr-home'), '主页面')
         self.stackarea.addTab(self.widgets_example, SiGlobal.icons.get('fi-rr-layout-fluid'), '控件')
         self.stackarea.addTab(self.glaze_example, SiGlobal.icons.get('fi-rr-list'), 'Silicon Glaze 示例')
+        self.stackarea.addTab(self.experiment_field, SiGlobal.icons.get('fi-rr-bulb'), '实验场')
         self.stackarea.addTab(self.options, SiGlobal.icons.get('fi-rr-settings'), '设置', 'bottom')

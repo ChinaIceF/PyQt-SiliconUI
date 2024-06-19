@@ -173,17 +173,21 @@ class SiButtonFlatWithLabel(SiButtonFlat):
             '''.format(colorset.TEXT_GRAD_HEX[0]))
         self.label.setAlignment(QtCore.Qt.AlignVCenter)
 
+    def setFixedHeight(self, h):
+        super().setFixedHeight(h)
+        self.label.setFixedHeight(h)
+
     def setText(self, text):
         self.label.setText(text)
         self.label.adjustSize()
-        self.resize(self.label.width() + 16 + 8, 32)
+        self.resize(self.label.width() + 16 + 8, self.height())
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
         size = event.size()
         w, h = size.width(), size.height()
         self.icon.move(8, (h-16)//2)
-        self.label.move(16, 0)
+        self.label.setGeometry(16, 0, w - 16 - 8, h)
 
 class ClickableLabelForButton(ClickableLabel):
     def __init__(self, parent):

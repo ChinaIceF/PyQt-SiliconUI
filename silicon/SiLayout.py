@@ -22,6 +22,12 @@ class SiLayoutV(QLabel):
     def setInterval(self, interval):
         self.interval = interval
 
+    def addVacant(self, length, side = 'top'):
+        new_label = QLabel(self)
+        new_label.setStyleSheet('')
+        new_label.resize(0, length)
+        self.addItem(new_label, side = side)
+
     def addItem(self, item, side = 'top'):
         item.setParent(self)
         item.parent = self
@@ -34,6 +40,7 @@ class SiLayoutV(QLabel):
         if side == 'bottom':
             self.contents_bottom.append(item)
         self.refresh_components()
+        self.adjustSize()
 
     def refresh_components(self):
         size = self.geometry()
@@ -99,6 +106,12 @@ class SiLayoutH(QLabel):
 
     def setInterval(self, interval):
         self.interval = interval
+
+    def addVacant(self, length, side = 'left'):
+        new_label = QLabel(self)
+        new_label.setStyleSheet('')
+        new_label.resize(length, 0)
+        self.addItem(new_label, side = side)
 
     def addItem(self, item, side = 'left'):
         item.setParent(self)
