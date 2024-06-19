@@ -28,8 +28,10 @@
 
 ### 运行 Silicon Gallery
 下载源代码，解压并安装包  
-'''python setup.py install'''  
-运行`examples/Gallery/start.py`即可体验 Silicon UI 现有的功能和效果  
+```cmd
+python setup.py install
+```
+运行`./examples/Gallery/start.py`即可体验 Silicon UI 现有的功能和效果  
 
 在 Silicon Gallery 中，你可以了解：
 * 各种控件以及其样式
@@ -38,7 +40,7 @@
 * ***更多内容等待我们共同创造***
 
 ### 创建相似的 Silicon 应用
-在 ``./ui.py`` 中，展示了一般 Silicon 应用的构建方法，其工作目录应具有以下结构：  
+在 ``./examples/Gallery/ui.py`` 中，展示了一般 Silicon 应用的构建方法，其工作目录应具有以下结构：  
 * **components文件夹**，其中存放各个选项卡的界面
 * **ui.py**，文件名取决于你的调用方式，重要的是其中应包含 Silicon 应用的构建类，并调用 components 文件夹以构建各个界面
 同时，你也需注意控件和对象间的从属关系，以 Glaze 为例，它中控件的从属关系如下
@@ -56,7 +58,7 @@
 Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任意 PyQt5 项目中调用它们，并据你喜好进行自定义
 
 ## 更新日志
-* 2024.6.19 开启 PySide6 分支并进行了迁移，对 PyQt5 和 PySide6 双支持
+* 2024.6.19 开启 PySide6 分支并进行了迁移，对 PyQt5 和 PySide6 双支持，并更改了目录结构
 
 ## License
 本项目采用 GPL-3.0 License，详见[这里](LICENSE)
