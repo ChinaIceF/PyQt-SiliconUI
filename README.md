@@ -6,7 +6,7 @@
   </a>
   
   <h2 align="center">PyQt-SiliconUI</h2>
-  <p align="center">基于PyQt5的UI框架，灵动、优雅而轻便</p>
+  <p align="center">基于 PyQt5 / PySide6 的UI框架，灵动、优雅而轻便</p>
   
 </p>   
 
@@ -21,6 +21,10 @@
 我们可以一起优化并丰富这个项目，欢迎你参与 Silicon UI 的开发！  
 
 ## 如何使用
+### 下载合适的代码
+如果你希望运行 PyQt5，请下载 main 分支的代码  
+如果你希望运行 PySide6，请下载 PySide6 分支的代码，为了保证兼容性，本项目在 PySide6 6.1.3 上开发
+
 ### 运行 Silicon Gallery
 下载源代码，解压并运行 ``start.py``，即可体验 Silicon UI 现有的功能和效果  
 在 Silicon Gallery 中，你可以了解：
@@ -46,6 +50,9 @@
 
 ### 在其他 PyQt5 项目中使用
 Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任意 PyQt5 项目中调用它们，并据你喜好进行自定义
+
+## 更新日志
+* 2024.6.19 开启 PySide6 分支并进行了迁移，对 PyQt5 和 PySide6 双支持
 
 ## License
 本项目采用 GPL-3.0 License，详见[这里](LICENSE)
