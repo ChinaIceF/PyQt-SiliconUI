@@ -27,7 +27,10 @@
 如果你希望运行 PySide6，请下载 PySide6 分支的代码，为了保证兼容性，本项目在 PySide6 6.1.3 上开发
 
 ### 运行 Silicon Gallery
-下载源代码，解压并运行 ``start.py``，即可体验 Silicon UI 现有的功能和效果  
+下载源代码，解压并安装包  
+'''python setup.py install'''  
+运行`examples/Gallery/start.py`即可体验 Silicon UI 现有的功能和效果  
+
 在 Silicon Gallery 中，你可以了解：
 * 各种控件以及其样式
 * 控件的信号属性
