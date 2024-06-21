@@ -16,10 +16,16 @@ import SiliconUI.SiGlobal as SiGlobal
 from SiliconUI.SiFont import *
 from SiliconUI.SiGlobal import colorset
 
-class MusicInfoPlaceholder(SiliconUI.SiSticker.SiSticker):
+class MusicInfoPlaceholder(SiliconUI.SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
+
+        self.bg = SiliconUI.SiPixLabel(self)
+        self.bg.setRadius(8)
+        self.opacity = QGraphicsOpacityEffect()
+        self.opacity.setOpacity(0.3)
+        self.bg.setGraphicsEffect(self.opacity)
 
         # 所有内容 水平布局
         # 图片 信息 操作按钮
@@ -106,6 +112,7 @@ class MusicInfoPlaceholder(SiliconUI.SiSticker.SiSticker):
 
     def load(self, path):
         self.cover.load(path)
+        self.bg.load(path)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -115,3 +122,4 @@ class MusicInfoPlaceholder(SiliconUI.SiSticker.SiSticker):
         self.layout_info.resize(self.layout_all_content.size())
         self.layout_operation.move(
             w - 24 - 32, (h - self.layout_operation.height()) // 2 - 2)
+        self.bg.resize(w, h-3)
