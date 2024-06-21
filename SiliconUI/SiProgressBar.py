@@ -119,7 +119,7 @@ class SiProgressBar(QLabel):
         '''.format(self.current_color, self.border_radius))
 
     def _animationProgressHandler(self, width):
-        self.bar.resize(width, self.bar.height())
+        self.bar.resize(int(width), self.bar.height())
 
     def _animationColorHandler(self, weight):
         self.current_color = Color.mix(self.target_color, self.start_color, weight)

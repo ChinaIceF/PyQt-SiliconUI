@@ -109,7 +109,7 @@ class SiTabArea(QLabel):
 
     def change_content_position(self, y):
         g = self.content[self.index].geometry()
-        self.content[self.index].move(0, y)
+        self.content[self.index].move(0, int(y))
 
     def addTab(self, obj, icon_path, hint, side = 'top'):
         obj.setParent(self.content_area)
