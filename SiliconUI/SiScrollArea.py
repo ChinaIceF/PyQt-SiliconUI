@@ -15,14 +15,12 @@ class SiScrollBar(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-
         self.setMouseTracking(True)  # 开启鼠标追踪
 
     def mousePressEvent(self, event):
         self.start_pos = self.frameGeometry().topLeft() - event.pos()
         self.start_pos = QCursor.pos()
         self.anchor = self.parent.target_y * self.height() / self.parent.height()
-
 
     def mouseMoveEvent(self, event: QMouseEvent):
         if not (event.buttons() & Qt.LeftButton):
@@ -31,17 +29,13 @@ class SiScrollBar(QLabel):
         newpos = QCursor.pos() - self.start_pos
         newy = abs(self.anchor) + newpos.y()
         max_y = self.parent.height() - self.height()
-
         y = int(max(0, min(newy, max_y)))
-        #print(y, event.pos().y())
 
-        #self.move(self.x(), y)
         self.value_change_to_parent.emit(self.value(y))
         event.accept()
 
     def value(self, y):
         max_y = self.parent.height() - self.height()
-
         return y / max_y
 
     def showEvent(self, event):
@@ -65,7 +59,10 @@ class SiScrollArea(QLabel):
         self.animation.ticked.connect(self.change_position)
 
     def stepLength(self, dis):
-        return (abs(dis) * 1/6 + 1) * (1 if dis > 0 else -1)
+        if abs(dis) > 1:
+            return (abs(dis) * 1/6 + 1) * (1 if dis > 0 else -1)
+        else:
+            return dis
 
     def distance(self):
         return self.target_y - self.content.y()
@@ -99,7 +96,7 @@ class SiScrollArea(QLabel):
         self.refresh_bar_geometry()
 
     def change_position(self, y):
-        self.content.move(0, int(self.content.y() + y))
+        self.content.move(0, int(y))
         self.refresh_bar_geometry()
 
     def refresh_bar_geometry(self):
@@ -117,6 +114,7 @@ class SiScrollArea(QLabel):
             if self.scrollbar.isVisible() == True:  # 而且现在有必要滚动，就启动
                 self.animation.start()
 
+
         temp = self.target_y
 
         angleDelta = event.angleDelta()   # 获取滚动的角度和滚动方向
@@ -133,6 +131,8 @@ class SiScrollArea(QLabel):
             temp = 0
 
         self.target_y = temp
+        if self.scrollbar.isVisible():
+            event.accept()
 
     def resizeEvent(self, event):
         w = event.size().width()

@@ -98,18 +98,16 @@ class SiOverlay(QLabel):
 
         self.subinterface = []
 
-    def showup_animation_handler(self, delta):
-        v = delta + self.showup_animation.current
-        self.moveFrame(v)
+    def showup_animation_handler(self, value):
+        self.moveFrame(value)
 
-        alpha = (1 - v / self.height()) * 0.5
+        alpha = (1 - value / self.height()) * 0.5
         if alpha == 0:
             self.hide()
         else:
             self.show()
         self.background.setStyleSheet(
-            'background-color:rgba(0, 0, 0, {})'.format((1-v/self.height())*0.5))
-        self.showup_animation.setCurrent(v)
+            'background-color:rgba(0, 0, 0, {})'.format((1-value/self.height())*0.5))
 
     def moveFrame(self, v):
         w = self.width()

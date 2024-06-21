@@ -44,14 +44,32 @@ class TabButton(QLabel):
     def setIcon(self, path):
         self.button.load(path)
 
+
+class AnimationTab(SiAnimationObject.SiAnimation):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+    def distance(self):
+        return self.target - self.current
+
+    def stepLength(self, dis):
+        if abs(dis) <= 1:
+            return dis
+        else:
+            return (abs(dis) * 1/5 + 1) * (1 if dis > 0 else -1)
+
+    def isCompleted(self):
+        return self.distance() == 0
+
 class SiTabArea(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
 
-        self.animation = SiAnimationObject.SiAnimation(self.distance, self.stepLength, 1000 / SiGlobal.fps, lambda : self.distance() <= 0)
+        self.animation = AnimationTab(self)
         self.animation.ticked.connect(self.change_content_position)
+        self.animation.setTarget(0)
 
         # 设定图标栏宽度
         self.icon_area_w = 48 + 8
@@ -89,24 +107,9 @@ class SiTabArea(QLabel):
         self.details_icon.setStatus(False)
         self.icon_layout.addItem(self.details_icon, 'top')
 
-    def stepLength(self, dis):
-        return abs(dis) * 0.2 + 1
-
-    def distance(self):
-        return self.content[self.index].geometry().y()
-
-    def process(self):
-        dis = self.distance()
-        steplength = self.stepLength(dis)
-        self.animation_refreshed.emit(-int(steplength))
-
-        # 如果已经到达既定位置，终止计时器
-        if self.distance() <= 0:
-            self.timer.stop()
-
-    def change_content_position(self, delta):
+    def change_content_position(self, y):
         g = self.content[self.index].geometry()
-        self.content[self.index].move(0, int(g.y() - delta))
+        self.content[self.index].move(0, y)
 
     def addTab(self, obj, icon_path, hint, side = 'top'):
         obj.setParent(self.content_area)
@@ -142,8 +145,8 @@ class SiTabArea(QLabel):
         self.content[index].setVisible(True)
         self.icon[index].setStatus(True)
 
-        if self.animation.isActive() == False:    # 如果线程没在运行，就启动
-            self.animation.start()
+        self.animation.setCurrent(self.animation_h)
+        self.animation.try_to_start()
 
     def resizeEvent(self, event):
         w = event.size().width()

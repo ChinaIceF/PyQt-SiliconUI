@@ -1,6 +1,7 @@
 
 import colorsys
 import numpy
+import random
 
 fps = 60
 
@@ -23,8 +24,12 @@ class Color(object):
         # weight    FLOAT   前色的权重
         fore_rgb = Color.decodeColor(fore)
         post_rgb = Color.decodeColor(post)
-        mixed_rgb = fore_rgb * weight + (1 - post_rgb) * weight
+        mixed_rgb = fore_rgb * weight + post_rgb * (1-weight)
         return Color.encodeColor(mixed_rgb)
+
+    def random():
+        random_color = Color.encodeColor([255 * random.random(), 255 * random.random(), 255 * random.random()])
+        return random_color
 
 
 class SiColorDark(Color):

@@ -118,28 +118,23 @@ class FloatingWindow(QWidget):
             self.highlight_animation.setCurrent(a)
             self.highlight_animation.try_to_start()
 
-    def highlight_delta_handler(self, delta):
-        alpha = self.highlight_animation.current + delta
+    def highlight_delta_handler(self, alpha):
         self.highlight.setStyleSheet('''
             background-color:rgba(255, 255, 255, {});
             border-radius: 6px '''.format(alpha / 255))
-        self.highlight_animation.setCurrent(alpha)
 
-    def resize_delta_handler(self, delta):
+    def resize_delta_handler(self, width):
         dw = 2 * (self.interval + self.shadow_radius)
         dh = 2 * self.shadow_radius
-        self.resize(int(self.resize_animation.current + delta + dw), 32 + dh)
+        self.resize(int(width + dw), 32 + dh)
 
-    def transparency_delta_handler(self, delta):
-        trans = self.transparency_animation.current + delta
-        self.setWindowOpacity(trans / 255)
-        self.transparency_animation.setCurrent(trans)
+    def transparency_delta_handler(self, opacity):
+        self.setWindowOpacity(opacity / 255)
 
     def resizeEvent(self, event):
         dw = 2 * (self.interval + self.shadow_radius)
         dh = 2 * self.shadow_radius
         size = event.size()
-        self.resize_animation.setCurrent(size.width() - dw)
 
         w, h = size.width(), size.height()
 

@@ -155,7 +155,7 @@ class SiSliderBar(QLabel):
         if delta is None:
             delta = self.distance()
 
-        self.current_value += delta
+        self.current_value = delta
         v = self.current_value
         g = self.value_bar.geometry()
         d = int(g.width() * (1 - v))

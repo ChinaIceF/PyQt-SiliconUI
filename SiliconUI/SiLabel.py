@@ -72,9 +72,7 @@ class SiLabelHasUpdateAnimation(SiLabel):
             background-color:rgba(255, 255, 255, {});
             '''.format(alpha / 255))
 
-    def _changedAnimationHandler(self, delta):
-        alpha = self.animation.current + delta
-        self.animation.setCurrent(alpha)
+    def _changedAnimationHandler(self, alpha):
         self.setAlpha(alpha)
 
     def activate(self, *any_args):
@@ -96,11 +94,12 @@ class SiPixLabel(SiLabel):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-        self.radius = 32
+        self.border_radius = 32
+        self.blur_radius = 0
         self.path = None
 
     def setRadius(self, r):
-        self.radius = r
+        self.border_radius = r
 
     def load(self, path):
         self.path = path
@@ -111,8 +110,6 @@ class SiPixLabel(SiLabel):
             return
 
         w, h = self.width(), self.height()
-        self.setMaximumSize(w, h)
-        self.setMinimumSize(w, h)
 
         self.target = QPixmap(self.size())
         self.target.fill(Qt.transparent)
@@ -127,9 +124,13 @@ class SiPixLabel(SiLabel):
 
         path = QPainterPath()
         path.addRoundedRect(0, 0,
-                            self.width(), self.height(),
-                            self.radius, self.radius)
+                            self.width(),       self.height(),
+                            self.border_radius, self.border_radius)
 
         painter.setClipPath(path)
         painter.drawPixmap(0, 0, p)
         self.setPixmap(self.target)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.draw()

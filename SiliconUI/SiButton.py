@@ -86,9 +86,7 @@ class ClickableLabel(SiLabel):
     def setHoverAnimation(self, b):
         self.has_hover_animation = b
 
-    def change_color(self, delta_alpha):
-        alpha = self.animation.current + delta_alpha
-        self.animation.setCurrent(alpha)
+    def change_color(self, alpha):
         self.setAlpha(alpha)
 
     def setAlpha(self, alpha):

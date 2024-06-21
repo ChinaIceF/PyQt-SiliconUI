@@ -52,8 +52,12 @@ class SiAnimation(QObject):
         dis = self.distance()
         steplength = self.stepLength(dis)
 
+        # 更新数值
+        self.setCurrent(self.current + steplength)
+
         # 发射信号
-        self.ticked.emit(steplength)
+        self.ticked.emit(self.current)
+
 
     def isActive(self):
         return self.timer.isActive()
@@ -74,3 +78,28 @@ class SiAnimation(QObject):
             return True
         else:
             return False
+
+
+class SiAnimationStandard(SiAnimation):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.factor = 1/8
+        self.bias = 0.01
+
+    def setFactor(self, factor):
+        self.factor = factor
+
+    def setBias(self, bias):
+        self.bias = bias
+
+    def distance(self):
+        return self.target - self.current
+
+    def stepLength(self, dis):
+        if abs(dis) <= self.bias:
+            return dis
+        else:
+            return (abs(dis) * self.factor + self.bias) * (1 if dis > 0 else -1)
+
+    def isCompleted(self):
+        return self.distance() == 0

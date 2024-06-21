@@ -82,9 +82,7 @@ class SingleOption(QLabel):
         self.animation = OptionHoverAnimation(self)
         self.animation.ticked.connect(self._hoverAnimationHandler)
 
-    def _hoverAnimationHandler(self, delta):
-        alpha = self.animation.current + delta
-        self.animation.setCurrent(alpha)
+    def _hoverAnimationHandler(self, alpha):
         self.setStyleSheet('''
             padding-left: 12px;
             padding-right: 12px;
@@ -208,17 +206,15 @@ class SiMenu(QWidget):
     def isUnfold(self):
         return self.status
 
-    def _popupAnimationHandler(self, delta):
+    def _popupAnimationHandler(self, h):
         # 阴影有问题，所以需要采用重设大小的方法
         g = self.menubody.geometry()
-        x, y, w, h = g.x(), g.y(), g.width(), g.height()
-        h = int(self.popup_animation.current + delta)
+        x, y, w = g.x(), g.y(), g.width()
 
         if self.isReversed() == False:
             self.menubody.resize(w, h)
         else:
             self.menubody.setGeometry(x, self.height() - self.margin - h, w, h)
-        self.popup_animation.setCurrent(h)
 
     def _adjustedPopupPosAndDirection(self, x, y, w, h):
         # 获取合适的弹出位置，避免显示在有效显示范围之外
