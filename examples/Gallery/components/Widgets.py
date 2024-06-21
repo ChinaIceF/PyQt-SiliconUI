@@ -39,6 +39,10 @@ class WidgetsExampleDisplayer(QLabel):
         self.layout.addItem(self.sticker_widgets)
         self.layout.addItem(self.sticker_status)
 
+    def setWidth(self, widgets_sticker_width, status_sticker_width):
+        self.sticker_widgets.setFixedWidth(widgets_sticker_width)
+        self.sticker_status.setFixedWidth(status_sticker_width)
+
     def setCodeURL(self, url):
         self.sticker_widgets.button_github.clicked.connect(
             lambda : os.system('start {}'.format(url)))
@@ -136,7 +140,7 @@ class WidgetsExampleDisplayer(QLabel):
         self.sticker_status.resize(self.sticker_status.width(), h)
 
 
-class WidgetSticker(SiliconUI.SiSticker.SiSticker):
+class WidgetSticker(SiliconUI.SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -454,9 +458,95 @@ class WidgetsExample(SiliconUI.SiFrame):
         self.stack_inputboxes.addItem(self.sticker_inputboxes)
 
 
+
+        ## ================ Stack 开始 ===================
+
+        self.stack_progressbar = SiliconUI.SiStack(self)
+        self.stack_progressbar.setTitle('进度条')
+
+        self.sticker_progressbar = WidgetsExampleDisplayer(self.stack_progressbar)
+        self.sticker_progressbar.setTitle('进度条')
+        self.sticker_progressbar.setWidth(800, 320)
+
+        self.layout_progress_bar = SiliconUI.SiLayoutV(self)
+
+        self.progress_bar = SiliconUI.SiProgressBar(self)
+        self.progress_bar.setBorderRadius(3)
+        self.progress_bar.resize(480, 6)
+
+        self.layout_progress_bar_buttons = SiliconUI.SiLayoutH(self)
+
+        self.random_progress = SiliconUI.SiButton(self)
+        self.random_progress.setText('随机进度')
+        self.random_progress.resize(128, 32)
+        self.random_progress.clicked.connect(lambda : self.progress_bar.setProgress(random.random()))
+
+        self.shift_status = SiliconUI.SiButton(self)
+        self.shift_status.setText('随机切换状态')
+        self.shift_status.resize(128, 32)
+        self.shift_status.clicked.connect(lambda : self.progress_bar.setStatus(int(random.random()*3)))
+
+        self.random_color = SiliconUI.SiButton(self)
+        self.random_color.setText('随机颜色')
+        self.random_color.resize(128, 32)
+        self.random_color.clicked.connect(lambda : self.progress_bar.setBarColor(Color.random()))
+
+        self.stepping = SiliconUI.SiButton(self)
+        self.stepping.setText('随机步进')
+        self.stepping.resize(128, 32)
+        self.stepping.clicked.connect(lambda : self.progress_bar.stepping(random.random()/10))
+
+        self.layout_progress_bar_buttons.addItem(self.random_progress)
+        self.layout_progress_bar_buttons.addItem(self.shift_status)
+        self.layout_progress_bar_buttons.addItem(self.random_color)
+        self.layout_progress_bar_buttons.addItem(self.stepping)
+
+        self.layout_progress_bar.addItem(self.progress_bar)
+        self.layout_progress_bar.addItem(self.layout_progress_bar_buttons)
+
+        self.sticker_progressbar.addItem(self.layout_progress_bar)
+
+        self.stack_progressbar.addItem(self.sticker_progressbar)
+
+
+
+        ## ================ Stack 开始 ===================
+
+        self.stack_tableview = SiliconUI.SiStack(self)
+        self.stack_tableview.setTitle('表格')
+
+        self.sticker_tableview = WidgetsExampleDisplayer(self.stack_tableview)
+        self.sticker_tableview.setTitle('表格')
+        self.sticker_tableview.setWidth(800, 320)
+
+        self.table = SiliconUI.SiTable(self)
+        self.table.setClasses(
+            ['排名',  '用户名',  '分数',   '准确率', '评级',    'PP'],
+            [64,      196,      128,       96,      64,       64, ]
+        )
+        self.table.addData(['#1', 'BeautifulChicken', '1,000,000', '100.00%', 'SS', '120'])
+        self.table.addData(['#2', 'SummerainCN', '998,692', '98.87%', 'S', '97'])
+        self.table.addData(['#3', 'ChinaIceF', '462,534', '92.14%', 'A', '67'])
+        self.table.addData(['#4', 'SomeoneElse', '384,591', '91.25%', 'A', '87'])
+        self.table.addData(['#5', 'Rick_fake', '273,479', '89.73%', 'B', '76'])
+        self.table.addData(['#6', 'ImRealikun', '114,514', '91.98%', 'A', '34'])
+        self.table.addData(['#7', 'PlayerA', '-', '-', '-', '-'])
+        self.table.addData(['#8', 'PlayerB', '-', '-', '-', '-'])
+        self.table.addData(['#9', 'PlayerC', '-', '-', '-', '-'])
+        self.table.addData(['#10', 'PlayerD', '-', '-', '-', '-'])
+        self.table.resize(664, 200)
+
+        self.sticker_tableview.addItem(self.table)
+
+        self.stack_tableview.addItem(self.sticker_tableview)
+
+
+
         self.addItem(self.stack_labels)
         self.addItem(self.stack_buttons)
         self.addItem(self.stack_menus)
         self.addItem(self.stack_switchs)
         self.addItem(self.stack_sliderbar)
         self.addItem(self.stack_inputboxes)
+        self.addItem(self.stack_progressbar)
+        self.addItem(self.stack_tableview)

@@ -140,6 +140,7 @@ class GlazeExample(SiliconUI.SiFrame):
 
         self.stack_combobox.addItem(self.example_combobox)
 
+
         ## ================ Stack 开始 ===================
 
         self.popup_interfaces = SiliconUI.SiStack(self)

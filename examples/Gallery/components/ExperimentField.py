@@ -9,11 +9,12 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
 import numpy
 import time
 import os
+import random
 
 import SiliconUI
 import SiliconUI.SiGlobal as SiGlobal
-
 from SiliconUI.SiFont import *
+from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
@@ -60,6 +61,9 @@ class ExperimentField(SiliconUI.SiFrame):
         self.layout_music_info_placeholder.addItem(self.music_info_placeholder_2)
 
         self.stack_music_info_placeholder.addItem(self.layout_music_info_placeholder)
+
+
+
 
         self.addItem(self.discription)
         self.addItem(self.stack_music_info_placeholder)
