@@ -209,7 +209,7 @@ class SiMenu(QWidget):
     def _popupAnimationHandler(self, h):
         # 阴影有问题，所以需要采用重设大小的方法
         g = self.menubody.geometry()
-        x, y, w = g.x(), g.y(), g.width()
+        x, y, w, h = g.x(), g.y(), g.width(), int(h)
 
         if self.isReversed() == False:
             self.menubody.resize(w, h)
