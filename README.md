@@ -59,6 +59,7 @@ Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任
 
 ## 更新日志
 * 2024.6.19 开启 PySide6 分支并进行了迁移，对 PyQt5 和 PySide6 双支持，并更改了目录结构
+* 2024.6.21 添加 SiTable 控件和 SiProgressbar 控件，优化动画代码，更改动画逻辑
 
 ## License
 本项目采用 GPL-3.0 License，详见[这里](LICENSE)
