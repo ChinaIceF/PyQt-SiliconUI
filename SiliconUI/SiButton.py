@@ -80,6 +80,9 @@ class ClickableLabel(SiLabel):
         self.setAlpha(self.clicked_alpha)
         self.animation.try_to_start()
 
+    def setBorderRadius(self, radius):
+        self.radius = radius
+
     def isHolding(self):
         return self.button.holding
 
@@ -249,7 +252,8 @@ class SiButton(QLabel):
                 border-top-left-radius: 4px;
                 border-top-right-radius: 4px;
                 border-bottom-left-radius: 2px;
-                border-bottom-right-radius: 2px '''.format(*colorset.BTN_HL_HEX[0:2], colorset.BTN_HL_TEXT_HEX))
+                border-bottom-right-radius: 2px
+            '''.format(*colorset.BTN_HL_HEX[0:2], colorset.BTN_HL_TEXT_HEX))
 
         else:
             self.layer_back.setStyleSheet('''
@@ -372,3 +376,87 @@ class SiButtonHoldtoConfirm(SiButton):
             border-bottom-right-radius: 2px
             '''.format(p-0.01, p,
                        *colorset.BTN_HOLD_HEX[0:2], colorset.BTN_HOLD_TEXT_HEX))
+
+class SiRadioButtonGroup(object):
+    def __init__(self):
+        self.radio_buttons = []
+
+    def addItem(self, obj):
+        obj.chose.connect(self._choseHandler)
+        self.radio_buttons.append(obj)
+
+    def _choseHandler(self, chose_name):
+        for obj in self.radio_buttons:
+            if obj.name() != chose_name:
+                obj.deactivate()
+
+class SiRadioButton(SiLabel):
+    stateChanged = QtCore.pyqtSignal(bool)
+    chose = QtCore.pyqtSignal(str)
+
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.setStyleSheet('')
+
+        self.radius = 10
+        self.activated = False  # 是否被选中
+
+        self.status_label = QLabel(self)
+        self.status_label.resize(20, 20)
+        self.status_label.setStyleSheet('''
+            border: 2px solid {};
+            border-radius: {}px;
+        '''.format(colorset.BG_GRAD_HEX[0], self.radius))
+
+        self.border = ClickableLabel(self)
+        self.border.resize(20, 20)
+        self.border.setBorderRadius(10)
+        self.border.clicked.connect(self.activate)
+
+        self.option_name_label = SiLabel(self)
+        self.option_name_label.move(28, 0)
+        self.option_name_label.setAlignment(QtCore.Qt.AlignVCenter)
+        self.option_name_label.setStyleSheet('''
+            color: {};
+        '''.format(colorset.TEXT_GRAD_HEX[0]))
+
+    def name(self):
+        return self.option_name_label.text()
+
+    def setText(self, text):
+        self.option_name_label.setText(text)
+        self.adjustSize()
+
+    def adjustSize(self):
+        self.option_name_label.adjustSize()
+        self.resize(self.option_name_label.width()+28, self.height())
+
+    def isActivated(self):
+        return self.activated
+
+    def activate(self):
+        self.activated = True
+        self.stateChanged.emit(True)
+        self.chose.emit(self.name())
+        self.status_label.setStyleSheet('''
+            border: 4px solid {};
+            border-radius: {}px;
+        '''.format(colorset.BTN_HL_HEX[1], self.radius))
+
+    def deactivate(self):
+        self.activated = False
+        self.stateChanged.emit(False)
+        self.status_label.setStyleSheet('''
+            border: 2px solid {};
+            border-radius: {}px;
+        '''.format(colorset.BG_GRAD_HEX[0], self.radius))
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        w = event.size().width()
+        h = event.size().height()
+
+        self.status_label.move(0, (h-20)//2)
+        self.border.move(0, (h-20)//2)
+        self.option_name_label.setGeometry(28, 0, w-28, h)

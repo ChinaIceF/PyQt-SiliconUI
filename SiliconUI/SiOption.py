@@ -107,6 +107,11 @@ class SiOption(QWidget):
         self.background.resize(w, h)
         self.mask.resize(w, h)
 
+        try:
+            self.parent.adjustSize()
+        except:
+            pass
+
     def setUsability(self, status):
         self.mask.setVisible(not status)
 

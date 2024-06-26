@@ -15,6 +15,9 @@ class SiStack(QLabel):
         #self.bg = QLabel(self)
         #self.bg.setStyleSheet('background-color:#30ffffff')
 
+    def setInterval(self, interval):
+        self.interval = interval
+
     def setTitle(self, title):  # 如果不运行这个方法，这个组就没有标题
         self.title = QLabel(self)
         self.title.setGeometry(0, 0, 700, 24)  # 底下自己调整
@@ -51,7 +54,8 @@ class SiStack(QLabel):
 
     def adjustSize(self):
         g = self.geometry()
-        self.setGeometry(g.x(), g.y(), g.width(), self.getH())
+        w_max = max([0] + [item.width() for item in self.items])
+        self.setGeometry(g.x(), g.y(), max([w_max, g.width()]), self.getH())
         #self.bg.setGeometry(0, 0, g.width(), self.getH())
 
     def resizeEvent(self, event):

@@ -96,6 +96,7 @@ class SiAnimationStandard(SiAnimation):
         return self.target - self.current
 
     def stepLength(self, dis):
+        print(dis)
         if abs(dis) <= self.bias:
             return dis
         else:

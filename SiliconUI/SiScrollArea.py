@@ -92,8 +92,8 @@ class SiScrollArea(QLabel):
         else:
             self.scrollbar.setVisible(True)
 
-        self.scrollbar.setGeometry(g.width() - 8, 0, 8, int(h))
-        self.refresh_bar_geometry()
+            self.scrollbar.setGeometry(g.width() - 8, 0, 8, int(h))
+            self.refresh_bar_geometry()
 
     def change_position(self, y):
         self.content.move(0, int(y))
@@ -137,5 +137,5 @@ class SiScrollArea(QLabel):
     def resizeEvent(self, event):
         w = event.size().width()
 
-        self.content.resize(w, self.content.height())
+        self.content.resize(w, max(self.content.height(), self.height()))
         self.refresh_components()

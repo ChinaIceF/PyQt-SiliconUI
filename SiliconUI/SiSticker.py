@@ -13,6 +13,7 @@ class SiSticker(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
+        self.setStyleSheet('')
 
         self.substrate = QLabel(self)
         self.substrate.setStyleSheet('''

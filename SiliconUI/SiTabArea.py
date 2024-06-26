@@ -98,7 +98,7 @@ class SiTabArea(QLabel):
         self.content_area.setStyleSheet('')
 
         self.icon_layout = SiLayoutV(self)
-        self.icon_layout.setCenter(True)
+        self.icon_layout.setAlignCenter(True)
         self.icon_layout.setInterval(8)
 
         self.details_icon = TabButton(self.icon_layout, self.setShowing, 0)

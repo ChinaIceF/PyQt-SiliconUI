@@ -15,6 +15,7 @@ class SiTab(QLabel):
         self.setStyleSheet('')
 
         self.title_height = 96
+        self.left_margin = 64
 
         self.scrollarea = SiScrollArea(self)
         self.scrollarea.setGeometry(0, self.title_height, 0, 0)
@@ -29,7 +30,7 @@ class SiTab(QLabel):
 
     def setTitle(self, title):  # 如果不运行这个方法，这个组就没有标题
         self.title = QLabel(self)
-        self.title.setGeometry(64, 32, 0, self.title_height)  # 底下自己调整
+        self.title.setGeometry(self.left_margin, 32, 0, self.title_height)  # 底下自己调整
         self.title.setFont(font_L3_bold)
         self.title.setStyleSheet('color: {}'.format(colorset.TEXT_GRAD_HEX[0]))
         self.title.setText(title)

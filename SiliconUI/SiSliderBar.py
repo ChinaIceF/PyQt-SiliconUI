@@ -44,7 +44,7 @@ class SiSlider(QLabel):
         if not (event.buttons() & Qt.LeftButton):
             return
 
-        newpos = event.pos() + self.frameGeometry().topLeft() - self.anchor
+        newpos = event.pos() - self.anchor + self.frameGeometry().topLeft()
         max_x = self.max_x()
         x = max(0, min(newpos.x(), max_x))
 
