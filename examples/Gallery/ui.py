@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.Qt import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit, QDesktopWidget
 import numpy
 import time
 import os
@@ -69,8 +69,12 @@ class UserInterface(QMainWindow):
 
         # 初始化窗口
 
+        screen_geo = QDesktopWidget().screenGeometry()
+        w = 1200
+        h = 700
+
         self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setGeometry(0, 0, 1200, 700)
+        self.setGeometry((screen_geo.width()-w)//2, (screen_geo.height()-h)//2, w, h)
         self.setWindowTitle("Silicon Gallery")
 
         self.stackarea = SiliconUI.SiTabArea(self)
@@ -104,10 +108,20 @@ class UserInterface(QMainWindow):
         self.widgets_example.attachFrame(Components.Widgets.WidgetsExample(self.widgets_example))
         self.widgets_example.scrollarea.scrollbar.raise_()
 
+        self.layouts_example = SiliconUI.SiTab(self)
+        self.layouts_example.setTitle('布局')
+        self.layouts_example.attachFrame(Components.Layouts.LayoutsExample(self.layouts_example))
+        self.layouts_example.scrollarea.scrollbar.raise_()
+
         self.experiment_field = SiliconUI.SiTab(self)
         self.experiment_field.setTitle('实验场')
         self.experiment_field.attachFrame(Components.ExperimentField.ExperimentField(self.experiment_field))
         self.experiment_field.scrollarea.scrollbar.raise_()
+
+        self.update_logs = SiliconUI.SiTab(self)
+        self.update_logs.setTitle('更新日志')
+        self.update_logs.attachFrame(Components.UpdateLogs.UpdateLogs(self.update_logs))
+        self.update_logs.scrollarea.scrollbar.raise_()
 
         self.options = SiliconUI.SiTab(self)
         self.options.setTitle('设置')
@@ -117,6 +131,9 @@ class UserInterface(QMainWindow):
         # 添加到 stackarea
         self.stackarea.addTab(self.homepage, SiGlobal.icons.get('fi-rr-home'), '主页面')
         self.stackarea.addTab(self.widgets_example, SiGlobal.icons.get('fi-rr-layout-fluid'), '控件')
+        self.stackarea.addTab(self.layouts_example, SiGlobal.icons.get('fi-rr-copy'), '布局')
         self.stackarea.addTab(self.glaze_example, SiGlobal.icons.get('fi-rr-list'), 'Silicon Glaze 示例')
         self.stackarea.addTab(self.experiment_field, SiGlobal.icons.get('fi-rr-bulb'), '实验场')
+
         self.stackarea.addTab(self.options, SiGlobal.icons.get('fi-rr-settings'), '设置', 'bottom')
+        self.stackarea.addTab(self.update_logs, SiGlobal.icons.get('fi-rr-e-learning'), '更新日志', 'bottom')

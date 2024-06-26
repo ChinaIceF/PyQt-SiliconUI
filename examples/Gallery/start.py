@@ -11,12 +11,13 @@ if __name__ == '__main__':
 
     # 适应高DPI设备
     #QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(QtCore.Qt.AA_DisableHighDpiScaling)
+    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
     # 适应Windows缩放
     #QtGui.QGuiApplication.setAttribute(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.Ceil)
-    #QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
 
-    App = QApplication(sys.argv)
+
+    app = QApplication(sys.argv)
     Window = ui.UserInterface()
     Window.show()
-    sys.exit(App.exec_())
+    sys.exit(app.exec_())

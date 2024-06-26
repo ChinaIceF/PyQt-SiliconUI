@@ -88,7 +88,7 @@ class WidgetsExampleDisplayer(QLabel):
         layout = SiLayoutH(self)
         layout.setInterval(4)
         layout.setFixedWidth(self.sticker_status.width() - 48)
-        layout.setCenter(True)
+        layout.setAlignCenter(True)
         layout.addItem(new_type)
         layout.addItem(new_status)
         layout.addItem(new_value, 'right')
@@ -118,7 +118,7 @@ class WidgetsExampleDisplayer(QLabel):
             signal.connect(new_status.activate)
 
         layout = SiLayoutH(self)
-        layout.setCenter(True)
+        layout.setAlignCenter(True)
         layout.setInterval(4)
         layout.addItem(new_type)
         layout.addItem(new_status)
@@ -217,11 +217,77 @@ class WidgetsExample(SiliconUI.SiFrame):
         # 添加到 Sticker
         self.sticker_pixlabel_with_hint.addItem(self.layout_pixlabel)
 
+
+        self.sticker_movable_label = WidgetsExampleDisplayer(self.stack_labels)
+        self.sticker_movable_label.setTitle('可移动标签')
+        self.sticker_movable_label.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiLabel.py')
+
+        self.layout_movable_label = SiliconUI.SiLayoutH(self)
+        self.layout_movable_label.setFixedWidth(580)
+        self.layout_movable_label.setFixedHeight(80)
+
+        self.movable_label = SiliconUI.SiLabel(self)
+        self.movable_label.resize(128, 32)
+        self.movable_label.setHint('我是可移动标签，支持动画')
+        self.movable_label.setStyleSheet('''
+            border-radius: 4px;
+            background-color: {};
+        '''.format(colorset.BG_GRAD_HEX[4]))
+
+        self.layout_movable_label.addItem(self.movable_label)
+
+        self.layout_button = SiliconUI.SiLayoutH(self)
+
+        self.button_random_x = SiliconUI.SiButton(self)
+        self.button_random_x.setText('随机移动')
+        self.button_random_x.resize(128, 32)
+        self.button_random_x.clicked.connect(lambda : self.movable_label.moveTo(
+                int(random.random() * 404), int(random.random() * 48)))
+
+        self.button_return = SiliconUI.SiButton(self)
+        self.button_return.setText('回到原始位置')
+        self.button_return.resize(128, 32)
+        self.button_return.clicked.connect(
+            lambda : self.movable_label.moveTo(0, 0))
+
+        self.layout_button.addItem(self.button_random_x)
+        self.layout_button.addItem(self.button_return)
+
+        self.sticker_movable_label.addItem(self.layout_movable_label)
+        self.sticker_movable_label.addItem(self.layout_button)
+
+
+
+        self.sticker_draggable_label = WidgetsExampleDisplayer(self.stack_labels)
+        self.sticker_draggable_label.setTitle('可拖动标签')
+        self.sticker_draggable_label.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiLabel.py')
+
+        self.layout_draggable_label = SiliconUI.SiLayoutH(self)
+        self.layout_draggable_label.setFixedWidth(526)
+        self.layout_draggable_label.setFixedHeight(80)
+
+        self.draggable_label = SiliconUI.SiDraggableLabel(self)
+        self.draggable_label.resize(128, 32)
+        self.draggable_label.setHint('任意拖动，支持过渡动画')
+        self.draggable_label.setMoveLimits(0, 0, 526, 80)
+        self.draggable_label.animation_move.setFactor(1/6)  # 放慢动画
+        self.draggable_label.setStyleSheet('''
+            border-radius: 4px;
+            background-color: {};
+        '''.format(colorset.BG_GRAD_HEX[4]))
+
+        self.layout_draggable_label.addItem(self.draggable_label)
+
+        self.sticker_draggable_label.addItem(self.layout_draggable_label)
+
+
         # 添加
         self.stack_labels.addItem(self.sticker_label)
         self.stack_labels.addItem(self.sticker_pixlabel_with_hint)
-
-
+        self.stack_labels.addItem(self.sticker_movable_label)
+        self.stack_labels.addItem(self.sticker_draggable_label)
 
         ## ================ Stack 开始 ===================
 
@@ -326,11 +392,51 @@ class WidgetsExample(SiliconUI.SiFrame):
         # 添加到 sticker
         self.sticker_button_icon_label.addItem(self.button_icon_label)
 
+
+        self.sticker_radio_button = WidgetsExampleDisplayer(self.stack_labels)
+        self.sticker_radio_button.setTitle('单选框')
+        self.sticker_radio_button.setCodeURL(
+            'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiButton.py')
+
+        self.layout_radio_button = SiLayoutH(self)
+        self.layout_radio_button.setInterval(16)
+
+        self.radio_button = SiRadioButton(self)
+        self.radio_button.setText('炫我嘴里')
+        self.radio_button.setFixedWidth(96)
+
+        self.radio_button2 = SiRadioButton(self)
+        self.radio_button2.setText('睡大觉')
+        self.radio_button2.setFixedWidth(96)
+
+        self.radio_button3 = SiRadioButton(self)
+        self.radio_button3.setText('买买买')
+        self.radio_button3.setFixedWidth(96)
+
+        self.radio_button4 = SiRadioButton(self)
+        self.radio_button4.setText('来场旅行')
+        self.radio_button4.setFixedWidth(96)
+
+        self.layout_radio_button.addItem(self.radio_button)
+        self.layout_radio_button.addItem(self.radio_button2)
+        self.layout_radio_button.addItem(self.radio_button3)
+        self.layout_radio_button.addItem(self.radio_button4)
+
+        self.radio_button_group = SiRadioButtonGroup()
+        self.radio_button_group.addItem(self.radio_button)
+        self.radio_button_group.addItem(self.radio_button2)
+        self.radio_button_group.addItem(self.radio_button3)
+        self.radio_button_group.addItem(self.radio_button4)
+
+        # 添加到 sticker
+        self.sticker_radio_button.addItem(self.layout_radio_button)
+
         # 添加
         self.stack_buttons.addItem(self.sticker_button_normal)
         self.stack_buttons.addItem(self.sticker_button_icon)
         self.stack_buttons.addItem(self.sticker_button_label)
         self.stack_buttons.addItem(self.sticker_button_icon_label)
+        self.stack_buttons.addItem(self.sticker_radio_button)
 
 
         ## ================ Stack 开始 ===================
@@ -539,7 +645,6 @@ class WidgetsExample(SiliconUI.SiFrame):
         self.sticker_tableview.addItem(self.table)
 
         self.stack_tableview.addItem(self.sticker_tableview)
-
 
 
         self.addItem(self.stack_labels)
