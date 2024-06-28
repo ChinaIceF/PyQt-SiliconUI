@@ -25,7 +25,7 @@ class SubInterface(object):
 class OverlayShowUpAnimation(SiAnimation):
     def __init__(self, parent):
         super().__init__()
-        self.parent = parent
+        
 
     def distance(self):
         return self.target - self.current
@@ -43,7 +43,8 @@ class Background(QLabel):
     clicked = QtCore.pyqtSignal()
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
@@ -67,7 +68,8 @@ class Background(QLabel):
 class SiOverlay(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.y_interval = 128  # 中间框架的上留白
         self.width_ = 700

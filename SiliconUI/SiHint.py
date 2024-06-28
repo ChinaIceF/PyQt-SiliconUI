@@ -12,7 +12,7 @@ from .SiGlobal import colorset
 class FloatingSizeAnimation(SiAnimation):
     def __init__(self, parent):
         super().__init__()
-        self.parent = parent
+        
 
     def distance(self):
         return self.target - self.current
@@ -30,7 +30,7 @@ class FloatingSizeAnimation(SiAnimation):
 class FloatingTransparencyAnimation(SiAnimation):
     def __init__(self, parent):
         super().__init__()
-        self.parent = parent
+        
 
     def distance(self):
         return self.target - self.current

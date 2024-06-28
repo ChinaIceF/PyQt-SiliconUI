@@ -17,7 +17,8 @@ class SiSlider(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.dispersed = False  # 是否离散型
         self.levels = []  # 离散取值空间
@@ -93,7 +94,8 @@ class SiSliderBar(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.value_bar = QLabel(self)
         self.background_bar = QLabel(self)

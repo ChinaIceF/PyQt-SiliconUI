@@ -15,7 +15,8 @@ class SiComboBox(ClickableLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.highlight_alpha = 4
         self.setHoverAnimation(True)
 

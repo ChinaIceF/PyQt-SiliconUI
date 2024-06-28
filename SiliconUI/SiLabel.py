@@ -17,7 +17,8 @@ from .SiGlobal import *
 class LabelTextUpdateAnimation(SiAnimationObject.SiAnimation):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
 
     def stepLength(self, dis):
         return 2 if dis > 0 else -2
@@ -28,58 +29,15 @@ class LabelTextUpdateAnimation(SiAnimationObject.SiAnimation):
     def isCompleted(self):
         return self.distance() == 0
 
-class MovableLabelMoveAnimation(SiAnimationObject.SiAnimationStandard):
-    # 因为这个动画对象的变量是 ndarray，因此需要重写一些方法
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.parent = parent
-
-    def setTarget(self, x, y):
-        self.target = numpy.array([x, y])
-
-    def setCurrent(self, x, y):
-        self.current = numpy.array([x, y])
-
-    def stepLength(self, dis):
-        if (abs(dis)[0] <= self.bias) and (abs(dis)[1] <= self.bias):
-            return dis
-        else:
-            arr = (abs(dis) * self.factor + self.bias) * (
-                numpy.array([(1 if dis[0] > 0 else -1), (1 if dis[1] > 0 else -1)]))
-            # 对一个轴上的 dis 进行分析，如果某个轴上差距小于 bias，则返回这个轴上的差距
-            if abs(dis)[0] <= self.bias:
-                arr[0] = dis[0]
-            if abs(dis)[1] <= self.bias:
-                arr[1] = dis[1]
-
-            return arr
-
-    def process(self):
-        # 如果已经到达既定位置，终止计时器
-        if self.isCompleted():
-            self.stop()
-            return
-
-        dis = self.distance()
-        steplength = self.stepLength(dis)
-
-        # 更新数值
-        v = self.current + steplength
-        self.setCurrent(v[0], v[1])
-
-        # 发射信号
-        self.ticked.emit(self.current)
-
-    def isCompleted(self):
-        return (self.distance()[0] == 0) and (self.distance()[1] == 0)
-
 
 class SiLabel(QLabel):
     moved = pyqtSignal(object)
+    resized = pyqtSignal(object)
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
 
         self.setFont(SiFont.font_L1)
         self.setStyleSheet('color:{}'.format(colorset.TEXT_GRAD_HEX[0]))
@@ -87,14 +45,39 @@ class SiLabel(QLabel):
         self.autoAdjustSize = True  # 是否在设置文字时自动调节大小
         self.instant_move = False   # 是否立即移动而不运行动画
         self.move_limits = False    # 是否有限定区域
+        self.instant_resize = False # 是否立即重设大小而不运行动画
 
         self.hint = ''
 
-        self.animation_move = MovableLabelMoveAnimation(self)
+        self.animation_move = SiAnimationObject.SiAnimationStandardForArray(self)
         self.animation_move.setFactor(1/3)
         self.animation_move.setBias(1)
         self.animation_move.ticked.connect(self._moveAnimationHandler)
 
+        self.animation_resize = SiAnimationObject.SiAnimationStandardForArray(self)
+        self.animation_resize.setFactor(1/3)
+        self.animation_resize.setBias(1)
+        self.animation_resize.ticked.connect(self._resizeAnimationHandler)
+
+    def _resizeAnimationHandler(self, size_arr):
+        w, h = size_arr
+        self.resize(int(w), int(h))
+
+    def resizeEvent(self, event):
+        # resizeEvent 事件一旦被调用，控件的尺寸会瞬间改变
+        # 并且会立即调用动画的 setCurrent 方法，设置动画开始值为 event 中的 size()
+        super().resizeEvent(event)
+        size = event.size()
+        w, h = size.width(), size.height()
+        self.animation_resize.setCurrent([w, h])
+        self.resized.emit([w, h])
+
+    def resizeTo(self, w, h):
+        if self.instant_resize == False and self.isVisible() == True:
+            self.animation_resize.setTarget([w, h])
+            self.activateResize()
+        else:
+            self.resize(w, h)
 
     def setAutoAdjustSize(self, b):
         self.autoAdjustSize = b
@@ -150,37 +133,80 @@ class SiLabel(QLabel):
         super().moveEvent(event)
         pos = event.pos()
         x, y = pos.x(), pos.y()
-        self.animation_move.setCurrent(x, y)
+        self.animation_move.setCurrent([x, y])
         self.moved.emit([x, y])
 
     def moveTo(self, x, y):
         # moveTo 方法不同于 move，它经过动画（如果开启）
         x, y = self._legalizeMovingTarget(x, y)
         if self.instant_move == False:
-            self.animation_move.setTarget(x, y)
-            self.activate()
+            self.animation_move.setTarget([x, y])
+            self.activateMove()
         else:
             self.move(x, y)
 
-    def activate(self):
+    def activateMove(self):
         self.animation_move.try_to_start()
 
-    def deactivate(self):
+    def deactivateMove(self):
         self.animation_move.stop()
 
-    def isActive(self):
+    def isMoveActive(self):
         return self.animation_move.isActive()
+
+    def activateResize(self):
+        self.animation_resize.try_to_start()
+
+    def deactivateResize(self):
+        self.animation_resize.stop()
+
+    def isResizeActive(self):
+        return self.animation_resize.isActive()
 
     def setInstantMove(self, b):
         self.instant_move = b
         if b == True:  # 如果更改为立即移动，立即终止动画，并完成动画
-            self.deactivate()
+            self.deactivateMove()
             x, y = self.animation_move.target
             self.move(x, y)
+
+    def setInstantResize(self, b):
+        self.instant_resize = b
+        if b == True:  # 如果更改为立即移动，立即终止动画，并完成动画
+            self.deactivateResize()
+            x, y = self.animation_resize.target
+            self.move(x, y)
+
+    def propagateAdjustSize(self, widget = None):
+        if widget is None:
+            widget = self
+
+        # 对比前后两次是否真正调整了大小
+        size = [widget.width(), widget.height()]
+        widget.adjustSize()
+
+        # 如果调整了大小
+        if size != [widget.width(), widget.height()]:
+            # 如果有父控件，则继续向上传播
+            if widget.parent() is not None:
+                self.propagateAdjustSize(widget.parent())
+    '''
+    def adjustSize(self):
+        # 对比前后两次是否真正调整了大小
+        size = [self.width(), self.height()]
+        super().adjustSize()
+
+        # 如果调整了大小
+        if size != [self.width(), self.height()]:
+            # 如果有父控件，则继续向上传播
+            if self.parent() is not None:
+                self.parent.adjustSize()
+    '''
 
 class SiLabelHasUpdateAnimation(SiLabel):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.animation = LabelTextUpdateAnimation(self)
         self.animation.ticked.connect(self._changedAnimationHandler)
@@ -212,7 +238,8 @@ class SiLabelHasUpdateAnimation(SiLabel):
 class SiPixLabel(SiLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
         self.border_radius = 32
         self.blur_radius = 0
         self.path = None
@@ -260,7 +287,8 @@ class SiDraggableLabel(SiLabel):
     # 具有跟随功能的标签控件
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
         self.setMouseTracking(True)
 
     def mousePressEvent(self, event):

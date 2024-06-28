@@ -12,7 +12,8 @@ from .SiGlobal import *
 class SiSticker(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setStyleSheet('')
 
         self.substrate = QLabel(self)
@@ -84,6 +85,7 @@ class SiSticker(QLabel):
 class SiStickerWithTitleButton(SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.title_button = SiButtonFlat(self)
         self.title_button.resize(32, 32)
@@ -93,6 +95,7 @@ class SiStickerWithTitleButton(SiSticker):
 class SiStickerWithBottomButton(SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.bottom_button = SiButtonFlat(self)
         self.bottom_button.resize(32, 32)

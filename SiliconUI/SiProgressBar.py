@@ -15,7 +15,8 @@ from .SiGlobal import *
 class ProgressBarFrame(SiLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
     def enterEvent(self, event):
         super().enterEvent(event)
@@ -31,7 +32,8 @@ class SiProgressBar(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.border_radius = 4
         self.progress_colors = {

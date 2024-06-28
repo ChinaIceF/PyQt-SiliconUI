@@ -12,7 +12,8 @@ from .SiFont import *
 class SiInfo(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.type = 0
         self.color = colorset.INF_HEX
 

@@ -25,8 +25,7 @@ os.environ['QT_SCALE_FACTOR'] = str(SA_SCALE_FACTOR)
 from .SiFont import *
 from .SiButton import *
 from .SiOption import *
-from .SiFrame import *
-from .SiStack import *
+from .SiScrollFrame import *
 from .SiScrollArea import *
 from .SiTab import *
 from .SiTabArea import *

@@ -15,7 +15,8 @@ import time
 class FlatButtonAnimation(SiAnimationObject.SiAnimation):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
     def stepLength(self, dis):
         return 2 if dis > 0 else -2
@@ -31,6 +32,7 @@ class ButtonHasHoldSignal(QPushButton):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.holding = False
         self.ignore_click_event = False
 
@@ -57,6 +59,7 @@ class ClickableLabel(SiLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         #self.setStyleSheet('')
 
         self.highlight_alpha = 12
@@ -118,11 +121,13 @@ class ClickableLabel(SiLabel):
 class SiButtonLabel(ClickableLabel):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
 class SiButtonFlat(ClickableLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.hint = ''
 
@@ -162,7 +167,8 @@ class SiButtonFlat(ClickableLabel):
 class SiButtonFlatWithLabel(SiButtonFlat):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.label = QLabel(self)
         self.label.lower()
@@ -193,6 +199,7 @@ class SiButtonFlatWithLabel(SiButtonFlat):
 class ClickableLabelForButton(ClickableLabel):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.button.setStyleSheet('''
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;
@@ -216,8 +223,9 @@ class SiButton(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.setStyleSheet('')
-        self.parent = parent
+        
         self.name = None
 
         self.frame = QLabel(self)
@@ -287,7 +295,8 @@ class SiButtonHoldThread(QtCore.QThread):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
     def delta(self):
         p = self.parent.progress
@@ -326,7 +335,8 @@ class SiButtonHoldtoConfirm(SiButton):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.progress = 0
 
@@ -352,12 +362,18 @@ class SiButtonHoldtoConfirm(SiButton):
 
     def enterEvent(self, event):
         super().enterEvent(event)
-        SiGlobal.floating_window.show_animation()
-        SiGlobal.floating_window.setText('长按以确定')
+        try:
+            SiGlobal.floating_window.show_animation()
+            SiGlobal.floating_window.setText('长按以确定')
+        except:
+            pass
 
     def leaveEvent(self, event):
         super().enterEvent(event)
-        SiGlobal.floating_window.hide_animation()
+        try:
+            SiGlobal.floating_window.hide_animation()
+        except:
+            pass
 
     def _holdAnimationHandler(self, _):
         if self.isHolding() == True:
@@ -396,6 +412,7 @@ class SiRadioButton(SiLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.setStyleSheet('')
 

@@ -22,7 +22,8 @@ class SiOption(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.items = []
 
@@ -107,10 +108,6 @@ class SiOption(QWidget):
         self.background.resize(w, h)
         self.mask.resize(w, h)
 
-        try:
-            self.parent.adjustSize()
-        except:
-            pass
 
     def setUsability(self, status):
         self.mask.setVisible(not status)
@@ -137,7 +134,8 @@ class SiOption(QWidget):
 class SiOptionLink(SiOption):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         # 设定大小
         self.btwidth = 32
@@ -166,7 +164,8 @@ class SiOptionLink(SiOption):
 class SiOptionSourceCode(SiOptionLink):  # 源代码
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.url = 'www.baidu.com'
 
@@ -183,7 +182,8 @@ class SiOptionSourceCode(SiOptionLink):  # 源代码
 class SiOptionButton(SiOption):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         # 规定按钮的几何关系
         self.btwidth = 128
@@ -214,7 +214,8 @@ class SiOptionButton(SiOption):
 class SiOptionButtonHoldtoConfirm(SiOption):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         # 规定按钮的几何关系
         self.btwidth = 128
@@ -246,7 +247,8 @@ class SiOptionButtonHoldtoConfirm(SiOption):
 class SiOptionSwitch(SiOption):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         # 设置大小
         self.schwidth = 128
@@ -268,7 +270,8 @@ class SiOptionSwitch(SiOption):
 class SiOptionSliderBar(SiOption):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         # 设置大小
         self.sliwidth = 320
@@ -287,7 +290,8 @@ class SiOptionSliderBar(SiOption):
 class SiOptionInputBox(SiOption):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         # 设定大小
         self.btwidth = 192
@@ -306,7 +310,8 @@ class SiOptionInputBox(SiOption):
 class SiOptionComboBox(SiOption):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         # 设定大小
         self.btwidth = 192

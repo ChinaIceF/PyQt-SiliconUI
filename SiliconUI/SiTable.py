@@ -11,11 +11,10 @@ import time
 import os
 
 import SiliconUI
-import SiliconUI.SiGlobal as SiGlobal
-from SiliconUI.SiGlobal import colorset
-from SiliconUI.SiSticker import SiSticker
-from SiliconUI.SiButton import SiButtonLabel
-from SiliconUI.SiFont import *
+from .SiGlobal import colorset
+from .SiSticker import SiSticker
+from .SiButton import SiButtonLabel
+from .SiFont import *
 
 class SingleData(SiliconUI.SiLabel):
     def __init__(self, data, strong = False, color = colorset.TEXT_GRAD_HEX[1]):
@@ -35,7 +34,8 @@ class SingleData(SiliconUI.SiLabel):
 class ScrollContent(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.backgrounds = []
 
@@ -81,7 +81,8 @@ class ScrollContent(QLabel):
 class SiTable(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.classes = []
         self.classes_width = []

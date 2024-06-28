@@ -83,6 +83,7 @@ class SiAnimation(QObject):
 class SiAnimationStandard(SiAnimation):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.factor = 1/8
         self.bias = 0.01
 
@@ -96,7 +97,6 @@ class SiAnimationStandard(SiAnimation):
         return self.target - self.current
 
     def stepLength(self, dis):
-        print(dis)
         if abs(dis) <= self.bias:
             return dis
         else:
@@ -104,3 +104,32 @@ class SiAnimationStandard(SiAnimation):
 
     def isCompleted(self):
         return self.distance() == 0
+
+
+class SiAnimationStandardForArray(SiAnimationStandard):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent =  parent
+
+    def setTarget(self, target):
+        if type(target) == float or type(target) == int:
+            print('警告：你使用了适用于数组的动画类，但是传入了单个数字，这可能具有误导性')
+        self.target = numpy.array(target)
+
+    def setCurrent(self, current):
+        if type(current) == float or type(current) == int:
+            print('警告：你使用了适用于数组的动画类，但是传入了单个数字，这可能具有误导性')
+        self.current = numpy.array(current)
+
+    def stepLength(self, dis):
+        if (abs(dis) <= self.bias).all() == True:
+            return dis
+
+        cut = numpy.array(abs(dis) <= self.bias, dtype = 'int8')
+        arr = abs(dis) * self.factor + self.bias                    # 基本指数动画运算
+        arr = arr * (numpy.array(dis > 0, dtype = 'int8') * 2 - 1)  # 确定动画方向
+        arr = arr * (1 - cut) + dis * cut                           # 对于差距小于偏置的项，直接返回差距
+        return arr
+
+    def isCompleted(self):
+        return (self.distance() == 0).all()

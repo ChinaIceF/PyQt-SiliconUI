@@ -16,7 +16,8 @@ from .SiGlobal import *
 class OptionHoverAnimation(SiAnimation):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
 
     def stepLength(self, dis):
         return 2 if dis > 0 else -2
@@ -30,6 +31,7 @@ class OptionHoverAnimation(SiAnimation):
 class PopupAnimation(SiAnimation):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.parent = parent
 
     def distance(self):
@@ -55,7 +57,8 @@ class SingleOption(QLabel):
 
     def __init__(self, parent, name, value):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
         self.name = name
         self.value = value
 
@@ -116,7 +119,8 @@ class SingleOption(QLabel):
 class MenuBody(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
         self.options_label = []
         self.layout = SiLayoutV(self)
         self.layout.interval = 2
@@ -163,7 +167,8 @@ class SiMenu(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
         self.setMouseTracking(True)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowFlags(Qt.Popup |

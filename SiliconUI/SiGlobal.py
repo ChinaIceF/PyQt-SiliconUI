@@ -72,7 +72,7 @@ class SiColorDark(Color):
     BTN_NORM_TEXT_HEX = TEXT_GRAD_HEX[1]
     BTN_NORM_HEX = [
         BG_GRAD_HEX[4], # 正常
-        BG_GRAD_HEX[2], # 阴影
+        Color.mix(BG_GRAD_HEX[2], '#000000', 0.9), # 阴影
     ]
 
     BTN_HL_TEXT_HEX = '#FFFFFF'

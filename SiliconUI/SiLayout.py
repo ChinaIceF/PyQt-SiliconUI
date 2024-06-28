@@ -2,26 +2,25 @@ from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import *
-from PyQt5.Qt import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
+from PyQt5.QtWidgets import QLabel
 
 from .SiLabel import *
-from .SiStack import *
 from .SiButton import *
+from .SiFont import *
 
-class SiLayoutV(QLabel):
+# 垂直布局
+class SiLayoutV(SiLabel):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.contents_top = []
         self.contents_bottom = []
         self.align_center = False
-        self.adjust_item = False       # 是否调节内容以适应 Layout 的尺寸
+        self.adjust_item_size = False       # 是否调节内容以适应 Layout 的尺寸
         self.interval = 16
 
-    def setAdjustItem(self, b):
-        self.adjust_item = b
+    def setAdjustItemSize(self, b):
+        self.adjust_item_size = b
 
     def setAlignCenter(self, b):
         self.align_center = b
@@ -46,45 +45,13 @@ class SiLayoutV(QLabel):
             self.contents_top.append(item)
         if side == 'bottom':
             self.contents_bottom.append(item)
-        self.refresh_components()
         self.adjustSize()
 
-    def refresh_components(self):
-        size = self.geometry()
-        w, h = size.width(), size.height()
-
-        top_used = 0
-        bottom_used = 0
-
-        for obj in self.contents_top:
-            if self.adjust_item == True:
-                obj.setFixedWidth(w)
-            obj_geo = obj.geometry()
-            ow, oh = obj_geo.width(), obj_geo.height()
-            obj.move((w - ow)//2 if self.align_center else 0, top_used)
-            top_used += oh + self.interval
-
-        for obj in self.contents_bottom:
-            if self.adjust_item == True:
-                obj.setFixedWidth(w)
-            obj_geo = obj.geometry()
-            ow, oh = obj_geo.width(), obj_geo.height()
-            obj.move((w - ow)//2 if self.align_center else 0, h - oh - bottom_used)
-            bottom_used += oh + self.interval
-
-        total_used = top_used + bottom_used
-        total_used -= 0 if self.contents_top == [] else self.interval
-        total_used -= 0 if self.contents_bottom == [] else self.interval
-
-        self.setMinimumSize(0, total_used)
-
-    def resizeEvent(self, event):
-        self.refresh_components()
-
     def adjustSize(self):
-
+        # 根据控件内容调整自己的尺寸
         top_used = 0
         bottom_used = 0
+
         for obj in self.contents_top:
             top_used += obj.height() + self.interval
         for obj in self.contents_bottom:
@@ -104,17 +71,49 @@ class SiLayoutV(QLabel):
 
         self.resize(prefered_w, prefered_h)
 
-class SiLayoutH(QLabel):
+    def resizeEvent(self, event):
+        self.adjustItemGeometry()
+        super().resizeEvent(event)
+
+    def adjustItemGeometry(self):
+        # 由于自身尺寸的改变或是内容的改变
+        # 这个方法需要被调用，以让其内容适应自身尺寸的变化
+
+        size = self.geometry()
+        w, h = size.width(), size.height()
+
+        top_used = 0
+        bottom_used = 0
+
+        for obj in self.contents_top:
+            if self.adjust_item_size == True:
+                obj.resize(w, obj.height())
+            obj_geo = obj.geometry()
+            ow, oh = obj_geo.width(), obj_geo.height()
+            obj.move((w - ow)//2 if self.align_center else 0, top_used)
+            top_used += oh + self.interval
+
+        for obj in self.contents_bottom:
+            if self.adjust_item_size == True:
+                obj.resize(w, obj.height())
+            obj_geo = obj.geometry()
+            ow, oh = obj_geo.width(), obj_geo.height()
+            obj.move((w - ow)//2 if self.align_center else 0, h - oh - bottom_used)
+            bottom_used += oh + self.interval
+
+# 水平布局
+class SiLayoutH(SiLabel):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.contents_left = []
         self.contents_right = []
         self.align_center = False
-        self.adjust_item = False       # 是否调节内容以适应 Layout 的尺寸
+        self.adjust_item_size = False       # 是否调节内容以适应 Layout 的尺寸
         self.interval = 16
 
-    def setAdjustItem(self, b):
-        self.adjust_item = b
+    def setAdjustItemSize(self, b):
+        self.adjust_item_size = b
 
     def setAlignCenter(self, b):
         self.align_center = b
@@ -139,10 +138,10 @@ class SiLayoutH(QLabel):
             self.contents_left.append(item)
         if side == 'right':
             self.contents_right.append(item)
-        self.refresh_components()
+
         self.adjustSize()
 
-    def refresh_components(self):
+    def adjustItemGeometry(self):
         size = self.geometry()
         w, h = size.width(), size.height()
 
@@ -150,7 +149,7 @@ class SiLayoutH(QLabel):
         right_used = 0
 
         for obj in self.contents_left:
-            if self.adjust_item == True:
+            if self.adjust_item_size == True:
                 obj.setFixedHeight(h)
             obj_geo = obj.geometry()
             ow, oh = obj_geo.width(), obj_geo.height()
@@ -158,22 +157,16 @@ class SiLayoutH(QLabel):
             left_used += ow + self.interval
 
         for obj in self.contents_right:
-            if self.adjust_item == True:
+            if self.adjust_item_size == True:
                 obj.setFixedHeight(h)
             obj_geo = obj.geometry()
             ow, oh = obj_geo.width(), obj_geo.height()
             obj.move(w - ow - right_used, (h - oh) // 2 if self.align_center else 0)
             right_used += ow + self.interval
 
-        total_used = left_used + right_used
-        total_used -= 0 if self.contents_left == [] else self.interval
-        total_used -= 0 if self.contents_right == [] else self.interval
-
-        self.setMinimumSize(total_used, 0)
-
     def resizeEvent(self, event):
+        self.adjustItemGeometry()
         super().resizeEvent(event)
-        self.refresh_components()
 
     def adjustSize(self):
         left_used = 0
@@ -198,9 +191,11 @@ class SiLayoutH(QLabel):
 
         self.resize(prefered_w, prefered_h)
 
-class SiFlowLayout(QLabel):
+# 流式布局
+class SiFlowLayout(SiLabel):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.items = []
         self.interval = [8, 8]
 
@@ -246,21 +241,22 @@ class SiFlowLayout(QLabel):
             line_w += item_w + interval_x
 
         total_h += line_h  # 还有最后一行没加上
-        self.resize(self.width(), total_h)
+        self.resizeTo(self.width(), total_h)
 
-class SiStackedLayoutNavbar(SiStack):   # 这是 SiStackedLayout 的导航栏
+
+# 栈布局的导航栏
+class SiStackedLayoutNavbar(SiLayoutV):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
+
+
         self.setStyleSheet('')
         self.setInterval(0)
-        self.parent = parent
+        self.setAdjustItemSize(True)
 
-        self.holder = QLabel(self)
-        self.holder.setFixedHeight(6)
-
-        self.holder_line = QLabel(self.holder)
+        self.holder_line = QLabel(self)
         self.holder_line.setFixedHeight(1)
-        self.holder_line.move(0, 2)
         self.holder_line.setStyleSheet('''
             border-radius: 1px;
             background-color: {}
@@ -277,23 +273,20 @@ class SiStackedLayoutNavbar(SiStack):   # 这是 SiStackedLayout 的导航栏
         self.layout_page_label.setFixedHeight(32)
 
         self.addItem(self.layout_page_label)
-        self.addItem(self.holder)
+        self.addItem(self.holder_line)
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        w = event.size().width()
-        self.holder_line.setFixedWidth(w)
-
-
-class SiStackedLayout(SiStack):
+# 栈布局
+class SiStackedLayout(SiLayoutV):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
         self.page_labels = []
         self.pages = []
+        self.setInterval(8)
+        self.setAdjustItemSize(True)
 
         self.navbar = SiStackedLayoutNavbar(self)
-
         self.addItem(self.navbar)
 
     def showEvent(self, event):
@@ -323,11 +316,11 @@ class SiStackedLayout(SiStack):
         x_label, w_label = obj_label.geometry().x(), obj_label.geometry().width()
         w_anchor = int(w_label * 0.618)
         self.navbar.anchor.moveTo(x_label + (w_label - w_anchor)//2, 28)
-        self.navbar.anchor.resize(w_anchor, 4)
+        self.navbar.anchor.resizeTo(w_anchor, 4)
 
 
     def addPage(self, pagename):
-        new_stack = SiStack(self)
+        new_stack = SiCategory(self)
         new_stack.move(0, 64)
         self.pages.append(new_stack)
 
@@ -359,3 +352,44 @@ class SiStackedLayout(SiStack):
         w = event.size().width()
         for page in self.pages:
             page.setFixedWidth(w)
+
+
+# 类的标题
+class SiCategoryTitle(SiLabel):
+    # SiCategory 的标题，有背景高光
+    def __init__(self, parent, title):
+        super().__init__(parent)
+        self.parent =  parent
+
+        self.setFixedHeight(25)
+
+        # 标题文字
+        self.title = SiLabel(self)
+        self.title.setFixedHeight(24)
+        self.title.setFont(font_L2_bold)
+        self.title.setText(title)
+
+        # 标题高光
+        self.title_highlight = QLabel(self)
+        self.title_highlight.lower()
+        self.title_highlight.setGeometry(0, 12, self.title.width() + 6, 13)
+        self.title_highlight.setStyleSheet('''
+            background-color: {};
+            border-radius: 4px
+        '''.format(colorset.STK_HL_HEX))
+
+        self.adjustSize()
+
+    def adjustSize(self):
+        self.resize(self.title_highlight.width(), self.height())
+
+# 类
+class SiCategory(SiLayoutV):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent =  parent
+        self.setInterval(8)
+        self.setAdjustItemSize(True)    # 设置内容适应 Layout
+
+    def setTitle(self, title):
+        self.addItem(SiCategoryTitle(title = title, parent = self))

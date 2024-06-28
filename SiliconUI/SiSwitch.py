@@ -13,8 +13,9 @@ class SiSwitch(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.setStyleSheet('')
-        self.parent = parent
+        
         self.name = None
         self.status = False
 

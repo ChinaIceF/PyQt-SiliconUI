@@ -12,7 +12,8 @@ class SiInputBoxLineEdit(QLineEdit):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
     def focusInEvent(self, event):
         super().focusInEvent(event)
@@ -32,8 +33,9 @@ class SiInputBox(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
         self.setStyleSheet('')
-        self.parent = parent
+        
 
         self.highlight_bg = QLabel(self)
         self.bg = QLabel(self)

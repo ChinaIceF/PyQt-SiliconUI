@@ -14,7 +14,8 @@ class SiScrollBar(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setMouseTracking(True)  # 开启鼠标追踪
 
     def mousePressEvent(self, event):
@@ -45,11 +46,11 @@ class SiScrollBar(QLabel):
 class SiScrollArea(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.content = None
 
         self.target_y = 0
-        self.rightside_interval = 48
 
         self.scrollbar = SiScrollBar(self)
         self.scrollbar.setStyleSheet('background-color: #7fffffff; border-radius: 4px')

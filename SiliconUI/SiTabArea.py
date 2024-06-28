@@ -15,7 +15,8 @@ from .SiGlobal import *
 class TabButton(QLabel):
     def __init__(self, parent, func, index):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.index = index
         self.setStyleSheet('')
 
@@ -48,6 +49,7 @@ class TabButton(QLabel):
 class AnimationTab(SiAnimationObject.SiAnimation):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
     def distance(self):
         return self.target - self.current
@@ -65,7 +67,8 @@ class SiTabArea(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.animation = AnimationTab(self)
         self.animation.ticked.connect(self.change_content_position)

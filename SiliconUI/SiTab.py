@@ -11,7 +11,8 @@ from .SiGlobal import *
 class SiTab(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setStyleSheet('')
 
         self.title_height = 96
