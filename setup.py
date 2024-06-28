@@ -3,7 +3,6 @@
 # 定义项目需要的依赖项
 install_requires = [
     'PyQt5>=5.15.10',
-    'PySide6>=6.1.3',
     'numpy'
 ]
 
