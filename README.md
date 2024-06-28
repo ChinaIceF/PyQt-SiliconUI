@@ -48,18 +48,17 @@ python setup.py install
 > silicon.SiTabArea  
 >> silicon.SiTab
 >>> silicon.SiFrame   
->>>> silicon.SiStack  
+>>>> silicon.SiCategory  
 >>>>> silicon.SiOptionButton  
 >>>>> silicon.SiOptionSwitch  
 >>>>> silicon.SiOptionComboBox  
 >>>>> ......  
 
-### 在其他 PyQt5 项目中使用
-Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任意 PyQt5 项目中调用它们，并据你喜好进行自定义
+### 在其他项目中使用
+Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任意项目中调用它们，并据你喜好进行自定义
 
 ## 更新日志
-* 2024.6.19 开启 PySide6 分支并进行了迁移，对 PyQt5 和 PySide6 双支持，并更改了目录结构
-* 2024.6.21 添加 SiTable 控件和 SiProgressbar 控件，优化动画代码，更改动画逻辑
+更新日志现在已经移动到 Silicon Gallery 中，日志从 2024.6.25 开始记录
 
 ## License
 本项目采用 GPL-3.0 License，详见[这里](LICENSE)
