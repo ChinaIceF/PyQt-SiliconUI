@@ -17,7 +17,7 @@ import SiliconUI.SiGlobal as SiGlobal
 class SubInterface_B(SiliconUI.SiOverlay.SubInterface):
     def __init__(self, parent, name):
         super().__init__()
-        self.parent = parent
+        
         self.width_ = 740
         self.body = Body_B(parent)
         self.operation = Operation_B(parent)
@@ -26,7 +26,8 @@ class SubInterface_B(SiliconUI.SiOverlay.SubInterface):
 class Operation_B(SiliconUI.SiLayoutH):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setAlignCenter(True)
 
         self.btn1 = SiliconUI.SiButton(self)
@@ -51,15 +52,16 @@ class Operation_B(SiliconUI.SiLayoutH):
 class Body_B(SiliconUI.SiTab):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.setTitle('管理文件备份')
 
-        self.frame = SiliconUI.SiFrame(self)
+        self.frame = SiliconUI.SiScrollFrame(self)
 
         # ========= stack 开始 =========
 
-        self.stack_dir = SiliconUI.SiStack(self.frame)
+        self.stack_dir = SiliconUI.SiCategory(self.frame)
         self.stack_dir.setTitle('目录设置')
 
         self.aim = SiliconUI.SiOptionInputBox(self.stack_dir)
@@ -77,7 +79,7 @@ class Body_B(SiliconUI.SiTab):
 
         # ========= stack 开始 =========
 
-        self.stack_settings = SiliconUI.SiStack(self.frame)
+        self.stack_settings = SiliconUI.SiCategory(self.frame)
         self.stack_settings.setTitle('备份设置')
 
         self.frequency = SiliconUI.SiOptionInputBox(self.stack_settings)
@@ -122,7 +124,8 @@ class Body_B(SiliconUI.SiTab):
         self.stack_settings.addItem(self.frequency)
         self.stack_settings.addItem(self.independency)
         self.stack_settings.addItem(self.mode)
-        self.stack_settings.addItem(self.info_layout_v, 16)
+        self.stack_settings.addItem(self.info_layout_v)
+        self.stack_settings.addVacant(16)
 
 
         # 添加到 frame

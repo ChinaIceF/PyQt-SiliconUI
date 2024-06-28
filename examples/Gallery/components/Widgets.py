@@ -20,6 +20,7 @@ from SiliconUI.SiGlobal import *
 class WidgetsExampleDisplayer(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         widgets_sticker_width = 580
         status_sticker_width = 320
@@ -143,6 +144,7 @@ class WidgetsExampleDisplayer(QLabel):
 class WidgetSticker(SiliconUI.SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.button_github = SiButtonFlat(self)
         self.button_github.resize(32, 32)
@@ -160,10 +162,11 @@ class WidgetSticker(SiliconUI.SiSticker):
         self.head.addItem(self.button_report_bug, side = 'right')
 
 
-class WidgetsExample(SiliconUI.SiFrame):
+class WidgetsExample(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setStyleSheet('')
         self.max_width_policy = False  # 取消过长中置
 
@@ -171,7 +174,7 @@ class WidgetsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_labels = SiliconUI.SiStack(self)
+        self.stack_labels = SiliconUI.SiCategory(self)
         self.stack_labels.setTitle('标签')
 
         self.sticker_label = WidgetsExampleDisplayer(self.stack_labels)
@@ -219,7 +222,7 @@ class WidgetsExample(SiliconUI.SiFrame):
 
 
         self.sticker_movable_label = WidgetsExampleDisplayer(self.stack_labels)
-        self.sticker_movable_label.setTitle('可移动标签')
+        self.sticker_movable_label.setTitle('动画标签')
         self.sticker_movable_label.setCodeURL(
             'https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/silicon/SiLabel.py')
 
@@ -229,7 +232,8 @@ class WidgetsExample(SiliconUI.SiFrame):
 
         self.movable_label = SiliconUI.SiLabel(self)
         self.movable_label.resize(128, 32)
-        self.movable_label.setHint('我是可移动标签，支持动画')
+        self.movable_label.setHint('我是动画标签，支持 moveTo, resizeTo 方法')
+        self.movable_label.setMoveLimits(0, 0, 532, 80)
         self.movable_label.setStyleSheet('''
             border-radius: 4px;
             background-color: {};
@@ -243,16 +247,25 @@ class WidgetsExample(SiliconUI.SiFrame):
         self.button_random_x.setText('随机移动')
         self.button_random_x.resize(128, 32)
         self.button_random_x.clicked.connect(lambda : self.movable_label.moveTo(
-                int(random.random() * 404), int(random.random() * 48)))
+                int(random.random() * 532), int(random.random() * 80)))
 
-        self.button_return = SiliconUI.SiButton(self)
-        self.button_return.setText('回到原始位置')
-        self.button_return.resize(128, 32)
-        self.button_return.clicked.connect(
+        self.button_random_size = SiliconUI.SiButton(self)
+        self.button_random_size.setText('随机大小')
+        self.button_random_size.resize(128, 32)
+        self.button_random_size.clicked.connect(lambda : self.movable_label.resizeTo(
+                int(random.random() * 256 + 8), int(random.random() * 64 + 8)))
+
+        self.button_reset = SiliconUI.SiButton(self)
+        self.button_reset.setText('还原初始状态')
+        self.button_reset.resize(128, 32)
+        self.button_reset.clicked.connect(
             lambda : self.movable_label.moveTo(0, 0))
+        self.button_reset.clicked.connect(
+            lambda : self.movable_label.resizeTo(128, 32))
 
         self.layout_button.addItem(self.button_random_x)
-        self.layout_button.addItem(self.button_return)
+        self.layout_button.addItem(self.button_random_size)
+        self.layout_button.addItem(self.button_reset)
 
         self.sticker_movable_label.addItem(self.layout_movable_label)
         self.sticker_movable_label.addItem(self.layout_button)
@@ -291,7 +304,7 @@ class WidgetsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_buttons = SiliconUI.SiStack(self)
+        self.stack_buttons = SiliconUI.SiCategory(self)
         self.stack_buttons.setTitle('按钮')
 
         self.sticker_button_normal = WidgetsExampleDisplayer(self.stack_labels)
@@ -441,7 +454,7 @@ class WidgetsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_menus = SiliconUI.SiStack(self)
+        self.stack_menus = SiliconUI.SiCategory(self)
         self.stack_menus.setTitle('菜单')
 
         self.sticker_combobox = WidgetsExampleDisplayer(self.stack_menus)
@@ -475,7 +488,7 @@ class WidgetsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_switchs = SiliconUI.SiStack(self)
+        self.stack_switchs = SiliconUI.SiCategory(self)
         self.stack_switchs.setTitle('开关')
 
         self.sticker_switch = WidgetsExampleDisplayer(self.stack_switchs)
@@ -499,7 +512,7 @@ class WidgetsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_sliderbar = SiliconUI.SiStack(self)
+        self.stack_sliderbar = SiliconUI.SiCategory(self)
         self.stack_sliderbar.setTitle('滑动条')
 
         self.sticker_sliderbar_free = WidgetsExampleDisplayer(self.stack_sliderbar)
@@ -538,7 +551,7 @@ class WidgetsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_inputboxes = SiliconUI.SiStack(self)
+        self.stack_inputboxes = SiliconUI.SiCategory(self)
         self.stack_inputboxes.setTitle('输入框')
 
         self.sticker_inputboxes = WidgetsExampleDisplayer(self.stack_inputboxes)
@@ -567,7 +580,7 @@ class WidgetsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_progressbar = SiliconUI.SiStack(self)
+        self.stack_progressbar = SiliconUI.SiCategory(self)
         self.stack_progressbar.setTitle('进度条')
 
         self.sticker_progressbar = WidgetsExampleDisplayer(self.stack_progressbar)
@@ -618,7 +631,7 @@ class WidgetsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_tableview = SiliconUI.SiStack(self)
+        self.stack_tableview = SiliconUI.SiCategory(self)
         self.stack_tableview.setTitle('表格')
 
         self.sticker_tableview = WidgetsExampleDisplayer(self.stack_tableview)

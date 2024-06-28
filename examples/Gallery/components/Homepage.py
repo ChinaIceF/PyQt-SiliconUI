@@ -7,10 +7,9 @@ import time
 import numpy
 
 from SiliconUI.SiScrollArea import *
-from SiliconUI.SiFrame import *
+from SiliconUI.SiScrollFrame import *
 from SiliconUI.SiFont import *
 from SiliconUI.SiSticker import *
-from SiliconUI.SiStack import *
 from SiliconUI.SiLayout import *
 from SiliconUI.SiSwitch import *
 from SiliconUI.SiSliderBar import *
@@ -22,7 +21,8 @@ from SiliconUI.SiInfo import *
 class SiPixButton(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.image_label = QLabel(self)
         self.mask = QLabel(self)
@@ -95,6 +95,7 @@ class SiPixButton(QLabel):
 class WidgetSticker(SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.button_github = SiButtonFlat(self)
         self.button_github.resize(32, 32)
@@ -125,6 +126,7 @@ class WidgetSticker(SiSticker):
 class WidgetSticker_Buttons(WidgetSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.widgets = SiLayoutH(self)
         self.widgets.resize(500, 32)
@@ -152,6 +154,7 @@ class WidgetSticker_Buttons(WidgetSticker):
 class WidgetSticker_Switches(WidgetSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.widgets = SiLayoutH(self)
         self.widgets.resize(500, 32)
@@ -166,6 +169,7 @@ class WidgetSticker_Switches(WidgetSticker):
 class WidgetSticker_Sliders(WidgetSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.slider_A = SiSliderBar(self)
         self.slider_A.resize(500, 32)
@@ -175,6 +179,7 @@ class WidgetSticker_Sliders(WidgetSticker):
 class WidgetSticker_InputBoxes(WidgetSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.widgets = SiLayoutH(self)
         self.widgets.resize(500, 32)
@@ -189,6 +194,7 @@ class WidgetSticker_InputBoxes(WidgetSticker):
 class GlazeSticker(WidgetSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.glaze_example = SiOptionButton(self)
         self.glaze_example.resize(500, 0)
@@ -204,10 +210,11 @@ class GlazeSticker(WidgetSticker):
 
         self.glaze_example.resize(w - 48, self.glaze_example.geometry().height())
 
-class SiHomePage(SiFrame):
+class SiHomePage(SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setStyleSheet('')
 
         self.rightside_interval = 0
@@ -271,7 +278,7 @@ class SiHomePage(SiFrame):
 
         # ============== Stack 开始 ===============
 
-        self.widgets_stack = SiStack(self)
+        self.widgets_stack = SiCategory(self)
         self.widgets_stack.setTitle('Silicon 控件')
         self.widgets_stack.resize(1000, 0)
 
@@ -314,7 +321,7 @@ class SiHomePage(SiFrame):
 
         # ============== Stack 开始 ===============
 
-        self.glazes_stack = SiStack(self)
+        self.glazes_stack = SiCategory(self)
         self.glazes_stack.setTitle('Silicon Glaze 界面构建模板')
         self.glazes_stack.resize(916, 0)
 
@@ -330,7 +337,7 @@ class SiHomePage(SiFrame):
 
         # ============== Stack 开始 ===============
 
-        self.info_stack = SiStack(self)
+        self.info_stack = SiCategory(self)
         self.info_stack.setTitle('提示信息')
         self.info_stack.resize(916, 0)
 

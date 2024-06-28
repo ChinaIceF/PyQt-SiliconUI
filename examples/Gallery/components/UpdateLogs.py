@@ -29,10 +29,16 @@ class Log(object):
     def addText(self, text):
         self.columns[-1][1] = self.columns[-1][1] + text
 
-class UpdateLogs(SiliconUI.SiFrame):
+    def __str__(self):
+        return str(self.columns)
+
+class UpdateLogs(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
+        self.log_tabs = []
+
         self.max_width_policy = False  # 取消过长中置
         self.setStyleSheet('')
 
@@ -78,22 +84,15 @@ class UpdateLogs(SiliconUI.SiFrame):
 
         return logs
 
+    def showLog(self, obj):
+        for tab in self.log_tabs:
+            tab.setVisible(False)
+        obj.setVisible(True)
+
     def loadUpdates(self):
         logs = self._log_parser('./updatelogs/updates.txt')
 
         for log in logs:
-
-            new_button = SiliconUI.ClickableLabel(self)
-            new_button.setStyleSheet('''
-                background-color: {};
-                color: {};
-                padding: 4px;
-                border-radius: 4px;
-            '''.format(colorset.BG_GRAD_HEX[3], colorset.TEXT_GRAD_HEX[0]))
-            new_button.setFixedHeight(32)
-            new_button.setText(log.title)
-            self.flowlayout_versions.addItem(new_button)
-
 
             version_tab =  SiliconUI.SiTab(self)
             version_tab.left_margin = 0
@@ -101,15 +100,14 @@ class UpdateLogs(SiliconUI.SiFrame):
             version_tab.setTitle(log.title)
             version_tab.move(400, -32)
 
-            version_stack = SiliconUI.SiStack(self)
+            version_stack = SiliconUI.SiLayoutV(self)
             version_stack.setFixedWidth(self.log_width)
-            version_stack.delta = 0
 
             for column in log.columns:
                 title, text = column
                 if text == '' or text == '\n' :
                     continue  # 跳过没有内容的column
-                new_stack = SiliconUI.SiStack(self)
+                new_stack = SiliconUI.SiCategory(self)
                 new_stack.setTitle(title)
 
                 new_label = SiliconUI.SiLabel(self)
@@ -121,6 +119,20 @@ class UpdateLogs(SiliconUI.SiFrame):
                 version_stack.addItem(new_stack)
 
             version_tab.attachFrame(version_stack)
+            version_tab.setVisible(False)
+            self.log_tabs.append(version_tab)
+
+            new_button = SiliconUI.ClickableLabel(self)
+            new_button.clicked.connect(gen_function(self, version_tab))
+            new_button.setStyleSheet('''
+                background-color: {};
+                color: {};
+                padding: 4px;
+                border-radius: 4px;
+            '''.format(colorset.BG_GRAD_HEX[3], colorset.TEXT_GRAD_HEX[0]))
+            new_button.setFixedHeight(32)
+            new_button.setText(log.title)
+            self.flowlayout_versions.addItem(new_button)
 
         self.sticker_versions.adjustSize()
 
@@ -129,3 +141,8 @@ class UpdateLogs(SiliconUI.SiFrame):
         super().resizeEvent(event)
         h = event.size().height()
         self.layout_main.setFixedHeight(h)
+
+
+
+def gen_function(self, obj):
+    return lambda : self.showLog(obj)

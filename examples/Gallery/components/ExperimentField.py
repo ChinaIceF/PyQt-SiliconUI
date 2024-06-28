@@ -18,10 +18,11 @@ from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
-class ExperimentField(SiliconUI.SiFrame):
+class ExperimentField(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setStyleSheet('')
 
         self.discription = SiliconUI.SiOption(self)
@@ -30,7 +31,7 @@ class ExperimentField(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_music_info_placeholder = SiliconUI.SiStack(self)
+        self.stack_music_info_placeholder = SiliconUI.SiCategory(self)
         self.stack_music_info_placeholder.setTitle('音乐信息展示板')
 
         self.layout_music_info_placeholder = SiliconUI.SiLayoutH(self)

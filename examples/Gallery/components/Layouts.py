@@ -22,6 +22,7 @@ from SiliconUI.SiGlobal import *
 class WidgetSticker(SiliconUI.SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent =  parent
 
         self.button_github = SiButtonFlat(self)
         self.button_github.resize(32, 32)
@@ -40,10 +41,11 @@ class WidgetSticker(SiliconUI.SiSticker):
 
 
 
-class LayoutsExample(SiliconUI.SiFrame):
+class LayoutsExample(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+
         self.setStyleSheet('')
         self.max_width_policy = False  # 取消过长中置
 
@@ -51,7 +53,7 @@ class LayoutsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_layouts_basics = SiliconUI.SiStack(self)
+        self.stack_layouts_basics = SiliconUI.SiCategory(self)
         self.stack_layouts_basics.setTitle('基本布局')
 
         self.sticker_flow_layouts = WidgetSticker(self.stack_layouts_basics)
@@ -97,7 +99,7 @@ class LayoutsExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_layouts_advanced = SiliconUI.SiStack(self)
+        self.stack_layouts_advanced = SiliconUI.SiCategory(self)
         self.stack_layouts_advanced.setTitle('高级布局')
 
         self.sticker_stacked_layouts = WidgetSticker(self.stack_layouts_advanced)

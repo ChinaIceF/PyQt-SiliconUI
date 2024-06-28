@@ -16,15 +16,16 @@ import SiliconUI.SiGlobal as SiGlobal
 from .sub_example_A import *
 from .sub_example_B import *
 
-class GlazeExample(SiliconUI.SiFrame):
+class GlazeExample(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setStyleSheet('')
 
         ## ================ Stack 开始 ===================
 
-        self.stack_basics = SiliconUI.SiStack(self)
+        self.stack_basics = SiliconUI.SiCategory(self)
         self.stack_basics.setTitle('预设组合控件基类')
 
         self.example_silicon_option_basic = SiliconUI.SiOption(self.stack_basics)
@@ -42,7 +43,7 @@ class GlazeExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_buttons = SiliconUI.SiStack(self)
+        self.stack_buttons = SiliconUI.SiCategory(self)
         self.stack_buttons.setTitle('按钮选项')
 
         self.example_silicon_option_button = SiliconUI.SiOptionButton(self.stack_buttons)
@@ -65,7 +66,7 @@ class GlazeExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_switches = SiliconUI.SiStack(self)
+        self.stack_switches = SiliconUI.SiCategory(self)
         self.stack_switches.setTitle('开关选项')
 
         self.example_silicon_option_switch = SiliconUI.SiOptionSwitch(self.stack_switches)
@@ -90,7 +91,7 @@ class GlazeExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_sliderbars = SiliconUI.SiStack(self)
+        self.stack_sliderbars = SiliconUI.SiCategory(self)
         self.stack_sliderbars.setTitle('滑条选项')
 
         self.example_silicon_option_sliderbar = SiliconUI.SiOptionSliderBar(self.stack_sliderbars)
@@ -108,7 +109,7 @@ class GlazeExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_inputboxes = SiliconUI.SiStack(self)
+        self.stack_inputboxes = SiliconUI.SiCategory(self)
         self.stack_inputboxes.setTitle('输入框选项')
 
         self.example_silicon_option_inputbox = SiliconUI.SiOptionInputBox(self.stack_inputboxes)
@@ -121,7 +122,7 @@ class GlazeExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_combobox = SiliconUI.SiStack(self)
+        self.stack_combobox = SiliconUI.SiCategory(self)
         self.stack_combobox.setTitle('下拉菜单选项')
 
         self.example_combobox = SiliconUI.SiOptionComboBox(self.stack_combobox)
@@ -143,7 +144,7 @@ class GlazeExample(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.popup_interfaces = SiliconUI.SiStack(self)
+        self.popup_interfaces = SiliconUI.SiCategory(self)
         self.popup_interfaces.setTitle('二级界面选项')
 
         self.example_silicon_popup_interfaces = SiliconUI.SiOptionButton(self.popup_interfaces)

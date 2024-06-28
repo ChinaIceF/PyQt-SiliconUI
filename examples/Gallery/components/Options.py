@@ -21,7 +21,8 @@ from SiliconUI.SiButton import SiButtonLabel
 class NameTag(SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         # 所有内容的 LayoutH
         self.layout_all_content = SiliconUI.SiLayoutH(self)
@@ -78,15 +79,16 @@ class NameTag(SiSticker):
         self.layout_labels.resize(self.layout_labels.width(), h - 48)
 
 
-class Options(SiliconUI.SiFrame):
+class Options(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setStyleSheet('')
 
         ## ================ Stack 开始 ===================
 
-        self.stack_developers = SiliconUI.SiStack(self)
+        self.stack_developers = SiliconUI.SiCategory(self)
         self.stack_developers.setTitle('开发者')
 
         self.layout_developers = SiliconUI.SiLayoutH(self.stack_developers)
@@ -115,7 +117,7 @@ class Options(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_about = SiliconUI.SiStack(self)
+        self.stack_about = SiliconUI.SiCategory(self)
         self.stack_about.setTitle('关于')
 
         self.about = SiliconUI.SiOption(self.stack_about)
@@ -139,7 +141,7 @@ class Options(SiliconUI.SiFrame):
 
         ## ================ Stack 开始 ===================
 
-        self.stack_quotes = SiliconUI.SiStack(self)
+        self.stack_quotes = SiliconUI.SiCategory(self)
         self.stack_quotes.setTitle('第三方资源')
 
         self.icons = SiliconUI.SiOptionSourceCode(self.stack_about)

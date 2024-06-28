@@ -19,7 +19,8 @@ from SiliconUI.SiGlobal import colorset
 class MusicInfoPlaceholder(SiliconUI.SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.bg = SiliconUI.SiPixLabel(self)
         self.bg.setRadius(8)

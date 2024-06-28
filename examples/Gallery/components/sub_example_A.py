@@ -17,7 +17,7 @@ import SiliconUI.SiGlobal as SiGlobal
 class SubInterface_A(SiliconUI.SiOverlay.SubInterface):
     def __init__(self, parent, name):
         super().__init__()
-        self.parent = parent
+        
         self.width = 724
         self.body = Body_A(parent)
         self.operation = Operation_A(parent)
@@ -26,7 +26,8 @@ class SubInterface_A(SiliconUI.SiOverlay.SubInterface):
 class Operation_A(SiliconUI.SiLayoutH):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
         self.setAlignCenter(True)
 
         self.btn1 = SiliconUI.SiButton(self)
@@ -51,15 +52,16 @@ class Operation_A(SiliconUI.SiLayoutH):
 class Body_A(SiliconUI.SiTab):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.parent =  parent
+        
 
         self.setTitle('设置通行证A')
 
-        self.frame = SiliconUI.SiFrame(self)
+        self.frame = SiliconUI.SiScrollFrame(self)
 
         # ========= stack 开始 =========
 
-        self.stack_basics = SiliconUI.SiStack(self.frame)
+        self.stack_basics = SiliconUI.SiCategory(self.frame)
 
         self.inputpass = SiliconUI.SiOptionInputBox(self.stack_basics)
         self.inputpass.setText('通行证秘钥', '秘钥形如 XXXXX-XXXXX-XXXXX',)
@@ -76,7 +78,7 @@ class Body_A(SiliconUI.SiTab):
 
         # ========= stack 开始 =========
 
-        self.stack_advances = SiliconUI.SiStack(self.frame)
+        self.stack_advances = SiliconUI.SiCategory(self.frame)
         self.stack_advances.setTitle('高级')
 
         self.try_to_update = SiliconUI.SiOptionSwitch(self.stack_advances)

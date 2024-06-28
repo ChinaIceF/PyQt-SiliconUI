@@ -60,7 +60,7 @@ class UserInterface(QMainWindow):
         # 对象从属关系
         # SiliconUI.SiTabArea
         #     SiliconUI.SiTab （里面包含一个标题和一个SiliconUI.SiScrollArea）
-        #         SiliconUI.SiFrame
+        #         SiliconUI.SiScrollFrame
         #             SiliconUI.SiStack
         #                 SiliconUI.SiOptionButton
         #                 SiliconUI.SiOptionSwitch
