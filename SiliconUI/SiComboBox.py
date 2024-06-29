@@ -56,8 +56,3 @@ class SiComboBox(ClickableLabel):
         self.label.resize(w, h)
         self.arrow.move(w - 24, (h-16)//2)
         self.menu.resize(w + 2 * self.menu.margin, self.menu.height())
-
-    def initialize_stylesheet(self):
-        pass
-
-
