@@ -7,8 +7,12 @@ authors = [
 ]
 description = "A powerful and artistic UI library based on PyQt5 / PySide6"
 readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.8"
 dependencies = ["PyQt5>=5.15.10"]
 
 [project.urls]
 Repository = "https://github.com/ChinaIceF/PyQt-SiliconUI"
+
+[tool.ruff.lint]
+select = ["I", "E", "W", "F", "C", "Q", "PT", "UP", "PYI", "T20"]
