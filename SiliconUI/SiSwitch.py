@@ -104,8 +104,7 @@ class SiSwitch(QLabel):
 
         if (g.x() + distance - 3) / 20 >= 0.5:
             self.switch_frame.setStyleSheet('''
-                background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                                  stop:0 {}, stop:1 {});
+                background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {}, stop:1 {});
                 border-radius: 10px'''.format(*colorset.THEME_HEX))
             self.switch_lever.setStyleSheet('''
                 background-color:{};

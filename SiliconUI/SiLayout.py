@@ -251,17 +251,11 @@ class SiStackedLayoutNavbar(SiLayoutV):
 
         self.holder_line = QLabel(self)
         self.holder_line.setFixedHeight(1)
-        self.holder_line.setStyleSheet('''
-            border-radius: 1px;
-            background-color: {}
-        '''.format(colorset.BG_GRAD_HEX[1]))
+        self.holder_line.setStyleSheet('border-radius: 1px; background-color: {}'.format(colorset.BG_GRAD_HEX[1]))
 
         self.anchor = SiLabel(self)
         self.anchor.setGeometry(0, 28, 32, 4)
-        self.anchor.setStyleSheet('''
-            border-radius: 2px;
-            background-color: {};
-        '''.format(colorset.BTN_HL_HEX[1]))
+        self.anchor.setStyleSheet('border-radius: 2px; background-color: {};'.format(colorset.BTN_HL_HEX[1]))
 
         self.layout_page_label = SiLayoutH(self)
         self.layout_page_label.setFixedHeight(32)
@@ -312,7 +306,6 @@ class SiStackedLayout(SiLayoutV):
         self.navbar.anchor.moveTo(x_label + (w_label - w_anchor)//2, 28)
         self.navbar.anchor.resizeTo(w_anchor, 4)
 
-
     def addPage(self, pagename):
         new_stack = SiCategory(self)
         new_stack.move(0, 64)
@@ -320,14 +313,9 @@ class SiStackedLayout(SiLayoutV):
 
         new_label = ClickableLabel(self)
         new_label.setFixedHeight(32)
-        new_label.setStyleSheet('''
-            color: {};
-            padding: 4px;
-            border-radius: 4px;
-        '''.format(colorset.TEXT_GRAD_HEX[0]))
+        new_label.setStyleSheet('color: {}; padding: 4px; border-radius: 4px;'.format(colorset.TEXT_GRAD_HEX[0]))
         new_label.setText(pagename)
-        new_label.clicked.connect(
-            lambda : self._pageChangeHandler(new_stack, new_label))
+        new_label.clicked.connect(lambda : self._pageChangeHandler(new_stack, new_label))
         self.page_labels.append(new_label)
         self.navbar.layout_page_label.addItem(new_label)
 
@@ -367,10 +355,7 @@ class SiCategoryTitle(SiLabel):
         self.title_highlight = QLabel(self)
         self.title_highlight.lower()
         self.title_highlight.setGeometry(0, 12, self.title.width() + 6, 13)
-        self.title_highlight.setStyleSheet('''
-            background-color: {};
-            border-radius: 4px
-        '''.format(colorset.STK_HL_HEX))
+        self.title_highlight.setStyleSheet('background-color: {}; border-radius: 4px'.format(colorset.STK_HL_HEX))
 
         self.adjustSize()
 

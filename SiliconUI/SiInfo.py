@@ -62,4 +62,9 @@ class SiInfo(QLabel):
         self.background.resize(w, h)
         self.title.setGeometry(self.interval_w, self.interval_h, cw, 16)
         self.divition_line.setGeometry(self.interval_w, self.interval_h + 16 + self.interval_h, cw, 1)
-        self.discription.setGeometry(self.interval_w, self.interval_h + 16 + self.interval_h + self.interval_h, cw, ch - 16 - 2 * self.interval_h)
+        self.discription.setGeometry(
+            self.interval_w,
+            self.interval_h + 16 + self.interval_h + self.interval_h,
+            cw,
+            ch - 16 - 2 * self.interval_h
+        )

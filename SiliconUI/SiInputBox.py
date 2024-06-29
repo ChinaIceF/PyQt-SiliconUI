@@ -11,8 +11,7 @@ class SiInputBoxLineEdit(QLineEdit):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
+        self.parent = parent
 
     def focusInEvent(self, event):
         super().focusInEvent(event)
@@ -34,7 +33,6 @@ class SiInputBox(QLabel):
         super().__init__(parent)
         self.parent =  parent
         self.setStyleSheet('')
-        
 
         self.highlight_bg = QLabel(self)
         self.bg = QLabel(self)
@@ -63,8 +61,7 @@ class SiInputBox(QLabel):
         self.line_edit.returnPressed.connect(self.line_edit.clearFocus)
 
         self.highlight_bg.setStyleSheet('''
-            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                              stop:0 {}, stop:1 {});
+            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {}, stop:1 {});
             border-radius:4px '''.format(*colorset.THEME_HEX))
 
         self.bg.setStyleSheet('''

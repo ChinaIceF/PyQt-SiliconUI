@@ -8,10 +8,7 @@ class SingleData(SiliconUI.SiLabel):
     def __init__(self, data, strong = False, color = colorset.TEXT_GRAD_HEX[1]):
         super().__init__(parent = None)
         self.setFixedHeight(32)
-        self.setStyleSheet('''
-            color: {};
-            padding: 4px
-        '''.format(color))
+        self.setStyleSheet('color: {}; padding: 4px'.format(color))
 
         self.setText(data)
 
@@ -22,8 +19,7 @@ class SingleData(SiliconUI.SiLabel):
 class ScrollContent(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
+        self.parent = parent
 
         self.backgrounds = []
 

@@ -16,7 +16,6 @@ class SubInterface(object):
 class OverlayShowUpAnimation(SiAnimation):
     def __init__(self, parent):
         super().__init__()
-        
 
     def distance(self):
         return self.target - self.current

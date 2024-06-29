@@ -67,20 +67,14 @@ class SingleOption(QLabel):
         self.resize(self.parent.geometry().width(), 32)
         self.setText(name)
         self.setFont(font_L1)
-        self.setStyleSheet('''
-            padding-left: 12px;
-            padding-right: 12px;
-            color:{}; '''.format(colorset.TEXT_GRAD_HEX[0]))
+        self.setStyleSheet('padding-left: 12px; padding-right: 12px; color:{};'.format(colorset.TEXT_GRAD_HEX[0]))
 
         self.colorbar = QLabel(self)
         self.colorbar.lower()
         self.colorbar.setVisible(False)
         self.colorbar.setStyleSheet('''
-            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                              stop:0 #30{}, stop:1 #30{});
-            border-radius:6px; '''.format(
-                colorset.THEME_HEX[0][1:], colorset.THEME_HEX[1][1:] # 去井号
-            ))
+            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #30{}, stop:1 #30{});
+            border-radius:6px; '''.format(colorset.THEME_HEX[0][1:], colorset.THEME_HEX[1][1:]))
 
         self.animation = OptionHoverAnimation(self)
         self.animation.ticked.connect(self._hoverAnimationHandler)
@@ -126,9 +120,7 @@ class MenuBody(QLabel):
         self.layout.interval = 2
         self.preferred_height = 0
 
-        self.setStyleSheet('''
-            background-color: {};
-            border-radius: 6px'''.format(colorset.BG_GRAD_HEX[2]))
+        self.setStyleSheet('background-color: {}; border-radius: 6px'.format(colorset.BG_GRAD_HEX[2]))
 
     def addOption(self, name, value):
         new_option = SingleOption(self, name, value)
@@ -171,9 +163,7 @@ class SiMenu(QWidget):
 
         self.setMouseTracking(True)
         self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowFlags(Qt.Popup |
-                            Qt.FramelessWindowHint |
-                            Qt.NoDropShadowWindowHint)
+        self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
         self.status = False    # 展开为 True
 
         self.menubody = MenuBody(self)
@@ -265,14 +255,12 @@ class SiMenu(QWidget):
         x, y, direction = self._adjustedPopupPosAndDirection(x, y, w, h)
 
         self.direction = direction
-        self.setGeometry(
-            x, y, w + 2 * margin, self.menubody.preferred_height + 2 * margin)
+        self.setGeometry(x, y, w + 2 * margin, self.menubody.preferred_height + 2 * margin)
 
         if self.isReversed() == False:
             self.menubody.setGeometry(margin, margin, w, 0)  # 内容就绪
         else:
-            self.menubody.setGeometry(
-                margin, self.menubody.preferred_height - margin, w, 0)
+            self.menubody.setGeometry(margin, self.menubody.preferred_height - margin, w, 0)
 
         # 设置动画的起点和终点，动画操作对象是目录
         self.popup_animation.setCurrent(0)

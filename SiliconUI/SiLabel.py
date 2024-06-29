@@ -13,8 +13,7 @@ from .SiGlobal import *
 class LabelTextUpdateAnimation(SiAnimationObject.SiAnimation):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-
+        self.parent = parent
 
     def stepLength(self, dis):
         return 2 if dis > 0 else -2
@@ -265,7 +264,7 @@ class SiPixLabel(SiLabel):
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
         path = QPainterPath()
-        path.addRoundedRect(0, 0,
+        path.addRoundedRect(0,                  0,
                             self.width(),       self.height(),
                             self.border_radius, self.border_radius)
 

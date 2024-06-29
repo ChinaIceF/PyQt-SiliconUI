@@ -6,7 +6,6 @@ from .SiGlobal import colorset
 class FloatingSizeAnimation(SiAnimation):
     def __init__(self, parent):
         super().__init__()
-        
 
     def distance(self):
         return self.target - self.current
@@ -132,16 +131,9 @@ class FloatingWindow(QWidget):
 
         w, h = size.width(), size.height()
 
-        self.highlight.setGeometry(
-            self.shadow_radius,         self.shadow_radius,
-            w - 2 * self.shadow_radius, h - 2 * self.shadow_radius)
-        self.background.setGeometry(
-            self.shadow_radius,         self.shadow_radius,
-            w - 2 * self.shadow_radius, h - 2 * self.shadow_radius)
-        self.label.setGeometry(
-            self.interval + self.shadow_radius, self.shadow_radius,
-            w - dw,                             h - dh)
-
+        self.highlight.setGeometry(self.shadow_radius, self.shadow_radius, w-2*self.shadow_radius, h-2*self.shadow_radius)
+        self.background.setGeometry(self.shadow_radius, self.shadow_radius, w-2*self.shadow_radius, h-2*self.shadow_radius)
+        self.label.setGeometry(self.interval + self.shadow_radius, self.shadow_radius, w - dw, h - dh)
 
     def refresh_position(self):
         pos = QCursor.pos()

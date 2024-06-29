@@ -14,8 +14,7 @@ import time
 class FlatButtonAnimation(SiAnimationObject.SiAnimation):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
+        self.parent = parent
 
     def stepLength(self, dis):
         return 2 if dis > 0 else -2
@@ -58,8 +57,7 @@ class ClickableLabel(SiLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        #self.setStyleSheet('')
+        self.parent = parent
 
         self.highlight_alpha = 12
         self.clicked_alpha = 40
@@ -125,9 +123,7 @@ class SiButtonLabel(ClickableLabel):
 class SiButtonFlat(ClickableLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
-
+        self.parent = parent
         self.hint = ''
 
         self.icon = QSvgWidget(self)
@@ -160,23 +156,18 @@ class SiButtonFlat(ClickableLabel):
         super().resizeEvent(event)
         w = event.size().width()
         h = event.size().height()
-        self.icon.setGeometry((w - self.icon_w) // 2, (h - self.icon_h) // 2,
-                              self.icon_w           , self.icon_h)
+        self.icon.setGeometry((w - self.icon_w) // 2, (h - self.icon_h) // 2, self.icon_w, self.icon_h)
 
 class SiButtonFlatWithLabel(SiButtonFlat):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
+        self.parent = parent
 
         self.label = QLabel(self)
         self.label.lower()
         self.label.setFont(SiFont.font_L1)
         self.label.setFixedHeight(32)
-        self.label.setStyleSheet('''
-            color:{};
-            padding-left: 12px;
-            '''.format(colorset.TEXT_GRAD_HEX[0]))
+        self.label.setStyleSheet('color:{}; padding-left: 12px;'.format(colorset.TEXT_GRAD_HEX[0]))
         self.label.setAlignment(QtCore.Qt.AlignVCenter)
 
     def setFixedHeight(self, h):
@@ -230,8 +221,7 @@ class SiButton(QLabel):
         self.frame = QLabel(self)
         self.layer_back = QLabel(self.frame)
         self.layer_front = ClickableLabelForButton(self.frame)
-        self.layer_front.setAlignment(QtCore.Qt.AlignHCenter |
-                                      QtCore.Qt.AlignVCenter)
+        self.layer_front.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.layer_front.setFont(SiFont.font_L1_bold)
 
         self.layer_front.clicked.connect(self.clicked.emit)
@@ -248,13 +238,11 @@ class SiButton(QLabel):
     def initialize_stylesheet(self, strong = False):
         if strong:
             self.layer_back.setStyleSheet('''
-                background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                                 stop:0 {}, stop:1 {});
+                background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {}, stop:1 {});
                 border-radius: 4px'''.format(*colorset.BTN_HL_HEX[2:4]))
 
             self.layer_front.setStyleSheet('''
-                background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                                  stop:0 {}, stop:1 {});
+                background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {}, stop:1 {});
                 color: {};
                 border-top-left-radius: 4px;
                 border-top-right-radius: 4px;
@@ -273,10 +261,7 @@ class SiButton(QLabel):
                 border-top-left-radius: 4px;
                 border-top-right-radius: 4px;
                 border-bottom-left-radius: 2px;
-                border-bottom-right-radius: 2px '''.format(
-                    colorset.BTN_NORM_HEX[0],
-                    colorset.BTN_NORM_TEXT_HEX,
-                ))
+                border-bottom-right-radius: 2px '''.format(colorset.BTN_NORM_HEX[0], colorset.BTN_NORM_TEXT_HEX))
 
     def resizeEvent(self, event):
         w = event.size().width()
@@ -311,7 +296,6 @@ class SiButtonHoldThread(QtCore.QThread):
                 time_start_waiting = time.time()
                 self.parent.progress += self.delta()
                 self.progress_changed.emit()
-                #print(self.parent.progress)
                 time.sleep(1/60)
 
             if self.parent.progress > 1:
@@ -342,9 +326,7 @@ class SiButtonHoldtoConfirm(SiButton):
         self.thread = SiButtonHoldThread(self)
         self.thread.progress_changed.connect(self.paintProgress)
 
-        self.layer_back.setStyleSheet('''
-            background-color:{};
-            border-radius: 4px'''.format(colorset.BTN_HOLD_HEX[2]))
+        self.layer_back.setStyleSheet('background-color:{}; border-radius: 4px'.format(colorset.BTN_HOLD_HEX[2]))
         self.layer_front.setStyleSheet('''
             background-color:{};
             color:{};
@@ -382,15 +364,13 @@ class SiButtonHoldtoConfirm(SiButton):
     def paintProgress(self):
         p = self.progress
         self.layer_front.setStyleSheet('''
-            background-color:qlineargradient(x1:{}, y1:0, x2:{}, y2:0,
-                                             stop:0 {}, stop:1 {});
+            background-color:qlineargradient(x1:{}, y1:0, x2:{}, y2:0, stop:0 {}, stop:1 {});
             color:{};
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;
             border-bottom-left-radius: 2px;
             border-bottom-right-radius: 2px
-            '''.format(p-0.01, p,
-                       *colorset.BTN_HOLD_HEX[0:2], colorset.BTN_HOLD_TEXT_HEX))
+            '''.format(p-0.01, p, *colorset.BTN_HOLD_HEX[0:2], colorset.BTN_HOLD_TEXT_HEX))
 
 class SiRadioButtonGroup(object):
     def __init__(self):
@@ -433,9 +413,7 @@ class SiRadioButton(SiLabel):
         self.option_name_label = SiLabel(self)
         self.option_name_label.move(28, 0)
         self.option_name_label.setAlignment(QtCore.Qt.AlignVCenter)
-        self.option_name_label.setStyleSheet('''
-            color: {};
-        '''.format(colorset.TEXT_GRAD_HEX[0]))
+        self.option_name_label.setStyleSheet('color: {};'.format(colorset.TEXT_GRAD_HEX[0]))
 
     def name(self):
         return self.option_name_label.text()

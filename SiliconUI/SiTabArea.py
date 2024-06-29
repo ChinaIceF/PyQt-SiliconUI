@@ -29,8 +29,7 @@ class TabButton(QLabel):
 
         self.colorbar = QLabel(self)
         self.colorbar.setStyleSheet('''
-            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                              stop:0 {}, stop:1 {});
+            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {}, stop:1 {});
             border-radius:2px'''.format(*colorset.THEME_HEX))
         self.colorbar.setGeometry(0, 10, 4, 20)
 

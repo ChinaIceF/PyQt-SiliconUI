@@ -26,8 +26,7 @@ class SiSticker(QLabel):
         self.surface = QLabel(self)
         self.surface.setStyleSheet('''
             border-radius:6px;
-            background-color:qlineargradient(x1:0, y1:0, x2:0, y2:0.6,
-                                             stop:0 {}, stop:1 #00{});
+            background-color:qlineargradient(x1:0, y1:0, x2:0, y2:0.6, stop:0 {}, stop:1 #00{});
             '''.format(colorset.BG_GRAD_HEX[2], colorset.BG_GRAD_HEX[2][1:]))
 
         self.head = SiLayoutH(self)  # 头

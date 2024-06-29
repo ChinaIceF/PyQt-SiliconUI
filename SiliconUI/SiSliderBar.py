@@ -98,7 +98,8 @@ class SiSliderBar(QLabel):
         self.target_value = 0
         self.current_value = 0
 
-        self.animation = SiAnimation(self.distance, self.stepLength, 1000 / SiGlobal.fps, lambda : abs(self.distance()) == 0)
+        self.animation = SiAnimation(
+                            self.distance, self.stepLength, 1000 / SiGlobal.fps, lambda : abs(self.distance()) == 0)
         self.animation.ticked.connect(self.changePosition)
 
         self.background_bar.setStyleSheet('''
@@ -106,8 +107,7 @@ class SiSliderBar(QLabel):
             border-radius: 2px'''.format(colorset.BG_GRAD_HEX[1]))
 
         self.value_bar.setStyleSheet('''
-            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                              stop:0 {}, stop:1 {});
+            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 {}, stop:1 {});
             border-radius: 2px'''.format(*colorset.THEME_HEX))
 
         self.slider.setStyleSheet('''
@@ -159,8 +159,7 @@ class SiSliderBar(QLabel):
         self.slider.move(int((g.width() - self.bar_width) * v), (g.height() - self.bar_height) // 2)
         p = g.width()/self.bar_width
         self.slider.setStyleSheet('''
-            background-color: qlineargradient(x1:{}, y1:0, x2:{}, y2:0,
-                                              stop:0 {}, stop:1 {});
+            background-color: qlineargradient(x1:{}, y1:0, x2:{}, y2:0, stop:0 {}, stop:1 {});
             border-radius: 4px;'''.format(-v * p, (1-v) * p, *colorset.THEME_HEX))
 
 

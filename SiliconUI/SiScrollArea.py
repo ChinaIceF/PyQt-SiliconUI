@@ -53,7 +53,8 @@ class SiScrollArea(QLabel):
         self.scrollbar.setStyleSheet('background-color: #7fffffff; border-radius: 4px')
         self.scrollbar.value_change_to_parent.connect(self.bar_pos_to_target_y)
 
-        self.animation = SiAnimationObject.SiAnimation(self.distance, self.stepLength, 1000 / SiGlobal.fps, lambda : self.distance() == 0)
+        self.animation = SiAnimationObject.SiAnimation(
+                            self.distance, self.stepLength, 1000 / SiGlobal.fps, lambda : self.distance() == 0)
         self.animation.ticked.connect(self.change_position)
 
     def stepLength(self, dis):
