@@ -72,8 +72,7 @@ class SiAnimation(QObject):
         if self.isActive() == False:
             self.start()
             return True
-        else:
-            return False
+        return False
 
 
 class SiAnimationStandard(SiAnimation):
@@ -95,8 +94,7 @@ class SiAnimationStandard(SiAnimation):
     def stepLength(self, dis):
         if abs(dis) <= self.bias:
             return dis
-        else:
-            return (abs(dis) * self.factor + self.bias) * (1 if dis > 0 else -1)
+        return (abs(dis) * self.factor + self.bias) * (1 if dis > 0 else -1)
 
     def isCompleted(self):
         return self.distance() == 0
