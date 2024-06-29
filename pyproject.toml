@@ -1,0 +1,14 @@
+[project]
+name = "PyQt-SiliconUI"
+version = "1.0.1"
+authors = [
+    { name = "ChinaIceF", email = "ChinaIceF@outlook.com" },
+    { name = "rainzee wang", email = "rainzee.w@gmail.com" },
+]
+description = "A powerful and artistic UI library based on PyQt5 / PySide6"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = ["PyQt5>=5.15.10"]
+
+[project.urls]
+Repository = "https://github.com/ChinaIceF/PyQt-SiliconUI"
