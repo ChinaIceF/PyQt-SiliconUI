@@ -61,7 +61,8 @@ Silicon UI 的控件并不仅限于在 Silicon 应用中使用，你可以在任
 更新日志现在已经移动到 Silicon Gallery 中，日志从 2024.6.25 开始记录
 
 ## License
-本项目采用 GPL-3.0 License，详见[这里](LICENSE)
+本项目采用 GPL-3.0 License，详见[这里](LICENSE)  
+同时，本项目允许非商业使用。对于商业使用，敬请期待购买商用许可的版本。
 
 ## 声明
 * 请注意，Silicon Gallery 使用了 FLATICON 的图标，**这些图标不应被认为是 Silicon UI 的一部分**，你可以前往 [FLATICON的网站](https://flaticon.com) 免注册、免下载其他文件、免费获取这些图标，但应在使用时注意遵守他们的有关条款规定  
