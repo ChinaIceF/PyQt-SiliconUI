@@ -15,9 +15,7 @@ class SiOption(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
-
+        self.parent = parent
         self.items = []
 
         # 背景
@@ -100,7 +98,6 @@ class SiOption(QWidget):
         # 设置背景和遮罩的大小
         self.background.resize(w, h)
         self.mask.resize(w, h)
-
 
     def setUsability(self, status):
         self.mask.setVisible(not status)
