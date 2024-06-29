@@ -1,19 +1,7 @@
-from PyQt5.Qt import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import *
-from PyQt5.Qt import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
-import numpy
-import time
-import os
 
-import SiliconUI
+from PyQt5.QtWidgets import QLabel
+
 from .SiGlobal import colorset
-from .SiSticker import SiSticker
-from .SiButton import SiButtonLabel
 from .SiFont import *
 
 class SingleData(SiliconUI.SiLabel):

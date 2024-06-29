@@ -1,9 +1,8 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QLabel
-from . import SiFont
-import time
 
+from . import SiFont
 from .SiGlobal import *
 
 class SiSwitch(QLabel):

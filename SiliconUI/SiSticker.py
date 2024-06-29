@@ -1,8 +1,5 @@
-from PyQt5 import QtCore
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QSizePolicy, QWidget, QHBoxLayout, QVBoxLayout
-from PyQt5.QtGui import QFontMetrics
-from PyQt5.QtSvg import QSvgWidget
 
 from .SiFont import *
 from .SiButton import *

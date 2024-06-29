@@ -1,12 +1,4 @@
-from PyQt5 import QtCore
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QSizePolicy, QWidget, QPushButton
-from PyQt5.Qt import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
 
-from .SiFont import *
 from .SiAnimationObject import *
 from .SiGlobal import *
 from . import SiGlobal

@@ -1,28 +1,31 @@
-from PyQt5.Qt import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-import time
 
-from . import SiStyle
-from . import SiGlobal
-from . import SiAnimationObject
-from .SiButton import *
 from .SiLayout import *
 from .SiGlobal import *
 
 class TabButton(QLabel):
     def __init__(self, parent, func, index):
         super().__init__(parent)
-        self.parent =  parent
+        self.parent = parent
         
         self.index = index
         self.setStyleSheet('')
 
         self.button = SiButtonFlat(self)
         self.button.setGeometry(0, 0, 40, 40)
-        self.button.setStyleSheet(SiStyle._button_flat_qss)
+        self.button.setStyleSheet('''
+            QPushButton {
+                border-radius:6px;
+                background-color:transparent;
+            }
+            QPushButton:hover {
+                border-radius:6px;
+                background-color:#0dffffff;
+            }
+            QPushButton:pressed {
+                border-radius:6px;
+                background-color:#06ffffff;
+            }
+        ''')
 
         self.colorbar = QLabel(self)
         self.colorbar.setStyleSheet('''

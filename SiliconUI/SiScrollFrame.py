@@ -1,16 +1,14 @@
 from PyQt5.QtWidgets import QLabel
-from .SiFont import *
 
 class SiScrollFrame(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
+        self.parent = parent
 
         self.items = []
         self.h = 0
-        self.margin = 64 # 两侧间距
-        self.delta = 16  # 每个 item 之间的间隔
+        self.margin = 64                        # 两侧间距
+        self.delta = 16                         # 每个 item 之间的间隔
         self.stop_resize_threshold_width = 800  # 宽度超过这个值，就停止拉长内容，转而中置
         self.max_width_policy = True
 

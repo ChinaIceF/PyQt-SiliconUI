@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QLabel, QPushButton
 from PyQt5.QtSvg import QSvgWidget
 
 from . import SiFont
-from . import SiStyle
 from . import SiAnimationObject
 from . import SiGlobal
 

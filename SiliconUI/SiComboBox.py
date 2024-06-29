@@ -1,10 +1,4 @@
-from PyQt5 import QtCore
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QLabel, QDialog, QPushButton
-from PyQt5.QtSvg import QSvgWidget
 
-from . import SiFont
-from . import SiGlobal
 from .SiMenu import *
 from .SiButton import *
 from .SiGlobal import colorset
@@ -65,3 +59,5 @@ class SiComboBox(ClickableLabel):
 
     def initialize_stylesheet(self):
         pass
+
+

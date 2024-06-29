@@ -29,8 +29,8 @@ from .SiScrollFrame import *
 from .SiScrollArea import *
 from .SiTab import *
 from .SiTabArea import *
-from .SiStyle import *
 from .SiInfo import *
 from .SiLabel import *
 from .SiTable import *
 from .SiProgressBar import *
+from .SiSticker import *

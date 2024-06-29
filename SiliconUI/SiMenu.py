@@ -18,7 +18,6 @@ class OptionHoverAnimation(SiAnimation):
         super().__init__(parent)
         self.parent =  parent
 
-
     def stepLength(self, dis):
         return 2 if dis > 0 else -2
 
@@ -27,6 +26,7 @@ class OptionHoverAnimation(SiAnimation):
 
     def isCompleted(self):
         return self.distance() == 0
+
 
 class PopupAnimation(SiAnimation):
     def __init__(self, parent):

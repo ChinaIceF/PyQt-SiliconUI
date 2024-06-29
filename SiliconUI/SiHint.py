@@ -1,10 +1,4 @@
 
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
-from PyQt5.QtCore import Qt, QPoint, QEvent, QTimer
-from PyQt5.QtGui import QScreen, QCursor, QFontMetrics
-
-import random
-
 from .SiAnimationObject import *
 from .SiFont import *
 from .SiGlobal import colorset

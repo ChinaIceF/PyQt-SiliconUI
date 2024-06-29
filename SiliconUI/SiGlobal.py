@@ -1,5 +1,4 @@
 
-import colorsys
 import numpy
 import random
 

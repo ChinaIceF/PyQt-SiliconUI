@@ -1,8 +1,3 @@
-from PyQt5.Qt import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5 import QtCore, QtGui, QtWidgets
 
 from .SiFont import *
 from .SiScrollArea import *

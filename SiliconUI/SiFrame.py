@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QLabel
-from .SiFont import *
 
 class SiFrame(QLabel):
     def __init__(self, parent):
