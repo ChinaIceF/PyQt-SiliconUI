@@ -25,6 +25,7 @@ class FlatButtonAnimation(SiAnimationObject.SiAnimation):
     def isCompleted(self):
         return self.distance() == 0
 
+
 class ButtonHasHoldSignal(QPushButton):
     holdStateChanged = QtCore.pyqtSignal(bool)
 
