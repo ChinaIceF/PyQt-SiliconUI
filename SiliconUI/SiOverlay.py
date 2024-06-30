@@ -1,7 +1,7 @@
-
 from .SiAnimationObject import *
 from .SiButton import *
 from .SiGlobal import *
+
 
 class SubInterface(object):
     def __init__(self):
@@ -12,6 +12,7 @@ class SubInterface(object):
 
     def get(self):
         return self.body, self.operation, self.width_, self.name
+
 
 class OverlayShowUpAnimation(SiAnimation):
     def __init__(self, parent):
@@ -29,12 +30,13 @@ class OverlayShowUpAnimation(SiAnimation):
     def isCompleted(self):
         return self.distance() == 0
 
+
 class Background(QLabel):
     clicked = QtCore.pyqtSignal()
+
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
+        self.parent = parent
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
@@ -58,8 +60,7 @@ class Background(QLabel):
 class SiOverlay(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
+        self.parent = parent
 
         self.y_interval = 128  # 中间框架的上留白
         self.width_ = 700
@@ -68,25 +69,29 @@ class SiOverlay(QLabel):
         self.showup_animation.ticked.connect(self.showup_animation_handler)
 
         self.background = Background(self)
-        self.background.setStyleSheet('background-color:rgba(0, 0, 0, 0)')
+        self.background.setStyleSheet("background-color:rgba(0, 0, 0, 0)")
         self.background.move(0, 0)
         self.background.clicked.connect(self.hide_animation)
 
         self.frame = QLabel(self)  # 框架
 
         self.body_frame = QLabel(self.frame)  # 内容框架
-        self.body_frame.setStyleSheet('''
+        self.body_frame.setStyleSheet(
+            """
             background-color: {};
-            border-radius:8px'''.format(colorset.BG_GRAD_HEX[1]))
+            border-radius:8px""".format(colorset.BG_GRAD_HEX[1])
+        )
 
         self.operate_frame = QLabel(self.frame)  # 下方按钮框架
-        self.operate_frame.setStyleSheet('''
+        self.operate_frame.setStyleSheet(
+            """
             background-color:{};
             border-top-left-radius:8px;
-            border-top-right-radius:8px '''.format(colorset.BG_GRAD_HEX[3]))
+            border-top-right-radius:8px """.format(colorset.BG_GRAD_HEX[3])
+        )
 
-        self.body = None
-        self.operation = None
+        self.operation = QWidget(self.operate_frame)  # 确保 self.operation 被正确初始化
+        self.body = QWidget(self.body_frame)  # 确保 self.body 被正确初始化
 
         self.subinterface = []
 
@@ -98,8 +103,7 @@ class SiOverlay(QLabel):
             self.hide()
         else:
             self.show()
-        self.background.setStyleSheet(
-            'background-color:rgba(0, 0, 0, {})'.format((1-value/self.height())*0.5))
+        self.background.setStyleSheet("background-color:rgba(0, 0, 0, {})".format((1 - value / self.height()) * 0.5))
 
     def moveFrame(self, v):
         w = self.width()
@@ -108,7 +112,7 @@ class SiOverlay(QLabel):
         self.frame.move(mx, int(v + self.y_interval))
 
     def resizeEvent(self, event):
-        size = event.size() # 这里 size 传入的是主界面的宽和高
+        size = event.size()  # 这里 size 传入的是主界面的宽和高
         w, h = size.width(), size.height()
         self.refreshSize(w, h)
 
@@ -120,8 +124,8 @@ class SiOverlay(QLabel):
         mw = bw
         mh = h - my
 
-        oh = 80 # 操作栏的高度
-        oi = 48 # 操作栏内容距离两侧的距离
+        oh = 80  # 操作栏的高度
+        oi = 48  # 操作栏内容距离两侧的距离
 
         self.background.resize(w, h)
         self.frame.setGeometry(mx, my, mw, mh)
@@ -130,8 +134,8 @@ class SiOverlay(QLabel):
         try:
             self.operation.setGeometry(oi, 0, mw - 2 * oi, oh)
             self.body.setGeometry(0, 0, mw, mh - oh)
-        except:
-            print('SiOverlay 重设大小出错')
+        except Exception as e:
+            print("SiOverlay 重设大小出错", e)
 
     def show_animation(self):
         self.showup_animation.setTarget(0)
