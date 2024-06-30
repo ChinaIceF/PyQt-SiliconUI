@@ -89,7 +89,6 @@ class SiProgressBar(QLabel):
         if self.progress == 1:
             self.setStatus(1)  # 标识处理已加载完的内容
         else:
-            print(self.current_color, self.progress_colors.values())
             if self.current_color in self.progress_colors.values():  # 当前颜色是预设颜色不是自定义颜色，则更新状态
                 self.setStatus(0)
             else:  # 当前颜色是自定义颜色，则不更新状态
