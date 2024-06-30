@@ -2,11 +2,9 @@ from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from . import SiGlobal
-from . import SiAnimationObject
-from . import SiLabel
-
+from . import SiAnimationObject, SiGlobal, SiLabel
 from .SiGlobal import *
+
 
 class ProgressBarFrame(SiLabel):
     def __init__(self, parent):
@@ -16,55 +14,57 @@ class ProgressBarFrame(SiLabel):
     def enterEvent(self, event):
         super().enterEvent(event)
         SiGlobal.floating_window.show_animation()
-        SiGlobal.floating_window.setText(
-            str(round(self.parent.progress*100, 1)) + '%')
+        SiGlobal.floating_window.setText(str(round(self.parent.progress * 100, 1)) + "%")
 
     def leaveEvent(self, event):
         super().leaveEvent(event)
         SiGlobal.floating_window.hide_animation()
 
-class SiProgressBar(QLabel):
 
+class SiProgressBar(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
 
         self.border_radius = 4
         self.progress_colors = {
-            'loading': '#66CBFF',
-            'warning': '#fed966',
-            'paused': '#7f7f7f',
+            "loading": "#66CBFF",
+            "warning": "#FED966",
+            "paused": "#7F7F7F",
         }
-        self.status_names = ['loading', 'warning', 'paused']
+        self.status_names = ["loading", "warning", "paused"]
 
         self.progress = 0
-        self.start_color = '#66CBFF'
-        self.current_color = '#66CBFF'
-        self.target_color = '#66CBFF'
+        self.start_color = "#66CBFF"
+        self.current_color = "#66CBFF"
+        self.target_color = "#66CBFF"
 
         self.animation_progress = SiAnimationObject.SiAnimationStandard(self)
-        self.animation_progress.setFactor(1/4)
+        self.animation_progress.setFactor(1 / 4)
         self.animation_progress.setBias(1)
         self.animation_progress.ticked.connect(self._animationProgressHandler)
 
         self.animation_color = SiAnimationObject.SiAnimationStandard(self)
-        self.animation_color.setFactor(1/8)
+        self.animation_color.setFactor(1 / 8)
         self.animation_color.setBias(0.01)
         self.animation_color.setTarget(1)
         self.animation_color.ticked.connect(self._animationColorHandler)
 
-
         self.frame = ProgressBarFrame(self)
-        self.frame.setStyleSheet('''
-            background-color: {};
-            border-radius: {};
-        '''.format(colorset.BG_GRAD_HEX[0], self.border_radius))
+        self.frame.setStyleSheet(
+            f"""
+            background-color: {colorset.BG_GRAD_HEX[0]};
+            border-radius: {self.border_radius};
+        """
+        )
 
         self.bar = QLabel(self.frame)
-        self.bar.setStyleSheet('''
-            background-color: {};
-            border-radius: {};
-        '''.format(self.current_color, self.border_radius))
+        self.bar.setStyleSheet(
+            f"""
+            background-color: {self.current_color};
+            border-radius: {self.border_radius};
+        """
+        )
         self.bar.setAttribute(Qt.WA_TransparentForMouseEvents, True)
 
     def getProgress(self):
@@ -85,10 +85,14 @@ class SiProgressBar(QLabel):
         self.progress = max(min(progress, 1), 0)
         self.animation_progress.setTarget(self.getBarWidth())
         self.animation_progress.try_to_start()
+
         if self.progress == 1:
-            self.setStatus(1)  # 相当于标识处理已加载完的内容
+            self.setStatus(1)  # 标识处理已加载完的内容
         else:
-            self.setStatus(0)
+            if self.current_color in self.progress_colors.values():  # 当前颜色是预设颜色不是自定义颜色，则更新状态
+                self.setStatus(0)
+            else:  # 当前颜色是自定义颜色，则不更新状态
+                pass
 
     def setBarColor(self, color_hex):
         self.target_color = color_hex
@@ -99,20 +103,26 @@ class SiProgressBar(QLabel):
 
     def setBorderRadius(self, radius):
         self.border_radius = radius
-        self.frame.setStyleSheet('''
-            background-color: {};
-            border-radius: {};
-        '''.format(colorset.BG_GRAD_HEX[0], self.border_radius))
-        self.bar.setStyleSheet('''
-            background-color: {};
-            border-radius: {};
-        '''.format(self.current_color, self.border_radius))
+        self.frame.setStyleSheet(
+            f"""
+            background-color: {colorset.BG_GRAD_HEX[0]};
+            border-radius: {self.border_radius};
+        """
+        )
+        self.bar.setStyleSheet(
+            f"""
+            background-color: {self.current_color};
+            border-radius: {self.border_radius};
+        """
+        )
 
     def updateBarColor(self):
-        self.bar.setStyleSheet('''
-            background-color: {};
-            border-radius: {};
-        '''.format(self.current_color, self.border_radius))
+        self.bar.setStyleSheet(
+            f"""
+            background-color: {self.current_color};
+            border-radius: {self.border_radius};
+        """
+        )
 
     def _animationProgressHandler(self, width):
         self.bar.resize(int(width), self.bar.height())
