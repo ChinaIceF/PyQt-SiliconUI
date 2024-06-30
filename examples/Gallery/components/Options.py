@@ -17,12 +17,13 @@ from SiliconUI.SiSticker import SiSticker
 from SiliconUI.SiFont import *
 from SiliconUI.SiButton import SiButtonLabel
 
+from .web_url import GithubUrl, BiliBiliUrl, browse
+
 
 class NameTag(SiSticker):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
+        self.parent = parent
 
         # 所有内容的 LayoutH
         self.layout_all_content = SiliconUI.SiLayoutH(self)
@@ -38,11 +39,11 @@ class NameTag(SiSticker):
 
         self.name = SiliconUI.SiLabel(self.layout_labels)
         self.name.setFont(font_L2)
-        self.name.setStyleSheet('color: #ffffff; padding-left: 2px; padding-bottom: 6px')
+        self.name.setStyleSheet("color: #ffffff; padding-left: 2px; padding-bottom: 6px")
         self.layout_labels.addItem(self.name)
 
-        self.layout_all_content.addItem(self.selfie, 'left')
-        self.layout_all_content.addItem(self.layout_labels, 'left')
+        self.layout_all_content.addItem(self.selfie, "left")
+        self.layout_all_content.addItem(self.layout_labels, "left")
 
         self.adjustSize()
 
@@ -55,19 +56,19 @@ class NameTag(SiSticker):
         self.layout_labels.adjustSize()
         self.adjustSize()
 
-    def addItem(self, text, url, hint = ''):
+    def addItem(self, text, url, hint=""):
         newItem = SiButtonLabel(self)
-        newItem.setStyleSheet('''
+        newItem.setStyleSheet("""
             color: #d986e8;
             padding-left: 4px;
             padding-right: 4px;
             padding-top: 1px;
             padding-bottom: 1px;
-            ''')
+            """)
         newItem.setText(text)
-        newItem.clicked.connect(lambda : os.system('start {}'.format(url)))
+        newItem.clicked.connect(lambda: os.system("start {}".format(url)))
         newItem.setHint(hint)
-        self.layout_labels.addItem(newItem, 'top')
+        self.layout_labels.addItem(newItem, "top")
         self.layout_labels.adjustSize()
 
     def resizeEvent(self, event):
@@ -82,14 +83,14 @@ class NameTag(SiSticker):
 class Options(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
-        self.setStyleSheet('')
+        self.parent = parent
+
+        self.setStyleSheet("")
 
         ## ================ Stack 开始 ===================
 
         self.stack_developers = SiliconUI.SiCategory(self)
-        self.stack_developers.setTitle('开发者')
+        self.stack_developers.setTitle("开发者")
 
         self.layout_developers = SiliconUI.SiLayoutH(self.stack_developers)
         self.layout_developers.setFixedHeight(132)
@@ -97,18 +98,18 @@ class Options(SiliconUI.SiScrollFrame):
         self.nametag = NameTag(self.stack_developers)
         self.nametag.setFixedWidth(380)
         self.nametag.setFixedHeight(132)
-        self.nametag.load('./img/headpic.png')
-        self.nametag.setName('霏泠Ice')
-        self.nametag.addItem('访问 GitHub 主页', 'https://github.com/chinaicef', 'https://github.com/chinaicef')
-        self.nametag.addItem('访问 哔哩哔哩 主页', 'https://space.bilibili.com/390832893', 'https://space.bilibili.com/390832893')
+        self.nametag.load("./img/headpic.png")
+        self.nametag.setName("霏泠Ice")
+        self.nametag.addItem("访问 GitHub 主页", GithubUrl.Author_Home, GithubUrl.Author_Home)
+        self.nametag.addItem("访问 哔哩哔哩 主页", BiliBiliUrl.Author_Home, BiliBiliUrl.Author_Home)
 
         self.nametag_1 = NameTag(self.stack_developers)
         self.nametag_1.setFixedWidth(380)
         self.nametag_1.setFixedHeight(132)
-        self.nametag_1.load('./img/headpic2.jpg')
-        self.nametag_1.setName('你干嘛~嗨嗨呦↓')
-        self.nametag_1.addItem('访问 GitHub 主页', 'www.github.com', 'www.github.com')
-        self.nametag_1.addItem('访问 哔哩哔哩 主页', 'www.bilibili.com', 'www.bilibili.com')
+        self.nametag_1.load("./img/headpic2.jpg")
+        self.nametag_1.setName("你干嘛~嗨嗨呦↓")
+        self.nametag_1.addItem("访问 GitHub 主页", "www.github.com", "www.github.com")
+        self.nametag_1.addItem("访问 哔哩哔哩 主页", "www.bilibili.com", "www.bilibili.com")
 
         self.layout_developers.addItem(self.nametag)
         self.layout_developers.addItem(self.nametag_1)
@@ -118,42 +119,42 @@ class Options(SiliconUI.SiScrollFrame):
         ## ================ Stack 开始 ===================
 
         self.stack_about = SiliconUI.SiCategory(self)
-        self.stack_about.setTitle('关于')
+        self.stack_about.setTitle("关于")
 
         self.about = SiliconUI.SiOption(self.stack_about)
-        self.about.setIcon(SiGlobal.icons.get('fi-rr-info'))
-        self.about.setText('关于 Silicon UI',
-                           '''<strong>版本号</strong> 1.01 &nbsp;&nbsp;&nbsp;<strong>构建日期</strong>2024.05.26''')
+        self.about.setIcon(SiGlobal.icons.get("fi-rr-info"))
+        self.about.setText(
+            "关于 Silicon UI", """<strong>版本号</strong> 1.01 &nbsp;&nbsp;&nbsp;<strong>构建日期</strong>2024.05.26"""
+        )
 
         self.license = SiliconUI.SiOption(self.stack_about)
-        self.license.setText('开源许可','本项目遵循 GNU General Public License v3.0')
-        self.license.setIcon(SiGlobal.icons.get('fi-rr-diploma'))
+        self.license.setText("开源许可", "本项目遵循 GNU General Public License v3.0")
+        self.license.setIcon(SiGlobal.icons.get("fi-rr-diploma"))
 
         self.copyright = SiliconUI.SiOption(self.stack_about)
-        self.copyright.setText('版权','<strong>霏泠冰 IceF</strong> 版权所有')
-        self.copyright.setIcon(SiGlobal.icons.get('fi-rr-copyright'))
+        self.copyright.setText("版权", "<strong>霏泠冰 IceF</strong> 版权所有")
+        self.copyright.setIcon(SiGlobal.icons.get("fi-rr-copyright"))
 
         # 添加
         self.stack_about.addItem(self.about)
         self.stack_about.addItem(self.license)
         self.stack_about.addItem(self.copyright)
 
-
         ## ================ Stack 开始 ===================
 
         self.stack_quotes = SiliconUI.SiCategory(self)
-        self.stack_quotes.setTitle('第三方资源')
+        self.stack_quotes.setTitle("第三方资源")
 
         self.icons = SiliconUI.SiOptionSourceCode(self.stack_about)
         self.icons._setMinimumHeight(80)
-        self.icons.setText('图标','Silicon Gallery 使用了 FLATICON 的图标，<strong>这些图标不应被认为是 Silicon UI 的一部分</strong>')
-        self.icons.setIcon(SiGlobal.icons.get('fi-rr-quote-right'))
-        self.icons.load(SiGlobal.icons.get('fi-rr-link'))
-        self.icons.setURL('www.flaticon.com')
+        self.icons.setText(
+            "图标", "Silicon Gallery 使用了 FLATICON 的图标，<strong>这些图标不应被认为是 Silicon UI 的一部分</strong>"
+        )
+        self.icons.setIcon(SiGlobal.icons.get("fi-rr-quote-right"))
+        self.icons.load(SiGlobal.icons.get("fi-rr-link"))
+        self.icons.setURL("www.flaticon.com")
 
         self.stack_quotes.addItem(self.icons)
-
-
 
         self.addItem(self.stack_developers)
         self.addItem(self.stack_about)
