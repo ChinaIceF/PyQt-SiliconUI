@@ -14,6 +14,12 @@ dependencies = ["PyQt5>=5.15.10"]
 [project.urls]
 Repository = "https://github.com/ChinaIceF/PyQt-SiliconUI"
 
+[tool.pdm.dev-dependencies]
+stub = ["pyqt5-stubs>=5.15.6.0"]
+lint = ["ruff>=0.5.0"]
+build = ["nuitka>=2.3.10"]
+profile = ["viztracer>=0.16.3"]
+
 [tool.ruff]
 line-length = 120
 target-version = "py38"
