@@ -3,6 +3,12 @@ import numpy
 from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
 
+class Curve:
+    def LINEAR(self, x):
+        return x
+
+
+
 class ABCAnimation(QObject):
     ticked = pyqtSignal(object)     # 动画进行一刻的信号
 
@@ -11,6 +17,7 @@ class ABCAnimation(QObject):
 
         self.target = numpy.array(0)         # 目标值
         self.current = numpy.array(0)        # 当前值
+        self.counter = 0                     # 计数器
 
         # 构建计时器
         self.timer = QTimer()
@@ -21,7 +28,7 @@ class ABCAnimation(QObject):
         """
         Set the target of the animation.
         :param target: Anything can be involved in calculations.
-        :return: None
+        :return:
         """
         self.target = numpy.array(target)
 
@@ -29,7 +36,7 @@ class ABCAnimation(QObject):
         """
         Set the current value of the animation.
         :param current: Anything can be involved in calculations.
-        :return: None
+        :return:
         """
         self.current = numpy.array(current)
 
@@ -48,21 +55,7 @@ class ABCAnimation(QObject):
         To check whether we meet the point that the animation should stop
         :return: bool
         """
-        return (self.distance() == 0).all()
-
-    def _process(self):
-        # 如果已经到达既定位置，终止计时器
-        if self.isCompleted():
-            self.stop()
-            return
-
-        step_length = self._step_length()
-
-        # 更新数值
-        self.setCurrent(self.current + step_length)
-
-        # 发射信号
-        self.ticked.emit(self.current)
+        raise NotImplementedError()
 
     def isActive(self):
         """
@@ -89,7 +82,7 @@ class ABCAnimation(QObject):
         """
         Set the time interval of the timer
         :param interval: Time interval (ms)
-        :return: None
+        :return:
         """
         self.timer.setInterval(interval)
 
