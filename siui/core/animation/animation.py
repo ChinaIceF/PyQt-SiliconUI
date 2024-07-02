@@ -1,5 +1,6 @@
-import abstract
 import numpy
+
+import siui.core.animation.abstract as abstract
 
 
 class SiExpAnimation(abstract.ABCAnimation):

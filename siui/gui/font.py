@@ -33,26 +33,26 @@ class SiFont:
 
 class GlobalFont(Enum):
     # Normal
-    S_NORMAL = SiFont.getFont(size=10, weight=QFont.Weight.Normal, italic=False)
-    M_NORMAL = SiFont.getFont(size=14, weight=QFont.Weight.Normal, italic=False)
-    L_NORMAL = SiFont.getFont(size=18, weight=QFont.Weight.Normal, italic=False)
-    XL_NORMAL = SiFont.getFont(size=24, weight=QFont.Weight.Normal, italic=False)
+    S_NORMAL = SiFont.getFont(size=14, weight=QFont.Weight.Normal, italic=False)
+    M_NORMAL = SiFont.getFont(size=20, weight=QFont.Weight.Normal, italic=False)
+    L_NORMAL = SiFont.getFont(size=24, weight=QFont.Weight.Normal, italic=False)
+    XL_NORMAL = SiFont.getFont(size=32, weight=QFont.Weight.Normal, italic=False)
 
-    S_NORMAL_ITALIC = SiFont.getFont(size=10, weight=QFont.Weight.Normal, italic=True)
-    M_NORMAL_ITALIC = SiFont.getFont(size=14, weight=QFont.Weight.Normal, italic=True)
-    L_NORMAL_ITALIC = SiFont.getFont(size=18, weight=QFont.Weight.Normal, italic=True)
-    XL_NORMAL_ITALIC = SiFont.getFont(size=24, weight=QFont.Weight.Normal, italic=True)
+    S_NORMAL_ITALIC = SiFont.getFont(size=14, weight=QFont.Weight.Normal, italic=True)
+    M_NORMAL_ITALIC = SiFont.getFont(size=20, weight=QFont.Weight.Normal, italic=True)
+    L_NORMAL_ITALIC = SiFont.getFont(size=24, weight=QFont.Weight.Normal, italic=True)
+    XL_NORMAL_ITALIC = SiFont.getFont(size=32, weight=QFont.Weight.Normal, italic=True)
 
     # Bold
-    S_BOLD = SiFont.getFont(size=10, weight=QFont.Weight.Bold, italic=False)
-    M_BOLD = SiFont.getFont(size=14, weight=QFont.Weight.Bold, italic=False)
-    L_BOLD = SiFont.getFont(size=18, weight=QFont.Weight.Bold, italic=False)
-    XL_BOLD = SiFont.getFont(size=24, weight=QFont.Weight.Bold, italic=False)
+    S_BOLD = SiFont.getFont(size=14, weight=QFont.Weight.Bold, italic=False)
+    M_BOLD = SiFont.getFont(size=20, weight=QFont.Weight.Bold, italic=False)
+    L_BOLD = SiFont.getFont(size=24, weight=QFont.Weight.Bold, italic=False)
+    XL_BOLD = SiFont.getFont(size=32, weight=QFont.Weight.Bold, italic=False)
 
-    S_BOLD_ITALIC = SiFont.getFont(size=10, weight=QFont.Weight.Bold, italic=True)
-    M_BOLD_ITALIC = SiFont.getFont(size=14, weight=QFont.Weight.Bold, italic=True)
-    L_BOLD_ITALIC = SiFont.getFont(size=18, weight=QFont.Weight.Bold, italic=True)
-    XL_BOLD_ITALIC = SiFont.getFont(size=24, weight=QFont.Weight.Bold, italic=True)
+    S_BOLD_ITALIC = SiFont.getFont(size=14, weight=QFont.Weight.Bold, italic=True)
+    M_BOLD_ITALIC = SiFont.getFont(size=20, weight=QFont.Weight.Bold, italic=True)
+    L_BOLD_ITALIC = SiFont.getFont(size=24, weight=QFont.Weight.Bold, italic=True)
+    XL_BOLD_ITALIC = SiFont.getFont(size=32, weight=QFont.Weight.Bold, italic=True)
 
     FONT_DICT = {
         "S_NORMAL": S_NORMAL,

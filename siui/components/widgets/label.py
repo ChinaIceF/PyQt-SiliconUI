@@ -1,15 +1,15 @@
 """
 基础控件
-ABCAnimatedWidget 提供各类简单易用的属性动画支持
+ABCAnimatedLabel 提供各类简单易用的属性动画支持
 """
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QGraphicsOpacityEffect, QWidget
+from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel
 
-from ...core.animation import SiExpAnimation
+from siui.core.animation import SiExpAnimation
 
 
-# 2024.7.2
-class ABCAnimatedWidget(QWidget):
+# 2024.7.2 添加动画支持标签
+class ABCAnimatedLabel(QLabel):
     moved = pyqtSignal(object)
     resized = pyqtSignal(object)
     opacityChanged = pyqtSignal(float)
@@ -18,11 +18,15 @@ class ABCAnimatedWidget(QWidget):
         super().__init__(parent)
         self.parent = parent
 
+        self.fixed_stylesheet = ""
+
         self.instant_move = False  # 是否立即移动而不运行动画
         self.instant_resize = False  # 是否立即重设大小而不运行动画
         self.instant_set_opacity = False  # 是否立即重设透明度而不运行动画
 
         self.move_limits = False  # 是否有限定区域
+
+        self.auto_adjust_size = False  # 是否在setText被调用时自动调整空间大小
 
         self.x1, self.y1, self.x2, self.y2 = None, None, None, None
 
@@ -40,6 +44,31 @@ class ABCAnimatedWidget(QWidget):
         self.animation_opacity.setFactor(1 / 3)
         self.animation_opacity.setBias(0.01)
         self.animation_opacity.ticked.connect(self._opacity_ani_handler)
+
+    def setStyleSheet(self, stylesheet):
+        super().setStyleSheet(self.fixed_stylesheet + ";" + stylesheet)
+
+    def setFixedStyleSheet(self, fixed_stylesheet):
+        self.fixed_stylesheet = fixed_stylesheet
+
+    def setText(self, text: str):
+        """
+        设置标签的文本
+        :param text: 文本
+        :return:
+        """
+        super().setText(text)
+        if self.auto_adjust_size is True:
+            self.adjustSize()
+
+
+    def setAutoAdjustSize(self, b):
+        """
+        设置自动调整标签的尺寸
+        :param b: 是否自动调整
+        :return:
+        """
+        self.auto_adjust_size = b
 
     def _move_ani_handler(self, arr):
         x, y = arr
