@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QGraphicsOpacityEffect, QWidget
 from ...core.animation import SiExpAnimation
 
 
+# 2024.7.2
 class ABCAnimatedWidget(QWidget):
     moved = pyqtSignal(object)
     resized = pyqtSignal(object)
