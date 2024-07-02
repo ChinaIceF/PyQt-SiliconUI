@@ -2,6 +2,7 @@
 import numpy
 from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
+global_fps = 60
 
 class Curve:
     def LINEAR(self, x):
@@ -21,7 +22,7 @@ class ABCAnimation(QObject):
 
         # 构建计时器
         self.timer = QTimer()
-        self.timer.setInterval(int(1000/60))
+        self.timer.setInterval(int(1000/global_fps))
         self.timer.timeout.connect(self._process)  # 每经历 interval 时间，传入函数就被触发一次
 
     def setTarget(self, target):

@@ -6,7 +6,7 @@ class SiExpAnimation(abstract.ABCAnimation):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.factor = 1 / 2
+        self.factor = 1/2
         self.bias = 1
 
     def setFactor(self, factor: float):

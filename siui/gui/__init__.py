@@ -1,3 +1,3 @@
 
 from .font import GlobalFont as GlobalFont
-from .font import SFont as SFont
+from .font import SiFont as SiFont
