@@ -5,7 +5,7 @@ tooltip 模块
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QWidget
 
-from ..core.animation import SiExpAnimation
+from siui.core.animation import SiExpAnimation
 
 
 class FloatingWindow(QWidget):
@@ -37,7 +37,7 @@ class FloatingWindow(QWidget):
         self.highlight_animation.setBias(1)
         self.highlight_animation.ticked.connect(self.highlight_delta_handler)
 
-        self.interval = 8  # 左右两侧的间隔
+        self.margin = 8  # 左右两侧的间隔
         self.shadow_radius = 8  # 阴影半径
 
         self.initUI()
