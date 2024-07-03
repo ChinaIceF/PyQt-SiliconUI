@@ -74,7 +74,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.reconstruct_discription.setIcon(SiGlobal.icons.get('fi-rr-bulb'))
         self.reconstruct_discription.setText('这里是重构测试', '此处进行项目重构的各种测试')
 
-        self.test_label = siui.components.label.SiLabel(self)
+        self.test_label = siui.widgets.label.SiLabel(self)
         self.test_label.setStyleSheet("background-color: #20ff0000; color: #ffffff")
         self.test_label.setAutoAdjustSize(True)
         self.test_label.setFont(siui.gui.SiFont.fromToken("S_NORMAL"))
