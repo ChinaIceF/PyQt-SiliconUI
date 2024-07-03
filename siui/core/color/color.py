@@ -16,7 +16,7 @@ class Color:
         code = Color.normalize(code)
         code = code.lstrip("#")
         a, r, g, b = int(code[0:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)
-        return numpy.array([a, r, g, b], dtype=numpy.uint16)
+        return numpy.array([a, r, g, b], dtype=numpy.int16)
 
     @staticmethod
     def encodeColor(value: Union[numpy.ndarray, list]):

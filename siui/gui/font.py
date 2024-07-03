@@ -10,7 +10,7 @@ scale_factor = 1  # TODO: 需要从获取缩放比例的模块中获取
 class SiFont:
     @staticmethod
     def getFont(
-            families: Sequence = ["Segoe UI", "PingFang SC", "Microsoft YaHei"],
+            families: Sequence = ["Microsoft YaHei"],
             size: int = 14,
             weight: QFont.Weight = QFont.Weight.Normal,
             italic: bool = False,

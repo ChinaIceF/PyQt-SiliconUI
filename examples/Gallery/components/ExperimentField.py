@@ -14,6 +14,7 @@ import random
 import SiliconUI
 import SiliconUI.SiGlobal as SiGlobal
 from SiliconUI.SiFont import *
+import siui
 from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
@@ -64,7 +65,29 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.stack_music_info_placeholder.addItem(self.layout_music_info_placeholder)
 
 
+        ## ================ Stack 开始 ===================
+
+        self.stack_reconstruct_test = SiliconUI.SiCategory(self)
+        self.stack_reconstruct_test.setTitle('重构测试')
+
+        self.reconstruct_discription = SiliconUI.SiOption(self)
+        self.reconstruct_discription.setIcon(SiGlobal.icons.get('fi-rr-bulb'))
+        self.reconstruct_discription.setText('这里是重构测试', '此处进行项目重构的各种测试')
+
+        self.test_label = siui.components.label.SiLabel(self)
+        self.test_label.setStyleSheet("background-color: #20ff0000; color: #ffffff")
+        self.test_label.setAutoAdjustSize(True)
+        self.test_label.setFont(siui.gui.SiFont.fromToken("S_NORMAL"))
+        self.test_label.setText("<strong>我还有富文本</strong>")
+
+        self.stack_reconstruct_test.addItem(self.reconstruct_discription)
+        #self.stack_reconstruct_test.addItem(self.test_label)
+
+
+
+
 
 
         self.addItem(self.discription)
         self.addItem(self.stack_music_info_placeholder)
+        self.addItem(self.stack_reconstruct_test)

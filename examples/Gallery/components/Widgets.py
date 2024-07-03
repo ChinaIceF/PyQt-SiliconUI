@@ -194,7 +194,7 @@ class WidgetsExample(SiliconUI.SiScrollFrame):
         self.pixlabel_with_hint.resize(80, 80)
         self.pixlabel_with_hint.setRadius(40)
         self.pixlabel_with_hint.load("./img/headpic.png")
-        self.pixlabel_with_hint.setHint("关注霏泠谢谢喵")
+        self.pixlabel_with_hint.setHint("<strong>关注霏泠谢谢喵</strong><p>这真的很重要<br>但其实这只是一个多行富文本工具提示罢了XD")
 
         self.pixlabel_with_hint_roundrect = SiliconUI.SiPixLabel(self)
         self.pixlabel_with_hint_roundrect.resize(80, 80)

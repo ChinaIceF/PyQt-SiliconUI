@@ -1,15 +1,11 @@
-"""
-基础控件
-ABCAnimatedLabel 提供各类简单易用的属性动画支持
-"""
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel
+from PyQt5.QtCore import pyqtSignal, QPoint
+from PyQt5.QtWidgets import QWidget
 
-from siui.core.animation import SiAnimationGroup, SiExpAnimation
+from siui.core.animation import SiExpAnimation, SiAnimationGroup
 
 
-# 2024.7.2 添加动画支持标签
-class ABCAnimatedLabel(QLabel):
+# 2024.7.3 添加动画控件
+class ABCAnimatedWidget(QWidget):
     moved = pyqtSignal(object)
     resized = pyqtSignal(object)
     opacityChanged = pyqtSignal(float)
@@ -25,11 +21,11 @@ class ABCAnimatedLabel(QLabel):
 
         self.move_limits = False  # 是否有限定区域
 
-        self.auto_adjust_size = False  # 是否在setText被调用时自动调整空间大小
-
-        self.enable_signal_emission = False  # 是否启用moved，resized，opacityChanged信号
+        self.enable_signal_emission = False # 是否启用moved，resized，opacityChanged信号
 
         self.x1, self.y1, self.x2, self.y2 = None, None, None, None
+
+        self.move_anchor = QPoint(0, 0)     # 移动时的基准点位置
 
         self.animation_move = SiExpAnimation(self)
         self.animation_move.setFactor(1/4)
@@ -71,33 +67,6 @@ class ABCAnimatedLabel(QLabel):
         self.fixed_stylesheet = fixed_stylesheet
         self.setStyleSheet(fixed_stylesheet)
 
-    def setUseSignals(self, b: bool):
-        """
-        设置是否使用 moved，resized，opacityChanged 信号，通常来说这是关闭的，因为这可能会带来较大的性能开销
-        :param b: 是否使用信号
-        :return:
-        """
-        self.enable_signal_emission = b
-
-    def setText(self, text: str):
-        """
-        设置标签的文本
-        :param text: 文本
-        :return:
-        """
-        super().setText(text)
-        if self.auto_adjust_size is True:
-            self.adjustSize()
-
-
-    def setAutoAdjustSize(self, b: bool):
-        """
-        设置每次调用 setText 方法后自动调整标签的尺寸
-        :param b: 是否自动调整
-        :return:
-        """
-        self.auto_adjust_size = b
-
     def _move_ani_handler(self, arr):
         x, y = arr
         self.move(int(x), int(y))
@@ -109,18 +78,13 @@ class ABCAnimatedLabel(QLabel):
     def _opacity_ani_handler(self, opacity: float):
         self.setOpacity(opacity)
 
-    def resizeTo(self, w: int, h: int):
+    def setUseSignals(self, b: bool):
         """
-        具动画重设大小到目标尺寸
-        :param w: 宽
-        :param h: 高
+        设置是否使用 moved，resized，opacityChanged 信号，通常来说这是关闭的，因为这可能会带来较大的性能开销
+        :param b: 是否使用信号
         :return:
         """
-        if self.instant_resize is False and self.isVisible() is True:
-            self.animation_resize.setTarget([w, h])
-            self.activateResize()
-        else:
-            self.resize(w, h)
+        self.enable_signal_emission = b
 
     def setMoveLimits(self,
                       x1: int,
@@ -158,7 +122,7 @@ class ABCAnimatedLabel(QLabel):
 
     def moveTo(self, x: int, y: int):
         """
-        带动画地将标签移动到指定位置
+        带动画地将控件移动到指定位置
         :param x: 目标横坐标
         :param y: 目标纵坐标
         :return:
@@ -171,16 +135,26 @@ class ABCAnimatedLabel(QLabel):
         else:
             self.move(x, y)
 
+    def resizeTo(self, w: int, h: int):
+        """
+        具动画重设大小到目标尺寸
+        :param w: 宽
+        :param h: 高
+        :return:
+        """
+        if self.instant_resize is False and self.isVisible() is True:
+            self.animation_resize.setTarget([w, h])
+            self.activateResize()
+        else:
+            self.resize(w, h)
+
     def setOpacity(self, opacity: float):
         """
         设置透明度
         :param opacity: 透明度值 0-1
         :return:
         """
-        print(opacity)
-        self.opacity_effect = QGraphicsOpacityEffect()
-        self.opacity_effect.setOpacity(opacity)
-        self.setGraphicsEffect(self.opacity_effect)
+        self.setWindowOpacity(opacity)
         if self.enable_signal_emission:
             self.opacityChanged.emit(self.opacity)
 
@@ -265,16 +239,6 @@ class ABCAnimatedLabel(QLabel):
             opacity = self.animation_opacity.target
             self.setOpacity(opacity)
 
-    def moveEvent(self, event):
-        # moveEvent 事件一旦被调用，控件的位置会瞬间改变
-        # 并且会立即调用动画的 setCurrent 方法，设置动画开始值为 event 中的 pos()
-        super().moveEvent(event)
-        pos = event.pos()
-        x, y = pos.x(), pos.y()
-        self.animation_move.setCurrent([x, y])
-        if self.enable_signal_emission:
-            self.moved.emit([x, y])
-
     def resizeEvent(self, event):
         # resizeEvent 事件一旦被调用，控件的尺寸会瞬间改变
         # 并且会立即调用动画的 setCurrent 方法，设置动画开始值为 event 中的 size()
@@ -284,3 +248,13 @@ class ABCAnimatedLabel(QLabel):
         self.animation_resize.setCurrent([w, h])
         if self.enable_signal_emission:
             self.resized.emit([w, h])
+
+    def moveEvent(self, event):
+        # moveEvent 事件一旦被调用，控件的位置会瞬间改变
+        # 并且会立即调用动画的 setCurrent 方法，设置动画开始值为 event 中的 pos()
+        super().moveEvent(event)
+        pos = event.pos()
+        x, y = pos.x(), pos.y()
+        self.animation_move.setCurrent([x, y])
+        if self.enable_signal_emission:
+            self.moved.emit([x, y])

@@ -17,10 +17,13 @@ class SiLabelColored(ABCAnimatedLabel):
         super().__init__(parent)
 
         self.animation_color = SiExpAnimation(self)
-        self.animation_color.setFactor(1 / 4)
+        self.animation_color.setFactor(1/4)
         self.animation_color.setBias(1)
+        self.animation_color.ticked.connect(self._set_color_handler)
 
-    def setTargetColor(self, color_code):
+        self.getAnimationGroup().addMember(self.animation_color, "color")
+
+    def setColorTo(self, color_code):
         """
         设置目标颜色，同时启动动画
         :param color_code: 色号
