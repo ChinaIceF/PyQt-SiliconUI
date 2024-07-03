@@ -12,6 +12,7 @@ class Curve:
 
 class ABCAnimation(QObject):
     ticked = pyqtSignal(object)     # 动画进行一刻的信号
+    finished = pyqtSignal(object)   # 动画完成的信号，回传目标值
 
     def __init__(self, parent=None):
         super().__init__(parent)

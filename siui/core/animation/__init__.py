@@ -1,5 +1,6 @@
 from siui.core.animation import abstract
 from siui.core.animation.animation import SiCounterAnimation, SiExpAnimation  # noqa: F401
+from siui.core.animation.group import SiAnimationGroup  # noqa: F401
 
 
 def set_global_fps(fps):

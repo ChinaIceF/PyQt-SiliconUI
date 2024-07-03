@@ -17,6 +17,7 @@ from SiliconUI.SiGlobal import *
 import SiliconUI.SiGlobal as SiGlobal
 
 import components as Components
+from siui.gui import ToolTipWindow
 
 # 加载图标
 import icons
@@ -29,7 +30,7 @@ class UserInterface(QMainWindow):
         self.setMinimumWidth(860)
 
         # 初始化 Hint 提示条
-        self.floating_window = FloatingWindow()
+        self.floating_window = ToolTipWindow()
         self.floating_window.setWindowOpacity(0)  # 初始隐藏小窗口
         self.floating_window.show()
         SiGlobal.floating_window = self.floating_window

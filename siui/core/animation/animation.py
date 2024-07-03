@@ -4,6 +4,7 @@ import siui.core.animation.abstract as abstract
 
 
 class SiExpAnimation(abstract.ABCAnimation):
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -47,9 +48,10 @@ class SiExpAnimation(abstract.ABCAnimation):
         return (self._distance() == 0).all()
 
     def _process(self):
-        # 如果已经到达既定位置，终止计时器
+        # 如果已经到达既定位置，终止计时器，并发射停止信号
         if self.isCompleted():
             self.stop()
+            self.finished.emit(self.target)
             return
 
         step_length = self._step_length()
@@ -117,9 +119,10 @@ class SiCounterAnimation(abstract.ABCAnimation):
         return (self.reversed is False and self.counter == 1) or (self.reversed and self.counter == 0)
 
     def _process(self):
-        # 如果已经到达既定位置，终止计时器
+        # 如果已经到达既定位置，终止计时器，并发射停止信号
         if self.isCompleted():
             self.stop()
+            self.finished.emit(self.target)
             return
 
         # 计数器更新

@@ -1,3 +1,3 @@
 
-from .font import GlobalFont as GlobalFont
-from .font import SiFont as SiFont
+from siui.gui.font import GlobalFont, SiFont
+from siui.gui.tooltip import ToolTipWindow
