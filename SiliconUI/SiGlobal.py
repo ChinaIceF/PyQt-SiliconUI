@@ -114,7 +114,7 @@ class SiColorDark(Color):
 
     # 选项
     OPT_TITLE_HEX = TEXT_GRAD_HEX[0]
-    OPT_DISCRIPTION_HEX = TEXT_GRAD_HEX[3]
+    OPT_DESCRIPTION_HEX = TEXT_GRAD_HEX[3]
 
 
 class SiColorBright(Color):
@@ -200,7 +200,7 @@ class SiColorBright(Color):
 
     # 选项
     OPT_TITLE_HEX = TEXT_GRAD_HEX[0]
-    OPT_DISCRIPTION_HEX = TEXT_GRAD_HEX[3]
+    OPT_DESCRIPTION_HEX = TEXT_GRAD_HEX[3]
 
 
 colorset = SiColorDark()

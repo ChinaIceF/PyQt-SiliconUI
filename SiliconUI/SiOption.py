@@ -112,7 +112,7 @@ class SiOption(QWidget):
                 colorset.OPT_TITLE_HEX, title))
         else:
             self.textbar.setText("<font color='{}'><strong>{}</strong></font><br><font color='{}'>{}</font>".format(
-                colorset.OPT_TITLE_HEX, title, colorset.OPT_DISCRIPTION_HEX, subtitle.replace('\n', '<br>')))
+                colorset.OPT_TITLE_HEX, title, colorset.OPT_DESCRIPTION_HEX, subtitle.replace('\n', '<br>')))
 
         # 根据文本多少，自适应调节高度
         self.textbar.adjustSize()
