@@ -6,9 +6,9 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
-from siui.components import SiLabel, SiLabelColored
-from siui.components.widgets import ABCAnimatedWidget
 from siui.gui.font import SiFont
+from siui.widgets import SiLabel, SiLabelColored
+from siui.widgets.abstracts import ABCAnimatedWidget
 
 
 class ToolTipWindow(ABCAnimatedWidget):

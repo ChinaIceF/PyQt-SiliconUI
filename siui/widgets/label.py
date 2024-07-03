@@ -1,6 +1,6 @@
-from siui.components.widgets import ABCAnimatedLabel
 from siui.core.animation import SiExpAnimation
 from siui.core.color import Color
+from siui.widgets.abstracts import ABCAnimatedLabel
 
 
 class SiLabel(ABCAnimatedLabel):
