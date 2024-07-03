@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.gui.colorsets import colorset
 from siui.gui.font import SiFont
-from siui.widgets import SiLabel, SiLabelColored
+from siui.widgets import SiLabel, SiColoredLabel
 from siui.widgets.abstracts import ABCAnimatedWidget
 
 
@@ -39,7 +39,7 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.tracker_timer.start()
 
         # 背景颜色，可以用于呈现不同类型的信息
-        self.bg_label = SiLabelColored(self)
+        self.bg_label = SiColoredLabel(self)
         self.bg_label.move(self.margin, self.margin)
         self.bg_label.setFixedStyleSheet("border-radius: 6px")
         self.bg_label.setColor(colorset.color.TOOLTIP_HEX[1])
@@ -56,7 +56,7 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.text_label.setFont(SiFont.fromToken("S_NORMAL"))
 
         # 高光遮罩，当信息刷新时会闪烁一下
-        self.highlight_mask = SiLabelColored(self)
+        self.highlight_mask = SiColoredLabel(self)
         self.highlight_mask.move(self.margin, self.margin)
         self.highlight_mask.setFixedStyleSheet("border-radius: 6px")
         self.highlight_mask.setColor("#00FFFFFF")
