@@ -17,8 +17,8 @@ class ABCAnimation(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.target = numpy.array(0)         # 目标值
-        self.current = numpy.array(0)        # 当前值
+        self.target_ = numpy.array(0)         # 目标值
+        self.current_ = numpy.array(0)        # 当前值
         self.counter = 0                     # 计数器
 
         # 构建计时器
@@ -32,7 +32,7 @@ class ABCAnimation(QObject):
         :param target: Anything can be involved in calculations.
         :return:
         """
-        self.target = numpy.array(target)
+        self.target_ = numpy.array(target)
 
     def setCurrent(self, current):
         """
@@ -40,14 +40,28 @@ class ABCAnimation(QObject):
         :param current: Anything can be involved in calculations.
         :return:
         """
-        self.current = numpy.array(current)
+        self.current_ = numpy.array(current)
+
+    def current(self):
+        """
+        返回动画计数器的当前值
+        :return: 当前值
+        """
+        return self.current_
+
+    def target(self):
+        """
+        返回动画计数器的目标值
+        :return: 目标值
+        """
+        return self.target_
 
     def _distance(self):
         """
         Get the D-value between current and target.
         :return: D-value
         """
-        return self.target - self.current
+        return self.target_ - self.current_
 
     def _step_length(self):
         raise NotImplementedError()

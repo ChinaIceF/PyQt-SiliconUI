@@ -4,6 +4,9 @@ import siui.core.animation.abstract as abstract
 
 
 class SiExpAnimation(abstract.ABCAnimation):
+    """
+    级数动画类，每次动画的进行步长都与当前进度有关
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -51,16 +54,16 @@ class SiExpAnimation(abstract.ABCAnimation):
         # 如果已经到达既定位置，终止计时器，并发射停止信号
         if self.isCompleted():
             self.stop()
-            self.finished.emit(self.target)
+            self.finished.emit(self.target_)
             return
 
         step_length = self._step_length()
 
         # 更新数值
-        self.setCurrent(self.current + step_length)
+        self.setCurrent(self.current_ + step_length)
 
         # 发射信号
-        self.ticked.emit(self.current)
+        self.ticked.emit(self.current_)
 
 
 class SiCounterAnimation(abstract.ABCAnimation):
@@ -122,7 +125,7 @@ class SiCounterAnimation(abstract.ABCAnimation):
         # 如果已经到达既定位置，终止计时器，并发射停止信号
         if self.isCompleted():
             self.stop()
-            self.finished.emit(self.target)
+            self.finished.emit(self.target_)
             return
 
         # 计数器更新
@@ -132,4 +135,4 @@ class SiCounterAnimation(abstract.ABCAnimation):
         self.setCurrent(self.curve(self.counter))
 
         # 发射信号
-        self.ticked.emit(self.current)
+        self.ticked.emit(self.current_)

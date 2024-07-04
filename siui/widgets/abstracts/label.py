@@ -233,7 +233,7 @@ class ABCAnimatedLabel(QLabel):
         if b is True:  # 如果更改为立即移动，立即终止动画，并完成动画
             self.deactivateMove()
             try:
-                x, y = self.animation_move.target
+                x, y = self.animation_move.target_
                 self.move(x, y)
             except:
                 pass
@@ -248,7 +248,7 @@ class ABCAnimatedLabel(QLabel):
         if b is True:  # 如果更改为立即重设大小，立即终止动画，并完成动画
             self.deactivateResize()
             try:
-                w, h = self.animation_resize.target
+                w, h = self.animation_resize.target_
                 self.resize(w, h)
             except:
                 pass
@@ -262,7 +262,7 @@ class ABCAnimatedLabel(QLabel):
         self.instant_set_opacity = b
         if b is True:
             self.deactivateSetOpacity()
-            opacity = self.animation_opacity.target
+            opacity = self.animation_opacity.target_
             self.setOpacity(opacity)
 
     def moveEvent(self, event):
