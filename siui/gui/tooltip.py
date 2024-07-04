@@ -6,15 +6,16 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
+from siui.gui.colorsets import colorset
 from siui.gui.font import SiFont
-from siui.widgets import SiLabel, SiLabelColored
+from siui.widgets import SiLabel, SiColoredLabel
 from siui.widgets.abstracts import ABCAnimatedWidget
 
 
 class ToolTipWindow(ABCAnimatedWidget):
     def __init__(self, parent=None):
-        super().__init__(parent,
-                         Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        super().__init__(
+            parent, Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowTransparentForInput)
 
         self.setAttribute(Qt.WA_TranslucentBackground)
 
@@ -38,10 +39,10 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.tracker_timer.start()
 
         # 背景颜色，可以用于呈现不同类型的信息
-        self.bg_label = SiLabelColored(self)
+        self.bg_label = SiColoredLabel(self)
         self.bg_label.move(self.margin, self.margin)
         self.bg_label.setFixedStyleSheet("border-radius: 6px")
-        self.bg_label.setColor("#ef413a47")
+        self.bg_label.setColor(colorset.color.TOOLTIP_HEX[1])
 
         # 文字标签的父对象，防止文字超出界限
         self.text_container = SiLabel(self)
@@ -49,13 +50,13 @@ class ToolTipWindow(ABCAnimatedWidget):
 
         # 文字标签，工具提示就在这里显示，
         self.text_label = SiLabel(self.text_container)
-        self.text_label.setFixedStyleSheet("padding: 8px; color: #FFFFFF")
+        self.text_label.setFixedStyleSheet(f"padding: 8px; color: {colorset.color.TOOLTIP_HEX[0]}")
         self.text_label.setInstantResize(True)
         self.text_label.setAutoAdjustSize(True)
         self.text_label.setFont(SiFont.fromToken("S_NORMAL"))
 
         # 高光遮罩，当信息刷新时会闪烁一下
-        self.highlight_mask = SiLabelColored(self)
+        self.highlight_mask = SiColoredLabel(self)
         self.highlight_mask.move(self.margin, self.margin)
         self.highlight_mask.setFixedStyleSheet("border-radius: 6px")
         self.highlight_mask.setColor("#00FFFFFF")
@@ -79,6 +80,7 @@ class ToolTipWindow(ABCAnimatedWidget):
         if target == 0:
             self.completely_hid = True
             self.resize(2 * self.margin, 36 + 2 * self.margin)  # 变单行内容的高度，宽度不足以显示任何内容
+            self.text_label.setText("")   # 清空文本内容
 
     def setText(self, text, flash=True):
         """
@@ -87,9 +89,10 @@ class ToolTipWindow(ABCAnimatedWidget):
         :param flash: 是否闪烁高光层
         :return:
         """
+        text_changed = self.text_label.text() != text
         self.text_label.setText(str(text))
         self._refresh_size()
-        if flash:
+        if flash and text_changed:
             self.flash()
 
     def _refresh_size(self):
@@ -97,8 +100,9 @@ class ToolTipWindow(ABCAnimatedWidget):
         用于设置大小动画结束值并启动动画
         :return:
         """
-        # 让自身大小变为文字标签的大小加上阴影间距
         w, h = self.text_label.width(), self.text_label.height()
+
+        # 让自身大小变为文字标签的大小加上阴影间距
         self.resizeTo(w + 2 * self.margin, h + 2 * self.margin)
 
     def flash(self):
@@ -113,16 +117,25 @@ class ToolTipWindow(ABCAnimatedWidget):
     def _refresh_position(self):
         pos = QCursor.pos()
         x, y = pos.x(), pos.y()
-        # self.move(x, y - self.geometry().height())
-        self.moveTo(x, y - self.geometry().height())
+        # self.move(x, y)
+        self.moveTo(x + 4, y - self.height())    # 动画跟踪，效果更佳，有了锚点直接输入鼠标坐标即可
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
         size = event.size()
         w, h = size.width() - 2 * self.margin, size.height() - 2 * self.margin
 
+        # 重设内部控件大小
         self.bg_label.resize(w, h)
         self.text_container.resize(w, h)
         self.highlight_mask.resize(w, h)
 
-        self.text_label.move(0, h - self.text_label.height()) # 这可以避免多行显示时奇怪的文本移动动画
+        # 移动文本位置，阻止重设大小动画进行时奇怪的文字移动
+        self.text_label.move(0, h - self.text_label.height())
+
+    def enterEvent(self, event):
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        super().leaveEvent(event)
+        event.ignore()

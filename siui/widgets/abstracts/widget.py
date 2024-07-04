@@ -249,12 +249,20 @@ class ABCAnimatedWidget(QWidget):
         if self.enable_signal_emission:
             self.resized.emit([w, h])
 
+    def setMoveAnchor(self, x, y):
+        self.move_anchor = QPoint(x, y)
+
+    def move(self, *args):  # 重写移动方法，从而按照锚点的位置移动控件
+        point = QPoint(*args)
+        anchor_adjusted_point = point - self.move_anchor
+        super().move(anchor_adjusted_point)
+
     def moveEvent(self, event):
         # moveEvent 事件一旦被调用，控件的位置会瞬间改变
         # 并且会立即调用动画的 setCurrent 方法，设置动画开始值为 event 中的 pos()
         super().moveEvent(event)
-        pos = event.pos()
-        x, y = pos.x(), pos.y()
-        self.animation_move.setCurrent([x, y])
+        pos = event.pos() + self.move_anchor
+        self.animation_move.setCurrent([pos.x(), pos.y()])
+
         if self.enable_signal_emission:
-            self.moved.emit([x, y])
+            self.moved.emit([event.pos().x(), event.pos().y()])
