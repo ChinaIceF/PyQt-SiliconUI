@@ -19,7 +19,7 @@ from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
-from siui.widgets import SiPushButton, SiSvgLabel, SiIconLabel
+from siui.widgets import SiPushButton, SiHoldButton, SiSvgLabel, SiIconLabel
 from siui.gui import SiFont
 
 class ExperimentField(SiliconUI.SiScrollFrame):
@@ -84,7 +84,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.test_new_button.setFixedSize(128, 32)
         self.test_new_button.setText("重构按钮")
 
-        self.test_new_button2 = SiPushButton(self)
+        self.test_new_button2 = SiHoldButton(self)
         self.test_new_button2.setFixedSize(128, 32)
         self.test_new_button2.load(SiGlobal.icons.get('fi-rr-bulb'))
         self.test_new_button2.setText("新增图标")

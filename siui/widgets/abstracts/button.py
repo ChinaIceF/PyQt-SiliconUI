@@ -1,8 +1,11 @@
 from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtCore import QThread, pyqtSignal
 
+from siui.core.animation import SiExpAnimation
 from siui.widgets.abstracts import ABCAnimatedWidget
 from siui.widgets.label import SiColoredLabel, SiLabel
 
+import time
 
 class ABCButton(QPushButton):
     """
@@ -14,6 +17,10 @@ class ABCButton(QPushButton):
         super().__init__(*args, **kwargs)
         super().setStyleSheet("background-color: transparent")
 
+        # 启用点击动画，通常在仅需要按下和抬起事件时禁用
+        self.enabled_click_animation = True
+
+        # 绑定点击事件到点击槽函数，这将触发点击动画
         self.clicked.connect(self._clicked_slot)
 
         # 提供悬停时的颜色变化动画
@@ -21,14 +28,14 @@ class ABCButton(QPushButton):
         self.hover_highlight.stackUnder(self)  # 置于按钮的底部
         self.hover_highlight.setColor("#00FFFFFF")
         self.hover_highlight.getAnimationGroup().fromToken("color").setBias(0.2)
-        self.hover_highlight.getAnimationGroup().fromToken("color").setFactor(1/8)
+        self.hover_highlight.getAnimationGroup().fromToken("color").setFactor(1 / 8)
 
         # 提供点击时的颜色变化动画
         self.flash = SiColoredLabel(self)
         self.flash.stackUnder(self)  # 置于按钮的底部
         self.flash.setColor("#00FFFFFF")
         self.flash.getAnimationGroup().fromToken("color").setBias(0.2)
-        self.flash.getAnimationGroup().fromToken("color").setFactor(1/8)
+        self.flash.getAnimationGroup().fromToken("color").setFactor(1 / 8)
 
     def setFixedStyleSheet(self, style_sheet):  # 劫持这个按钮的stylesheet，只能设置outfit的样式表
         """
@@ -58,9 +65,18 @@ class ABCButton(QPushButton):
         """
         return
 
+    def setEnableClickAnimation(self, b: bool):
+        """
+        设置是否启用点击动画
+        :param b: 是否启用
+        :return:
+        """
+        self.enabled_click_animation = b
+
     def _clicked_slot(self):
-        self.flash.setColor("#20FFFFFF")
-        self.flash.setColorTo("#00FFFFFF")
+        if self.enabled_click_animation is True:
+            self.flash.setColor("#20FFFFFF")
+            self.flash.setColorTo("#00FFFFFF")
 
     def enterEvent(self, event):
         super().enterEvent(event)
@@ -127,10 +143,59 @@ class ABCPushButton(ABCButton):
         size = event.size()
         w, h = size.width(), size.height()
 
-        self.hover_highlight.resize(w, h-3)
-        self.flash.resize(w, h-3)
+        self.hover_highlight.resize(w, h - 3)
+        self.flash.resize(w, h - 3)
 
         self.body_top.resize(w, h - 3)
         self.body_bottom.resize(w, h)
 
         self.attachment.move((w - self.attachment.width()) // 2, (h - 3 - self.attachment.height()) // 2)
+
+
+class ABCHoldThread(QThread):
+    ticked = pyqtSignal(float)
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent_ = parent
+
+        # 创建一个动画，不激活动画，而是每次运行时调用一次_process方法
+        self.animation = SiExpAnimation(self)
+        self.animation.setCurrent(0)
+        self.animation.setTarget(1)
+        self.animation.setBias(0.01)
+        self.animation.setFactor(1/8)
+        self.animation.ticked.connect(self.ticked.emit)
+
+    def parent(self):
+        return self.parent_
+
+    # 重写进程
+    def _process(self):
+        # 初始化等待时间
+        time_start_waiting = time.time()
+
+        # 前进动画
+        while time.time() - time_start_waiting <= 0.5: # 即便松开，在额定时间内继续按压仍然会继续计数
+
+            # 如果父对象按钮处于按下状态并且动画尚未完成
+            while self.parent().isPressed() and self.animation.current() < 1:
+                # 重置等待时间
+                time_start_waiting = time.time()
+
+                # 更新进度并发射信号
+                self.animation._process()
+
+                # 等待帧
+                time.sleep(1/60)
+
+            # 如果循环被跳出，并且此时动画已经完成了
+            if self.animation.current() == 1:
+                # 发射长按已经超时信号，即此时点击已经被确认
+                self.parent().holdTimeout.emit()
+
+        # 如果前进的循环已经被跳出，并且此时动画进度不为0
+        while self.animation.current() > 0:
+            self.animation.setCurrent(max(0, self.animation.current() - 0.1))
+            self.animation.ticked.emit()
+            time.sleep(1/60)
