@@ -45,10 +45,38 @@ class UserInterface(QMainWindow):
         # 叠加层置顶
         self.overlay.raise_()
 
+        # 加载样式表
+        self.reload_all_stylesheet([self, self.floating_window])
+
     def showEvent(self, event):
         self.overlay.showup_animation.setCurrent(self.geometry().height())
         self.overlay.moveFrame(self.geometry().height())
         self.overlay.hide()
+
+    def reload_all_stylesheet(self, windows):
+        start_time = time.time()
+        self.reload_stylesheet_tried = 0
+        self.reload_stylesheet_succeed = 0
+
+        for window in windows:
+            self.refresh_children_stylesheet(window)
+
+        print("""重新加载全局样式表已完成（尝试{}次，成功{}次，失败{}次，用时 {} sec）""".format(
+            self.reload_stylesheet_tried,
+            self.reload_stylesheet_succeed,
+            self.reload_stylesheet_tried - self.reload_stylesheet_succeed,
+            time.time() - start_time
+        ))
+
+    def refresh_children_stylesheet(self, parent):
+        for child in parent.children():
+            self.reload_stylesheet_tried += 1
+            try:
+                child.reloadStylesheet()
+                self.reload_stylesheet_succeed += 1
+            except:
+                pass
+            self.refresh_children_stylesheet(child)
 
     def resizeEvent(self, event):
         w = event.size().width()

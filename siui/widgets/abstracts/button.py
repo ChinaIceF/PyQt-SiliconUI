@@ -6,7 +6,8 @@ from siui.widgets.label import SiColoredLabel, SiLabel
 
 class ABCButton(QPushButton):
     """
-    为所有需要点击、按下或松开的场景提供支持的抽象控件
+    抽象按钮控件\n
+    提供点击、按下、松开的信号和色彩动画
     """
 
     def __init__(self, *args, **kwargs):
@@ -30,15 +31,35 @@ class ABCButton(QPushButton):
         self.flash.getAnimationGroup().fromToken("color").setFactor(1/8)
 
     def setFixedStyleSheet(self, style_sheet):  # 劫持这个按钮的stylesheet，只能设置outfit的样式表
+        """
+        设置按钮组件固定的样式表\n
+        注意，这不会设置按钮本身的固定样式表，而且不能改变相应的颜色设置，本方法只应用于更改边框圆角半径等属性
+        :param style_sheet: 固定样式表
+        :return:
+        """
         self.hover_highlight.setFixedStyleSheet(style_sheet)
         self.flash.setFixedStyleSheet(style_sheet)
 
     def setStyleSheet(self, style_sheet):  # 劫持这个按钮的stylesheet，只能设置outfit的样式表
+        """
+        设置按钮组件样式表\n
+        注意，这不会设置按钮本身的样式表，而且不能改变相应的颜色设置，本方法只应用于更改边框圆角半径等属性
+        :param style_sheet: 样式表
+        :return:
+        """
         self.hover_highlight.setStyleSheet(style_sheet)
         self.flash.setStyleSheet(style_sheet)
 
+    def reloadStylesheet(self):
+        """
+        重载样式表，建议将所有设置样式表的内容重写在此方法中\n
+        此方法在窗口show方法被调用时、主题改变时被调用
+        :return:
+        """
+        return
+
     def _clicked_slot(self):
-        self.flash.setColor("#10FFFFFF")
+        self.flash.setColor("#20FFFFFF")
         self.flash.setColorTo("#00FFFFFF")
 
     def enterEvent(self, event):
@@ -59,7 +80,10 @@ class ABCPushButton(ABCButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # 设置成 pushbutton 的形状
+    def reloadStylesheet(self):
+        super().reloadStylesheet()
+
+        # 把有效区域设置成 PushButton 的形状
         self.setFixedStyleSheet("""
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;
