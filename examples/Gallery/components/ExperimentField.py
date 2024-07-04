@@ -19,6 +19,8 @@ from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
+from siui.widgets import SiPushButtonBlank
+
 class ExperimentField(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -74,13 +76,16 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.reconstruct_discription.setIcon(SiGlobal.icons.get('fi-rr-bulb'))
         self.reconstruct_discription.setText('这里是重构测试', '此处进行项目重构的各种测试')
 
-        self.test_label = siui.widgets.label.SiLabel(self)
-        self.test_label.setStyleSheet("background-color: #20ff0000; color: #ffffff")
-        self.test_label.setAutoAdjustSize(True)
-        self.test_label.setFont(siui.gui.SiFont.fromToken("S_NORMAL"))
-        self.test_label.setText("<strong>我还有富文本</strong>")
+        self.button_layout = SiliconUI.SiLayoutH(self)
+        self.button_layout.setFixedHeight(32)
+
+        self.test_new_button = SiPushButtonBlank(self)
+        self.test_new_button.setFixedSize(128, 32)
+
+        self.button_layout.addItem(self.test_new_button)
 
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
+        self.stack_reconstruct_test.addItem(self.button_layout)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
 
