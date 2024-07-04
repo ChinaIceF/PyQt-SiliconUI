@@ -19,7 +19,7 @@ from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
-from siui.widgets import SiPushButtonBlank
+from siui.widgets import SiPushButton
 
 class ExperimentField(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
@@ -79,8 +79,9 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.button_layout = SiliconUI.SiLayoutH(self)
         self.button_layout.setFixedHeight(32)
 
-        self.test_new_button = SiPushButtonBlank(self)
+        self.test_new_button = SiPushButton(self)
         self.test_new_button.setFixedSize(128, 32)
+        self.test_new_button.setText("重构按钮")
 
         self.button_layout.addItem(self.test_new_button)
 
