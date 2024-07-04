@@ -1,12 +1,8 @@
-from PyQt5.Qt import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 
-import SiliconUI
-import SiliconUI.SiGlobal as SiGlobal
 from SiliconUI import *
 from SiliconUI.SiGlobal import *
+
+from siui.widgets import SiPushButton
 
 from .web_url import GithubUrl, browse
 
@@ -70,12 +66,12 @@ class LayoutsExample(SiliconUI.SiScrollFrame):
 
         self.layout_flow_layouts_buttons = SiLayoutH(self)
 
-        self.button_reverse_label = SiButton(self)
+        self.button_reverse_label = SiPushButton(self)
         self.button_reverse_label.setText("重排首个元素")
         self.button_reverse_label.resize(128, 32)
         self.button_reverse_label.clicked.connect(lambda: reverse_label(self.flow_layout))
 
-        self.button_shuffle_label = SiButton(self)
+        self.button_shuffle_label = SiPushButton(self)
         self.button_shuffle_label.setText("随机打乱")
         self.button_shuffle_label.resize(128, 32)
         self.button_shuffle_label.clicked.connect(lambda: shuffle_label(self.flow_layout))

@@ -1,6 +1,6 @@
-from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QPushButton
 
+from siui.widgets.abstracts import ABCAnimatedWidget
 from siui.widgets.label import SiColoredLabel, SiLabel
 
 
@@ -80,8 +80,40 @@ class ABCPushButton(ABCButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # 占位用的被绑定部件，显示在按钮正中央
+        self.attachment = ABCAnimatedWidget()
+
+        # 按钮表面
+        self.body_top = SiLabel(self)
+        self.body_top.lower()
+
+        # 绘制最底层阴影部分
+        self.body_bottom = SiLabel(self)
+        self.body_bottom.lower()
+
+    def setAttachment(self, widget):
+        """
+        设置绑定部件。被绑定部件将会被设为按钮的子控件，并显示在按钮的正中央
+        :param widget: 部件
+        :return:
+        """
+        self.attachment = widget
+        self.attachment.setParent(self)
+        self.resize(self.size())  # 实现刷新位置
+
     def reloadStylesheet(self):
         super().reloadStylesheet()
+
+        # 设置按钮表面的圆角边框
+        self.body_top.setFixedStyleSheet("""
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
+        """)
+
+        # 设置按钮阴影的圆角边框
+        self.body_bottom.setFixedStyleSheet("border-radius: 4px")
 
         # 把有效区域设置成 PushButton 的形状
         self.setFixedStyleSheet("""
@@ -94,5 +126,11 @@ class ABCPushButton(ABCButton):
     def resizeEvent(self, event):
         size = event.size()
         w, h = size.width(), size.height()
+
         self.hover_highlight.resize(w, h-3)
         self.flash.resize(w, h-3)
+
+        self.body_top.resize(w, h - 3)
+        self.body_bottom.resize(w, h)
+
+        self.attachment.move((w - self.attachment.width()) // 2, (h - 3 - self.attachment.height()) // 2)
