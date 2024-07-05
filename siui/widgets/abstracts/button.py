@@ -75,8 +75,11 @@ class ABCButton(QPushButton):
 
     def _clicked_slot(self):
         if self.enabled_click_animation is True:
-            self.flash.setColor("#20FFFFFF")
-            self.flash.setColorTo("#00FFFFFF")
+            self._run_clicked_ani()
+
+    def _run_clicked_ani(self):
+        self.flash.setColor("#20FFFFFF")
+        self.flash.setColorTo("#00FFFFFF")
 
     def enterEvent(self, event):
         super().enterEvent(event)
@@ -154,6 +157,7 @@ class ABCPushButton(ABCButton):
 
 class ABCHoldThread(QThread):
     ticked = pyqtSignal(float)
+    holdTimeout = pyqtSignal()
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -163,15 +167,15 @@ class ABCHoldThread(QThread):
         self.animation = SiExpAnimation(self)
         self.animation.setCurrent(0)
         self.animation.setTarget(1)
-        self.animation.setBias(0.01)
-        self.animation.setFactor(1/8)
+        self.animation.setBias(0.001)
+        self.animation.setFactor(1/16)
         self.animation.ticked.connect(self.ticked.emit)
 
     def parent(self):
         return self.parent_
 
     # 重写进程
-    def _process(self):
+    def run(self):
         # 初始化等待时间
         time_start_waiting = time.time()
 
@@ -192,10 +196,17 @@ class ABCHoldThread(QThread):
             # 如果循环被跳出，并且此时动画已经完成了
             if self.animation.current() == 1:
                 # 发射长按已经超时信号，即此时点击已经被确认
-                self.parent().holdTimeout.emit()
+                self.holdTimeout.emit()
+
+                # 让进度停留一会，并跳出前进动画循环
+                time.sleep(10/60)
+                break
+
+            time.sleep(1/60)
 
         # 如果前进的循环已经被跳出，并且此时动画进度不为0
         while self.animation.current() > 0:
+            # 减少动画进度，直至0，并不断发射值改变信号
             self.animation.setCurrent(max(0, self.animation.current() - 0.1))
-            self.animation.ticked.emit()
+            self.animation.ticked.emit(self.animation.current())
             time.sleep(1/60)
