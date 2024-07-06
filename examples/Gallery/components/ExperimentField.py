@@ -19,7 +19,7 @@ from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
-from siui.widgets import SiPushButton, SiLongPressButton, SiSvgLabel, SiIconLabel, SiToggleButton
+from siui.widgets import SiPushButton, SiLongPressButton, SiSvgLabel, SiIconLabel, SiToggleButton, SiRadioButton
 from siui.gui import SiFont
 
 class ExperimentField(SiliconUI.SiScrollFrame):
@@ -100,10 +100,22 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.test_new_button4.attachment().setText("自动保存模式")
         self.test_new_button4.adjustSize()
 
+        self.test_new_button5 = SiRadioButton(self)
+        self.test_new_button5.setText("赤石")
+
+        self.test_new_button6 = SiRadioButton(self)
+        self.test_new_button6.setText("豪赤啊")
+
+        self.test_new_button7 = SiRadioButton(self)
+        self.test_new_button7.setText("吃饱了")
+
         self.button_layout.addItem(self.test_new_button)
         self.button_layout.addItem(self.test_new_button2)
         self.button_layout.addItem(self.test_new_button3)
         self.button_layout.addItem(self.test_new_button4)
+        self.button_layout.addItem(self.test_new_button5)
+        self.button_layout.addItem(self.test_new_button6)
+        self.button_layout.addItem(self.test_new_button7)
 
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
