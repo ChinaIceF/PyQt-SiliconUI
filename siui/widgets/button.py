@@ -4,7 +4,7 @@ from siui.core.color import Color
 from siui.gui import SiFont
 from siui.gui.colorsets import colorset
 from siui.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
-from siui.widgets.label import SiIconLabel, SiLabel
+from siui.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
 
 
 class SiPushButton(ABCPushButton):
@@ -158,6 +158,9 @@ class SiToggleButton(ABCToggleButton):
 
 
 class SiRadioButton(SiLabel):
+    """
+    单选组件，提供一个单选按钮和一个文字标签
+    """
     toggled = pyqtSignal(bool)
 
     def __init__(self, parent):
@@ -255,4 +258,102 @@ class SiRadioButton(SiLabel):
 
         self.indicator.move(0, (h-20)//2)
         self.indicator_label.move(0, (h - 20) // 2)
+        self.text_label.move(28, (h - self.text_label.height()) // 2 - 1)  # 减1是为了让偏下的文字显示正常一点
+
+
+class SiCheckBox(SiLabel):
+    """
+    多选组件，提供一个多选按钮和一个文字标签
+    """
+    toggled = pyqtSignal(bool)
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+        # 一个标签用于表现选中状态
+        self.indicator_label = SiLabel(self)
+        self.indicator_label.resize(20, 20)
+        self.indicator_label.setFixedStyleSheet("border-radius: 4px")  # 注意：这里是固定样式表
+
+        # 一个标签显示打钩的图标
+        svg_data = '<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z" fill="#FFFFFF" /></svg>'
+        self.indicator_icon = SiSvgLabel(self)
+        self.indicator_icon.resize(20, 20)
+        self.indicator_icon.setSvgSize(12, 12)
+        self.indicator_icon.load(svg_data.encode())
+
+        # 创建选项按钮
+        self.indicator = ABCButton(self)
+        self.indicator.setCheckable(True)
+        self.indicator.resize(20, 20)
+        self.indicator.setFixedStyleSheet("border-radius: 4px")  # 注意：这里是固定样式表
+        self.indicator.toggled.connect(self._toggled_handler)
+        self.indicator.toggled.connect(self.toggled.emit)
+
+        # 创建选项文字
+        self.text_label = SiLabel(self)
+        self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.text_label.setFont(SiFont.fromToken("S_NORMAL"))
+        self.text_label.setAutoAdjustSize(True)
+
+    def reloadStyleSheet(self):
+        super().reloadStyleSheet()
+
+        # 设置文字颜色
+        self.text_label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[0]}")
+
+        # 设置选项按钮样式表，调用自己的事件处理器以刷新
+        self._toggled_handler(self.isChecked())
+
+    def text(self):
+        """
+        返回选项的文本
+        :return: 文本
+        """
+        return self.text_label.text()
+
+    def setText(self, text):
+        """
+        设置选项的文本
+        :param text: 文本
+        :return:
+        """
+        self.text_label.setText(text)
+        self.adjustSize()
+
+    def adjustSize(self):
+        self.resize(20 + 8 + self.text_label.width(), 32)
+
+    def setChecked(self, state):
+        """
+        设置选项的选中状态
+        :param state: 是否被选中
+        :return:
+        """
+        self.indicator.setChecked(state)
+        self.indicator.toggled.emit(state)
+
+    def isChecked(self):
+        """
+        获取选项是否已经被选中
+        :return: 被选中的状态
+        """
+        return self.indicator.isChecked()
+
+    def _toggled_handler(self, check: bool):
+        if check is True:
+            self.indicator_icon.setVisible(True)
+            self.indicator_label.setStyleSheet(f"background-color: {colorset.color.BTN_HL_HEX[1]}")
+        else:
+            self.indicator_icon.setVisible(False)
+            self.indicator_label.setStyleSheet(f"border: 1px solid {colorset.color.TEXT_GRAD_HEX[3]}")
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        h = event.size().height()
+
+        self.indicator.move(0, (h-20)//2)
+        self.indicator_label.move(0, (h - 20) // 2)
+        self.indicator_icon.move(0, (h - 20) // 2)
         self.text_label.move(28, (h - self.text_label.height()) // 2 - 1)  # 减1是为了让偏下的文字显示正常一点

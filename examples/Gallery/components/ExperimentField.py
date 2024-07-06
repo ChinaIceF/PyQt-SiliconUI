@@ -19,7 +19,7 @@ from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
-from siui.widgets import SiPushButton, SiLongPressButton, SiSvgLabel, SiIconLabel, SiToggleButton, SiRadioButton
+from siui.widgets import SiPushButton, SiLongPressButton, SiToggleButton, SiRadioButton, SiCheckBox
 from siui.gui import SiFont
 
 class ExperimentField(SiliconUI.SiScrollFrame):
@@ -117,13 +117,27 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.button_layout.addItem(self.test_new_button6)
         self.button_layout.addItem(self.test_new_button7)
 
+
+        self.button_layout2 = SiliconUI.SiLayoutH(self)
+        self.button_layout2.setFixedHeight(32)
+
+        self.test_new_button8 = SiCheckBox(self)
+        self.test_new_button8.setText("鸡你太美")
+
+        self.test_new_button9 = SiCheckBox(self)
+        self.test_new_button9.setText("你干嘛嗨嗨呦")
+
+        self.button_layout2.addItem(self.test_new_button8)
+        self.button_layout2.addItem(self.test_new_button9)
+
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
+        self.stack_reconstruct_test.addItem(self.button_layout2)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
 
 
-
+        print(SiGlobal.icons.get('fi-rr-disk'))
 
 
         self.addItem(self.discription)
