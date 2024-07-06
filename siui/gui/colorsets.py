@@ -1,5 +1,5 @@
 from siui.core.color import Color
-from siui.core.globals import SiGlobal
+from siui.core.globals import TokenizedDatabase
 
 
 class SiColorDark(Color):
@@ -86,5 +86,5 @@ class SiColorDark(Color):
     OPT_DESCRIPTION_HEX = TEXT_GRAD_HEX[3]
 
 
-colorset = SiGlobal()
+colorset = TokenizedDatabase("color_temp")
 colorset.color = SiColorDark()
