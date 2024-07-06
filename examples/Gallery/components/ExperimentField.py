@@ -19,7 +19,7 @@ from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
-from siui.widgets import SiPushButton, SiLongPressButton, SiSvgLabel, SiIconLabel
+from siui.widgets import SiPushButton, SiLongPressButton, SiSvgLabel, SiIconLabel, SiToggleButton
 from siui.gui import SiFont
 
 class ExperimentField(SiliconUI.SiScrollFrame):
@@ -82,22 +82,28 @@ class ExperimentField(SiliconUI.SiScrollFrame):
 
         self.test_new_button = SiPushButton(self)
         self.test_new_button.setFixedSize(128, 32)
-        self.test_new_button.setText("重构按钮")
+        self.test_new_button.attachment().setText("重构按钮")
 
         self.test_new_button2 = SiLongPressButton(self)
         self.test_new_button2.setFixedSize(128, 32)
-        self.test_new_button2.load(SiGlobal.icons.get('fi-rr-bulb'))
-        self.test_new_button2.setText("新增图标")
+        self.test_new_button2.attachment().load(SiGlobal.icons.get('fi-rr-bulb'))
+        self.test_new_button2.attachment().setText("新增图标")
         self.test_new_button2.clicked.connect(lambda: print("点击事件触发"))
         self.test_new_button2.longPressed.connect(lambda: print("长按事件触发"))
 
         self.test_new_button3 = SiPushButton(self)
         self.test_new_button3.setFixedSize(48, 32)
-        self.test_new_button3.load(SiGlobal.icons.get('fi-rr-disk'))
+        self.test_new_button3.attachment().load(SiGlobal.icons.get('fi-rr-disk'))
+
+        self.test_new_button4 = SiToggleButton(self)
+        self.test_new_button4.attachment().load(SiGlobal.icons.get('fi-rr-disk'))
+        self.test_new_button4.attachment().setText("自动保存模式")
+        self.test_new_button4.adjustSize()
 
         self.button_layout.addItem(self.test_new_button)
         self.button_layout.addItem(self.test_new_button2)
         self.button_layout.addItem(self.test_new_button3)
+        self.button_layout.addItem(self.test_new_button4)
 
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
