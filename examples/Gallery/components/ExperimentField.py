@@ -135,11 +135,6 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.stack_reconstruct_test.addItem(self.button_layout2)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
-
-
-        print(SiGlobal.icons.get('fi-rr-disk'))
-
-
         self.addItem(self.discription)
         self.addItem(self.stack_music_info_placeholder)
         self.addItem(self.stack_reconstruct_test)

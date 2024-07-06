@@ -1,1 +1,1 @@
-from siui.core.globals.globals import SiGlobal  # noqa: F401
+from siui.core.globals.globals import TokenizedDatabase  # noqa: F401
