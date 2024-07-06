@@ -3,8 +3,8 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from siui.core.color import Color
 from siui.gui import SiFont
 from siui.gui.colorsets import colorset
-from siui.widgets.abstracts import ABCPushButton, ABCToggleButton, LongPressThread
-from siui.widgets.label import SiIconLabel
+from siui.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
+from siui.widgets.label import SiIconLabel, SiLabel
 
 
 class SiPushButton(ABCPushButton):
@@ -22,7 +22,6 @@ class SiPushButton(ABCPushButton):
         self.label = SiIconLabel(self)
         self.label.setAutoAdjustSize(True)
         self.label.setFont(SiFont.fromToken("S_BOLD"))
-        self.label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[1]}")
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
@@ -31,8 +30,8 @@ class SiPushButton(ABCPushButton):
         # 绑定到主体
         self.setAttachment(self.label)
 
-    def reloadStylesheet(self):
-        super().reloadStylesheet()
+    def reloadStyleSheet(self):
+        super().reloadStyleSheet()
 
         # 设置文字颜色
         self.label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[0]}")
@@ -87,7 +86,6 @@ class SiLongPressButton(ABCPushButton):
         self.label = SiIconLabel(self)
         self.label.setAutoAdjustSize(True)
         self.label.setFont(SiFont.fromToken("S_BOLD"))
-        self.label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[1]}")
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
@@ -102,8 +100,8 @@ class SiLongPressButton(ABCPushButton):
                                              stop:0 {}, stop:1 {})
         """.format(p-0.01, p, *colorset.color.BTN_HOLD_HEX[0:2]))
 
-    def reloadStylesheet(self):
-        super().reloadStylesheet()
+    def reloadStyleSheet(self):
+        super().reloadStyleSheet()
 
         # 设置文字颜色
         self.label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[0]}")
@@ -144,14 +142,117 @@ class SiToggleButton(ABCToggleButton):
         self.label = SiIconLabel(self)
         self.label.setAutoAdjustSize(True)
         self.label.setFont(SiFont.fromToken("S_BOLD"))
-        self.label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[1]}")
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 绑定到主体
         self.setAttachment(self.label)
 
         # 设置状态颜色为主题色
-        self.setStateColor(Color.transparency(colorset.color.THEME_HEX[1], 0.2), colorset.color.THEME_HEX[1])
+        self.setStateColor(Color.transparency(colorset.color.THEME_HEX[1], 0.2),
+                           colorset.color.THEME_HEX[1])
 
-    def reloadStylesheet(self):
-        super().reloadStylesheet()
+    def reloadStyleSheet(self):
+        super().reloadStyleSheet()
+
+        self.label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[1]}")
+
+
+class SiRadioButton(SiLabel):
+    toggled = pyqtSignal(bool)
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+        # 一个标签用于表现选中状态
+        self.indicator_label = SiLabel(self)
+        self.indicator_label.resize(20, 20)
+        self.indicator_label.setFixedStyleSheet("border-radius: 10px")  # 注意：这里是固定样式表
+
+        # 创建选项按钮
+        self.indicator = ABCButton(self)
+        self.indicator.resize(20, 20)
+        self.indicator.setFixedStyleSheet("border-radius: 10px")  # 注意：这里是固定样式表
+        self.indicator.toggled.connect(self._toggled_handler)
+        self.indicator.toggled.connect(self.toggled.emit)
+
+        # 创建选项文字
+        self.text_label = SiLabel(self)
+        self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.text_label.setFont(SiFont.fromToken("S_NORMAL"))
+        self.text_label.setAutoAdjustSize(True)
+
+    def reloadStyleSheet(self):
+        super().reloadStyleSheet()
+
+        # 设置文字颜色
+        self.text_label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[0]}")
+
+        # 设置选项按钮样式表，调用自己的事件处理器以刷新
+        self._toggled_handler(self.isChecked())
+
+    def text(self):
+        """
+        返回选项的文本
+        :return: 文本
+        """
+        return self.text_label.text()
+
+    def setText(self, text):
+        """
+        设置选项的文本
+        :param text: 文本
+        :return:
+        """
+        self.text_label.setText(text)
+        self.adjustSize()
+
+    def adjustSize(self):
+        self.resize(20 + 8 + self.text_label.width(), 32)
+
+    def setChecked(self, state):
+        """
+        设置选项的选中状态
+        :param state: 是否被选中
+        :return:
+        """
+        self.indicator.setChecked(state)
+        self.indicator.toggled.emit(state)
+
+    def isChecked(self):
+        """
+        获取选项是否已经被选中
+        :return: 被选中的状态
+        """
+        return self.indicator.isChecked()
+
+    def _toggled_handler(self, check: bool):
+        if check is True:
+            # 消除其他所有选项的被选择状态
+            self._uncheck_all_in_same_parent()
+
+            # 禁止其切换模式，防止被取消选择
+            self.indicator.setCheckable(False)
+            self.indicator_label.setStyleSheet(f"border: 4px solid {colorset.color.BTN_HL_HEX[1]}")
+        else:
+            # 如果被选中状态为假，就允许其切换模式
+            self.indicator.setCheckable(True)
+            self.indicator_label.setStyleSheet(f"border: 2px solid {colorset.color.BG_GRAD_HEX[0]}")
+
+    def _uncheck_all_in_same_parent(self):
+        """
+        消除父对象中所有单选框的选择状态，这保证了一个父对象下最多只有一个单选框被选中
+        :return:
+        """
+        # 遍历自己父对象的所有子对象
+        for child in self.parentWidget().children():
+            if isinstance(child, SiRadioButton) and (child != self):
+                child.setChecked(False)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        h = event.size().height()
+
+        self.indicator.move(0, (h-20)//2)
+        self.indicator_label.move(0, (h - 20) // 2)
+        self.text_label.move(28, (h - self.text_label.height()) // 2 - 1)  # 减1是为了让偏下的文字显示正常一点

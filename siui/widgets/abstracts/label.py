@@ -59,6 +59,14 @@ class ABCAnimatedLabel(QLabel):
         """
         return self.animation_group
 
+    def reloadStyleSheet(self):
+        """
+        重载样式表，建议将所有设置样式表的内容重写在此方法中\n
+        此方法在窗口show方法被调用时、主题改变时被调用
+        :return:
+        """
+        return
+
     def setStyleSheet(self, stylesheet: str):
         super().setStyleSheet(self.fixed_stylesheet + ";" + stylesheet)
 

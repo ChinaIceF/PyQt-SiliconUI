@@ -72,7 +72,7 @@ class UserInterface(QMainWindow):
         for child in parent.children():
             self.reload_stylesheet_tried += 1
             try:
-                child.reloadStylesheet()
+                child.reloadStyleSheet()
                 self.reload_stylesheet_succeed += 1
             except:
                 pass

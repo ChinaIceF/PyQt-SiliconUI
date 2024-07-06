@@ -94,7 +94,7 @@ class ABCButton(QPushButton):
         self.hover_highlight.setStyleSheet(style_sheet)
         self.flash.setStyleSheet(style_sheet)
 
-    def reloadStylesheet(self):
+    def reloadStyleSheet(self):
         """
         重载样式表，建议将所有设置样式表的内容重写在此方法中\n
         此方法在窗口show方法被调用时、主题改变时被调用
@@ -161,8 +161,8 @@ class ABCPushButton(ABCButton):
         self.body_bottom = SiLabel(self)
         self.body_bottom.lower()
 
-    def reloadStylesheet(self):
-        super().reloadStylesheet()
+    def reloadStyleSheet(self):
+        super().reloadStyleSheet()
 
         # 设置按钮表面的圆角边框
         self.body_top.setFixedStyleSheet("""
@@ -289,7 +289,7 @@ class ABCToggleButton(ABCButton):
         # 刷新当前颜色
         self._toggled_handler(self.isChecked())
 
-    def reloadStylesheet(self):
+    def reloadStyleSheet(self):
         # 设置颜色块圆角
         self.color_label.setFixedStyleSheet("border-radius: 4px")
 
