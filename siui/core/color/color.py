@@ -54,6 +54,20 @@ class Color:
         return Color.encodeColor(mixed_rgb)
 
     @staticmethod
+    def transparency(code: str, transparency: float):
+        """
+        将颜色透明化
+        :param code: 色号
+        :param transparency: 透明度
+        :return:
+        """
+        value = Color.decodeColor(code)
+        value_proceed = value * numpy.array([transparency, 1, 1, 1])
+        code_proceed = Color.encodeColor(value_proceed)
+        return code_proceed
+
+
+    @staticmethod
     def random():
         """
         返回一个随机色号
