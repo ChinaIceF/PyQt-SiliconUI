@@ -10,10 +10,10 @@ scale_factor = 1  # TODO: 需要从获取缩放比例的模块中获取
 class SiFont:
     @staticmethod
     def getFont(
-            families: Sequence = ["Microsoft YaHei"],
-            size: int = 14,
-            weight: QFont.Weight = QFont.Weight.Normal,
-            italic: bool = False,
+        families: Sequence[str] = ["Microsoft YaHei"],
+        size: int = 14,
+        weight: QFont.Weight = QFont.Weight.Normal,
+        italic: bool = False,
     ) -> QFont:
         font = QFont()
         font.setFamilies(families)
@@ -23,12 +23,15 @@ class SiFont:
         return font
 
     @staticmethod
-    def scaled_size(size):
+    def scaled_size(size: int) -> int:
         return int(size * scale_factor)
 
     @staticmethod
     def fromToken(token) -> QFont:
-        return GlobalFont.FONT_DICT.value[token]
+        try:
+            return token.value
+        except KeyError:
+            raise ValueError(f"Invalid token: {token}")
 
 
 class GlobalFont(Enum):
@@ -53,22 +56,3 @@ class GlobalFont(Enum):
     M_BOLD_ITALIC = SiFont.getFont(size=20, weight=QFont.Weight.Bold, italic=True)
     L_BOLD_ITALIC = SiFont.getFont(size=24, weight=QFont.Weight.Bold, italic=True)
     XL_BOLD_ITALIC = SiFont.getFont(size=32, weight=QFont.Weight.Bold, italic=True)
-
-    FONT_DICT = {
-        "S_NORMAL": S_NORMAL,
-        "M_NORMAL": M_NORMAL,
-        "L_NORMAL": L_NORMAL,
-        "XL_NORMAL": XL_NORMAL,
-        "S_BOLD": S_BOLD,
-        "M_BOLD": M_BOLD,
-        "L_BOLD": L_BOLD,
-        "XL_BOLD": XL_BOLD,
-        "S_NORMAL_ITALIC": S_NORMAL_ITALIC,
-        "M_NORMAL_ITALIC": M_NORMAL_ITALIC,
-        "L_NORMAL_ITALIC": L_NORMAL_ITALIC,
-        "XL_NORMAL_ITALIC": XL_NORMAL_ITALIC,
-        "S_BOLD_ITALIC": S_BOLD_ITALIC,
-        "M_BOLD_ITALIC": M_BOLD_ITALIC,
-        "L_BOLD_ITALIC": L_BOLD_ITALIC,
-        "XL_BOLD_ITALIC": XL_BOLD_ITALIC,
-    }
