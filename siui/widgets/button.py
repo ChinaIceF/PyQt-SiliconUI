@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 
 from siui.core.color import Color
-from siui.gui import SiFont
+from siui.gui import SiFont, GlobalFont
 from siui.gui.colorsets import colorset
 from siui.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
 from siui.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
@@ -21,7 +21,7 @@ class SiPushButton(ABCPushButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setAutoAdjustSize(True)
-        self.label.setFont(SiFont.fromToken("S_BOLD"))
+        self.label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
@@ -85,7 +85,7 @@ class SiLongPressButton(ABCPushButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setAutoAdjustSize(True)
-        self.label.setFont(SiFont.fromToken("S_BOLD"))
+        self.label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
@@ -141,7 +141,7 @@ class SiToggleButton(ABCToggleButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setAutoAdjustSize(True)
-        self.label.setFont(SiFont.fromToken("S_BOLD"))
+        self.label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 绑定到主体
@@ -182,7 +182,7 @@ class SiRadioButton(SiLabel):
         # 创建选项文字
         self.text_label = SiLabel(self)
         self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-        self.text_label.setFont(SiFont.fromToken("S_NORMAL"))
+        self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
         self.text_label.setAutoAdjustSize(True)
 
     def reloadStyleSheet(self):
@@ -294,7 +294,7 @@ class SiCheckBox(SiLabel):
         # 创建选项文字
         self.text_label = SiLabel(self)
         self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-        self.text_label.setFont(SiFont.fromToken("S_NORMAL"))
+        self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
         self.text_label.setAutoAdjustSize(True)
 
     def reloadStyleSheet(self):
