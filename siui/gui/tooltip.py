@@ -7,7 +7,7 @@ from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.gui.colorsets import colorset
-from siui.gui.font import SiFont
+from siui.gui.font import SiFont, GlobalFont
 from siui.widgets import SiLabel, SiColoredLabel
 from siui.widgets.abstracts import ABCAnimatedWidget
 
@@ -53,7 +53,7 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.text_label.setFixedStyleSheet(f"padding: 8px; color: {colorset.color.TOOLTIP_HEX[0]}")
         self.text_label.setInstantResize(True)
         self.text_label.setAutoAdjustSize(True)
-        self.text_label.setFont(SiFont.fromToken("S_NORMAL"))
+        self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
 
         # 高光遮罩，当信息刷新时会闪烁一下
         self.highlight_mask = SiColoredLabel(self)
