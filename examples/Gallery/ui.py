@@ -13,15 +13,15 @@ import os
 import SiliconUI
 from SiliconUI.SiHint import *
 from SiliconUI.SiOverlay import *
-from SiliconUI.SiGlobal import *
 import SiliconUI.SiGlobal as SiGlobal
 
 import components as Components
 from siui.gui import ToolTipWindow
+import siui
 
 # 加载图标
 import icons
-SiGlobal.icons = icons.ICON_DICT('./icons/icons.dat', SiGlobal.colorset.SVG_HEX)
+SiGlobal.icons = icons.ICON_DICT('./icons/icons.dat', siui.core.globals.SiGlobal.siui.colors["SVG_A"])
 
 class UserInterface(QMainWindow):
     def __init__(self):
@@ -46,7 +46,13 @@ class UserInterface(QMainWindow):
         self.overlay.raise_()
 
         # 加载样式表
-        self.reload_all_stylesheet([self, self.floating_window])
+        siui.core.globals.SiGlobal.siui.loadWindows(
+            {
+                "MAIN_WINDOW": self,
+                "TOOL_TIP": self.floating_window
+            }
+        )
+        siui.core.globals.SiGlobal.siui.reloadAllWindowsStyleSheet()
 
     def showEvent(self, event):
         self.overlay.showup_animation.setCurrent(self.geometry().height())

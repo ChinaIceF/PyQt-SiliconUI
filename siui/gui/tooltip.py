@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
-from siui.gui.colorsets import colorset
+from siui.core.globals import SiGlobal
 from siui.gui.font import SiFont, GlobalFont
 from siui.widgets import SiLabel, SiColoredLabel
 from siui.widgets.abstracts import ABCAnimatedWidget
@@ -42,7 +42,7 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.bg_label = SiColoredLabel(self)
         self.bg_label.move(self.margin, self.margin)
         self.bg_label.setFixedStyleSheet("border-radius: 6px")
-        self.bg_label.setColor(colorset.color.TOOLTIP_HEX[1])
+        self.bg_label.setColor(SiGlobal.siui.colors["TOOLTIP_BG"])
 
         # 文字标签的父对象，防止文字超出界限
         self.text_container = SiLabel(self)
@@ -50,7 +50,7 @@ class ToolTipWindow(ABCAnimatedWidget):
 
         # 文字标签，工具提示就在这里显示，
         self.text_label = SiLabel(self.text_container)
-        self.text_label.setFixedStyleSheet(f"padding: 8px; color: {colorset.color.TOOLTIP_HEX[0]}")
+        self.text_label.setFixedStyleSheet(f"padding: 8px; color: {SiGlobal.siui.colors['TEXT_A']}")
         self.text_label.setInstantResize(True)
         self.text_label.setAutoAdjustSize(True)
         self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))

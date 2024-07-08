@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 
 from siui.core.color import Color
 from siui.gui import SiFont, GlobalFont
-from siui.gui.colorsets import colorset
+from siui.core.globals import SiGlobal
 from siui.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
 from siui.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
 
@@ -34,22 +34,24 @@ class SiPushButton(ABCPushButton):
         super().reloadStyleSheet()
 
         # 设置文字颜色
-        self.label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[0]}")
+        self.label.setStyleSheet(f"color: {SiGlobal.siui.colors['TEXT_B']}")
 
         # 设置按钮表面和阴影的颜色
         if self.themed is True:
             # 主题样式
             self.body_top.setStyleSheet("""
                 background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                 stop:0 {}, stop:1 {})""".format(*colorset.color.BTN_HL_HEX[0:2]))
+                                 stop:0 {}, stop:1 {})
+                """.format(SiGlobal.siui.colors["BUTTON_THEMED_BG_A"], SiGlobal.siui.colors["BUTTON_THEMED_BG_B"]))
             self.body_bottom.setStyleSheet("""
                 background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                 stop:0 {}, stop:1 {})""".format(*colorset.color.BTN_HL_HEX[2:4]))
+                                 stop:0 {}, stop:1 {})
+                """.format(SiGlobal.siui.colors["BUTTON_THEMED_SHADOW_A"], SiGlobal.siui.colors["BUTTON_THEMED_SHADOW_A"]))
 
         else:
             # 非主题样式
-            self.body_top.setStyleSheet(f"background-color: {colorset.color.BTN_NORM_HEX[0]}")
-            self.body_bottom.setStyleSheet(f"background-color: {colorset.color.BTN_NORM_HEX[1]}")
+            self.body_top.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_NORMAL_BG']}")
+            self.body_bottom.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_NORMAL_SHADOW']}")
 
     def setThemed(self, b: bool):
         """
@@ -98,16 +100,16 @@ class SiLongPressButton(ABCPushButton):
         self.body_top.setStyleSheet("""
             background-color:qlineargradient(x1:{}, y1:0, x2:{}, y2:0,
                                              stop:0 {}, stop:1 {})
-        """.format(p-0.01, p, *colorset.color.BTN_HOLD_HEX[0:2]))
+        """.format(p-0.01, p, SiGlobal.siui.colors["BUTTON_LONG_PROGRESS"], SiGlobal.siui.colors["BUTTON_LONG_BG"]))
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
 
         # 设置文字颜色
-        self.label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[0]}")
+        self.label.setStyleSheet(f"color: {SiGlobal.siui.colors['TEXT_A']}")
 
-        self.body_top.setStyleSheet(f"background-color: {colorset.color.BTN_HOLD_HEX[1]}")
-        self.body_bottom.setStyleSheet(f"background-color: {colorset.color.BTN_HOLD_HEX[2]}")
+        self.body_top.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_LONG_BG']}")
+        self.body_bottom.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_LONG_SHADOW']}")
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
@@ -148,13 +150,13 @@ class SiToggleButton(ABCToggleButton):
         self.setAttachment(self.label)
 
         # 设置状态颜色为主题色
-        self.setStateColor(Color.transparency(colorset.color.THEME_HEX[1], 0.2),
-                           colorset.color.THEME_HEX[1])
+        self.setStateColor(Color.transparency(SiGlobal.siui.colors["THEME_TRANSITION_B"], 0.2),
+                           SiGlobal.siui.colors["THEME_TRANSITION_B"])
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
 
-        self.label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[1]}")
+        self.label.setStyleSheet(f"color: {SiGlobal.siui.colors['TEXT_B']}")
 
 
 class SiRadioButton(SiLabel):
@@ -189,7 +191,7 @@ class SiRadioButton(SiLabel):
         super().reloadStyleSheet()
 
         # 设置文字颜色
-        self.text_label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[0]}")
+        self.text_label.setStyleSheet(f"color: {SiGlobal.siui.colors['TEXT_A']}")
 
         # 设置选项按钮样式表，调用自己的事件处理器以刷新
         self._toggled_handler(self.isChecked())
@@ -236,11 +238,11 @@ class SiRadioButton(SiLabel):
 
             # 禁止其切换模式，防止被取消选择
             self.indicator.setCheckable(False)
-            self.indicator_label.setStyleSheet(f"border: 4px solid {colorset.color.BTN_HL_HEX[1]}")
+            self.indicator_label.setStyleSheet(f"border: 4px solid {SiGlobal.siui.colors['THEME_TRANSITION_B']}")
         else:
             # 如果被选中状态为假，就允许其切换模式
             self.indicator.setCheckable(True)
-            self.indicator_label.setStyleSheet(f"border: 2px solid {colorset.color.BG_GRAD_HEX[0]}")
+            self.indicator_label.setStyleSheet(f"border: 2px solid {SiGlobal.siui.colors['INTERFACE_BG_A']}")
 
     def _uncheck_all_in_same_parent(self):
         """
@@ -301,7 +303,7 @@ class SiCheckBox(SiLabel):
         super().reloadStyleSheet()
 
         # 设置文字颜色
-        self.text_label.setStyleSheet(f"color: {colorset.color.TEXT_GRAD_HEX[0]}")
+        self.text_label.setStyleSheet(f"color: {SiGlobal.siui.colors['TEXT_A']}")
 
         # 设置选项按钮样式表，调用自己的事件处理器以刷新
         self._toggled_handler(self.isChecked())
@@ -344,10 +346,10 @@ class SiCheckBox(SiLabel):
     def _toggled_handler(self, check: bool):
         if check is True:
             self.indicator_icon.setVisible(True)
-            self.indicator_label.setStyleSheet(f"background-color: {colorset.color.BTN_HL_HEX[1]}")
+            self.indicator_label.setStyleSheet(f"background-color: {SiGlobal.siui.colors['THEME_TRANSITION_B']}")
         else:
             self.indicator_icon.setVisible(False)
-            self.indicator_label.setStyleSheet(f"border: 1px solid {colorset.color.TEXT_GRAD_HEX[3]}")
+            self.indicator_label.setStyleSheet(f"border: 1px solid {SiGlobal.siui.colors['TEXT_D']}")
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
