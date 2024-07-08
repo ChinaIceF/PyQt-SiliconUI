@@ -1,61 +1,70 @@
-import time
 
-class TokenizedDatabase:
-    def __init__(self, name):
-        self.name = name
-        self.item_tokens = []
-        self.item_values = []
+class SiliconUIGlobal:
+    """
+    SiliconUI 内部使用的全局数据\n
+    如果你也需要使用全局数据，可以将你的类添加到 SiGlobal 的一个属性
+    """
+    # 窗口字典，储存窗口对象
+    windows = {}
 
-    def register(self, token, value):
+    # 颜色字典，存储全部动态设置的颜色
+    # 值为 RRGGBB 或 AARRGGBB 色号
+    colors = {}
+
+    # 图标字典，储存所有 SVG 类型的图标数据
+    # 值为 SVG信息的 bytes
+    icons = {}
+
+    # 样式表字典，储存所有动态样式表
+    # 值为字符串
+    qss = {}
+
+    # 字体字典，储存所有字体
+    # 值为 QFont 类型的字体
+    fonts = {}
+
+    def loadWindows(self, dictionary):
+        SiliconUIGlobal.windows.update(dictionary)
+
+    def loadColors(self, dictionary):
+        SiliconUIGlobal.colors.update(dictionary)
+
+    def loadIcons(self, dictionary):
+        SiliconUIGlobal.icons.update(dictionary)
+
+    def loadQSS(self, dictionary):
+        SiliconUIGlobal.qss.update(dictionary)
+
+    def loadFonts(self, dictionary):
+        SiliconUIGlobal.fonts.update(dictionary)
+
+    def reloadAllWindowsStyleSheet(self):
         """
-        注册一个新项
-        :param token: 项名
-        :param value: 项值
-        :return:
+        调用各个窗口下的reloadStyleSheet方法并递归，重载所有窗口下所有控件的样式表
         """
-        # 如果项已经存在，直接覆写
-        if token in self.item_tokens:
-            index = self.item_tokens.index(token)
-            self.item_values[index] = value
-            return
+        for window in self.windows.values():
+            self._reloadWidgetStyleSheet(window)
 
-        self.item_tokens.append(token)
-        self.item_values.append(value)
+    def _reloadWidgetStyleSheet(self, widget):
+        for child in widget.children():
+            self._reloadWidgetStyleSheet(child)
+            try:
+                child.reloadStyleSheet()
+            except:
+                pass
+        return
 
-    def fromToken(self, token):
-        """
-        根据提供的 token 获取对应的项值
-        :param token: token
-        :return: 项值
-        """
-        if (token in self.item_tokens) is False:
-            raise ValueError(f"未在此数据库（{self.name}）内找到名为 {token} 的项")
 
-        index = self.item_tokens.index(token)
-        return self.item_values[index]
 
-    def tree(self, level=0):
-        """
-        打印结构树
-        :param level: 层级
-        :return:
-        """
-        stem = "│"
-        branch = "├"
-        branch_end = "└"
-        node_value = "◇"
-        node_subtree = "◆"
 
-        if level == 0:
-            print(self)
 
-        for token, value in zip(self.item_tokens, self.item_values):
-            is_end = token != self.item_tokens[-1]
-            is_subtree = isinstance(value, TokenizedDatabase)
-            print(stem * level +
-                  (branch if is_end else branch_end) +
-                  (node_subtree if is_subtree else node_value) +
-                  " " + token + " = " + str(value))
 
-            if is_subtree:
-                value.tree(level = level + 1)
+
+
+
+class SiGlobal:
+    """
+    全局数据\n
+    在 siui 模块被第一次导入时初始化 .siui 下的变量
+    """
+    siui = SiliconUIGlobal()
