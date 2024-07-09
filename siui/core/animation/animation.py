@@ -102,7 +102,7 @@ class SiCounterAnimation(abstract.ABCAnimation):
         :return:
         """
         duration = self.duration
-        interval = self.timer.interval()  # 两个值全是 毫秒 ms
+        interval = self.timer.spacing()  # 两个值全是 毫秒 ms
         return interval / duration
 
     def setCurve(self, curve_func):
