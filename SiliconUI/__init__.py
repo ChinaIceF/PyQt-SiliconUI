@@ -7,12 +7,14 @@ print('当前工作目录', sys.argv[0])
 
 def get_windows_scaling_factor():
     try:
+        return 1
         # 调用 Windows API 函数获取缩放比例
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
         scaling_factor = user32.GetDpiForSystem()
 
         # 计算缩放比例
+        print("缩放比例", scaling_factor / 96.0)
         return scaling_factor / 96.0
 
     except Exception as e:

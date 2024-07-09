@@ -19,19 +19,22 @@ from SiliconUI.SiGlobal import *
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
-from siui.widgets import SiPushButton, SiLongPressButton, SiToggleButton, SiRadioButton, SiCheckBox
+from siui.widgets import SiPushButton, SiLongPressButton, SiToggleButton, SiRadioButton, SiCheckBox, SiDenseHContainer, \
+    SiDenseVContainer
 from siui.gui import SiFont
+
 
 class ExperimentField(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
-        
+        self.parent = parent
+
         self.setStyleSheet('')
 
         self.discription = SiliconUI.SiOption(self)
         self.discription.setIcon(SiGlobal.icons.get('fi-rr-bulb'))
-        self.discription.setText('实验场', '欢迎来到 Silicon 试验场。这里有一些由控件组合出来的小组件，展现 Silicon UI 蕴含的创造力与设计艺术')
+        self.discription.setText('实验场',
+                                 '欢迎来到 Silicon 试验场。这里有一些由控件组合出来的小组件，展现 Silicon UI 蕴含的创造力与设计艺术')
 
         ## ================ Stack 开始 ===================
 
@@ -44,9 +47,9 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.music_info_placeholder = MusicInfoPlaceholder(self)
         self.music_info_placeholder.load('./img/cover.jpeg')
         self.music_info_placeholder.setText(
-            title = '只因你太美',
-            artist = '我家鸽鸽',
-            album = '你干嘛嗨嗨呦',
+            title='只因你太美',
+            artist='我家鸽鸽',
+            album='你干嘛嗨嗨呦',
         )
         self.music_info_placeholder.resize(380, 132)
         self.music_info_placeholder.setProgress(0.7)
@@ -55,9 +58,9 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.music_info_placeholder_2 = MusicInfoPlaceholder(self)
         self.music_info_placeholder_2.load('./img/cover2.jpg')
         self.music_info_placeholder_2.setText(
-            title = 'Axolotl',
-            artist = 'C418',
-            album = 'Axolotl',
+            title='Axolotl',
+            artist='C418',
+            album='Axolotl',
         )
         self.music_info_placeholder_2.resize(380, 132)
         self.music_info_placeholder_2.setProgress(0)
@@ -66,7 +69,6 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.layout_music_info_placeholder.addItem(self.music_info_placeholder_2)
 
         self.stack_music_info_placeholder.addItem(self.layout_music_info_placeholder)
-
 
         ## ================ Stack 开始 ===================
 
@@ -118,7 +120,6 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.button_layout.addItem(self.test_new_button6)
         self.button_layout.addItem(self.test_new_button7)
 
-
         self.button_layout2 = SiliconUI.SiLayoutH(self)
         self.button_layout2.setFixedHeight(32)
 
@@ -131,9 +132,48 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.button_layout2.addItem(self.test_new_button8)
         self.button_layout2.addItem(self.test_new_button9)
 
+        self.container_h = SiDenseHContainer(self)
+        self.container_h.setStyleSheet("background-color: #05ffffff")
+
+        self.container_v_left = SiDenseVContainer(self)
+        self.container_v_left.setStyleSheet("background-color: #05ffffff")
+        self.container_v_right = SiDenseVContainer(self)
+        self.container_v_right.setStyleSheet("background-color: #05ffffff")
+
+        self.button_lefttop = SiPushButton(self)
+        self.button_lefttop.setFixedSize(128, 32)
+        self.button_lefttop.attachment().load(SiGlobal.icons.get('fi-rr-bulb'))
+        self.button_lefttop.attachment().setText("左上角")
+
+        self.button_leftbottom = SiPushButton(self)
+        self.button_leftbottom.setFixedSize(128, 32)
+        self.button_leftbottom.attachment().load(SiGlobal.icons.get('fi-rr-bulb'))
+        self.button_leftbottom.attachment().setText("左下角")
+
+        self.button_righttop = SiPushButton(self)
+        self.button_righttop.setFixedSize(128, 32)
+        self.button_righttop.attachment().load(SiGlobal.icons.get('fi-rr-bulb'))
+        self.button_righttop.attachment().setText("右上角")
+
+        self.button_rightbottom = SiPushButton(self)
+        self.button_rightbottom.setFixedSize(128, 32)
+        self.button_rightbottom.attachment().load(SiGlobal.icons.get('fi-rr-bulb'))
+        self.button_rightbottom.attachment().setText("右下角")
+
+        self.container_v_left.addWidget(self.button_lefttop)
+        self.container_v_left.addWidget(self.button_leftbottom, "bottom")
+
+        self.container_v_right.addWidget(self.button_righttop)
+        self.container_v_right.addWidget(self.button_rightbottom, "bottom")
+
+
+        self.container_h.addWidget(self.container_v_left)
+        self.container_h.addWidget(self.container_v_right, "right")
+
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
         self.stack_reconstruct_test.addItem(self.button_layout2)
+        self.stack_reconstruct_test.addItem(self.container_h)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
         self.addItem(self.discription)
