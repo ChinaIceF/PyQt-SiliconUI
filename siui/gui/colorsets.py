@@ -49,6 +49,12 @@ class ColorsetDark:
     colors["BUTTON_LONG_SHADOW"] = "#6a3246"
     colors["BUTTON_LONG_PROGRESS"] = "#DA3462"
 
+    # 开关
+    colors["SWITCH_DEACTIVATE"] = "#D2D2D2"
+    colors["SWITCH_ACTIVATE"] = "#100912"
+
+
+
 class SiColorDark(Color):
     # ========== 全局颜色 ==========
     # SVG 默认颜色

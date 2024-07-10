@@ -20,7 +20,7 @@ from SiliconUI.SiGlobal import *
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
 from siui.widgets import SiPushButton, SiLongPressButton, SiToggleButton, SiRadioButton, SiCheckBox, SiDenseHContainer, \
-    SiDenseVContainer
+    SiDenseVContainer, SiSwitch
 from siui.gui import SiFont
 
 
@@ -122,6 +122,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
 
         self.button_layout2 = SiliconUI.SiLayoutH(self)
         self.button_layout2.setFixedHeight(32)
+        self.button_layout2.setAlignCenter(True)
 
         self.test_new_button8 = SiCheckBox(self)
         self.test_new_button8.setText("鸡你太美")
@@ -129,8 +130,11 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.test_new_button9 = SiCheckBox(self)
         self.test_new_button9.setText("你干嘛嗨嗨呦")
 
+        self.switch_test = SiSwitch(self)
+
         self.button_layout2.addItem(self.test_new_button8)
         self.button_layout2.addItem(self.test_new_button9)
+        self.button_layout2.addItem(self.switch_test)
 
         self.container_h = SiDenseHContainer(self)
         self.container_h.setStyleSheet("background-color: #05ffffff")
