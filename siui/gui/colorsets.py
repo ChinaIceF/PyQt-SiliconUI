@@ -53,6 +53,8 @@ class ColorsetDark:
     colors["SWITCH_DEACTIVATE"] = "#D2D2D2"
     colors["SWITCH_ACTIVATE"] = "#100912"
 
+    # 滚动条
+    colors["SCROLL_BAR"] = "#50FFFFFF"
 
 
 class SiColorDark(Color):

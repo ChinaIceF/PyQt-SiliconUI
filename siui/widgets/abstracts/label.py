@@ -34,11 +34,15 @@ class ABCAnimatedLabel(QLabel):
         self.animation_move = SiExpAnimation(self)
         self.animation_move.setFactor(1/4)
         self.animation_move.setBias(1)
+        self.animation_move.setCurrent([0, 0])
+        self.animation_move.setTarget([0, 0])
         self.animation_move.ticked.connect(self._move_ani_handler)
 
         self.animation_resize = SiExpAnimation(self)
         self.animation_resize.setFactor(1/4)
         self.animation_resize.setBias(1)
+        self.animation_resize.setCurrent([0, 0])
+        self.animation_resize.setTarget([0, 0])
         self.animation_resize.ticked.connect(self._resize_ani_handler)
 
         self.animation_opacity = SiExpAnimation(self)
