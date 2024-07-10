@@ -20,7 +20,7 @@ from SiliconUI.SiGlobal import *
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
 from siui.widgets import SiPushButton, SiLongPressButton, SiToggleButton, SiRadioButton, SiCheckBox, SiDenseHContainer, \
-    SiDenseVContainer, SiSwitch
+    SiDenseVContainer, SiSwitch, SiScrollArea, SiLabel
 from siui.gui import SiFont
 
 
@@ -174,10 +174,49 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.container_h.addWidget(self.container_v_left)
         self.container_h.addWidget(self.container_v_right, "right")
 
+        self.alabel = SiLabel(self)
+        self.alabel.setAutoAdjustSize(True)
+        self.alabel.setText(
+"""
+合成器是一种在接收到红石信号时自动合成并丢出产物的方块。
+合成器可以用5个铁锭、1个工作台、2个红石粉和1个投掷器合成。
+合成器拥有3×3的合成方格，允许多名玩家同时操作。合成方格的每个槽位都可以被单独禁用，空手单击槽位可禁用该槽位，再次点击可取消禁用。
+依照合成配方在合成器的合成方格内摆放物品时，右边的输出槽会显示产物，但不能像工作台一样直接取走产物。
+漏斗、投掷器和其他合成器可以与合成器的任何一面互动，将物品转入合成器的未禁用槽位。漏斗和漏斗矿车可以从合成器中取出物品。
+被激活后，合成器会消耗合成方格中的材料合成一份产物，同时将产物从正面掷出。如果合成器的前方存在容器（包括另一个合成器），且容器的槽位允许接收该产物，那么产物会直接存入容器。
+图为Minecraft Live 2023展示的合成器。
+在创造模式中，玩家拥有无限的方块用于创造，没有生命值、饥饿值和氧气值来阻碍他们的建造，因此不必担心有危险。创造模式允许玩家在没有拿剑、三叉戟或重锤时瞬间破坏大多数的方块，包括像基岩和末地传送门这种正常情况下不能破坏的方块，除隐形基岩[仅基岩版]等。使用一次性的物品不会使其被消耗。武器与工具也不会有耐久度的限制，不会损坏。由创造模式玩家发射的箭只能被创造模式玩家捡起。
+
+创造模式给予玩家额外0.5格方块交互距离和额外2格实体交互距离。
+
+创造模式给予玩家飞行的能力。玩家可通过快速按两下跳跃起飞，并通过按住跳跃上升高度，或通过潜行降低高度和着陆；使用移动可在同一高度下移动。另外，玩家在空中快速按两下跳跃可离开飞行状态并掉下来。在Java版中，如果飞行时降落在方块上，玩家会自动退出飞行状态；基岩版中则不会，但速度仍会降到行走的速度。飞行时进入矿车和床后再离开后，玩家将仍然处于飞行状态。
+
+
+在创造模式中飞行的玩家
+在Java版中，玩家在创造模式中无法受到除虚空和/kill外的伤害。当玩家的Y坐标低于世界建筑下限64格或更多时，就会受到虚空伤害；反之如果在世界建筑下限下方64格内，就不会受到虚空伤害，并可以在虚空中飞行。
+
+在基岩版中，玩家在创造模式下不会受到任何伤害。如果在基岩版试图使用/kill杀死创造模式的玩家，聊天栏会提示“玩家在创造模式下无法被杀死”。
+
+生物仍然会像在其他游戏模式中那样生成（包括从刷怪笼中生成），但都永远不会攻击玩家，也不会因被玩家攻击或其他在生存模式中可行的激怒方式被激怒。玩家在创造模式进入末地后，末影龙不会攻击玩家。在Java版中，即使玩家在创造模式下，增援的僵尸仍然会试图攻击玩家，不过不会造成任何伤害，并且在几秒后就会停止攻击。[1]
+
+当一个世界被创建后，如果开启了作弊，可以通过/gamemode creative命令或设置[仅基岩版]来切换到创造模式。在多人游戏中，管理员可以通过/gamemode命令单独切换每一名玩家的游戏模式。这意味着在一个生存模式的世界中（根据管理员的意愿）玩家也可以使用创造模式，反之亦然。新玩家的默认游戏模式也能通过/defaultgamemode命令[仅Java版]或设置中默认游戏模式[仅基岩版]来切换。
+
+如果游戏能确定方块是被创造模式的玩家所破坏的，那么不会有任何掉落物出现（潜影盒和蜂巢除外）。如果游戏不能确定，方块的物品形式仍会掉落。[2]
+
+在基岩版中，无论是以创造模式创建新的世界还是进入旧的世界，都将永久关闭该世界的成就和排行榜的更新，但这并不会对游戏内容造成任何影响。换言之，成就和排行榜只有在一直保持在生存模式或冒险模式下才有效。
+
+"""
+        )
+
+        self.scrollarea = SiScrollArea(self)
+        self.scrollarea.setFixedHeight(256)
+        self.scrollarea.setWidget(self.alabel)
+
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
         self.stack_reconstruct_test.addItem(self.button_layout2)
         self.stack_reconstruct_test.addItem(self.container_h)
+        self.stack_reconstruct_test.addItem(self.scrollarea)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
         self.addItem(self.discription)

@@ -5,11 +5,13 @@ from PyQt5.QtSvg import QSvgWidget
 from siui.core.animation import SiExpAnimation
 from siui.core.color import Color
 from siui.widgets.abstracts import ABCAnimatedLabel
+from siui.gui import SiFont, GlobalFont
 
 
 class SiLabel(ABCAnimatedLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
+        super().setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
 
 
 class SiColoredLabel(ABCAnimatedLabel):
@@ -251,7 +253,7 @@ class SiDraggableLabel(SiLabel):
         if not (event.buttons() & Qt.LeftButton):
             return
         newpos = event.pos() - self.anchor + self.frameGeometry().topLeft()
-        x, y = self._legalizeMovingTarget(newpos.x(), newpos.y())
+        x, y = self._legalize_moving_target(newpos.x(), newpos.y())
         self.moveTo(x, y)
         self.dragged.emit([x, y])
 
