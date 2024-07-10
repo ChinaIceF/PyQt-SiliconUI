@@ -251,7 +251,7 @@ class SiDenseVContainer(SiLabel):
         bottom_used = 0
 
         # 下侧控件
-        for obj in self.widgets_bottom:
+        for obj in self.widgets_top:
             # 是否适应容器
             if self.adjust_item_size is True:
                 obj.resize(self.width(), obj.height())
@@ -269,7 +269,7 @@ class SiDenseVContainer(SiLabel):
             top_used += obj.height() + self.spacing
 
         # 上侧控件
-        for obj in self.widgets_top:
+        for obj in self.widgets_bottom:
             # 是否适应容器
             if self.adjust_item_size is True:
                 obj.resize(self.width(), obj.height())

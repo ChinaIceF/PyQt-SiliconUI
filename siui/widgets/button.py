@@ -1,8 +1,10 @@
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QAbstractButton
 
+from siui.core.animation import SiExpAnimation
 from siui.core.color import Color
-from siui.gui import SiFont, GlobalFont
 from siui.core.globals import SiGlobal
+from siui.gui import GlobalFont, SiFont
 from siui.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
 from siui.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
 
@@ -42,11 +44,14 @@ class SiPushButton(ABCPushButton):
             self.body_top.setStyleSheet("""
                 background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1,
                                  stop:0 {}, stop:1 {})
-                """.format(SiGlobal.siui.colors["BUTTON_THEMED_BG_A"], SiGlobal.siui.colors["BUTTON_THEMED_BG_B"]))
+                """.format(SiGlobal.siui.colors["BUTTON_THEMED_BG_A"], SiGlobal.siui.colors["BUTTON_THEMED_BG_B"])
+            )
             self.body_bottom.setStyleSheet("""
                 background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1,
                                  stop:0 {}, stop:1 {})
-                """.format(SiGlobal.siui.colors["BUTTON_THEMED_SHADOW_A"], SiGlobal.siui.colors["BUTTON_THEMED_SHADOW_A"]))
+                """.format(SiGlobal.siui.colors["BUTTON_THEMED_SHADOW_A"],
+                           SiGlobal.siui.colors["BUTTON_THEMED_SHADOW_A"])
+            )
 
         else:
             # 非主题样式
@@ -359,3 +364,70 @@ class SiCheckBox(SiLabel):
         self.indicator_label.move(0, (h - 20) // 2)
         self.indicator_icon.move(0, (h - 20) // 2)
         self.text_label.move(28, (h - self.text_label.height()) // 2 - 1)  # 减1是为了让偏下的文字显示正常一点
+
+
+class SiSwitch(QAbstractButton):
+    """
+    开关
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setCheckable(True)
+
+        # 设置自身固定大小
+        self.setFixedSize(40, 20)
+
+        # 绑定切换事件
+        self.toggled.connect(self._toggle_handler)
+
+        # 开关框架
+        self.switch_frame = SiLabel(self)
+        self.switch_frame.setGeometry(0, 0, 40, 20)
+        self.switch_frame.setFixedStyleSheet("border-radius: 10px")  # 注意这里是固定样式表
+
+        # 开关拉杆
+        self.switch_lever = SiLabel(self.switch_frame)
+        self.switch_lever.setGeometry(3, 3, 14, 14)
+        self.switch_lever.setFixedStyleSheet("border-radius: 7px")  # 注意这里是固定样式表
+
+        # 创建动画
+        self.toggle_animation = SiExpAnimation(self)
+        self.toggle_animation.setFactor(1/5)
+        self.toggle_animation.setBias(1)
+        self.toggle_animation.setCurrent(3)
+        self.toggle_animation.ticked.connect(self._lever_move_animation_handler)
+
+    def reloadStyleSheet(self):
+        """
+        重载样式表
+        :return:
+        """
+        self._lever_move_animation_handler(self.switch_lever.x())
+
+    def _lever_move_animation_handler(self, x):
+        self.switch_lever.move(int(x), self.switch_lever.y())
+
+        # 检测拉杆的位置，如果过了半程，则改变边框样式
+        if (x - 3) / 20 >= 0.5:
+            self.switch_frame.setStyleSheet("""
+                background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {}, stop:1 {});
+                """.format(SiGlobal.siui.colors["THEME_TRANSITION_A"], SiGlobal.siui.colors["THEME_TRANSITION_B"])
+                                            )
+            self.switch_lever.setStyleSheet("background-color:{}".format(SiGlobal.siui.colors["SWITCH_ACTIVATE"]))
+
+        else:
+            self.switch_frame.setStyleSheet("border: 1px solid {}".format(SiGlobal.siui.colors["SWITCH_DEACTIVATE"]))
+            self.switch_lever.setStyleSheet("background-color:{}".format(SiGlobal.siui.colors["SWITCH_DEACTIVATE"]))
+
+    def _set_animation_target(self, is_checked):
+        if is_checked is True:
+            self.toggle_animation.setTarget(23)
+        else:
+            self.toggle_animation.setTarget(3)
+
+    def paintEvent(self, e):
+        pass
+
+    def _toggle_handler(self, is_checked):
+        self._set_animation_target(is_checked)
+        self.toggle_animation.try_to_start()
