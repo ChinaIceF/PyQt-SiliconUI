@@ -7,10 +7,10 @@ from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.core.globals import SiGlobal
-from siui.gui.font import SiFont, GlobalFont
-from siui.widgets import SiLabel, SiColoredLabel
+from siui.gui.font import GlobalFont, SiFont
 from siui.widgets.abstracts import ABCAnimatedWidget
 
+import siui
 
 class ToolTipWindow(ABCAnimatedWidget):
     def __init__(self, parent=None):
@@ -39,24 +39,24 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.tracker_timer.start()
 
         # 背景颜色，可以用于呈现不同类型的信息
-        self.bg_label = SiColoredLabel(self)
+        self.bg_label = siui.widgets.SiColoredLabel(self)
         self.bg_label.move(self.margin, self.margin)
         self.bg_label.setFixedStyleSheet("border-radius: 6px")
         self.bg_label.setColor(SiGlobal.siui.colors["TOOLTIP_BG"])
 
         # 文字标签的父对象，防止文字超出界限
-        self.text_container = SiLabel(self)
+        self.text_container = siui.widgets.SiLabel(self)
         self.text_container.move(self.margin, self.margin)
 
         # 文字标签，工具提示就在这里显示，
-        self.text_label = SiLabel(self.text_container)
+        self.text_label = siui.widgets.SiLabel(self.text_container)
         self.text_label.setFixedStyleSheet(f"padding: 8px; color: {SiGlobal.siui.colors['TEXT_A']}")
         self.text_label.setInstantResize(True)
         self.text_label.setAutoAdjustSize(True)
         self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
 
         # 高光遮罩，当信息刷新时会闪烁一下
-        self.highlight_mask = SiColoredLabel(self)
+        self.highlight_mask = siui.widgets.SiColoredLabel(self)
         self.highlight_mask.move(self.margin, self.margin)
         self.highlight_mask.setFixedStyleSheet("border-radius: 6px")
         self.highlight_mask.setColor("#00FFFFFF")

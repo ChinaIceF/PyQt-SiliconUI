@@ -171,6 +171,7 @@ class SiIconLabel(SiLabel):
         self.text_label = SiLabel(self)
         self.text_label.setAutoAdjustSize(True)
         self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.text_label.setFixedHeight(20)  # 固定高度
 
     def setStyleSheet(self, stylesheet: str):
         self.text_label.setStyleSheet(stylesheet)
@@ -211,7 +212,6 @@ class SiIconLabel(SiLabel):
 
     def adjustSize(self):
 
-
         preferred_width = (int(self.has_text_flag) * self.text_label.width() +
                            int(self.has_text_flag and self.has_icon_flag) * 4 +
                            int(self.has_icon_flag) * self.icon.width())
@@ -225,9 +225,9 @@ class SiIconLabel(SiLabel):
         super().resizeEvent(event)
         size = event.size()
         w, h = size.width(), size.height()
-        self.icon.move(0, (h - self.icon.height()) // 2)
-        self.text_label.move(w - self.text_label.width(), (h - self.text_label.height()) // 2)
 
+        self.icon.move(0, (h - self.icon.height()) // 2)
+        self.text_label.move(w - self.text_label.width(), (h - self.text_label.height()) // 2 - 1)  # 减一调整显示位置归正
 
 
 class SiDraggableLabel(SiLabel):
@@ -252,8 +252,8 @@ class SiDraggableLabel(SiLabel):
         super().mouseMoveEvent(event)
         if not (event.buttons() & Qt.LeftButton):
             return
-        newpos = event.pos() - self.anchor + self.frameGeometry().topLeft()
-        x, y = self._legalize_moving_target(newpos.x(), newpos.y())
+        new_pos = event.pos() - self.anchor + self.frameGeometry().topLeft()
+        x, y = self._legalize_moving_target(new_pos.x(), new_pos.y())
         self.moveTo(x, y)
         self.dragged.emit([x, y])
 

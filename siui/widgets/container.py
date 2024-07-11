@@ -12,18 +12,18 @@ class SiDenseHContainer(SiLabel):
         self.widgets_right = []
 
         self.align_center = False  # 是否将所有控件放置在中轴线上
-        self.adjust_item_size = False  # 子控件适应高度
-        self.shrinking = False   # 调整尺寸方法被调用时，允许尺寸变小
+        self.adjust_widgets_size = False  # 子控件适应高度
+        self.shrinking = False  # 调整尺寸方法被调用时，允许尺寸变小
 
-        self.spacing = 16   # 各个控件间的距离
+        self.spacing = 16  # 各个控件间的距离
 
-    def setAdjustItemSize(self, b: bool):
+    def setAdjustWidgetsSize(self, b: bool):
         """
         设置子控件是否在垂直于容器的方向上自动适应
         :param b: 是否自动适应
         :return:
         """
-        self.adjust_item_size = b
+        self.adjust_widgets_size = b
 
     def setShrinking(self, b: bool):
         """
@@ -80,9 +80,26 @@ class SiDenseHContainer(SiLabel):
 
         self.adjustSize()
 
+    def getSpareSpace(self):
+        """
+        获取当前布局条件下，容器剩余的长度或宽度
+        :return: 剩余长度或宽度
+        """
+        # 初始化已使用空间的计数器
+        left_used = 0
+        right_used = 0
+
+        # 左侧和右侧控件
+        for obj in self.widgets_left:
+            left_used += obj.width() + self.spacing
+        for obj in self.widgets_right:
+            right_used += obj.width() + self.spacing
+
+        return self.width() - left_used - right_used
+
     def adjustWidgetsGeometry(self):
         """
-        调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器
+        调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器s
         :return:
         """
         # 初始化已使用空间的计数器
@@ -92,7 +109,7 @@ class SiDenseHContainer(SiLabel):
         # 左侧控件
         for obj in self.widgets_left:
             # 是否适应容器
-            if self.adjust_item_size is True:
+            if self.adjust_widgets_size is True:
                 obj.resize(obj.width(), self.height())
 
             # 判断并设置是否进行中轴线对齐
@@ -110,7 +127,7 @@ class SiDenseHContainer(SiLabel):
         # 右侧控件
         for obj in self.widgets_right:
             # 是否适应容器
-            if self.adjust_item_size is True:
+            if self.adjust_widgets_size is True:
                 obj.resize(obj.width(), self.height())
 
             # 判断并设置是否进行中轴线对齐
@@ -126,8 +143,8 @@ class SiDenseHContainer(SiLabel):
             right_used += obj.width() + self.spacing
 
     def resizeEvent(self, event):
-        self.adjustWidgetsGeometry()  # 每当自身尺寸改变时，重新设置控件的位置
         super().resizeEvent(event)
+        self.adjustWidgetsGeometry()  # 每当自身尺寸改变时，重新设置控件的位置
 
     def adjustSize(self):
         """
@@ -146,9 +163,9 @@ class SiDenseHContainer(SiLabel):
 
         # 计算总共的宽度，并处理
         total_used = left_used + right_used
-        total_used -= 0 if self.widgets_left == [] else self.spacing    # 删去多余的 spacing
-        total_used -= 0 if self.widgets_right == [] else self.spacing   # 删去多余的 spacing
-        total_used += self.spacing if self.widgets_left + self.widgets_right == [] else 0   # 防止极端情况下两侧控件紧贴
+        total_used -= 0 if self.widgets_left == [] else self.spacing  # 删去多余的 spacing
+        total_used -= 0 if self.widgets_right == [] else self.spacing  # 删去多余的 spacing
+        total_used += self.spacing if self.widgets_left + self.widgets_right == [] else 0  # 防止极端情况下两侧控件紧贴
         preferred_w = total_used
 
         # 计算所有控件中高度最大的，以保证所有控件在容器中
@@ -173,18 +190,18 @@ class SiDenseVContainer(SiLabel):
         self.widgets_top = []
 
         self.align_center = False  # 是否将所有控件放置在中轴线上
-        self.adjust_item_size = False  # 子控件适应宽度
-        self.shrinking = False   # 调整尺寸方法被调用时，允许尺寸变小
+        self.adjust_widgets_size = False  # 子控件适应宽度
+        self.shrinking = False  # 调整尺寸方法被调用时，允许尺寸变小
 
-        self.spacing = 16   # 各个控件间的距离
+        self.spacing = 16  # 各个控件间的距离
 
-    def setAdjustItemSize(self, b: bool):
+    def setAdjustWidgetsSize(self, b: bool):
         """
         设置子控件是否在垂直于容器的方向上自动适应
         :param b: 是否自动适应
         :return:
         """
-        self.adjust_item_size = b
+        self.adjust_widgets_size = b
 
     def setShrinking(self, b: bool):
         """
@@ -241,6 +258,23 @@ class SiDenseVContainer(SiLabel):
 
         self.adjustSize()
 
+    def getSpareSpace(self):
+        """
+        获取当前布局条件下，容器剩余的长度或宽度
+        :return: 剩余长度或宽度
+        """
+        # 初始化已使用空间的计数器
+        top_used = 0
+        bottom_used = 0
+
+        # 左侧和右侧控件
+        for obj in self.widgets_top:
+            top_used += obj.height() + self.spacing
+        for obj in self.widgets_bottom:
+            bottom_used += obj.height() + self.spacing
+
+        return self.height() - top_used - bottom_used
+
     def adjustWidgetsGeometry(self):
         """
         调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器
@@ -253,7 +287,7 @@ class SiDenseVContainer(SiLabel):
         # 下侧控件
         for obj in self.widgets_top:
             # 是否适应容器
-            if self.adjust_item_size is True:
+            if self.adjust_widgets_size is True:
                 obj.resize(self.width(), obj.height())
 
             # 判断并设置是否进行中轴线对齐
@@ -271,7 +305,7 @@ class SiDenseVContainer(SiLabel):
         # 上侧控件
         for obj in self.widgets_bottom:
             # 是否适应容器
-            if self.adjust_item_size is True:
+            if self.adjust_widgets_size is True:
                 obj.resize(self.width(), obj.height())
 
             # 判断并设置是否进行中轴线对齐
@@ -287,8 +321,8 @@ class SiDenseVContainer(SiLabel):
             bottom_used += obj.height() + self.spacing
 
     def resizeEvent(self, event):
-        self.adjustWidgetsGeometry()  # 每当自身尺寸改变时，重新设置控件的位置
         super().resizeEvent(event)
+        self.adjustWidgetsGeometry()  # 每当自身尺寸改变时，重新设置控件的位置
 
     def adjustSize(self):
         """
@@ -307,9 +341,9 @@ class SiDenseVContainer(SiLabel):
 
         # 计算总共的高度，并处理
         total_used = bottom_used + top_used
-        total_used -= 0 if self.widgets_bottom == [] else self.spacing    # 删去多余的 spacing
-        total_used -= 0 if self.widgets_top == [] else self.spacing   # 删去多余的 spacing
-        total_used += self.spacing if (self.widgets_bottom != [] and self.widgets_top != []) else 0   # 防止两侧控件紧贴
+        total_used -= 0 if self.widgets_bottom == [] else self.spacing  # 删去多余的 spacing
+        total_used -= 0 if self.widgets_top == [] else self.spacing  # 删去多余的 spacing
+        total_used += self.spacing if (self.widgets_bottom != [] and self.widgets_top != []) else 0  # 防止两侧控件紧贴
         preferred_h = total_used
 
         # 计算所有控件中宽度最大的，以保证所有控件在容器中

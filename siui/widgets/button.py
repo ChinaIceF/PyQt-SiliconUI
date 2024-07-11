@@ -164,6 +164,27 @@ class SiToggleButton(ABCToggleButton):
         self.label.setStyleSheet(f"color: {SiGlobal.siui.colors['TEXT_B']}")
 
 
+class SiSimpleButton(SiToggleButton):
+    """
+    仅有纯色背景的按钮
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, *kwargs)
+        # 禁用选中功能
+        self.setCheckable(False)
+
+        # 设置默认颜色为透明
+        self.setStateColor("#00FFFFFF", "#00FFFFFF")
+
+    def setColor(self, color_code: str):
+        """
+        设置按钮的背景颜色
+        :param color_code: 色号
+        :return:
+        """
+        self.setStateColor(color_code, color_code)
+
+
 class SiRadioButton(SiLabel):
     """
     单选组件，提供一个单选按钮和一个文字标签
