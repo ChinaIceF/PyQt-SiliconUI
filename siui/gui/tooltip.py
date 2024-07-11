@@ -25,6 +25,8 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.margin = 8  # 周围给阴影预留的间隔空间
         self.shadow_size = 8  # 阴影
 
+        self.now_inside_of = None  # 在哪个控件内部（最近一次被谁触发过显示事件）
+
         # 创建QGraphicsDropShadowEffect对象，这将为窗口创造阴影
         shadow = QGraphicsDropShadowEffect()
         shadow.setColor(QColor(0, 0, 0, 128))
@@ -81,6 +83,21 @@ class ToolTipWindow(ABCAnimatedWidget):
             self.completely_hid = True
             self.resize(2 * self.margin, 36 + 2 * self.margin)  # 变单行内容的高度，宽度不足以显示任何内容
             self.text_label.setText("")   # 清空文本内容
+
+    def setNowInsideOf(self, widget):
+        """
+        设置当前位于哪个控件内部。对于 siui 的控件，这将会在设置工具提示显示时被调用并传入调用者，在隐藏时被调用并传入 None
+        :param widget: 在哪个控件的内部（被谁触发了显示）
+        :return:
+        """
+        self.now_inside_of = widget
+
+    def nowInsideOf(self):
+        """
+        返回最后一次被调用显示时的发出者
+        :return: 控件或None
+        """
+        return self.now_inside_of
 
     def setText(self, text, flash=True):
         """

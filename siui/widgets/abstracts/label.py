@@ -6,6 +6,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
+from siui.core.globals import SiGlobal
 
 
 # 2024.7.2 添加动画支持标签
@@ -18,6 +19,7 @@ class ABCAnimatedLabel(QLabel):
         super().__init__(*args, **kwargs)
 
         self.fixed_stylesheet = ""
+        self.hint = ""  # 工具提示
 
         self.instant_move = False  # 是否立即移动而不运行动画
         self.instant_resize = False  # 是否立即重设大小而不运行动画
@@ -90,6 +92,14 @@ class ABCAnimatedLabel(QLabel):
         :return:
         """
         self.enable_signal_emission = b
+
+    def setHint(self, text: str):
+        """
+        设置工具提示
+        :param text: 内容
+        :return:
+        """
+        self.hint = text
 
     def setText(self, text: str):
         """
@@ -296,3 +306,16 @@ class ABCAnimatedLabel(QLabel):
         self.animation_resize.setCurrent([w, h])
         if self.enable_signal_emission:
             self.resized.emit([w, h])
+
+    def enterEvent(self, event):
+        super().enterEvent(event)
+        if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
+            SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(self)
+            SiGlobal.siui.windows["TOOL_TIP"].show_()
+            SiGlobal.siui.windows["TOOL_TIP"].setText(self.hint)
+
+    def leaveEvent(self, event):
+        super().leaveEvent(event)
+        if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
+            SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(None)
+            SiGlobal.siui.windows["TOOL_TIP"].hide_()
