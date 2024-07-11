@@ -111,7 +111,6 @@ class ABCAnimatedLabel(QLabel):
         if self.auto_adjust_size is True:
             self.adjustSize()
 
-
     def setAutoAdjustSize(self, b: bool):
         """
         设置每次调用 setText 方法后自动调整标签的尺寸
@@ -199,7 +198,6 @@ class ABCAnimatedLabel(QLabel):
         :param opacity: 透明度值 0-1
         :return:
         """
-        print(opacity)
         self.opacity_effect = QGraphicsOpacityEffect()
         self.opacity_effect.setOpacity(opacity)
         self.setGraphicsEffect(self.opacity_effect)

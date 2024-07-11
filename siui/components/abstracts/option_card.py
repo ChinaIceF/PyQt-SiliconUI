@@ -24,11 +24,14 @@ class ABCSiOptionCardPlane(SiLabel):
 
         # 创建划分区域
         self.header_ = SiDenseHContainer(self)
+        self.header_.resize(0, 0)
 
         self.body_ = SiDenseVContainer(self)  # 只有 body 是竖直密堆积容器
         self.body_.setSpacing(8)
+        self.body_.resize(0, 0)
 
         self.footer_ = SiDenseHContainer(self)
+        self.footer_.resize(0, 0)
 
         # 设置子控件适应容器，并把三个组成部分添加到自己
 
