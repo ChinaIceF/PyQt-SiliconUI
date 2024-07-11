@@ -1,0 +1,103 @@
+from siui.core.globals import SiGlobal
+from siui.widgets.container import SiDenseHContainer
+from siui.widgets.label import SiLabel, SiSvgLabel
+
+
+class SiOptionCardLinear(SiLabel):
+    """
+    水平方向上的、线性放置控件的选项卡组件
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.setFixedStyleSheet("background-color:{};border-radius:4px".format(SiGlobal.siui.colors["INTERFACE_BG_C"]))
+
+        # 设定最小高度
+        self.setMinimumHeight(80)
+
+        # 创建整体容器
+        self.container = SiDenseHContainer(self)
+        self.container.setSpacing(0)
+        self.container.setAlignCenter(True)
+        self.container.setAdjustWidgetsSize(True)
+        self.container.setShrinking(True)
+
+        # 开始从左到右构建所需控件
+        # svg图标
+        self.svg_icon = SiSvgLabel(self)
+        self.svg_icon.setSvgSize(24, 24)
+        self.svg_icon.resize(80, 80)
+
+        # 文字标签
+        self.text_label = SiLabel(self)
+        self.text_label.setAutoAdjustSize(True)
+        self.text_label.setFixedStyleSheet("padding-top: 20px; padding-bottom: 20px;")
+
+        # 控件紧密排列容器
+        self.widgets_container = SiDenseHContainer(self)
+        self.widgets_container.setAlignCenter(True)
+
+        # 添加到整体容器中
+        self.container.addWidget(self.svg_icon)
+        self.container.addWidget(self.text_label)
+
+        self.container.addPlaceholder(28, "right")  # 防止控件和右侧边缘紧贴
+        self.container.addWidget(self.widgets_container, "right")
+        self.container.addPlaceholder(16, "right")  # 防止文字和控件紧贴
+
+    def reloadStyleSheet(self):
+        super().reloadStyleSheet()
+
+    def setTitle(self, title, subtitle=""):
+        """
+        为选项卡设置文字
+        :param title: 选项卡标题
+        :param subtitle: 选项卡副标题
+        :return:
+        """
+        # 根据是否有副标题，设置两种文字显示方式
+        if subtitle == "":
+            self.text_label.setText("<font color='{}'>{}</font>".format(SiGlobal.siui.colors["TEXT_A"], title))
+
+        else:
+            subtitle = subtitle.replace("\n", "<br>")
+            self.text_label.setText("<font color='{}'><strong>{}</strong></font><br><font color='{}'>{}</font>".format(
+                SiGlobal.siui.colors["TEXT_A"], title, SiGlobal.siui.colors["TEXT_C"], subtitle))
+
+        self.adjustSize()
+
+    def setText(self, text: str):
+        raise AttributeError("请使用 setTitle 方法设置选项卡文字")
+
+    def load(self, path_or_data):
+        """
+        加载图标
+        :param path_or_data: svg 文件路径或 svg 数据
+        :return:
+        """
+        self.svg_icon.load(path_or_data)
+
+    def addWidget(self, widget):
+        """
+        添加控件于选项卡右侧，这将改变控件的父对象
+        :param widget: 控件
+        :return:
+        """
+        self.widgets_container.addWidget(widget, "right")
+
+    def adjustSize(self):
+        self.container.adjustSize()
+        self.resize(self.container.size())
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        w, h = event.size().width(), event.size().height()
+
+        self.container.resize(w, h)
+
+        # 让文字标签充满闲置区域
+        spare_space = self.container.getSpareSpace()
+        self.text_label.setFixedWidth(spare_space + self.text_label.width())
+
+        # 确保其所有控件都在中轴线上，需要调用调整尺寸方法
+        self.container.adjustSize()

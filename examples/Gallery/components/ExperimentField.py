@@ -20,9 +20,9 @@ from SiliconUI.SiGlobal import *
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
 from siui.widgets import SiPushButton, SiLongPressButton, SiToggleButton, SiRadioButton, SiCheckBox, SiDenseHContainer, \
-    SiDenseVContainer, SiSwitch, SiScrollArea, SiLabel
+    SiDenseVContainer, SiSwitch, SiScrollArea, SiLabel, SiSimpleButton
 from siui.gui import SiFont
-
+from siui.components import SiOptionCardLinear
 
 class ExperimentField(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
@@ -212,11 +212,33 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.scrollarea.setFixedHeight(256)
         self.scrollarea.setWidget(self.alabel)
 
+        self.button_for_option_card = SiPushButton(self)
+        self.button_for_option_card.attachment().setText("刷新")
+        self.button_for_option_card.resize(128, 32)
+
+        self.optioncard = SiOptionCardLinear(self)
+        self.optioncard.load(SiGlobal.icons.get('fi-rr-bulb'))
+        self.optioncard.setTitle("测试选项卡", "这是这个选项卡的一段说明性文字，但是它非常非常长")
+        self.optioncard.addWidget(self.button_for_option_card)
+
+        self.button_for_option_card2 = SiSimpleButton(self)
+        self.button_for_option_card2.setCheckable(False)
+        self.button_for_option_card2.attachment().load(SiGlobal.icons.get('fi-rr-link'))
+        self.button_for_option_card2.attachment().setText("打开链接")
+        self.button_for_option_card2.adjustSize()
+
+        self.optioncard2 = SiOptionCardLinear(self)
+        self.optioncard2.load(SiGlobal.icons.get('fi-rr-bulb'))
+        self.optioncard2.setTitle("测试选项卡", "这是这个选项卡的一段说明性文字，但是它非常非常长")
+        self.optioncard2.addWidget(self.button_for_option_card2)
+
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
         self.stack_reconstruct_test.addItem(self.button_layout2)
         self.stack_reconstruct_test.addItem(self.container_h)
         self.stack_reconstruct_test.addItem(self.scrollarea)
+        self.stack_reconstruct_test.addItem(self.optioncard)
+        self.stack_reconstruct_test.addItem(self.optioncard2)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
         self.addItem(self.discription)
