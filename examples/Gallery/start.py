@@ -8,7 +8,6 @@ import ui as ui
 if __name__ == '__main__':
 
     # 适应高DPI设备
-    #QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
 
     app = QApplication(sys.argv)

@@ -240,13 +240,8 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.button_for_test2.attachment().setText("另一个")
         self.button_for_test2.resize(128, 32)
 
-        self.label_for_footer = SiLabel(self)
-        self.label_for_footer.setAutoAdjustSize(True)
-        self.label_for_footer.setText("霏泠Ice 创作")
-
         self.optioncard3.body().addWidget(self.button_for_test)
         self.optioncard3.body().addWidget(self.button_for_test2)
-        self.optioncard3.footer().addWidget(self.label_for_footer, "right")
 
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
