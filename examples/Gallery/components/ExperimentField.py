@@ -1,28 +1,22 @@
-from PyQt5.Qt import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import *
-from PyQt5.Qt import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
-import numpy
-import time
-import os
-import random
-
-import SiliconUI
 import SiliconUI.SiGlobal as SiGlobal
 from SiliconUI.SiFont import *
-import siui
-from SiliconUI.SiGlobal import *
+from siui.components import SiOptionCardLinear, SiOptionCardPlane
+from siui.widgets import (
+    SiCheckBox,
+    SiDenseHContainer,
+    SiDenseVContainer,
+    SiLabel,
+    SiLongPressButton,
+    SiPushButton,
+    SiRadioButton,
+    SiScrollArea,
+    SiSimpleButton,
+    SiSwitch,
+    SiToggleButton,
+)
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
 
-from siui.widgets import SiPushButton, SiLongPressButton, SiToggleButton, SiRadioButton, SiCheckBox, SiDenseHContainer, \
-    SiDenseVContainer, SiSwitch, SiScrollArea, SiLabel, SiSimpleButton
-from siui.gui import SiFont
-from siui.components import SiOptionCardLinear
 
 class ExperimentField(SiliconUI.SiScrollFrame):
     def __init__(self, parent):
@@ -85,6 +79,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.test_new_button = SiPushButton(self)
         self.test_new_button.setFixedSize(128, 32)
         self.test_new_button.attachment().setText("重构按钮")
+        self.test_new_button.setHint("还有工具提示")
         self.test_new_button.setThemed(True)
 
         self.test_new_button2 = SiLongPressButton(self)
@@ -176,6 +171,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
 
         self.alabel = SiLabel(self)
         self.alabel.setAutoAdjustSize(True)
+        self.alabel.setHint("你触发了工具提示")
         self.alabel.setText(
 """
 合成器是一种在接收到红石信号时自动合成并丢出产物的方块。
@@ -232,6 +228,26 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.optioncard2.setTitle("测试选项卡", "这是这个选项卡的一段说明性文字，但是它非常非常长")
         self.optioncard2.addWidget(self.button_for_option_card2)
 
+        self.optioncard3 = SiOptionCardPlane(self)
+        self.optioncard3.setFixedHeight(200)
+        self.optioncard3.setTitle("平面选项卡")
+
+        self.button_for_test = SiPushButton(self)
+        self.button_for_test.attachment().setText("测试按钮")
+        self.button_for_test.resize(128, 32)
+
+        self.button_for_test2 = SiPushButton(self)
+        self.button_for_test2.attachment().setText("另一个")
+        self.button_for_test2.resize(128, 32)
+
+        self.label_for_footer = SiLabel(self)
+        self.label_for_footer.setAutoAdjustSize(True)
+        self.label_for_footer.setText("霏泠Ice 创作")
+
+        self.optioncard3.body().addWidget(self.button_for_test)
+        self.optioncard3.body().addWidget(self.button_for_test2)
+        self.optioncard3.footer().addWidget(self.label_for_footer, "right")
+
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
         self.stack_reconstruct_test.addItem(self.button_layout2)
@@ -239,6 +255,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.stack_reconstruct_test.addItem(self.scrollarea)
         self.stack_reconstruct_test.addItem(self.optioncard)
         self.stack_reconstruct_test.addItem(self.optioncard2)
+        self.stack_reconstruct_test.addItem(self.optioncard3)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
         self.addItem(self.discription)

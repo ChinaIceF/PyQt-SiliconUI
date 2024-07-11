@@ -1,5 +1,8 @@
+from PyQt5.QtCore import Qt
+
+from siui.components.abstracts import ABCSiOptionCardPlane
 from siui.core.globals import SiGlobal
-from siui.widgets.container import SiDenseHContainer
+from siui.widgets.container import SiDenseHContainer, SiDenseVContainer
 from siui.widgets.label import SiLabel, SiSvgLabel
 
 
@@ -101,3 +104,30 @@ class SiOptionCardLinear(SiLabel):
 
         # 确保其所有控件都在中轴线上，需要调用调整尺寸方法
         self.container.adjustSize()
+
+
+class SiOptionCardPlane(ABCSiOptionCardPlane):
+    """
+    平面式选项卡。相较于其抽象类，此类提供
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # 在 header 创建标题
+        self.title = SiLabel(self)
+        self.title.setAutoAdjustSize(True)
+        self.title.setFont(SiGlobal.siui.fonts["M_BOLD"])
+        self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.title.setFixedHeight(32)
+
+        self.header().setAlignCenter(True)
+        self.header().setFixedHeight(64)
+        self.header().addWidget(self.title, "left")
+
+    def setTitle(self, text: str):
+        """
+        设置标题
+        :param text: 标题
+        :return:
+        """
+        self.title.setText(text)

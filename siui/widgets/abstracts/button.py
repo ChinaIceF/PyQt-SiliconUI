@@ -5,6 +5,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QPushButton
 
 from siui.core.animation import SiExpAnimation
+from siui.core.globals import SiGlobal
 from siui.widgets.abstracts import ABCAnimatedWidget
 from siui.widgets.label import SiColoredLabel, SiLabel
 
@@ -18,6 +19,8 @@ class ABCButton(QPushButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         super().setStyleSheet("background-color: transparent")
+
+        self.hint = ""  # 工具提示内容
 
         # 占位用的被绑定部件，显示在按钮正中央
         self.attachment_ = ABCAnimatedWidget()
@@ -74,6 +77,14 @@ class ABCButton(QPushButton):
         """
         return self.attachment_
 
+    def setHint(self, text: str):
+        """
+        设置工具提示
+        :param text: 内容
+        :return:
+        """
+        self.hint = text
+
     def setFixedStyleSheet(self, style_sheet):  # 劫持这个按钮的stylesheet，只能设置outfit的样式表
         """
         设置按钮组件固定的样式表\n
@@ -122,9 +133,18 @@ class ABCButton(QPushButton):
         super().enterEvent(event)
         self.hover_highlight.setColorTo("#10FFFFFF")
 
+        if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
+            SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(self)
+            SiGlobal.siui.windows["TOOL_TIP"].show_()
+            SiGlobal.siui.windows["TOOL_TIP"].setText(self.hint)
+
     def leaveEvent(self, event):
         super().enterEvent(event)
         self.hover_highlight.setColorTo("#00FFFFFF")
+
+        if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
+            SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(None)
+            SiGlobal.siui.windows["TOOL_TIP"].hide_()
 
     def adjustSize(self):
         """
