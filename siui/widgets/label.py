@@ -14,44 +14,6 @@ class SiLabel(ABCAnimatedLabel):
         super().setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
 
 
-class SiColoredLabel(ABCAnimatedLabel):
-    """
-    面向显示颜色的标签，支持改变颜色动画
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.animation_color = SiExpAnimation(self)
-        self.animation_color.setFactor(1/4)
-        self.animation_color.setBias(1)
-        self.animation_color.ticked.connect(self._set_color_handler)
-
-        self.getAnimationGroup().addMember(self.animation_color, "color")
-
-    def setColorTo(self, color_code):
-        """
-        设置目标颜色，同时启动动画
-        :param color_code: 色号
-        :return:
-        """
-        self.animation_color.setTarget(Color.decodeColor(color_code))
-        self.animation_color.try_to_start()
-
-    def setColor(self, color_code):
-        """
-        设置颜色
-        :param color_code: 色号
-        :return:
-        """
-        color_value = Color.decodeColor(color_code)
-        self.animation_color.setCurrent(color_value)
-        self._set_color_handler(color_value)
-
-    def _set_color_handler(self, color_value):
-        self.setStyleSheet(f"background-color: {Color.encodeColor(color_value)}")
-
-
 class SiPixLabel(SiLabel):
     """
     为显示图片提供支持的标签，支持图片的圆角处理
@@ -242,6 +204,16 @@ class SiDraggableLabel(SiLabel):
         self.setMouseTracking(True)
         self.anchor = QPoint(0, 0)
 
+        self.track = True  # 是否跟随鼠标
+
+    def setTrack(self, b: bool):
+        """
+        设置是否每次鼠标移动时调用 moveTo 移动到鼠标位置
+        :param b: 是否跟踪
+        :return:
+        """
+        self.track = b
+
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
         if event.button() == Qt.LeftButton:
@@ -254,8 +226,10 @@ class SiDraggableLabel(SiLabel):
             return
         new_pos = event.pos() - self.anchor + self.frameGeometry().topLeft()
         x, y = self._legalize_moving_target(new_pos.x(), new_pos.y())
-        self.moveTo(x, y)
         self.dragged.emit([x, y])
+
+        if self.track is True:
+            self.moveTo(x, y)
 
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)

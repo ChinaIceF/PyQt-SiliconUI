@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QPushButton
 from siui.core.animation import SiExpAnimation
 from siui.core.globals import SiGlobal
 from siui.widgets.abstracts import ABCAnimatedWidget
-from siui.widgets.label import SiColoredLabel, SiLabel
+from siui.widgets.label import SiLabel, SiLabel
 
 
 class ABCButton(QPushButton):
@@ -35,14 +35,14 @@ class ABCButton(QPushButton):
         self.clicked.connect(self._clicked_slot)
 
         # 提供悬停时的颜色变化动画
-        self.hover_highlight = SiColoredLabel(self)
+        self.hover_highlight = SiLabel(self)
         self.hover_highlight.stackUnder(self)  # 置于按钮的底部
         self.hover_highlight.setColor("#00FFFFFF")
         self.hover_highlight.getAnimationGroup().fromToken("color").setBias(0.2)
         self.hover_highlight.getAnimationGroup().fromToken("color").setFactor(1 / 8)
 
         # 提供点击时的颜色变化动画
-        self.flash = SiColoredLabel(self)
+        self.flash = SiLabel(self)
         self.flash.stackUnder(self)  # 置于按钮的底部
         self.flash.setColor("#00FFFFFF")
         self.flash.getAnimationGroup().fromToken("color").setBias(0.2)
@@ -290,7 +290,7 @@ class ABCToggleButton(ABCButton):
         self.color_when_is_off = "#00ffffff"
 
         # 创建一个颜色叠层，用于标识被选中的状态
-        self.color_label = SiColoredLabel(self)
+        self.color_label = SiLabel(self)
         self.color_label.setColor(self.color_when_is_off)   # 初始是关闭状态
 
         # 把状态切换信号绑定到颜色切换的槽函数上

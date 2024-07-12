@@ -41,7 +41,7 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.tracker_timer.start()
 
         # 背景颜色，可以用于呈现不同类型的信息
-        self.bg_label = siui.widgets.SiColoredLabel(self)
+        self.bg_label = siui.widgets.SiLabel(self)
         self.bg_label.move(self.margin, self.margin)
         self.bg_label.setFixedStyleSheet("border-radius: 6px")
         self.bg_label.setColor(SiGlobal.siui.colors["TOOLTIP_BG"])
@@ -58,7 +58,7 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
 
         # 高光遮罩，当信息刷新时会闪烁一下
-        self.highlight_mask = siui.widgets.SiColoredLabel(self)
+        self.highlight_mask = siui.widgets.SiLabel(self)
         self.highlight_mask.move(self.margin, self.margin)
         self.highlight_mask.setFixedStyleSheet("border-radius: 6px")
         self.highlight_mask.setColor("#00FFFFFF")
