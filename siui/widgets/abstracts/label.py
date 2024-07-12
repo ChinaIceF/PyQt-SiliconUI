@@ -6,6 +6,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
+from siui.core.color import Color
 from siui.core.globals import SiGlobal
 
 
@@ -21,15 +22,13 @@ class ABCAnimatedLabel(QLabel):
         self.fixed_stylesheet = ""
         self.hint = ""  # 工具提示
 
-        self.instant_move = False  # 是否立即移动而不运行动画
-        self.instant_resize = False  # 是否立即重设大小而不运行动画
-        self.instant_set_opacity = False  # 是否立即重设透明度而不运行动画
-
-        self.move_limits = False  # 是否有限定区域
-
-        self.auto_adjust_size = False  # 是否在setText被调用时自动调整空间大小
-
-        self.enable_signal_emission = False  # 是否启用moved，resized，opacityChanged信号
+        self.flash_when_hint_updated = False    # 在工具提示被重新设置时，使工具提示闪烁
+        self.instant_move = False               # 是否立即移动而不运行动画
+        self.instant_resize = False             # 是否立即重设大小而不运行动画
+        self.instant_set_opacity = False        # 是否立即重设透明度而不运行动画
+        self.move_limits = False                # 是否有移动限定区域
+        self.auto_adjust_size = False           # 是否在setText被调用时自动调整空间大小
+        self.enable_signal_emission = False     # 是否启用moved，resized，opacityChanged信号
 
         self.x1, self.y1, self.x2, self.y2 = None, None, None, None
 
@@ -52,11 +51,39 @@ class ABCAnimatedLabel(QLabel):
         self.animation_opacity.setBias(0.01)
         self.animation_opacity.ticked.connect(self._opacity_ani_handler)
 
+        self.animation_color = SiExpAnimation(self)
+        self.animation_color.setFactor(1/4)
+        self.animation_color.setBias(1)
+        self.animation_color.ticked.connect(self._set_color_handler)
+
         # 创建动画组，以tokenize以上动画
         self.animation_group = SiAnimationGroup()
         self.animation_group.addMember(self.animation_move, token="move")
         self.animation_group.addMember(self.animation_resize, token="resize")
         self.animation_group.addMember(self.animation_opacity, token="opacity")
+        self.animation_group.addMember(self.animation_color, token="color")
+
+    def setColorTo(self, color_code):
+        """
+        设置目标颜色，同时启动动画
+        :param color_code: 色号
+        :return:
+        """
+        self.animation_color.setTarget(Color.decodeColor(color_code))
+        self.animation_color.try_to_start()
+
+    def setColor(self, color_code):
+        """
+        设置颜色
+        :param color_code: 色号
+        :return:
+        """
+        color_value = Color.decodeColor(color_code)
+        self.animation_color.setCurrent(color_value)
+        self._set_color_handler(color_value)
+
+    def _set_color_handler(self, color_value):
+        self.setStyleSheet(f"background-color: {Color.encodeColor(color_value)}")
 
     def getAnimationGroup(self):
         """
@@ -93,6 +120,14 @@ class ABCAnimatedLabel(QLabel):
         """
         self.enable_signal_emission = b
 
+    def setFlashWhenHintUpdated(self, b: bool):
+        """
+        在工具提示被重新设置时，是否使工具提示闪烁
+        :param b: 是否闪烁
+        :return:
+        """
+        self.flash_when_hint_updated = b
+
     def setHint(self, text: str):
         """
         设置工具提示
@@ -100,6 +135,11 @@ class ABCAnimatedLabel(QLabel):
         :return:
         """
         self.hint = text
+
+        # 把新的工具提示推送给工具提示窗口
+        if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
+            if SiGlobal.siui.windows["TOOL_TIP"].nowInsideOf() == self:  # 如果鼠标正在该控件内
+                SiGlobal.siui.windows["TOOL_TIP"].setText(self.hint, flash=self.flash_when_hint_updated)
 
     def setText(self, text: str):
         """

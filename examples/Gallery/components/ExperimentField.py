@@ -1,6 +1,6 @@
 import SiliconUI.SiGlobal as SiGlobal
 from SiliconUI.SiFont import *
-from siui.components import SiOptionCardLinear, SiOptionCardPlane
+from siui.components import SiOptionCardLinear, SiOptionCardPlane, SiSlider
 from siui.widgets import (
     SiCheckBox,
     SiDenseHContainer,
@@ -243,6 +243,12 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.optioncard3.body().addWidget(self.button_for_test)
         self.optioncard3.body().addWidget(self.button_for_test2)
 
+
+        self.new_slider = SiSlider(self)
+        #self.new_slider.setStyleSheet("background-color: #20FF0000")
+        self.new_slider.setFixedHeight(16)
+
+
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
         self.stack_reconstruct_test.addItem(self.button_layout2)
@@ -251,6 +257,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.stack_reconstruct_test.addItem(self.optioncard)
         self.stack_reconstruct_test.addItem(self.optioncard2)
         self.stack_reconstruct_test.addItem(self.optioncard3)
+        self.stack_reconstruct_test.addItem(self.new_slider)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
         self.addItem(self.discription)
