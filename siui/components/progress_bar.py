@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QTimer, pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 
 from siui.core.color import Color
 from siui.core.globals import SiGlobal
@@ -118,7 +118,7 @@ class SiProgressBar(SiLabel):
         super().reloadStyleSheet()
 
         self.track.setStyleSheet("background-color: {}".format(SiGlobal.siui.colors["INTERFACE_BG_A"]))
-        self.progress.setStyleSheet("background-color: {}".format(self.state_colors[self.state()]))  # noqa: UP032
+        self.progress.setColorTo(self.state_colors[self.state()])  # noqa: UP032
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
