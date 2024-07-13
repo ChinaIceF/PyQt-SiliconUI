@@ -1,6 +1,6 @@
 import SiliconUI.SiGlobal as SiGlobal
 from SiliconUI.SiFont import *
-from siui.components import SiOptionCardLinear, SiOptionCardPlane, SiSlider
+from siui.components import SiOptionCardLinear, SiOptionCardPlane, SiSliderH, SiProgressBar
 from siui.widgets import (
     SiCheckBox,
     SiDenseHContainer,
@@ -16,6 +16,7 @@ from siui.widgets import (
 )
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
+import random
 
 
 class ExperimentField(SiliconUI.SiScrollFrame):
@@ -244,10 +245,17 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.optioncard3.body().addWidget(self.button_for_test2)
 
 
-        self.new_slider = SiSlider(self)
+        self.new_slider = SiSliderH(self)
         #self.new_slider.setStyleSheet("background-color: #20FF0000")
         self.new_slider.setFixedHeight(16)
 
+        self.new_progressbar = SiProgressBar(self)
+        self.new_progressbar.setFixedHeight(32)
+
+        self.random_progress_button = SiPushButton(self)
+        self.random_progress_button.resize(128, 32)
+        self.random_progress_button.attachment().setText("随机进度")
+        self.random_progress_button.clicked.connect(lambda: self.new_progressbar.setValue(random.random()))
 
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
@@ -258,6 +266,8 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.stack_reconstruct_test.addItem(self.optioncard2)
         self.stack_reconstruct_test.addItem(self.optioncard3)
         self.stack_reconstruct_test.addItem(self.new_slider)
+        self.stack_reconstruct_test.addItem(self.new_progressbar)
+        self.stack_reconstruct_test.addItem(self.random_progress_button)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
         self.addItem(self.discription)

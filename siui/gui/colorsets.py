@@ -56,6 +56,11 @@ class ColorsetDark:
     # 滚动条
     colors["SCROLL_BAR"] = "#50FFFFFF"
 
+    # 进度条
+    colors["PROGRESSBAR_LOADING"] = "#66CBFF"
+    colors["PROGRESSBAR_PROCESSING"] = "#FED966"
+    colors["PROGRESSBAR_PAUSED"] = "#7F7F7F"
+    colors["PROGRESSBAR_FLASHES"] = "#FFFFFF"
 
 class SiColorDark(Color):
     # ========== 全局颜色 ==========
