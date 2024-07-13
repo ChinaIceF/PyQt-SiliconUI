@@ -6,11 +6,11 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
+import siui
 from siui.core.globals import SiGlobal
 from siui.gui.font import GlobalFont, SiFont
 from siui.widgets.abstracts import ABCAnimatedWidget
 
-import siui
 
 class ToolTipWindow(ABCAnimatedWidget):
     def __init__(self, parent=None):
