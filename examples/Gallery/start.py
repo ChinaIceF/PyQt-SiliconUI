@@ -1,11 +1,11 @@
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow
 import sys
 
 import ui as ui
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QApplication, QMainWindow
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # 适应高DPI设备
     QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
