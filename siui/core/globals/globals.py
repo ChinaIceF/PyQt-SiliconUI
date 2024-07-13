@@ -43,6 +43,10 @@ class SiliconUIGlobal:
         调用各个窗口下的reloadStyleSheet方法并递归，重载所有窗口下所有控件的样式表
         """
         for window in self.windows.values():
+            try:
+                window.reloadStyleSheet()
+            except:
+                pass
             self._reloadWidgetStyleSheet(window)
 
     def _reloadWidgetStyleSheet(self, widget):
