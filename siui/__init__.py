@@ -5,6 +5,7 @@ import siui.core as core
 import siui.core.globals
 import siui.gui as gui
 import siui.widgets as widgets
+import siui.templates as templates
 
 import siui
 
