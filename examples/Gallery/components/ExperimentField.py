@@ -13,6 +13,7 @@ from siui.widgets import (
     SiSimpleButton,
     SiSwitch,
     SiToggleButton,
+    SiLineEdit,
 )
 
 from .experifield.music_info_placeholder import MusicInfoPlaceholder
@@ -257,6 +258,9 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.random_progress_button.attachment().setText("随机进度")
         self.random_progress_button.clicked.connect(lambda: self.new_progressbar.setValue(random.random()))
 
+        self.lineedit = SiLineEdit(self)
+        self.lineedit.setFixedHeight(32)
+
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
         self.stack_reconstruct_test.addItem(self.button_layout2)
@@ -268,6 +272,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.stack_reconstruct_test.addItem(self.new_slider)
         self.stack_reconstruct_test.addItem(self.new_progressbar)
         self.stack_reconstruct_test.addItem(self.random_progress_button)
+        self.stack_reconstruct_test.addItem(self.lineedit)
         #self.stack_reconstruct_test.addItem(self.test_label)
 
         self.addItem(self.discription)
