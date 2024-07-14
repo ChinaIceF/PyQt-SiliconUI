@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QAbstractSlider
 
 from siui.core.color import Color
 from siui.core.globals import SiGlobal
-from siui.widgets import SiDraggableLabel, SiLabel
+from siui.components.widgets import SiDraggableLabel, SiLabel
 
 
 class SiSliderH(QAbstractSlider):

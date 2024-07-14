@@ -1,7 +1,7 @@
 import SiliconUI.SiGlobal as SiGlobal
 from SiliconUI.SiFont import *
 from siui.components import SiOptionCardLinear, SiOptionCardPlane, SiSliderH, SiProgressBar
-from siui.widgets import (
+from siui.components.widgets import (
     SiCheckBox,
     SiDenseHContainer,
     SiDenseVContainer,

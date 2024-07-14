@@ -1,4 +1,4 @@
 from siui.components.option_card import *
 from siui.components.slider import *
 from siui.components.progress_bar import *
-from siui.components import abstracts
+from siui.components.widgets import *

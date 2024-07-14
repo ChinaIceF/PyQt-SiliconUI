@@ -2,7 +2,7 @@ from PyQt5.QtCore import pyqtSignal
 
 from siui.core.color import Color
 from siui.core.globals import SiGlobal
-from siui.widgets import SiLabel
+from siui.components.widgets import SiLabel
 
 
 class SiProgressBar(SiLabel):

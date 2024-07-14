@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDesktopWidget, QGraphicsDropShadowEffect, QMainWindow, QFrame
+from PyQt5.QtWidgets import QDesktopWidget, QMainWindow
 
 from siui.core.globals import SiGlobal
 from siui.gui import ToolTipWindow
-from siui.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel, SiSimpleButton
+from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel, SiSimpleButton
 from .page_view import PageView
 
 

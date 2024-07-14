@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtSignal
 
-from siui.widgets.label import SiLabel
+from siui.components.widgets.label import SiLabel
 
 
 class ABCSiNavigationBar(SiLabel):

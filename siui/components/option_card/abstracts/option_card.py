@@ -1,5 +1,5 @@
 from siui.core.globals import SiGlobal
-from siui.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel
+from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel
 
 
 class ABCSiOptionCardPlane(SiLabel):
