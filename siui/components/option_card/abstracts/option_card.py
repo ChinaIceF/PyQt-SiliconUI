@@ -60,6 +60,9 @@ class ABCSiOptionCardPlane(SiLabel):
         """
         return self.footer_
 
+    def adjustSize(self):
+        self.resize(self.width(), self.header().height() + self.body().height() + self.footer().height() + 3)
+
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
 
