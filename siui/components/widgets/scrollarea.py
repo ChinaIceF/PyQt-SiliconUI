@@ -11,7 +11,7 @@ class SiScrollArea(SiLabel):
         super().__init__(*args, **kwargs)
 
         # 定义一个占位用的子控件
-        self.widget = SiLabel(self)
+        self.attachment_ = SiLabel(self)
 
         # 定义滚动条的框架
         self.scroll_bar_frame_vertical = SiLabel(self)
@@ -34,7 +34,7 @@ class SiScrollArea(SiLabel):
         self.widget_scroll_animation.setBias(1)
         self.widget_scroll_animation.setCurrent([0, 0])
         self.widget_scroll_animation.setTarget([0, 0])
-        self.widget_scroll_animation.ticked.connect(lambda pos: self.widget.move(int(pos[0]), int(pos[1])))
+        self.widget_scroll_animation.ticked.connect(lambda pos: self.attachment_.move(int(pos[0]), int(pos[1])))
 
     def reloadStyleSheet(self):
         """
@@ -45,36 +45,43 @@ class SiScrollArea(SiLabel):
         self.scroll_bar_vertical.setStyleSheet(f"background-color: {SiGlobal.siui.colors['SCROLL_BAR']}")
         self.scroll_bar_horizontal.setStyleSheet(f"background-color: {SiGlobal.siui.colors['SCROLL_BAR']}")
 
-    def setWidget(self, widget):
+    def setAttachment(self, widget):
         """
         绑定子控件，作为滚动的部件
         :param widget:
         :return:
         """
-        self.widget.deleteLater()
+        self.attachment_.deleteLater()
 
-        self.widget = widget
-        self.widget.setParent(self)
-        self.widget.lower()
+        self.attachment_ = widget
+        self.attachment_.setParent(self)
+        self.attachment_.lower()
+
+    def attachment(self):
+        """
+        获取被绑定控件
+        :return: 被绑定控件
+        """
+        return self.attachment_
 
     def _scroll_vertical_handler(self, pos):
         # 计算目标纵坐标
         _, y = pos
         progress = y / (self.height() - self.scroll_bar_vertical.height())
-        target = - int(progress * (self.widget.height() - self.height()))
+        target = - int(progress * (self.attachment_.height() - self.height()))
 
         # 设置目标值并尝试启动
-        self.widget_scroll_animation.setTarget([self.widget.x(), target])
+        self.widget_scroll_animation.setTarget([self.attachment_.x(), target])
         self.widget_scroll_animation.try_to_start()
 
     def _scroll_horizontal_handler(self, pos):
         # 计算目标横坐标
         x, _ = pos
         progress = x / (self.width() - self.scroll_bar_horizontal.width())
-        target = - int(progress * (self.widget.width() - self.width()))
+        target = - int(progress * (self.attachment_.width() - self.width()))
 
         # 设置目标值并尝试启动
-        self.widget_scroll_animation.setTarget([target, self.widget.y()])
+        self.widget_scroll_animation.setTarget([target, self.attachment_.y()])
         self.widget_scroll_animation.try_to_start()
 
     def resizeEvent(self, event):
@@ -87,20 +94,20 @@ class SiScrollArea(SiLabel):
 
         # 判断长宽是否超过自身的长宽，从而确定是否显示滚动条
         # 水平
-        if self.widget.width() <= self.width():
+        if self.attachment_.width() <= self.width():
             self.scroll_bar_horizontal.setVisible(False)
         else:
             self.scroll_bar_horizontal.setVisible(True)
 
         # 竖直
-        if self.widget.height() <= self.height():
+        if self.attachment_.height() <= self.height():
             self.scroll_bar_vertical.setVisible(False)
         else:
             self.scroll_bar_vertical.setVisible(True)
 
         # 根据滚动区域的大小和子控件的大小，计算出滚动条的长度或宽度
-        self.scroll_bar_horizontal.resize(self.width() * self.width() // self.widget.width(), 8)
-        self.scroll_bar_vertical.resize(8, self.height() * self.height() // self.widget.height())
+        self.scroll_bar_horizontal.resize(self.width() * self.width() // self.attachment_.width(), 8)
+        self.scroll_bar_vertical.resize(8, self.height() * self.height() // self.attachment_.height())
 
         # 设置拖动限制
         self.scroll_bar_horizontal.setMoveLimits(0, 0, self.width(), 8)
@@ -118,11 +125,11 @@ class SiScrollArea(SiLabel):
 
         # 根据滚动方向，目标值加或减滚动强度，并更新目标值
         target[1] += strength if event.angleDelta().y() > 0 else -strength
-        target[1] = min(0, max(self.height() - self.widget.height(), target[1]))  # 防止滚出限制范围
+        target[1] = min(0, max(self.height() - self.attachment_.height(), target[1]))  # 防止滚出限制范围
         self.widget_scroll_animation.setTarget(target)
 
         # 计算滚动条的目标位置
-        process = -target[1] / (self.widget.height() - self.height())
+        process = -target[1] / (self.attachment_.height() - self.height())
         scroll_bar_vertical_target_y = int(process * (self.height() - self.scroll_bar_vertical.height()))
 
         # 如果竖直方向滚动条可见，尝试启动动画
