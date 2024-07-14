@@ -213,7 +213,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
 
         self.scrollarea = SiScrollArea(self)
         self.scrollarea.setFixedHeight(256)
-        self.scrollarea.setWidget(self.alabel)
+        self.scrollarea.setAttachment(self.alabel)
 
         # 新测试
         self.titled_widget_group = SiTitledWidgetGroup(self)
