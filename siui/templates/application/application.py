@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import QDesktopWidget, QGraphicsDropShadowEffect, QMainWind
 from siui.core.globals import SiGlobal
 from siui.gui import ToolTipWindow
 from siui.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel, SiSimpleButton
+from .page_view import PageView
+
 
 
 class SiliconApplication(QMainWindow):
@@ -35,7 +37,6 @@ class SiliconApplication(QMainWindow):
         # 初始化窗口
         screen_geo = QDesktopWidget().screenGeometry()
         w, h = 1200, 700
-        #self.setWindowFlags(Qt.FramelessWindowHint)  # 去边框
         self.setAttribute(Qt.WA_TranslucentBackground)  # 设置窗口背景透明
         self.setGeometry((screen_geo.width() - w) // 2, (screen_geo.height() - h) // 2, w, h)
         self.setWindowTitle("Silicon Application Template")
@@ -69,7 +70,8 @@ class SiliconApplication(QMainWindow):
 
         # 关闭窗口按钮
         self.close_window_button = SiSimpleButton(self)
-        self.close_window_button.attachment().setText("测试关闭")
+        self.close_window_button.attachment().load(SiGlobal.siui.icons["fi-rr-cross-small"])
+        self.close_window_button.resize(32, 32)
         self.close_window_button.clicked.connect(self.close)
 
         # <- 添加到水平容器
@@ -79,28 +81,25 @@ class SiliconApplication(QMainWindow):
         self.container_title.addPlaceholder(16)
         self.container_title.addWidget(self.app_title)
 
+        self.container_title.addPlaceholder(16, "right")
         self.container_title.addWidget(self.close_window_button, "right")
 
-        # -> 窗口内容的水平容器，左侧是导航栏，右侧是页面框架
-        self.container_content = SiDenseHContainer(self)
-        self.container_content.setSpacing(0)
-        self.container_content.setAdjustWidgetsSize(True)
-
-        # 导航栏
-        self.navigation_bar = SiLabel(self)  # TODO: 等待导航栏的重构后替换 SiLabel
-        self.navigation_bar.setFixedWidth(16 + 24 + 16)
-
-        # 页面框架
-        self.page_frame = SiLabel(self)
-        self.page_frame.setFixedStyleSheet("border-top-left-radius:6px; border-bottom-right-radius:6px;")
-
-        # <- 添加到水平容器
-        self.container_content.addWidget(self.navigation_bar)
-        self.container_content.addWidget(self.page_frame)
+        # 创建 page view，它继承自水平容器
+        self.page_view = PageView()
 
         # <- 添加到垂直容器
         self.container_title_and_content.addWidget(self.container_title)
-        self.container_title_and_content.addWidget(self.container_content)
+        self.container_title_and_content.addWidget(self.page_view)
+
+    def addPage(self, page, svg_data: bytes, hint: str, side="top"):
+        """
+        添加新页面
+        :param page: 页面控件
+        :param svg_data: 页面按钮的 svg 数据
+        :param hint: 页面按钮的工具提示
+        :param side: 页面按钮置于哪一侧
+        """
+        self.page_view.addPage(page, svg_data, hint, side)
 
     def reloadStyleSheet(self):
         """
@@ -125,5 +124,4 @@ class SiliconApplication(QMainWindow):
 
         self.background_label.resize(w, h)
         self.container_title_and_content.resize(w, h)
-        self.container_content.resize(w, h-64)
-        self.page_frame.resize(w-56, h-64)
+        self.page_view.resize(w, h-64)

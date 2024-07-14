@@ -355,3 +355,70 @@ class SiDenseVContainer(SiLabel):
             preferred_h = max(preferred_h, self.height())
 
         self.resize(preferred_w, preferred_h)
+
+
+class SiStackedContainer(SiLabel):
+    """
+    允许堆叠的容器，可以绑定多个界面，并只显示其中一个
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # 当前索引
+        self.current_index_ = -1
+
+        # 所有页面
+        self.widgets = []
+
+    def widgetsAmount(self):
+        """
+        获取子控件的数量
+        :return: 子控件数量
+        """
+        return len(self.widgets)
+
+    def addWidget(self, widget):
+        """
+        添加子控件（页面）
+        :param widget: 子控件
+        :return:
+        """
+        self.insertWidgets(widget, 10000)
+
+    def insertWidgets(self, widget, index: int):
+        """
+        添加子控件（页面），如果插入位置过大，会置于序列最后
+        :param widget: 子控件
+        :param index: 索引
+        """
+        widget.setParent(self)
+        widget.resize(self.size())
+        widget.move(0, 0)
+        widget.hide()
+        self.widgets = self.widgets[:index] + [widget] + self.widgets[index:]
+
+        if len(self.widgets) == 1:
+            self.setCurrentIndex(0)
+
+    def currentIndex(self):
+        """
+        获取当前索引
+        :return: 索引
+        """
+        return self.current_index_
+
+    def setCurrentIndex(self, index: int):
+        """
+        设置当前索引
+        :param index: 索引
+        """
+        self.current_index_ = index
+        for widget in self.widgets:
+            widget.hide()
+        self.widgets[index].show()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+
+        for widget in self.widgets:
+            widget.resize(event.size())
