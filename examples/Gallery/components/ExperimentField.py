@@ -1,6 +1,6 @@
 import SiliconUI.SiGlobal as SiGlobal
 from SiliconUI.SiFont import *
-from siui.components import SiOptionCardLinear, SiOptionCardPlane, SiSliderH, SiProgressBar
+from siui.components import SiOptionCardLinear, SiOptionCardPlane, SiSliderH, SiProgressBar, SiTitledWidgetGroup
 from siui.components.widgets import (
     SiCheckBox,
     SiDenseHContainer,
@@ -134,11 +134,16 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.button_layout2.addItem(self.switch_test)
 
         self.container_h = SiDenseHContainer(self)
+        self.container_h.setFixedHeight(128)
+        self.container_h.setAdjustWidgetsSize(True)
         self.container_h.setStyleSheet("background-color: #05ffffff")
 
         self.container_v_left = SiDenseVContainer(self)
+        self.container_v_left.setFixedWidth(128)
         self.container_v_left.setStyleSheet("background-color: #05ffffff")
+
         self.container_v_right = SiDenseVContainer(self)
+        self.container_v_right.setFixedWidth(128)
         self.container_v_right.setStyleSheet("background-color: #05ffffff")
 
         self.button_lefttop = SiPushButton(self)
@@ -210,6 +215,9 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.scrollarea.setFixedHeight(256)
         self.scrollarea.setWidget(self.alabel)
 
+        # 新测试
+        self.titled_widget_group = SiTitledWidgetGroup(self)
+
         self.button_for_option_card = SiPushButton(self)
         self.button_for_option_card.attachment().setText("刷新")
         self.button_for_option_card.resize(128, 32)
@@ -231,7 +239,6 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.optioncard2.addWidget(self.button_for_option_card2)
 
         self.optioncard3 = SiOptionCardPlane(self)
-        self.optioncard3.setFixedHeight(200)
         self.optioncard3.setTitle("平面选项卡")
 
         self.button_for_test = SiPushButton(self)
@@ -244,7 +251,8 @@ class ExperimentField(SiliconUI.SiScrollFrame):
 
         self.optioncard3.body().addWidget(self.button_for_test)
         self.optioncard3.body().addWidget(self.button_for_test2)
-
+        self.optioncard3.body().addPlaceholder(24 - 8)
+        self.optioncard3.adjustSize()
 
         self.new_slider = SiSliderH(self)
         #self.new_slider.setStyleSheet("background-color: #20FF0000")
@@ -261,18 +269,27 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.lineedit = SiLineEdit(self)
         self.lineedit.setFixedHeight(32)
 
+        self.titled_widget_group.setFixedWidth(800)
+        #self.titled_widget_group.setStyleSheet("background-color: #20FF0000")
+        self.titled_widget_group.addTitle("选项卡")
+        self.titled_widget_group.addWidget(self.optioncard)
+        self.titled_widget_group.addWidget(self.optioncard2)
+        self.titled_widget_group.addWidget(self.optioncard3)
+        self.titled_widget_group.addTitle("滑条")
+        self.titled_widget_group.addWidget(self.new_slider)
+        self.titled_widget_group.addTitle("进度条")
+        self.titled_widget_group.addWidget(self.new_progressbar)
+        self.titled_widget_group.addWidget(self.random_progress_button)
+        self.titled_widget_group.addTitle("输入框")
+        self.titled_widget_group.addWidget(self.lineedit)
+
         self.stack_reconstruct_test.addItem(self.reconstruct_discription)
         self.stack_reconstruct_test.addItem(self.button_layout)
         self.stack_reconstruct_test.addItem(self.button_layout2)
         self.stack_reconstruct_test.addItem(self.container_h)
         self.stack_reconstruct_test.addItem(self.scrollarea)
-        self.stack_reconstruct_test.addItem(self.optioncard)
-        self.stack_reconstruct_test.addItem(self.optioncard2)
-        self.stack_reconstruct_test.addItem(self.optioncard3)
-        self.stack_reconstruct_test.addItem(self.new_slider)
-        self.stack_reconstruct_test.addItem(self.new_progressbar)
-        self.stack_reconstruct_test.addItem(self.random_progress_button)
-        self.stack_reconstruct_test.addItem(self.lineedit)
+        self.stack_reconstruct_test.addItem(self.titled_widget_group)
+
         #self.stack_reconstruct_test.addItem(self.test_label)
 
         self.addItem(self.discription)

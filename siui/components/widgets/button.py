@@ -155,8 +155,8 @@ class SiToggleButton(ABCToggleButton):
         self.setAttachment(self.label)
 
         # 设置状态颜色为主题色
-        self.setStateColor(Color.transparency(SiGlobal.siui.colors["THEME_TRANSITION_B"], 0.2),
-                           SiGlobal.siui.colors["THEME_TRANSITION_B"])
+        self.setStateColor(Color.transparency(SiGlobal.siui.colors["THEME"], 0.2),
+                           SiGlobal.siui.colors["THEME"])
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
@@ -264,7 +264,7 @@ class SiRadioButton(SiLabel):
 
             # 禁止其切换模式，防止被取消选择
             self.indicator.setCheckable(False)
-            self.indicator_label.setStyleSheet(f"border: 4px solid {SiGlobal.siui.colors['THEME_TRANSITION_B']}")
+            self.indicator_label.setStyleSheet(f"border: 4px solid {SiGlobal.siui.colors['THEME']}")
         else:
             # 如果被选中状态为假，就允许其切换模式
             self.indicator.setCheckable(True)
@@ -372,7 +372,7 @@ class SiCheckBox(SiLabel):
     def _toggled_handler(self, check: bool):
         if check is True:
             self.indicator_icon.setVisible(True)
-            self.indicator_label.setStyleSheet(f"background-color: {SiGlobal.siui.colors['THEME_TRANSITION_B']}")
+            self.indicator_label.setStyleSheet(f"background-color: {SiGlobal.siui.colors['THEME']}")
         else:
             self.indicator_icon.setVisible(False)
             self.indicator_label.setStyleSheet(f"border: 1px solid {SiGlobal.siui.colors['TEXT_D']}")

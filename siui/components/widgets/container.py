@@ -169,14 +169,14 @@ class SiDenseHContainer(SiLabel):
         preferred_w = total_used
 
         # 计算所有控件中高度最大的，以保证所有控件在容器中
-        preferred_h = max([obj.height() for obj in self.widgets_left + self.widgets_right])
+        # preferred_h = max([obj.height() for obj in self.widgets_left + self.widgets_right])
 
         if self.shrinking is False:
             # 和原本自身的尺寸比价，取最大者
             preferred_w = max(preferred_w, self.width())
-            preferred_h = max(preferred_h, self.height())
+            # preferred_h = max(preferred_h, self.height())
 
-        self.resize(preferred_w, preferred_h)
+        self.resize(preferred_w, self.height())
 
 
 class SiDenseVContainer(SiLabel):
@@ -230,13 +230,13 @@ class SiDenseVContainer(SiLabel):
     def addPlaceholder(self, length, side="top"):
         """
         添加占位符
-        :param length: 占位符的宽度
+        :param length: 占位符的高
         :param side: 添加到哪一侧
         :return:
         """
         new_label = SiLabel(self)
         new_label.setVisible(False)
-        new_label.resize(length, 0)
+        new_label.resize(0, length)
         self.addWidget(new_label, side=side)
 
     def addWidget(self, widget, side="top"):
@@ -347,14 +347,14 @@ class SiDenseVContainer(SiLabel):
         preferred_h = total_used
 
         # 计算所有控件中宽度最大的，以保证所有控件在容器中
-        preferred_w = max([obj.width() for obj in self.widgets_bottom + self.widgets_top])
+        # preferred_w = max([obj.width() for obj in self.widgets_bottom + self.widgets_top])
 
         if self.shrinking is False:
             # 和原本自身的尺寸比价，取最大者
-            preferred_w = max(preferred_w, self.width())
+            # preferred_w = max(preferred_w, self.width())
             preferred_h = max(preferred_h, self.height())
 
-        self.resize(preferred_w, preferred_h)
+        self.resize(self.width(), preferred_h)
 
 
 class SiStackedContainer(SiLabel):

@@ -8,6 +8,9 @@ class ColorsetDark:
     # SVG 颜色
     colors["SVG_A"] = "#FFFFFF"
 
+    # 主题色
+    colors["THEME"] = "#855198"
+
     # 过渡主题色
     colors["THEME_TRANSITION_A"] = "#52389a"
     colors["THEME_TRANSITION_B"] = "#9c4e8b"
@@ -27,6 +30,11 @@ class ColorsetDark:
     colors["TEXT_B"] = "#DFDFDF"
     colors["TEXT_C"] = "#CFCFCF"
     colors["TEXT_D"] = "#AFAFAF"
+
+    # 标题相关
+    colors["TITLE_INDICATOR"] = "#c58bc2"
+    colors["TITLE_HIGHLIGHT"] = "#52324E"
+
 
     # ============= 控件 =============
     # 按钮
