@@ -6,8 +6,8 @@ from PyQt5.QtWidgets import QPushButton
 
 from siui.core.animation import SiExpAnimation
 from siui.core.globals import SiGlobal
-from siui.widgets.abstracts import ABCAnimatedWidget
-from siui.widgets.label import SiLabel, SiLabel
+from siui.components.widgets.abstracts.widget import ABCAnimatedWidget
+from siui.components.widgets.label import SiLabel
 
 
 class ABCButton(QPushButton):

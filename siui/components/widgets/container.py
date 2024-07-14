@@ -1,4 +1,4 @@
-from siui.widgets import SiLabel
+from siui.components.widgets import SiLabel
 
 
 class SiDenseHContainer(SiLabel):

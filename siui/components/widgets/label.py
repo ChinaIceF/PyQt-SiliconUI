@@ -2,9 +2,7 @@ from PyQt5.QtCore import QPoint, Qt, pyqtSignal
 from PyQt5.QtGui import QPainter, QPainterPath, QPixmap
 from PyQt5.QtSvg import QSvgWidget
 
-from siui.core.animation import SiExpAnimation
-from siui.core.color import Color
-from siui.widgets.abstracts import ABCAnimatedLabel
+from siui.components.widgets.abstracts.label import ABCAnimatedLabel
 from siui.gui import SiFont, GlobalFont
 
 

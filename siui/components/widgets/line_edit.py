@@ -1,8 +1,8 @@
 from PyQt5.QtCore import Qt
 
 from siui.core.globals import SiGlobal
-from siui.widgets import SiLabel
-from siui.widgets.abstracts import ABCSiLineEdit
+from siui.components.widgets import SiLabel
+from siui.components.widgets.abstracts import ABCSiLineEdit
 
 
 class SiLineEdit(SiLabel):

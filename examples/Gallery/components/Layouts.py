@@ -2,7 +2,7 @@
 from SiliconUI import *
 from SiliconUI.SiGlobal import *
 
-from siui.widgets import SiPushButton
+from siui.components.widgets import SiPushButton
 
 from .web_url import GithubUrl, browse
 

@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt
 
-from siui.components.abstracts import ABCSiOptionCardPlane
+from siui.components.option_card.abstracts import ABCSiOptionCardPlane
 from siui.core.globals import SiGlobal
-from siui.widgets.container import SiDenseHContainer, SiDenseVContainer
-from siui.widgets.label import SiLabel, SiSvgLabel
+from siui.components.widgets.container import SiDenseHContainer
+from siui.components.widgets.label import SiLabel, SiSvgLabel
 
 
 class SiOptionCardLinear(SiLabel):

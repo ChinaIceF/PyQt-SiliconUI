@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 import siui
 from siui.core.globals import SiGlobal
 from siui.gui.font import GlobalFont, SiFont
-from siui.widgets.abstracts import ABCAnimatedWidget
+from siui.components.widgets.abstracts.widget import ABCAnimatedWidget
 
 
 class ToolTipWindow(ABCAnimatedWidget):
