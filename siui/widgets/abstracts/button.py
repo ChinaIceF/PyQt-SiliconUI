@@ -20,7 +20,8 @@ class ABCButton(QPushButton):
         super().__init__(*args, **kwargs)
         super().setStyleSheet("background-color: transparent")
 
-        self.hint = ""  # 工具提示内容
+        # 工具提示内容
+        self.hint = ""
 
         # 占位用的被绑定部件，显示在按钮正中央
         self.attachment_ = ABCAnimatedWidget()
@@ -282,6 +283,9 @@ class ABCToggleButton(ABCButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # 圆角半径
+        self.border_radius = 4
+
         # 设置自己为可选中
         self.setCheckable(True)
 
@@ -309,12 +313,19 @@ class ABCToggleButton(ABCButton):
         # 刷新当前颜色
         self._toggled_handler(self.isChecked())
 
+    def setBorderRadius(self, r: int):
+        """
+        设置边框圆角半径
+        :param r: 半径
+        """
+        self.border_radius = r
+
     def reloadStyleSheet(self):
         # 设置颜色块圆角
-        self.color_label.setFixedStyleSheet("border-radius: 4px")
+        self.color_label.setFixedStyleSheet(f"border-radius: {self.border_radius}px")
 
         # 设置自身圆角
-        self.setFixedStyleSheet("border-radius: 4px")
+        self.setFixedStyleSheet(f"border-radius: {self.border_radius}px")
 
     def _toggled_handler(self, state):
         if state is True:
