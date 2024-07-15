@@ -39,6 +39,7 @@ class SiOptionCardLinear(SiLabel):
         # 控件紧密排列容器
         self.widgets_container = SiDenseHContainer(self)
         self.widgets_container.setAlignCenter(True)
+        self.widgets_container.resize(0, 0)
 
         # 添加到整体容器中
         self.container.addWidget(self.svg_icon)
@@ -123,6 +124,10 @@ class SiOptionCardPlane(ABCSiOptionCardPlane):
         self.header().setAlignCenter(True)
         self.header().setFixedHeight(64)
         self.header().addWidget(self.title, "left")
+
+    def reloadStyleSheet(self):
+        super().reloadStyleSheet()
+        self.title.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
 
     def setTitle(self, text: str):
         """

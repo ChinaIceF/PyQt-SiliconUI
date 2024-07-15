@@ -37,7 +37,7 @@ class ABCSiOptionCardPlane(SiLabel):
 
         self.container.addWidget(self.header_)
         self.container.addWidget(self.body_)
-        self.container.addWidget(self.footer_, "bottom")
+        self.container.addWidget(self.footer_)
 
     def header(self):
         """

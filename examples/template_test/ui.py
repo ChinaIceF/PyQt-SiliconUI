@@ -1,5 +1,7 @@
 from siui.templates.application import SiliconApplication
-from siui.
+from siui.core.globals import SiGlobal
+from siui.components.option_card import SiOptionCardLinear
+from components.homepage import ExampleHomePage
 
 
 class MySiliconApp(SiliconApplication):
@@ -9,4 +11,5 @@ class MySiliconApp(SiliconApplication):
         self.init_my_app_ui()
 
     def init_my_app_ui(self):
-        self.page1 =
+        self.addPage(ExampleHomePage(self), SiGlobal.siui.icons["fi-rr-apple"], "测试页面", "top")
+        self.addPage(ExampleHomePage(self), SiGlobal.siui.icons["fi-rr-copy"], "测试页面2", "top")

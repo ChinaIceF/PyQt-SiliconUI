@@ -68,8 +68,8 @@ class SiTitledWidgetGroup(SiDenseVContainer):
         new_title.setText(title)
         self.addWidget(new_title)
 
-    def addWidget(self, widget, side="top"):
-        super().addWidget(widget, side)
+    def addWidget(self, widget, side="top", index=10000):
+        super().addWidget(widget, side, index)
         try:
             widget.resized.connect(self._on_child_resized)
         except:  # noqa: E722
