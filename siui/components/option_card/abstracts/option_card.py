@@ -9,6 +9,8 @@ class ABCSiOptionCardPlane(SiLabel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.spacing_ = 24
+
         # 构建组成外观的控件
         self.outfit_label_lower = SiLabel(self)
         self.outfit_label_lower.setFixedStyleSheet("border-radius: 6px")
@@ -37,7 +39,21 @@ class ABCSiOptionCardPlane(SiLabel):
 
         self.container.addWidget(self.header_)
         self.container.addWidget(self.body_)
-        self.container.addWidget(self.footer_)
+        self.container.addWidget(self.footer_, "bottom")
+
+    def setSpacing(self, spacing):
+        """
+        设置容器与边缘左右的间隔
+        :param spacing: 间隔
+        """
+        self.spacing_ = spacing
+
+    def spacing(self):
+        """
+        获取容器与边缘左右的间隔
+        :return: 间隔
+        """
+        return self.spacing_
 
     def header(self):
         """
@@ -74,7 +90,7 @@ class ABCSiOptionCardPlane(SiLabel):
         size = event.size()
         w, h = size.width(), size.height()
 
-        self.container.setGeometry(24, 0, w-48, h-3)
+        self.container.setGeometry(self.spacing(), 0, w-self.spacing()*2, h-3)
 
-        self.outfit_label_lower.resize(w, h)
+        self.outfit_label_lower.setGeometry(0, 8, w, h-8)  # 防止上边出现底色毛边
         self.outfit_label_upper.resize(w, h - 3)

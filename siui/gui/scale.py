@@ -10,7 +10,6 @@ def get_windows_scaling_factor():
         scaling_factor = user32.GetDpiForSystem()
 
         # 计算缩放比例
-        print("缩放比例", scaling_factor / 96.0)
         return scaling_factor / 96.0
 
     except Exception as e:
@@ -19,8 +18,9 @@ def get_windows_scaling_factor():
 
 
 def reload_scale_factor():
-    os.environ['QT_SCALE_FACTOR'] = str(get_windows_scaling_factor())
+    set_scale_factor(get_windows_scaling_factor(), identity="Windows API")
 
 
-def set_scale_factor(factor):
-    os.environ['QT_SCALE_FACTOR'] = str(factor)
+def set_scale_factor(factor, identity="External calls"):
+    os.environ["QT_SCALE_FACTOR"] = str(factor)
+    print("已将环境变量 QT_SCALE_FACTOR 设为", factor, f" (来源: {identity})")
