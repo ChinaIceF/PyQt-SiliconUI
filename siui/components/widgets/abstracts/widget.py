@@ -60,7 +60,10 @@ class ABCAnimatedWidget(QWidget):
         return self.animation_group
 
     def setStyleSheet(self, stylesheet: str):
-        super().setStyleSheet(self.fixed_stylesheet + ";" + stylesheet)
+        if self.fixed_stylesheet == "":
+            super().setStyleSheet(stylesheet)
+        else:
+            super().setStyleSheet(self.fixed_stylesheet + ";" + stylesheet)
 
     def setFixedStyleSheet(self, fixed_stylesheet: str):
         """

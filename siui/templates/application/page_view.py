@@ -25,6 +25,9 @@ class PageButton(SiToggleButton):
         # 绑定点击事件到切换状态的方法
         self.clicked.connect(self._on_clicked)
 
+        # 设置自身索引
+        self.index_ = -1
+
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
         self.active_indicator.setStyleSheet("""
@@ -41,6 +44,24 @@ class PageButton(SiToggleButton):
         self.active_indicator.setOpacityTo(1 if state is True else 0)
         if state is True:
             self.activated.emit()
+
+    def setIndex(self, index: int):
+        """
+        设置索引
+        """
+        self.index_ = index
+
+    def index(self):
+        """
+        获取自身索引
+        :return: 索引
+        """
+        return self.index_
+
+    def on_index_changed(self, index):
+        if index == self.index():
+            self.setChecked(True)
+            self.active_indicator.setOpacityTo(1)
 
     def _on_clicked(self):
         self.setActive(True)
@@ -70,6 +91,9 @@ class PageNavigator(ABCSiNavigationBar):
         self.container.setSpacing(8)
         self.container.setAlignCenter(True)
 
+        # 所有按钮
+        self.buttons = []
+
     def addPageButton(self, svg_data, hint, func_when_active, side="top"):
         """
         添加页面按钮
@@ -79,6 +103,7 @@ class PageNavigator(ABCSiNavigationBar):
         :param side: 添加在哪一侧
         """
         new_page_button = PageButton(self)
+        new_page_button.setIndex(self.maximumIndex())
         new_page_button.setStyleSheet("background-color: #20FF0000")
         new_page_button.resize(40, 40)
         new_page_button.setHint(hint)
@@ -86,8 +111,14 @@ class PageNavigator(ABCSiNavigationBar):
         new_page_button.attachment().load(svg_data)
         new_page_button.activated.connect(func_when_active)
 
+        # 绑定索引切换信号，当页面切换时，会使按钮切换为 checked 状态
+        self.indexChanged.connect(new_page_button.on_index_changed)
+
+        # 新按钮添加到容器中
         self.container.addWidget(new_page_button, side=side)
         self.setMaximumIndex(self.maximumIndex() + 1)
+
+        self.buttons.append(new_page_button)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -100,9 +131,9 @@ class StackedContainerWithShowUpAnimation(SiStackedContainer):
     def setCurrentIndex(self, index: int):
         super().setCurrentIndex(index)
 
+        self.widgets[index].getAnimationGroup().fromToken("move").setFactor(1/5)
         self.widgets[index].move(0, 64)
         self.widgets[index].moveTo(0, 0)
-
 
 class PageView(SiDenseHContainer):
     """
@@ -123,7 +154,7 @@ class PageView(SiDenseHContainer):
 
         # 创建堆叠容器
         self.stacked_container = StackedContainerWithShowUpAnimation(self)
-        self.stacked_container.setFixedStyleSheet("border-top-left-radius:6px; border-bottom-right-radius:8px")
+        self.stacked_container.setObjectName("stacked_container")
 
         # <- 添加到水平布局
         self.addWidget(self.page_navigator)
@@ -150,9 +181,14 @@ class PageView(SiDenseHContainer):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-
-        self.stacked_container.setStyleSheet("""background-color: {}; border:1px solid {}
-            """.format(SiGlobal.siui.colors["INTERFACE_BG_B"], SiGlobal.siui.colors["INTERFACE_BG_C"]))
+        self.stacked_container.setStyleSheet(
+            """
+            #stacked_container {{
+                border-top-left-radius:6px; border-bottom-right-radius: 8px;
+                background-color: {}; border:1px solid {};
+            }}
+            """.format(SiGlobal.siui.colors["INTERFACE_BG_B"], SiGlobal.siui.colors["INTERFACE_BG_C"])
+        )
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

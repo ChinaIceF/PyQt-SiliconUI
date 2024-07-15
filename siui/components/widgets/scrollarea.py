@@ -36,6 +36,8 @@ class SiScrollArea(SiLabel):
         self.widget_scroll_animation.setTarget([0, 0])
         self.widget_scroll_animation.ticked.connect(lambda pos: self.attachment_.move(int(pos[0]), int(pos[1])))
 
+        self.getAnimationGroup().addMember(self.widget_scroll_animation, "scroll")
+
     def reloadStyleSheet(self):
         """
         重载样式表
@@ -112,6 +114,10 @@ class SiScrollArea(SiLabel):
         # 设置拖动限制
         self.scroll_bar_horizontal.setMoveLimits(0, 0, self.width(), 8)
         self.scroll_bar_vertical.setMoveLimits(0, 0, 8, self.height())
+
+        # 相当于刷新位置，保证滚动内容，滚动条其仍在限制区域内
+        self.attachment().move(self.attachment().x(),
+                               min(0, max(self.attachment().y(), self.height() - self.attachment().height())))
 
     def wheelEvent(self, event):
         # 滚轮只在竖直方向上滚动

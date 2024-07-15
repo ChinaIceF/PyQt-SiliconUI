@@ -105,17 +105,13 @@ class SiliconApplication(QMainWindow):
         """
         重载样式表
         """
-
         self.background_label.setStyleSheet(
             """
             background-color: {};
             border: 1px solid {};
             """.format(SiGlobal.siui.colors["INTERFACE_BG_A"], SiGlobal.siui.colors["INTERFACE_BG_B"])
         )
-
         self.app_title.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_B"]))
-        self.page_frame.setStyleSheet("""background-color: {}; border:1px solid {}
-            """.format(SiGlobal.siui.colors["INTERFACE_BG_B"], SiGlobal.siui.colors["INTERFACE_BG_C"]))
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -125,3 +121,8 @@ class SiliconApplication(QMainWindow):
         self.background_label.resize(w, h)
         self.container_title_and_content.resize(w, h)
         self.page_view.resize(w, h-64)
+
+    def showEvent(self, a0):
+        super().showEvent(a0)
+        SiGlobal.siui.reloadAllWindowsStyleSheet()
+        self.page_view.stacked_container.setCurrentIndex(0)  # 显示第一页

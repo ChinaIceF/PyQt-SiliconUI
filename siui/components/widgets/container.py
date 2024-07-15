@@ -49,23 +49,25 @@ class SiDenseHContainer(SiLabel):
         """
         self.spacing = spacing
 
-    def addPlaceholder(self, length, side="left"):
+    def addPlaceholder(self, length, side="left", index=10000):
         """
         添加占位符
         :param length: 占位符的宽度
         :param side: 添加到哪一侧
+        :param index: 插入位置
         :return:
         """
         new_label = SiLabel(self)
         new_label.setVisible(False)
         new_label.resize(length, 0)
-        self.addWidget(new_label, side=side)
+        self.addWidget(new_label, side=side, index=index)
 
-    def addWidget(self, widget, side="left"):
+    def addWidget(self, widget, side="left", index=10000):
         """
         添加子控件，这将调整被添加的控件的父对象为该容器
-        :param widget:
-        :param side:
+        :param widget: 控件
+        :param side: 添加到哪一侧
+        :param index: 插入位置
         :return:
         """
         widget.setParent(self)
@@ -74,9 +76,9 @@ class SiDenseHContainer(SiLabel):
             raise ValueError(f"意外方向参数 {side}")
 
         if side == "left":
-            self.widgets_left.append(widget)
+            self.widgets_left = self.widgets_left[:index] + [widget] + self.widgets_left[index:]
         if side == "right":
-            self.widgets_right.append(widget)
+            self.widgets_right = self.widgets_right[:index] + [widget] + self.widgets_right[index:]
 
         self.adjustSize()
 
@@ -227,23 +229,25 @@ class SiDenseVContainer(SiLabel):
         """
         self.spacing = spacing
 
-    def addPlaceholder(self, length, side="top"):
+    def addPlaceholder(self, length, side="top", index=10000):
         """
         添加占位符
         :param length: 占位符的高
         :param side: 添加到哪一侧
+        :param index: 插入位置
         :return:
         """
         new_label = SiLabel(self)
         new_label.setVisible(False)
         new_label.resize(0, length)
-        self.addWidget(new_label, side=side)
+        self.addWidget(new_label, side=side, index=index)
 
-    def addWidget(self, widget, side="top"):
+    def addWidget(self, widget, side="top", index=10000):
         """
         添加子控件，这将调整被添加的控件的父对象为该容器
         :param widget: 子控件
         :param side: 添加到哪一侧
+        :param index: 插入的位置
         :return:
         """
         widget.setParent(self)
@@ -252,9 +256,9 @@ class SiDenseVContainer(SiLabel):
             raise ValueError(f"意外方向参数 {side}")
 
         if side == "bottom":
-            self.widgets_bottom.append(widget)
+            self.widgets_bottom = self.widgets_bottom[:index] + [widget] + self.widgets_bottom[index:]
         if side == "top":
-            self.widgets_top.append(widget)
+            self.widgets_top = self.widgets_top[:index] + [widget] + self.widgets_top[index:]
 
         self.adjustSize()
 
