@@ -2,8 +2,12 @@
 import sys
 
 import ui as ui
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication
+
+import siui
+
+siui.gui.set_scale_factor(1)
 
 if __name__ == "__main__":
 

@@ -95,7 +95,7 @@ class SiProgressBar(SiLabel):
         """
         刷新工具提示，重写该方法以自定义工具提示
         """
-        self.setHint(f"<strong>进度</strong> {round(self.value()*100, 2)}%")
+        self.setHint(f"{round(self.value()*100, 2)}<span style='color: {SiGlobal.siui.colors['TEXT_C']}'>%</span>")
 
     def _flash(self):
         """
@@ -117,7 +117,7 @@ class SiProgressBar(SiLabel):
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
 
-        self.track.setStyleSheet("background-color: {}".format(SiGlobal.siui.colors["INTERFACE_BG_A"]))
+        self.track.setStyleSheet("background-color: {}".format(SiGlobal.siui.colors["INTERFACE_BG_B"]))
         self.progress.setColorTo(self.state_colors[self.state()])  # noqa: UP032
 
     def resizeEvent(self, event):

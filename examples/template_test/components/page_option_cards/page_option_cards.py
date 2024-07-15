@@ -1,14 +1,14 @@
-from siui.components.page import SiPage
-from siui.components.titled_widget_group import SiTitledWidgetGroup
-from siui.components.option_card import SiOptionCardLinear, SiOptionCardPlane
-from siui.components.progress_bar import SiProgressBar
-from siui.components.widgets import SiLabel, SiPushButton, SiSimpleButton, SiDenseVContainer, SiDenseHContainer
-
 from PyQt5.QtCore import Qt
+
+from siui.components.option_card import SiOptionCardLinear, SiOptionCardPlane
+from siui.components.page import SiPage
+from siui.components.progress_bar import SiProgressBar
+from siui.components.titled_widget_group import SiTitledWidgetGroup
+from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPushButton, SiSimpleButton
 from siui.core.globals import SiGlobal
 
 
-class ExampleHomePage(SiPage):
+class ExampleOptionCards(SiPage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -39,7 +39,7 @@ class ExampleHomePage(SiPage):
         self.welcome_text_description.setAlignment(Qt.AlignCenter)
         self.welcome_text_description.setAutoAdjustSize(True)
         self.welcome_text_description.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_C"]))
-        self.welcome_text_description.setText("从简单的示例入手构建你自己的 Silicon 应用程序")
+        self.welcome_text_description.setText("从选项卡开始构建你自己的 Silicon 应用程序")
 
         # <- ADD
         self.titled_widget_group.addPlaceholder(48)

@@ -13,7 +13,7 @@ def get_windows_scaling_factor():
         scaling_factor = user32.GetDpiForSystem()
 
         # 计算缩放比例
-        print("缩放比例", scaling_factor / 96.0)
+        print("缩放比例(SiliconUI)", scaling_factor / 96.0)
         return scaling_factor / 96.0
 
     except Exception as e:
