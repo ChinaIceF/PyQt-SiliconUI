@@ -50,7 +50,7 @@ class SiPushButton(ABCPushButton):
                 background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1,
                                  stop:0 {}, stop:1 {})
                 """.format(SiGlobal.siui.colors["BUTTON_THEMED_SHADOW_A"],
-                           SiGlobal.siui.colors["BUTTON_THEMED_SHADOW_A"])
+                           SiGlobal.siui.colors["BUTTON_THEMED_SHADOW_B"])
             )
 
         else:
@@ -76,6 +76,8 @@ class SiLongPressButton(ABCPushButton):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.setHint("长按以确定")
 
         # 跟踪按钮按下的状态，用于长按动画的处理
         self.pressed_state = False
