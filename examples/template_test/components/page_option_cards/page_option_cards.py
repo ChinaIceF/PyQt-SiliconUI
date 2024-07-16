@@ -184,8 +184,6 @@ class ExampleOptionCards(SiPage):
         container_h.addWidget(container_v)
         container_h.addWidget(container_plane_right)
 
-
-
         # <- ADD
         self.titled_widget_group.addTitle("容器")
         self.titled_widget_group.addWidget(container_h)

@@ -300,6 +300,10 @@ class ABCToggleButton(ABCButton):
         # 把状态切换信号绑定到颜色切换的槽函数上
         self.toggled.connect(self._toggled_handler)
 
+        # 闪光和悬停置顶，防止设定不透明颜色时没有闪光
+        self.hover_highlight.raise_()
+        self.flash.raise_()
+
     def setStateColor(self, when_off: str, when_on: str):
         """
         设置不同状态下按钮的颜色
