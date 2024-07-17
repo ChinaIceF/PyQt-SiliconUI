@@ -29,6 +29,7 @@ class ABCAnimatedLabel(QLabel):
         self.move_limits = False                # 是否有移动限定区域
         self.auto_adjust_size = False           # 是否在setText被调用时自动调整空间大小
         self.enable_signal_emission = False     # 是否启用moved，resized，opacityChanged信号
+        self.force_use_animations = False       # 强制使用动画，这将替换 move, resize 方法
 
         self.x1, self.y1, self.x2, self.y2 = None, None, None, None
 
@@ -49,6 +50,7 @@ class ABCAnimatedLabel(QLabel):
         self.animation_opacity = SiExpAnimation(self)
         self.animation_opacity.setFactor(1/4)
         self.animation_opacity.setBias(0.01)
+        self.animation_opacity.setCurrent(1)
         self.animation_opacity.ticked.connect(self._opacity_ani_handler)
 
         self.animation_color = SiExpAnimation(self)
@@ -115,6 +117,16 @@ class ABCAnimatedLabel(QLabel):
         self.fixed_stylesheet = fixed_stylesheet
         self.setStyleSheet(fixed_stylesheet)
 
+    def setForceUseAnimations(self, b: bool):
+        """
+        设置强制使用动画，这将覆盖原来的方法
+        :return:
+        """
+        self.force_use_animations = b
+        if b is True:
+            self.move = self.moveTo
+            self.resize = self.resizeTo
+
     def setUseSignals(self, b: bool):
         """
         设置是否使用 moved，resized，opacityChanged 信号，通常来说这是关闭的，因为这可能会带来较大的性能开销
@@ -164,11 +176,11 @@ class ABCAnimatedLabel(QLabel):
 
     def _move_ani_handler(self, arr):
         x, y = arr
-        self.move(int(x), int(y))
+        super().move(int(x), int(y))
 
     def _resize_ani_handler(self, arr):
         w, h = arr
-        self.resize(int(w), int(h))
+        super().resize(int(w), int(h))
 
     def _opacity_ani_handler(self, opacity: float):
         self.setOpacity(opacity)
@@ -184,7 +196,7 @@ class ABCAnimatedLabel(QLabel):
             self.animation_resize.setTarget([w, h])
             self.activateResize()
         else:
-            self.resize(w, h)
+            super().resize(w, h)
 
     def setMoveLimits(self,
                       x1: int,
@@ -233,7 +245,7 @@ class ABCAnimatedLabel(QLabel):
             self.animation_move.setTarget([x, y])
             self.activateMove()
         else:
-            self.move(x, y)
+            super().move(x, y)
 
     def setOpacity(self, opacity: float):
         """

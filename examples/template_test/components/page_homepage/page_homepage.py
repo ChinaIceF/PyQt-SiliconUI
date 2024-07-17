@@ -156,7 +156,7 @@ class WidgetsExampleOptionCardPlane(SiOptionCardPlane):
         self.button_bug.setHint("报告问题")
 
         self.button_source_code = SiSimpleButton(self)
-        self.button_source_code.attachment().load(SiGlobal.siui.icons["fi-rr-browser"])
+        self.button_source_code.attachment().load(SiGlobal.siui.icons["fi-rr-link"])
         self.button_source_code.resize(32, 32)
         self.button_source_code.setHint("查看源代码")
 
@@ -259,7 +259,7 @@ class WidgetsExamplePanel(SiDenseVContainer):
         button_description.attachment().setText("查看更多")
         button_description.attachment().load(SiGlobal.siui.icons["fi-rr-apps-add"])
         button_description.setColor("#2C2930")
-        button_description.resize(256, 32)
+        button_description.resize(210, 32)
 
         # 查看更多容器
         container_v_button = SiDenseVContainer(self)
@@ -350,7 +350,7 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         button_description.attachment().setText("查看更多")
         button_description.attachment().load(SiGlobal.siui.icons["fi-rr-apps-add"])
         button_description.setColor("#2C2930")
-        button_description.resize(256, 32)
+        button_description.resize(210, 32)
 
         # 查看更多容器
         container_v_button = SiDenseVContainer(self)

@@ -1,21 +1,26 @@
 from siui.components.widgets import SiLabel
 
 
-class SiDenseHContainer(SiLabel):
+class ABCDenseContainer(SiLabel):
     """
-    一个可以水平方向紧密靠左或靠右堆叠控件的容器
+    密堆容器抽象类
     """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
-        self.widgets_left = []
-        self.widgets_right = []
 
         self.align_center = False  # 是否将所有控件放置在中轴线上
         self.adjust_widgets_size = False  # 子控件适应高度
         self.shrinking = False  # 调整尺寸方法被调用时，允许尺寸变小
+        self.use_moveto = False  # 使用 moveto 方法移动控件而非 move
 
         self.spacing = 16  # 各个控件间的距离
+
+    def setUseMoveTo(self, b: bool):
+        """
+        在调整控件位置时是否使用 moveto 方法移动控件而非 move
+        :param b: 是否使用 moveto
+        """
+        self.use_moveto = b
 
     def setAdjustWidgetsSize(self, b: bool):
         """
@@ -27,7 +32,7 @@ class SiDenseHContainer(SiLabel):
 
     def setShrinking(self, b: bool):
         """
-        设置调整尺寸方法被调用时，是否允许尺寸变小
+        设置调整尺寸方法被调用时，是否尺寸变小
         :param b: 是否允许
         :return:
         """
@@ -48,6 +53,17 @@ class SiDenseHContainer(SiLabel):
         :return:
         """
         self.spacing = spacing
+
+
+class SiDenseHContainer(ABCDenseContainer):
+    """
+    一个可以水平方向紧密靠左或靠右堆叠控件的容器
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, *kwargs)
+        self.widgets_left = []
+        self.widgets_right = []
 
     def addPlaceholder(self, length, side="left", index=10000):
         """
@@ -99,6 +115,23 @@ class SiDenseHContainer(SiLabel):
 
         return self.width() - left_used - right_used
 
+    def removeWidget(self, widget):
+        """
+        从容器中移除控件
+        :param widget: 控件
+        """
+        if widget in self.widgets_left:
+            index = self.widgets_left.index(widget)
+            self.widgets_left.pop(index)
+            return
+
+        if widget in self.widgets_right:
+            index = self.widgets_left.index(widget)
+            self.widgets_left.pop(index)
+            return
+
+        raise ValueError(f"Widget provided ({widget}) is not in this container.")
+
     def adjustWidgetsGeometry(self):
         """
         调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器s
@@ -121,7 +154,10 @@ class SiDenseHContainer(SiLabel):
                 y = 0
 
             # 设置位置
-            obj.move(left_used, y)
+            if self.use_moveto is True:
+                obj.moveTo(left_used, y)
+            else:
+                obj.move(left_used, y)
 
             # 计数器添加控件的宽度和间距
             left_used += obj.width() + self.spacing
@@ -139,7 +175,10 @@ class SiDenseHContainer(SiLabel):
                 y = 0
 
             # 设置位置
-            obj.move(self.width() - obj.width() - right_used, y)
+            if self.use_moveto is True:
+                obj.moveTo(self.width() - obj.width() - right_used, y)
+            else:
+                obj.move(self.width() - obj.width() - right_used, y)
 
             # 计数器添加控件的宽度和间距
             right_used += obj.width() + self.spacing
@@ -181,7 +220,7 @@ class SiDenseHContainer(SiLabel):
         self.resize(preferred_w, self.height())
 
 
-class SiDenseVContainer(SiLabel):
+class SiDenseVContainer(ABCDenseContainer):
     """
     一个可以竖直方向紧密靠上或靠下堆叠控件的容器
     """
@@ -190,44 +229,6 @@ class SiDenseVContainer(SiLabel):
         super().__init__(*args, *kwargs)
         self.widgets_bottom = []
         self.widgets_top = []
-
-        self.align_center = False  # 是否将所有控件放置在中轴线上
-        self.adjust_widgets_size = False  # 子控件适应宽度
-        self.shrinking = False  # 调整尺寸方法被调用时，允许尺寸变小
-
-        self.spacing = 16  # 各个控件间的距离
-
-    def setAdjustWidgetsSize(self, b: bool):
-        """
-        设置子控件是否在垂直于容器的方向上自动适应
-        :param b: 是否自动适应
-        :return:
-        """
-        self.adjust_widgets_size = b
-
-    def setShrinking(self, b: bool):
-        """
-        设置调整尺寸方法被调用时，是否尺寸变小
-        :param b: 是否允许
-        :return:
-        """
-        self.shrinking = b
-
-    def setAlignCenter(self, b: bool):
-        """
-        设置是否将子控件放置在容器中轴线上
-        :param b: 是否放置在中轴线上
-        :return:
-        """
-        self.align_center = b
-
-    def setSpacing(self, spacing: int):
-        """
-        设置控件之间的距离
-        :param spacing: 距离 px
-        :return:
-        """
-        self.spacing = spacing
 
     def addPlaceholder(self, length, side="top", index=10000):
         """
@@ -279,6 +280,23 @@ class SiDenseVContainer(SiLabel):
 
         return self.height() - top_used - bottom_used
 
+    def removeWidget(self, widget):
+        """
+        从容器中移除控件
+        :param widget: 控件
+        """
+        if widget in self.widgets_top:
+            index = self.widgets_top.index(widget)
+            self.widgets_top.pop(index)
+            return
+
+        if widget in self.widgets_bottom:
+            index = self.widgets_bottom.index(widget)
+            self.widgets_bottom.pop(index)
+            return
+
+        raise ValueError(f"Widget provided ({widget}) is not in this container.")
+
     def adjustWidgetsGeometry(self):
         """
         调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器
@@ -301,7 +319,10 @@ class SiDenseVContainer(SiLabel):
                 x = 0
 
             # 设置位置
-            obj.move(x, top_used)
+            if self.use_moveto is True:
+                obj.moveTo(x, top_used)
+            else:
+                obj.move(x, top_used)
 
             # 计数器添加控件的宽度和间距
             top_used += obj.height() + self.spacing
@@ -319,7 +340,10 @@ class SiDenseVContainer(SiLabel):
                 x = 0
 
             # 设置位置
-            obj.move(x, self.height() - obj.height() - bottom_used)
+            if self.use_moveto is True:
+                obj.moveTo(x, self.height() - obj.height() - bottom_used)
+            else:
+                obj.move(x, self.height() - obj.height() - bottom_used)
 
             # 计数器添加控件的宽度和间距
             bottom_used += obj.height() + self.spacing
