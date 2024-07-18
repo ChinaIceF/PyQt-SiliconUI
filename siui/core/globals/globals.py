@@ -1,3 +1,5 @@
+import time
+
 
 class SiliconUIGlobal:
     """
@@ -59,16 +61,17 @@ class SiliconUIGlobal:
         return
 
 
-
-
-
-
-
-
-
 class SiGlobal:
     """
     全局数据\n
     在 siui 模块被第一次导入时初始化 .siui 下的变量
     """
     siui = SiliconUIGlobal()
+
+
+class NewGlobal:
+    """
+    新全局数据
+    """
+    create_time = time.time()
+

@@ -3,13 +3,14 @@ from PyQt5.QtGui import QPainter, QPainterPath, QPixmap
 from PyQt5.QtSvg import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
-from siui.gui import SiFont, GlobalFont
+from siui.gui import GlobalFont, SiFont
+from siui.core.globals import SiGlobal
 
 
 class SiLabel(ABCAnimatedLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
-        super().setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+        super().setFont(SiGlobal.siui.fonts["S_NORMAL"])
 
 
 class SiPixLabel(SiLabel):
@@ -18,7 +19,6 @@ class SiPixLabel(SiLabel):
     """
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent =  parent
 
         self.border_radius = 32
         self.blur_radius = 0
@@ -196,9 +196,8 @@ class SiDraggableLabel(SiLabel):
     """
     dragged = pyqtSignal(object)
 
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.parent = parent
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.setMouseTracking(True)
         self.anchor = QPoint(0, 0)
 

@@ -1,12 +1,12 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QAbstractButton
 
+from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
+from siui.components.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
 from siui.core.animation import SiExpAnimation
 from siui.core.color import Color
 from siui.core.globals import SiGlobal
 from siui.gui import GlobalFont, SiFont
-from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
-from siui.components.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
 
 
 class SiPushButton(ABCPushButton):
@@ -150,7 +150,7 @@ class SiToggleButton(ABCToggleButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setAutoAdjustSize(True)
-        self.label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+        self.label.setFont(SiGlobal.siui.fonts["S_BOLD"])
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 绑定到主体
@@ -307,7 +307,7 @@ class SiCheckBox(SiLabel):
         self.indicator_label.setFixedStyleSheet("border-radius: 4px")  # 注意：这里是固定样式表
 
         # 一个标签显示打钩的图标
-        svg_data = '<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z" fill="#FFFFFF" /></svg>'
+        svg_data = '<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z" fill="#000000" /></svg>'
         self.indicator_icon = SiSvgLabel(self)
         self.indicator_icon.resize(20, 20)
         self.indicator_icon.setSvgSize(12, 12)
@@ -362,7 +362,6 @@ class SiCheckBox(SiLabel):
         :return:
         """
         self.indicator.setChecked(state)
-        self.indicator.toggled.emit(state)
 
     def isChecked(self):
         """
@@ -388,6 +387,9 @@ class SiCheckBox(SiLabel):
         self.indicator_icon.move(0, (h - 20) // 2)
         self.text_label.move(28, (h - self.text_label.height()) // 2 - 1)  # 减1是为了让偏下的文字显示正常一点
 
+    def showEvent(self, a0):
+        super().showEvent(a0)
+        self._toggled_handler(self.isChecked())
 
 class SiSwitch(QAbstractButton):
     """
