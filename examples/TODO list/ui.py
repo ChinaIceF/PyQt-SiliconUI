@@ -1,3 +1,5 @@
+import os
+
 from components import ThemedOptionCardPlane
 from icons import IconDictionary
 from PyQt5.Qt import QColor, QPoint
@@ -11,9 +13,8 @@ from siui.components.widgets import (
     SiLabel,
     SiSimpleButton,
     SiSvgLabel,
-    SiToggleButton,
-    SiPushButton,
     SiSwitch,
+    SiToggleButton,
 )
 from siui.core.animation import SiExpAnimation
 from siui.core.color import Color
@@ -23,6 +24,13 @@ from siui.gui.tooltip import ToolTipWindow
 # 创建删除队列
 SiGlobal.todo_list = NewGlobal()
 SiGlobal.todo_list.delete_pile = []
+
+# 创建锁定位置变量
+SiGlobal.todo_list.position_locked = False
+
+
+def lock_position(state):
+    SiGlobal.todo_list.position_locked = state
 
 
 # 主题颜色
@@ -40,6 +48,9 @@ def load_colors(is_dark=True):
         SiGlobal.siui.colors["TOOLTIP_BG"] = "ef413a47"
         SiGlobal.siui.colors["SVG_A"] = SiGlobal.siui.colors["THEME"]
 
+        SiGlobal.siui.colors["THEME_TRANSITION_A"] = "#52389a"
+        SiGlobal.siui.colors["THEME_TRANSITION_B"] = "#9c4e8b"
+
         SiGlobal.siui.colors["TEXT_A"] = "#FFFFFF"
         SiGlobal.siui.colors["TEXT_B"] = "#e1d9e8"
         SiGlobal.siui.colors["TEXT_C"] = Color.transparency(SiGlobal.siui.colors["THEME"], 0.75)
@@ -47,6 +58,7 @@ def load_colors(is_dark=True):
         SiGlobal.siui.colors["TEXT_E"] = Color.transparency(SiGlobal.siui.colors["THEME"], 0.5)
 
         SiGlobal.siui.colors["SWITCH_DEACTIVATE"] = "#D2D2D2"
+        SiGlobal.siui.colors["SWITCH_ACTIVATE"] = "#100912"
 
         SiGlobal.siui.colors["BUTTON_HOVER"] = "#10FFFFFF"
         SiGlobal.siui.colors["BUTTON_FLASH"] = "#20FFFFFF"
@@ -69,6 +81,9 @@ def load_colors(is_dark=True):
         SiGlobal.siui.colors["TOOLTIP_BG"] = "#F3F3F3"
         SiGlobal.siui.colors["SVG_A"] = SiGlobal.siui.colors["THEME"]
 
+        SiGlobal.siui.colors["THEME_TRANSITION_A"] = "#2abed8"
+        SiGlobal.siui.colors["THEME_TRANSITION_B"] = "#2ad98e"
+
         SiGlobal.siui.colors["TEXT_A"] = "#1f1f2f"
         SiGlobal.siui.colors["TEXT_B"] = Color.transparency(SiGlobal.siui.colors["TEXT_A"], 0.85)
         SiGlobal.siui.colors["TEXT_C"] = Color.transparency(SiGlobal.siui.colors["TEXT_A"], 0.75)
@@ -76,6 +91,7 @@ def load_colors(is_dark=True):
         SiGlobal.siui.colors["TEXT_E"] = Color.transparency(SiGlobal.siui.colors["TEXT_A"], 0.5)
 
         SiGlobal.siui.colors["SWITCH_DEACTIVATE"] = "#bec1c7"
+        SiGlobal.siui.colors["SWITCH_ACTIVATE"] = "#F3F3F3"
 
         SiGlobal.siui.colors["BUTTON_HOVER"] = Color.transparency(SiGlobal.siui.colors["THEME"], 0.0625)
         SiGlobal.siui.colors["BUTTON_FLASH"] = Color.transparency(SiGlobal.siui.colors["THEME"], 0.43)
@@ -421,7 +437,16 @@ class SettingsPanel(ThemedOptionCardPlane):
         self.use_dark_mode.addWidget(self.button_use_dark_mode)
         self.use_dark_mode.addPlaceholder(16)
 
-        # 宽度
+        # 锁定位置
+        self.lock_position = SingleSettingOption(self)
+        self.lock_position.setTitle("锁定位置", "阻止拖动窗口以保持位置不变")
+
+        self.button_lock_position = SiSwitch(self)
+        self.button_lock_position.setFixedHeight(32)
+        self.button_lock_position.toggled.connect(lock_position)
+
+        self.lock_position.addWidget(self.button_lock_position)
+        self.lock_position.addPlaceholder(16)
 
         # 第三方资源
         self.third_party_res = SingleSettingOption(self)
@@ -430,6 +455,7 @@ class SettingsPanel(ThemedOptionCardPlane):
         self.button_to_flaticon = SiSimpleButton(self)
         self.button_to_flaticon.setFixedHeight(32)
         self.button_to_flaticon.attachment().setText("前往 FlatIcon")
+        self.button_to_flaticon.clicked.connect(lambda: os.system("start https://flaticon.com/"))
         self.button_to_flaticon.adjustSize()
 
         self.third_party_res.addWidget(self.button_to_flaticon)
@@ -442,6 +468,8 @@ class SettingsPanel(ThemedOptionCardPlane):
         self.button_license = SiSimpleButton(self)
         self.button_license.setFixedHeight(32)
         self.button_license.attachment().setText("在 Github 上查看")
+        self.button_license.clicked.connect(
+            lambda: os.system("start https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/LICENSE"))
         self.button_license.adjustSize()
 
         self.license.addWidget(self.button_license)
@@ -457,11 +485,13 @@ class SettingsPanel(ThemedOptionCardPlane):
         self.button_github = SiSimpleButton(self)
         self.button_github.setFixedHeight(32)
         self.button_github.attachment().setText("Github 主页")
+        self.button_github.clicked.connect(lambda: os.system("start https://github.com/ChinaIceF"))
         self.button_github.adjustSize()
 
         self.button_bilibili = SiSimpleButton(self)
         self.button_bilibili.setFixedHeight(32)
         self.button_bilibili.attachment().setText("哔哩哔哩 主页")
+        self.button_bilibili.clicked.connect(lambda: os.system("start https://space.bilibili.com/390832893"))
         self.button_bilibili.adjustSize()
 
         about_button_set.addWidget(self.button_github)
@@ -477,18 +507,33 @@ class SettingsPanel(ThemedOptionCardPlane):
         self.button_donation = SiSimpleButton(self)
         self.button_donation.setFixedHeight(32)
         self.button_donation.attachment().setText("在 Github 上扫码赞助")
+        self.button_donation.clicked.connect(lambda: os.system("start https://github.com/ChinaIceF/PyQt-SiliconUI"))
         self.button_donation.adjustSize()
 
         self.donation.addWidget(self.button_donation)
         self.donation.addPlaceholder(16)
 
+        # SiliconUI
+        self.silicon_ui = SiDenseVContainer(self)
+        self.silicon_ui.setAlignCenter(True)
+
+        self.button_silicon_ui = SiSimpleButton(self)
+        self.button_silicon_ui.attachment().setFont(SiGlobal.siui.fonts["S_NORMAL"])
+        self.button_silicon_ui.attachment().setText("基于 PyQt-SiliconUI 编写")
+        self.button_silicon_ui.adjustSize()
+        self.button_silicon_ui.clicked.connect(lambda: os.system("start https://github.com/ChinaIceF/PyQt-SiliconUI"))
+
+        self.silicon_ui.addWidget(self.button_silicon_ui)
+
         # 添加到body
         self.body().setAdjustWidgetsSize(True)
         self.body().addWidget(self.use_dark_mode)
+        self.body().addWidget(self.lock_position)
         self.body().addWidget(self.third_party_res)
         self.body().addWidget(self.license)
         self.body().addWidget(self.about)
         self.body().addWidget(self.donation)
+        self.body().addWidget(self.silicon_ui)
         self.body().addPlaceholder(16)
 
     def reloadStyleSheet(self):
@@ -500,6 +545,7 @@ class SettingsPanel(ThemedOptionCardPlane):
         self.button_github.setColor(SiGlobal.siui.colors["SIMPLE_BUTTON_BG"])
         self.button_bilibili.setColor(SiGlobal.siui.colors["SIMPLE_BUTTON_BG"])
         self.button_donation.setColor(SiGlobal.siui.colors["SIMPLE_BUTTON_BG"])
+        self.button_silicon_ui.attachment().setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_E"]))
 
     def showEvent(self, a0):
         super().showEvent(a0)
@@ -513,6 +559,7 @@ class TODOApplication(QMainWindow):
         # 窗口周围留白，供阴影使用
         self.padding = 48
         self.anchor = QPoint(self.x(), self.y())
+        self.locked_position = QPoint(self.x(), self.y())
 
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)  # 设置窗口背景透明
@@ -680,6 +727,8 @@ class TODOApplication(QMainWindow):
 
     def _onMoveAnimationTicked(self, pos):
         self.move(int(pos[0]), int(pos[1]))
+        if SiGlobal.todo_list.position_locked is False:
+            self.locked_position = self.pos()
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
@@ -691,7 +740,12 @@ class TODOApplication(QMainWindow):
         super().mouseMoveEvent(event)
         if not (event.buttons() & Qt.LeftButton):
             return
+
         new_pos = event.pos() - self.anchor + self.frameGeometry().topLeft()
         x, y = new_pos.x(), new_pos.y()
 
         self.moveTo(x, y)
+
+    def mouseReleaseEvent(self, a0):
+        if SiGlobal.todo_list.position_locked is True:
+            self.moveTo(self.locked_position.x(), self.locked_position.y())
