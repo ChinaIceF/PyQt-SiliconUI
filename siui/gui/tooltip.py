@@ -7,9 +7,9 @@ from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 import siui
+from siui.components.widgets.abstracts.widget import ABCAnimatedWidget
 from siui.core.globals import SiGlobal
 from siui.gui.font import GlobalFont, SiFont
-from siui.components.widgets.abstracts.widget import ABCAnimatedWidget
 
 
 class ToolTipWindow(ABCAnimatedWidget):
@@ -44,7 +44,6 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.bg_label = siui.widgets.SiLabel(self)
         self.bg_label.move(self.margin, self.margin)
         self.bg_label.setFixedStyleSheet("border-radius: 6px")
-        self.bg_label.setColor(SiGlobal.siui.colors["TOOLTIP_BG"])
 
         # 文字标签的父对象，防止文字超出界限
         self.text_container = siui.widgets.SiLabel(self)
@@ -52,7 +51,7 @@ class ToolTipWindow(ABCAnimatedWidget):
 
         # 文字标签，工具提示就在这里显示，
         self.text_label = siui.widgets.SiLabel(self.text_container)
-        self.text_label.setFixedStyleSheet(f"padding: 8px; color: {SiGlobal.siui.colors['TEXT_A']}")
+        self.text_label.setFixedStyleSheet("padding: 8px")
         self.text_label.setInstantResize(True)
         self.text_label.setAutoAdjustSize(True)
         self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
@@ -65,6 +64,10 @@ class ToolTipWindow(ABCAnimatedWidget):
 
         # 通过输入空文本初始化大小
         self.setText("", flash=False)
+
+    def reloadStyleSheet(self):
+        self.bg_label.setColor(SiGlobal.siui.colors["TOOLTIP_BG"])
+        self.text_label.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
 
     def show_(self):
         self.setOpacityTo(1.0)

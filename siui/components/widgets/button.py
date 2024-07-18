@@ -1,12 +1,12 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QAbstractButton
 
+from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
+from siui.components.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
 from siui.core.animation import SiExpAnimation
 from siui.core.color import Color
 from siui.core.globals import SiGlobal
 from siui.gui import GlobalFont, SiFont
-from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
-from siui.components.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
 
 
 class SiPushButton(ABCPushButton):
@@ -150,7 +150,7 @@ class SiToggleButton(ABCToggleButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setAutoAdjustSize(True)
-        self.label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+        self.label.setFont(SiGlobal.siui.fonts["S_BOLD"])
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 绑定到主体

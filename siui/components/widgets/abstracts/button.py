@@ -8,6 +8,7 @@ from siui.core.animation import SiExpAnimation
 from siui.core.globals import SiGlobal
 from siui.components.widgets.abstracts.widget import ABCAnimatedWidget
 from siui.components.widgets.label import SiLabel
+from siui.core.color import Color
 
 
 class ABCButton(QPushButton):
@@ -127,12 +128,12 @@ class ABCButton(QPushButton):
             self._run_clicked_ani()
 
     def _run_clicked_ani(self):
-        self.flash.setColor("#20FFFFFF")
-        self.flash.setColorTo("#00FFFFFF")
+        self.flash.setColor(SiGlobal.siui.colors["BUTTON_FLASH"])
+        self.flash.setColorTo(Color.transparency(SiGlobal.siui.colors["BUTTON_FLASH"], 0))
 
     def enterEvent(self, event):
         super().enterEvent(event)
-        self.hover_highlight.setColorTo("#10FFFFFF")
+        self.hover_highlight.setColorTo(SiGlobal.siui.colors["BUTTON_HOVER"])
 
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
             SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(self)
@@ -141,7 +142,7 @@ class ABCButton(QPushButton):
 
     def leaveEvent(self, event):
         super().enterEvent(event)
-        self.hover_highlight.setColorTo("#00FFFFFF")
+        self.hover_highlight.setColorTo(Color.transparency(SiGlobal.siui.colors["BUTTON_HOVER"], 0))
 
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
             SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(None)
