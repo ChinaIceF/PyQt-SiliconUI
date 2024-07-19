@@ -1,10 +1,14 @@
+import icons
+from components.page_homepage import ExampleHomepage
 from components.page_option_cards import ExampleOptionCards
 from components.page_widgets import ExampleWidgets
-from components.page_homepage import ExampleHomepage
 
 import siui
 from siui.core.globals import SiGlobal
 from siui.templates.application import SiliconApplication
+
+# 载入图标
+siui.core.globals.SiGlobal.siui.loadIcons(icons.IconDictionary(color="#FFFFFF").icons)
 
 
 class MySiliconApp(SiliconApplication):
