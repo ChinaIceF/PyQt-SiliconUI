@@ -2,8 +2,8 @@
 基础控件
 ABCAnimatedLabel 提供各类简单易用的属性动画支持
 """
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QGraphicsOpacityEffect, QLabel
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
 from siui.core.color import Color
@@ -12,9 +12,9 @@ from siui.core.globals import SiGlobal
 
 # 2024.7.2 添加动画支持标签
 class ABCAnimatedLabel(QLabel):
-    moved = pyqtSignal(object)
-    resized = pyqtSignal(object)
-    opacityChanged = pyqtSignal(float)
+    moved = Signal(object)
+    resized = Signal(object)
+    opacityChanged = Signal(float)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

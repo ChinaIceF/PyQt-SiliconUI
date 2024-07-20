@@ -1,6 +1,6 @@
 
 import numpy
-from PyQt5.QtCore import QObject, QTimer, pyqtSignal
+from PySide6.QtCore import QObject, QTimer, Signal
 
 global_fps = 60
 
@@ -11,8 +11,8 @@ class Curve:
 
 
 class ABCAnimation(QObject):
-    ticked = pyqtSignal(object)     # 动画进行一刻的信号
-    finished = pyqtSignal(object)   # 动画完成的信号，回传目标值
+    ticked = Signal(object)     # 动画进行一刻的信号
+    finished = Signal(object)   # 动画完成的信号，回传目标值
 
     def __init__(self, parent=None):
         super().__init__(parent)

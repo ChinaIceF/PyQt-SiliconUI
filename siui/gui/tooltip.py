@@ -2,9 +2,9 @@
 tooltip 模块
 实现工具提示
 """
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QColor, QCursor
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QColor, QCursor
+from PySide6.QtWidgets import QGraphicsDropShadowEffect
 
 import siui
 from siui.components.widgets.abstracts.widget import ABCAnimatedWidget

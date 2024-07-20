@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtCore import pyqtSignal
+from PySide6.QtWidgets import QLineEdit
+from PySide6.QtCore import Signal
 
 from siui.core.globals import SiGlobal
 
@@ -8,7 +8,7 @@ class ABCSiLineEdit(QLineEdit):
     """
     LineEdit 的抽象类，继承自 QLineEdit
     """
-    onFocus = pyqtSignal(bool)
+    onFocus = Signal(bool)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

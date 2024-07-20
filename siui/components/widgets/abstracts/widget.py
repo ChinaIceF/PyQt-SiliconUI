@@ -1,14 +1,14 @@
-from PyQt5.QtCore import pyqtSignal, QPoint
-from PyQt5.QtWidgets import QWidget
+from PySide6.QtCore import Signal, QPoint
+from PySide6.QtWidgets import QWidget
 
 from siui.core.animation import SiExpAnimation, SiAnimationGroup
 
 
 # 2024.7.3 添加动画控件
 class ABCAnimatedWidget(QWidget):
-    moved = pyqtSignal(object)
-    resized = pyqtSignal(object)
-    opacityChanged = pyqtSignal(float)
+    moved = Signal(object)
+    resized = Signal(object)
+    opacityChanged = Signal(float)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

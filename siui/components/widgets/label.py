@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QPoint, Qt, pyqtSignal
-from PyQt5.QtGui import QPainter, QPainterPath, QPixmap
-from PyQt5.QtSvg import QSvgWidget
+from PySide6.QtCore import QPoint, Qt, Signal
+from PySide6.QtGui import QPainter, QPainterPath, QPixmap
+from PySide6.QtSvgWidgets import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
 from siui.gui import GlobalFont, SiFont
@@ -17,6 +17,7 @@ class SiPixLabel(SiLabel):
     """
     为显示图片提供支持的标签，支持图片的圆角处理
     """
+
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -54,18 +55,14 @@ class SiPixLabel(SiLabel):
         self.target = QPixmap(self.size())
         self.target.fill(Qt.transparent)
 
-        p = QPixmap(self.path).scaled(
-            w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        p = QPixmap(self.path).scaled(w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
 
         painter = QPainter(self.target)
         painter.setRenderHint(QPainter.Antialiasing, True)
-        painter.setRenderHint(QPainter.HighQualityAntialiasing, True)
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
         path = QPainterPath()
-        path.addRoundedRect(0,                  0,
-                            self.width(),       self.height(),
-                            self.border_radius, self.border_radius)
+        path.addRoundedRect(0, 0, self.width(), self.height(), self.border_radius, self.border_radius)
 
         painter.setClipPath(path)
         painter.drawPixmap(0, 0, p)
@@ -80,6 +77,7 @@ class SiSvgLabel(SiLabel):
     """
     可以显示 Svg 图像的 SiLabel 标签
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -101,7 +99,7 @@ class SiSvgLabel(SiLabel):
         :param h: 高度
         """
         self.svg_widget.setFixedSize(w, h)
-        self.resize(self.size())    # 保证居中
+        self.resize(self.size())  # 保证居中
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -116,6 +114,7 @@ class SiIconLabel(SiLabel):
     """
     具图标的标签，即一个图标紧跟一段文字的标签，使用一个 SiSvgLabel 和 SiLabel 组合
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -147,7 +146,7 @@ class SiIconLabel(SiLabel):
         """
         self.has_icon_flag = True
         self.icon.load(path_or_data)
-        self.adjustSize()    # 保证布局正常
+        self.adjustSize()  # 保证布局正常
 
     def setSvgSize(self, w, h):
         """
@@ -157,7 +156,7 @@ class SiIconLabel(SiLabel):
         """
         self.icon.resize(w, h)  # 这里直接设为一样，避免边缘切割
         self.icon.setSvgSize(w, h)
-        self.adjustSize()    # 保证布局正常
+        self.adjustSize()  # 保证布局正常
 
     def setFont(self, a0):
         self.text_label.setFont(a0)
@@ -165,19 +164,21 @@ class SiIconLabel(SiLabel):
     def setText(self, text: str):
         self.has_text_flag = True
         self.text_label.setText(text)
-        self.adjustSize()    # 保证布局正常
+        self.adjustSize()  # 保证布局正常
 
     def text(self):
         return self.text_label.text()
 
     def adjustSize(self):
+        preferred_width = (
+            int(self.has_text_flag) * self.text_label.width()
+            + int(self.has_text_flag and self.has_icon_flag) * 4
+            + int(self.has_icon_flag) * self.icon.width()
+        )
 
-        preferred_width = (int(self.has_text_flag) * self.text_label.width() +
-                           int(self.has_text_flag and self.has_icon_flag) * 4 +
-                           int(self.has_icon_flag) * self.icon.width())
-
-        preferred_height = max(int(self.has_text_flag) * self.text_label.height(),
-                               int(self.has_icon_flag) * self.icon.height())
+        preferred_height = max(
+            int(self.has_text_flag) * self.text_label.height(), int(self.has_icon_flag) * self.icon.height()
+        )
 
         self.resize(preferred_width, preferred_height)
 
@@ -187,14 +188,17 @@ class SiIconLabel(SiLabel):
         w, h = size.width(), size.height()
 
         self.icon.move(0, (h - self.icon.height()) // 2)
-        self.text_label.move(w - self.text_label.width(), (h - self.text_label.height()) // 2 - 1)  # 减一调整显示位置归正
+        self.text_label.move(
+            w - self.text_label.width(), (h - self.text_label.height()) // 2 - 1
+        )  # 减一调整显示位置归正
 
 
 class SiDraggableLabel(SiLabel):
     """
     为拖动事件提供支持的标签
     """
-    dragged = pyqtSignal(object)
+
+    dragged = Signal(object)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

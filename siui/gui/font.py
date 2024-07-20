@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from enum import Enum
 
-from PyQt5.QtGui import QFont
+from PySide6.QtGui import QFont
 from siui.core.globals import SiGlobal
 
 # 因DPI缩放而引入的因数

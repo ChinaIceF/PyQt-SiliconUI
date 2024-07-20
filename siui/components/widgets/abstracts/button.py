@@ -1,14 +1,15 @@
 import time
 
 import numpy
-from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QPushButton
+from PySide6.QtCore import QThread, Signal
+from PySide6.QtGui import QEnterEvent
+from PySide6.QtWidgets import QPushButton
 
-from siui.core.animation import SiExpAnimation
-from siui.core.globals import SiGlobal
 from siui.components.widgets.abstracts.widget import ABCAnimatedWidget
 from siui.components.widgets.label import SiLabel
+from siui.core.animation import SiExpAnimation
 from siui.core.color import Color
+from siui.core.globals import SiGlobal
 
 
 class ABCButton(QPushButton):
@@ -131,7 +132,7 @@ class ABCButton(QPushButton):
         self.flash.setColor(SiGlobal.siui.colors["BUTTON_FLASH"])
         self.flash.setColorTo(Color.transparency(SiGlobal.siui.colors["BUTTON_FLASH"], 0))
 
-    def enterEvent(self, event):
+    def enterEvent(self, event: QEnterEvent):
         super().enterEvent(event)
         self.hover_highlight.setColorTo(SiGlobal.siui.colors["BUTTON_HOVER"])
 
@@ -141,7 +142,7 @@ class ABCButton(QPushButton):
             SiGlobal.siui.windows["TOOL_TIP"].setText(self.hint)
 
     def leaveEvent(self, event):
-        super().enterEvent(event)
+        super().leaveEvent(event)
         self.hover_highlight.setColorTo(Color.transparency(SiGlobal.siui.colors["BUTTON_HOVER"], 0))
 
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
@@ -167,8 +168,10 @@ class ABCButton(QPushButton):
         self.hover_highlight.resize(size)
         self.flash.resize(size)
 
-        self.attachment_.move((w - self.attachment_.width()) // 2 + self.attachment_shifting[0],
-                              (h - self.attachment_.height()) // 2 + self.attachment_shifting[1])
+        self.attachment_.move(
+            (w - self.attachment_.width()) // 2 + self.attachment_shifting[0],
+            (h - self.attachment_.height()) // 2 + self.attachment_shifting[1],
+        )
 
 
 class ABCPushButton(ABCButton):
@@ -221,8 +224,9 @@ class LongPressThread(QThread):
     """
     长按按钮的线程，用于处理长按计时、信号触发和动画
     """
-    ticked = pyqtSignal(float)
-    holdTimeout = pyqtSignal()
+
+    ticked = Signal(float)
+    holdTimeout = Signal()
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -246,7 +250,6 @@ class LongPressThread(QThread):
 
         # 前进动画
         while time.time() - time_start_waiting <= 0.5:  # 即便松开，在额定时间内继续按压仍然会继续计数
-
             # 如果父对象按钮处于按下状态并且动画尚未完成
             while self.parent().isPressed() and self.animation.current() < 1:
                 # 重置等待时间
@@ -281,6 +284,7 @@ class ABCToggleButton(ABCButton):
     """
     切换按钮抽象类，注意：这并非是复选框的抽象类
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -296,7 +300,7 @@ class ABCToggleButton(ABCButton):
 
         # 创建一个颜色叠层，用于标识被选中的状态
         self.color_label = SiLabel(self)
-        self.color_label.setColor(self.color_when_is_off)   # 初始是关闭状态
+        self.color_label.setColor(self.color_when_is_off)  # 初始是关闭状态
 
         # 把状态切换信号绑定到颜色切换的槽函数上
         self.toggled.connect(self._toggled_handler)

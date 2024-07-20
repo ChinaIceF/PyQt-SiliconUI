@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 
 from siui.core.color import Color
 from siui.core.globals import SiGlobal
@@ -9,7 +9,7 @@ class SiProgressBar(SiLabel):
     """
     进度条
     """
-    valueChanged = pyqtSignal(float)
+    valueChanged = Signal(float)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

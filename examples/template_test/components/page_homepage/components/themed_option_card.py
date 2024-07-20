@@ -2,7 +2,7 @@ from siui.components.option_card import SiOptionCardPlane
 from siui.components.widgets import SiLabel, SiSimpleButton
 from siui.components.widgets import SiDenseVContainer
 from siui.core.globals import SiGlobal
-from PyQt5.QtCore import Qt
+from PySide6.QtCore import Qt
 
 import os
 

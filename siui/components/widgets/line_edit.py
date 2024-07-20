@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PySide6.QtCore import Qt
 
 from siui.core.globals import SiGlobal
 from siui.components.widgets import SiLabel

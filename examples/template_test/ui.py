@@ -1,14 +1,13 @@
-import icons
 from components.page_homepage import ExampleHomepage
 from components.page_option_cards import ExampleOptionCards
 from components.page_widgets import ExampleWidgets
+from icons import IconDictionary
 
-import siui
 from siui.core.globals import SiGlobal
 from siui.templates.application import SiliconApplication
 
 # 载入图标
-siui.core.globals.SiGlobal.siui.loadIcons(icons.IconDictionary(color="#FFFFFF").icons)
+SiGlobal.siui.loadIcons(IconDictionary(color="#FFFFFF").icons)
 
 
 class MySiliconApp(SiliconApplication):
@@ -16,12 +15,9 @@ class MySiliconApp(SiliconApplication):
         super().__init__(*args, **kwargs)
 
         self.setMinimumSize(1024, 380)
-        self.init_my_app_ui()
+        self.initUI()
 
-    def init_my_app_ui(self):
+    def initUI(self):
         self.addPage(ExampleHomepage(self), SiGlobal.siui.icons["fi-rr-home"], "主页", "top")
         self.addPage(ExampleOptionCards(self), SiGlobal.siui.icons["fi-rr-rectangle-horizontal"], "选项卡", "top")
         self.addPage(ExampleWidgets(self), SiGlobal.siui.icons["fi-rr-cube"], "控件", "top")
-
-    def showEvent(self, a0):
-        super().showEvent(a0)

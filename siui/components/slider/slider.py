@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QAbstractSlider
+from PySide6.QtWidgets import QAbstractSlider
 
 from siui.core.color import Color
 from siui.core.globals import SiGlobal

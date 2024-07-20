@@ -1,21 +1,26 @@
-from PyQt5.Qt import QColor
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+import sys
+from pathlib import Path
 
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QGraphicsDropShadowEffect
+
+sys.path.append(str(Path().cwd()))
 from siui.components.option_card import SiOptionCardLinear, SiOptionCardPlane
 from siui.components.page import SiPage
+from siui.components.slider import SiSliderH
 from siui.components.titled_widget_group import SiTitledWidgetGroup
 from siui.components.widgets import (
     SiDenseHContainer,
     SiDenseVContainer,
     SiLabel,
+    SiLineEdit,
     SiLongPressButton,
     SiPushButton,
     SiSimpleButton,
     SiSwitch,
-    SiLineEdit,
 )
-from siui.components.slider import SiSliderH
+
 from siui.core.color import Color
 from siui.core.globals import SiGlobal
 
@@ -40,7 +45,7 @@ class ExampleHomepage(SiPage):
         self.background_image.setStyleSheet(
             """
             #bg_image {
-                background-image: url('./img/homepage_background.png');
+                background-image: url('./examples/template_test/img/homepage_background.png');
                 border-top-left-radius:6px
             }"""
         )
@@ -50,8 +55,9 @@ class ExampleHomepage(SiPage):
         self.background_fading_transition.setStyleSheet(
             """
             background-color: qlineargradient(x1:0, y1:1, x2:0, y2:0, stop:0 {}, stop:1 {})
-            """.format(SiGlobal.siui.colors["INTERFACE_BG_B"],
-                       Color.transparency(SiGlobal.siui.colors["INTERFACE_BG_B"], 0))
+            """.format(
+                SiGlobal.siui.colors["INTERFACE_BG_B"], Color.transparency(SiGlobal.siui.colors["INTERFACE_BG_B"], 0)
+            )
         )
 
         # 创建大标题和副标题
@@ -65,7 +71,7 @@ class ExampleHomepage(SiPage):
         self.subtitle = SiLabel(self.head_area)
         self.subtitle.setGeometry(64, 72, 500, 48)
         self.subtitle.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-        self.subtitle.setText("基于 PyQt5 的 UI 框架，灵动、优雅而轻便")
+        self.subtitle.setText("基于 PySide6 的 UI 框架，灵动、优雅而轻便")
         self.subtitle.setStyleSheet("color: {}".format(Color.transparency(SiGlobal.siui.colors["TEXT_A"], 0.9)))
         self.subtitle.setFont(SiGlobal.siui.fonts["S_BOLD"])
 
@@ -82,7 +88,8 @@ class ExampleHomepage(SiPage):
         self.option_card_project.setFixedSize(218, 270)
         self.option_card_project.setThemeColor("#855198")
         self.option_card_project.setDescription(
-            "访问 GitHub 项目主页，以获取最新版本，报告错误，建言献策，参与开发，查询文档和须知，寻求他人答疑解惑</strong>")
+            "访问 GitHub 项目主页，以获取最新版本，报告错误，建言献策，参与开发，查询文档和须知，寻求他人答疑解惑</strong>"
+        )
         self.option_card_project.setURL("https://github.com/ChinaIceF/PyQt-SiliconUI")
 
         self.option_card_example = ThemedOptionCardPlane(self)
@@ -313,7 +320,9 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         body_label = SiLabel(self)
         body_label.setAutoAdjustSize(True)
         body_label.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_B"]))
-        body_label.setText("平面选项卡提供了三个容器：header，body，footer，每个容器都可以独立访问\n其中 header 和 footer 是水平容器，body 是垂直容器\n这个容器是平面选项卡的 body，在这里尽情添加控件吧！")
+        body_label.setText(
+            "平面选项卡提供了三个容器：header，body，footer，每个容器都可以独立访问\n其中 header 和 footer 是水平容器，body 是垂直容器\n这个容器是平面选项卡的 body，在这里尽情添加控件吧！"
+        )
 
         footer_button_a = SiSimpleButton(self)
         footer_button_a.resize(32, 32)

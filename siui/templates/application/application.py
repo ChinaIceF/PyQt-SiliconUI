@@ -1,5 +1,6 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDesktopWidget, QMainWindow
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow
+from PySide6.QtGui import QGuiApplication
 
 from siui.core.globals import SiGlobal
 from siui.gui import ToolTipWindow
@@ -7,11 +8,11 @@ from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiLabe
 from .page_view import PageView
 
 
-
 class SiliconApplication(QMainWindow):
     """
     SiliconUI 应用程序模板，包含工具提示窗口
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -35,7 +36,8 @@ class SiliconApplication(QMainWindow):
         """
 
         # 初始化窗口
-        screen_geo = QDesktopWidget().screenGeometry()
+        screen = QGuiApplication.primaryScreen()
+        screen_geo = screen.geometry()
         w, h = 1200, 700
         self.setAttribute(Qt.WA_TranslucentBackground)  # 设置窗口背景透明
         self.setGeometry((screen_geo.width() - w) // 2, (screen_geo.height() - h) // 2, w, h)
@@ -59,7 +61,7 @@ class SiliconApplication(QMainWindow):
         # 应用内图标
         self.app_icon = SiPixLabel(self)
         self.app_icon.resize(24, 24)
-        self.app_icon.load("./img/logo.png")
+        self.app_icon.load("./examples/template_test/img/logo.png")
 
         # 应用标题
         self.app_title = SiLabel(self)
@@ -120,9 +122,9 @@ class SiliconApplication(QMainWindow):
 
         self.background_label.resize(w, h)
         self.container_title_and_content.resize(w, h)
-        self.page_view.resize(w, h-64)
+        self.page_view.resize(w, h - 64)
 
-    def showEvent(self, a0):
-        super().showEvent(a0)
+    def showEvent(self, event):
+        super().showEvent(event)
         SiGlobal.siui.reloadAllWindowsStyleSheet()
         self.page_view.stacked_container.setCurrentIndex(0)  # 显示第一页

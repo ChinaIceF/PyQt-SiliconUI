@@ -1,68 +1,91 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton
+from pathlib import Path
 
-from SiliconUI.SiButton import SiButton, SiButtonHoldtoConfirm
-from SiliconUI.SiLayout import SiLayoutV
-from SiliconUI.SiGlobal import colorset
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication, QVBoxLayout, QWidget
 
-# 当按钮点击事件触发时
-def when_button_clicked():
-    print('Clicked.')
+sys.path.append(str(Path().cwd()))
 
-# 当按钮按下状态改变时
-def when_button_holdstatechanged(state):
-    print('Hold state changed.', state)
+from siui.components.widgets import (
+    SiCheckBox,
+    SiLongPressButton,
+    SiPushButton,
+    SiRadioButton,
+    SiSimpleButton,
+    SiSwitch,
+    SiToggleButton,
+)
+from siui.gui import colorsets
 
 
 class ButtonExample(QWidget):
     def __init__(self):
         super().__init__()
+        # 设置窗口属性
+        self.setWindowTitle("SiliconUI.SiPushButton 三类按钮实例")
+        self.setStyleSheet(f"background-color: {colorsets.SiColorDark.BG_GRAD_HEX[2]}")
+        self.setGeometry(300, 300, 320, 256)
 
         # 初始化窗口
         self.initUI()
 
     def initUI(self):
-
         # 创建垂直布局
-        self.layout = SiLayoutV(self)
-        self.layout.setFixedWidth(128)
-        self.layout.setAlignCenter(True)        # 设置元素居中
+        self.layout = QVBoxLayout()
+        # 设置包含该布局的部件的宽度
+        self.setLayout(self.layout)
+        self.setFixedWidth(128)
+        # 设置子部件在布局中的对齐方式
+        self.layout.setAlignment(Qt.AlignCenter)
 
-        # 创建三个按钮
-        btn1 = SiButton(self.layout)
-        btn1.resize(128, 32)
-        btn1.setText('普通按钮')
-        btn1.clicked.connect(when_button_clicked)
-        btn1.holdStateChanged.connect(when_button_holdstatechanged)
+        # 创建按钮
+        push_button = SiPushButton()
+        push_button.resize(128, 32)
+        push_button.setText("普通按钮")
+        push_button.clicked.connect(lambda: print("普通按钮被点击"))
 
-        btn2 = SiButton(self.layout)
-        btn2.resize(128, 32)
-        btn2.setText('高亮按钮')
-        btn2.clicked.connect(when_button_clicked)
-        btn2.holdStateChanged.connect(when_button_holdstatechanged)
+        long_press_button = SiLongPressButton()
+        long_press_button.resize(128, 32)
+        long_press_button.setText("长按按钮")
+        long_press_button.clicked.connect(lambda: print("长按按钮被点击"))
 
-        btn3 = SiButtonHoldtoConfirm(self.layout)
-        btn3.resize(128, 32)
-        btn3.setText('长按按钮')
-        btn3.clicked.connect(when_button_clicked)
-        btn3.holdStateChanged.connect(when_button_holdstatechanged)
+        toggle_button = SiToggleButton()
+        toggle_button.resize(128, 32)
+        toggle_button.setText("开关按钮")
+        toggle_button.clicked.connect(lambda: print("开关按钮被点击"))
+
+        simple_button = SiSimpleButton()
+        simple_button.resize(128, 32)
+        simple_button.setText("简单按钮")
+        simple_button.clicked.connect(lambda: print("简单按钮被点击"))
+
+        radio_button = SiRadioButton()
+        radio_button.resize(128, 32)
+        radio_button.setText("单选按钮")
+        radio_button.toggled.connect(lambda: print("单选按钮被点击"))
+
+        check_box = SiCheckBox()
+        check_box.resize(128, 32)
+        check_box.setText("复选框")
+        check_box.toggled.connect(lambda: print("复选框被点击"))
+
+        switch = SiSwitch()
+        switch.resize(128, 32)
+        switch.setText("开关")
+        switch.clicked.connect(lambda: print("开关被点击"))
 
         # 将按钮添加到垂直布局中
-        self.layout.addItem(btn1)
-        self.layout.addItem(btn2)
-        self.layout.addItem(btn3)
+        self.layout.addWidget(push_button)
+        self.layout.addWidget(long_press_button)
+        self.layout.addWidget(toggle_button)
+        self.layout.addWidget(simple_button)
+        self.layout.addWidget(radio_button)
+        self.layout.addWidget(check_box)
+        self.layout.addWidget(switch)
 
-        # 设置布局位置
-        self.layout.move(96, 64)
 
-        # 设置窗口属性
-        self.setWindowTitle('SiliconUI.SiButton 三类按钮实例')
-        self.setStyleSheet('background-color: {}'.format(colorset.BG_GRAD_HEX[2]))
-        self.setGeometry(300, 300, 320, 256)
-
-if __name__ == '__main__':
-
-    app = QApplication(sys.argv)
+if __name__ == "__main__":
+    app = QApplication()
     ex = ButtonExample()
     ex.show()
-    sys.exit(app.exec_())
+    app.exec()

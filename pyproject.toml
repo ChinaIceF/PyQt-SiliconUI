@@ -1,21 +1,26 @@
 [project]
-name = "PyQt-SiliconUI"
-version = "1.0.1"
+name = "PySide6-SiliconUI"
+version = "0.1.0"
 authors = [
     { name = "ChinaIceF", email = "ChinaIceF@outlook.com" },
     { name = "rainzee wang", email = "rainzee.w@gmail.com" },
+    {name = "H1DDENADM1N", email = "65646535+H1DDENADM1N@users.noreply.github.com"},
 ]
-description = "A powerful and artistic UI library based on PyQt5 / PySide6"
+description = "A powerful and artistic UI library based on PySide6"
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.8"
-dependencies = ["PyQt5>=5.15.10"]
+requires-python = "==3.12.*"
+dependencies = [
+    "PySide6==6.6.3.1",
+    "numpy==1.26.4",
+]
 
 [project.urls]
 Repository = "https://github.com/ChinaIceF/PyQt-SiliconUI"
 
+[tool.pdm]
+distribution = false
 [tool.pdm.dev-dependencies]
-stub = ["pyqt5-stubs>=5.15.6.0"]
 lint = ["ruff>=0.5.0"]
 build = ["nuitka>=2.3.10"]
 profile = ["viztracer>=0.16.3"]
