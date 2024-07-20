@@ -21,9 +21,9 @@
 ### 运行 Silicon Gallery
 * 下载源代码，解压并安装  
 ```cmd
-python setup.py install
+pip install -r requirements.txt
 ```
-* 运行`./examples/Gallery/start.py`即可体验 Silicon UI 现有的功能和效果  
+* 运行`./examples/Gallery for siui/start.py`即可体验 Silicon UI 现有的功能和效果  
 
 ### 创建相似的 Silicon 应用
 * 根据我们提供的模板，你可以轻松创建于 Silicon Gallery 风格相似的应用，只需要用 `siui.templates.application.SiliconApplication` 代替正常项目中 `QMainWindow`，并调用方法来创建页面即可
