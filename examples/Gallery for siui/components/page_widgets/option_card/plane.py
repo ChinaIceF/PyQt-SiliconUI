@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtCore import Qt
+from PySide6.QtCore import Qt
 
 from siui.components import SiOptionCardPlane
 from siui.components.widgets import SiLabel, SiSimpleButton
@@ -23,7 +23,8 @@ class OptionCardPlaneForWidgetDemos(SiOptionCardPlane):
         self.button_bug.resize(32, 32)
         self.button_bug.setHint("报告问题")
         self.button_bug.clicked.connect(
-            lambda: os.system("start https://github.com/ChinaIceF/PyQt-SiliconUI/issues/new"))
+            lambda: os.system("start https://github.com/ChinaIceF/PyQt-SiliconUI/issues/new")
+        )
 
         self.button_source_code = SiSimpleButton(self)
         self.button_source_code.attachment().load(SiGlobal.siui.icons["fi-rr-link"])

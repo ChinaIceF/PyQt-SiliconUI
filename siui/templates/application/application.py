@@ -61,7 +61,7 @@ class SiliconApplication(QMainWindow):
         # 应用内图标
         self.app_icon = SiPixLabel(self)
         self.app_icon.resize(24, 24)
-        self.app_icon.load("./examples/template_test/img/logo.png")
+        self.app_icon.load("./examples/Gallery for siui/img/logo.png")
 
         # 应用标题
         self.app_title = SiLabel(self)

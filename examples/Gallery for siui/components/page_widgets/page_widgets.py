@@ -1,12 +1,13 @@
-from PyQt5.QtCore import Qt
+import numpy
+from PySide6.QtCore import Qt
 
 from siui.components import SiTitledWidgetGroup
 from siui.components.page import SiPage
-from siui.components.widgets import SiDenseHContainer, SiLabel, SiPixLabel, SiPushButton, SiDraggableLabel
+from siui.components.widgets import SiDenseHContainer, SiDraggableLabel, SiLabel, SiPixLabel, SiPushButton
 from siui.core.globals import SiGlobal
 
 from .option_card import OptionCardPlaneForWidgetDemos
-import numpy
+
 
 class ExampleWidgets(SiPage):
     def __init__(self, *args, **kwargs):
@@ -27,8 +28,9 @@ class ExampleWidgets(SiPage):
 
             # 文字标签
             self.label_for_text = OptionCardPlaneForWidgetDemos(self)
-            self.label_for_text.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                 "/widgets/label.py")
+            self.label_for_text.setSourceCodeURL(
+                "https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components" "/widgets/label.py"
+            )
             self.label_for_text.setTitle("文字标签")
             self.label_for_text.setFixedWidth(580)
 
@@ -48,8 +50,9 @@ class ExampleWidgets(SiPage):
 
             # 图片标签
             self.pix_label = OptionCardPlaneForWidgetDemos(self)
-            self.pix_label.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                            "/widgets/label.py")
+            self.pix_label.setSourceCodeURL(
+                "https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components" "/widgets/label.py"
+            )
             self.pix_label.setTitle("图片标签")
             self.pix_label.setFixedWidth(580)
 
@@ -59,16 +62,14 @@ class ExampleWidgets(SiPage):
             self.demo_pix_label_a = SiPixLabel(self)
             self.demo_pix_label_a.setFixedSize(80, 80)
             self.demo_pix_label_a.setBorderRadius(40)
-            self.demo_pix_label_a.load("./img/avatar1.png")
-            self.demo_pix_label_a.setHint("<strong>尺寸：</strong> 80px * 80px<br>"
-                                          "<strong>圆角半径：</strong> 40px")
+            self.demo_pix_label_a.load("./examples/Gallery for siui/img/avatar1.png")
+            self.demo_pix_label_a.setHint("<strong>尺寸：</strong> 80px * 80px<br>" "<strong>圆角半径：</strong> 40px")
 
             self.demo_pix_label_b = SiPixLabel(self)
             self.demo_pix_label_b.setFixedSize(80, 80)
             self.demo_pix_label_b.setBorderRadius(32)
-            self.demo_pix_label_b.load("./img/avatar1.png")
-            self.demo_pix_label_b.setHint("<strong>尺寸：</strong> 80px * 80px<br>"
-                                          "<strong>圆角半径：</strong> 32px")
+            self.demo_pix_label_b.load("./examples/Gallery for siui/img/avatar1.png")
+            self.demo_pix_label_b.setHint("<strong>尺寸：</strong> 80px * 80px<br>" "<strong>圆角半径：</strong> 32px")
 
             container_pix_label.addWidget(self.demo_pix_label_a)
             container_pix_label.addWidget(self.demo_pix_label_b)
@@ -79,8 +80,9 @@ class ExampleWidgets(SiPage):
 
             # 标签动画
             self.label_ani = OptionCardPlaneForWidgetDemos(self)
-            self.label_ani.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                            "/widgets/label.py")
+            self.label_ani.setSourceCodeURL(
+                "https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components" "/widgets/label.py"
+            )
             self.label_ani.setTitle("标签动画")
             self.label_ani.setAdditionalDescription("特性")
             self.label_ani.setFixedWidth(580)
@@ -101,13 +103,15 @@ class ExampleWidgets(SiPage):
             self.ctrl_button_random_pos_for_label_ani.attachment().setText("随机位置")
             self.ctrl_button_random_pos_for_label_ani.resize(128, 32)
             self.ctrl_button_random_pos_for_label_ani.clicked.connect(
-                lambda: self.demo_label_ani.moveTo(numpy.random.randint(0, 526), numpy.random.randint(0, 80)))
+                lambda: self.demo_label_ani.moveTo(numpy.random.randint(0, 526), numpy.random.randint(0, 80))
+            )
 
             self.ctrl_button_random_size_for_label_ani = SiPushButton(self)
             self.ctrl_button_random_size_for_label_ani.attachment().setText("随机尺寸")
             self.ctrl_button_random_size_for_label_ani.resize(128, 32)
             self.ctrl_button_random_size_for_label_ani.clicked.connect(
-                lambda: self.demo_label_ani.resizeTo(numpy.random.randint(32, 256), numpy.random.randint(16, 64)))
+                lambda: self.demo_label_ani.resizeTo(numpy.random.randint(32, 256), numpy.random.randint(16, 64))
+            )
 
             self.ctrl_button_reset_for_label_ani = SiPushButton(self)
             self.ctrl_button_reset_for_label_ani.attachment().setText("还原初始状态")
@@ -126,8 +130,9 @@ class ExampleWidgets(SiPage):
 
             # 可拖动标签
             self.draggable_label = OptionCardPlaneForWidgetDemos(self)
-            self.draggable_label.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                            "/widgets/label.py")
+            self.draggable_label.setSourceCodeURL(
+                "https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components" "/widgets/label.py"
+            )
             self.draggable_label.setTitle("可拖动标签")
             self.draggable_label.setFixedWidth(580)
 
@@ -138,8 +143,9 @@ class ExampleWidgets(SiPage):
             self.demo_draggable_label.setFixedStyleSheet("border-radius: 4px")
             self.demo_draggable_label.setMoveLimits(0, 0, 526, 80)
             self.demo_draggable_label.resize(128, 32)
-            self.demo_draggable_label.setHint("使用 setMoveLimits 方法限制移动范围"
-                                              "\n移动动画（可禁用）提供更平滑的移动效果")
+            self.demo_draggable_label.setHint(
+                "使用 setMoveLimits 方法限制移动范围" "\n移动动画（可禁用）提供更平滑的移动效果"
+            )
 
             self.draggable_label.body().addWidget(self.demo_drag_area)
             self.draggable_label.body().addPlaceholder(12)
@@ -151,8 +157,6 @@ class ExampleWidgets(SiPage):
             group.addWidget(self.label_ani)
             group.addWidget(self.draggable_label)
             group.addPlaceholder(64)
-
-
 
         # 设置控件组为页面对象
         self.setAttachment(self.titled_widgets_group)
