@@ -54,6 +54,12 @@ class ABCDenseContainer(SiLabel):
         """
         self.spacing = spacing
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        self.adjustSize()  # 使用 with 语句时，自动调节大小
+
 
 class SiDenseHContainer(ABCDenseContainer):
     """

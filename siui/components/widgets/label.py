@@ -3,7 +3,6 @@ from PyQt5.QtGui import QPainter, QPainterPath, QPixmap
 from PyQt5.QtSvg import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
-from siui.gui import GlobalFont, SiFont
 from siui.core.globals import SiGlobal
 
 
@@ -11,7 +10,6 @@ class SiLabel(ABCAnimatedLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
         super().setFont(SiGlobal.siui.fonts["S_NORMAL"])
-
 
 class SiPixLabel(SiLabel):
     """
