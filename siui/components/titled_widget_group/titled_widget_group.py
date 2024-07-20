@@ -38,7 +38,7 @@ class GroupTitle(SiLabel):
         self.adjustSize()
 
     def adjustSize(self):
-        self.resize(self.title_label.width() + 12, self.height())
+        self.resize(self.title_label.width() + 12 + 4, self.height())
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

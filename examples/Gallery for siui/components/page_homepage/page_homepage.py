@@ -20,7 +20,6 @@ from siui.components.widgets import (
     SiSimpleButton,
     SiSwitch,
 )
-
 from siui.core.color import Color
 from siui.core.globals import SiGlobal
 
@@ -45,7 +44,7 @@ class ExampleHomepage(SiPage):
         self.background_image.setStyleSheet(
             """
             #bg_image {
-                background-image: url('./examples/template_test/img/homepage_background.png');
+                background-image: url('./examples/Gallery for siui/img/homepage_background.png');
                 border-top-left-radius:6px
             }"""
         )
@@ -321,7 +320,9 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         body_label.setAutoAdjustSize(True)
         body_label.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_B"]))
         body_label.setText(
-            "平面选项卡提供了三个容器：header，body，footer，每个容器都可以独立访问\n其中 header 和 footer 是水平容器，body 是垂直容器\n这个容器是平面选项卡的 body，在这里尽情添加控件吧！"
+            "平面选项卡提供了三个容器：header，body，footer，每个容器都可以独立访问"
+            "\n其中 header 和 footer 是水平容器，body 是垂直容器"
+            "\n这个容器是平面选项卡的 body，在这里尽情添加控件吧！"
         )
 
         footer_button_a = SiSimpleButton(self)
