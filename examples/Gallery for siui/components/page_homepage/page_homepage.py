@@ -4,18 +4,18 @@ from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components.option_card import SiOptionCardLinear, SiOptionCardPlane
 from siui.components.page import SiPage
+from siui.components.slider import SiSliderH
 from siui.components.titled_widget_group import SiTitledWidgetGroup
 from siui.components.widgets import (
     SiDenseHContainer,
     SiDenseVContainer,
     SiLabel,
+    SiLineEdit,
     SiLongPressButton,
     SiPushButton,
     SiSimpleButton,
     SiSwitch,
-    SiLineEdit,
 )
-from siui.components.slider import SiSliderH
 from siui.core.color import Color
 from siui.core.globals import SiGlobal
 
@@ -82,7 +82,7 @@ class ExampleHomepage(SiPage):
         self.option_card_project.setFixedSize(218, 270)
         self.option_card_project.setThemeColor("#855198")
         self.option_card_project.setDescription(
-            "访问 GitHub 项目主页，以获取最新版本，报告错误，建言献策，参与开发，查询文档和须知，寻求他人答疑解惑</strong>")
+            "访问 GitHub 项目主页，以获取最新版本，报告错误，建言献策，参与开发，查询文档和须知，寻求他人答疑解惑</strong>")  # noqa: E501
         self.option_card_project.setURL("https://github.com/ChinaIceF/PyQt-SiliconUI")
 
         self.option_card_example = ThemedOptionCardPlane(self)
@@ -313,7 +313,9 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         body_label = SiLabel(self)
         body_label.setAutoAdjustSize(True)
         body_label.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_B"]))
-        body_label.setText("平面选项卡提供了三个容器：header，body，footer，每个容器都可以独立访问\n其中 header 和 footer 是水平容器，body 是垂直容器\n这个容器是平面选项卡的 body，在这里尽情添加控件吧！")
+        body_label.setText("平面选项卡提供了三个容器：header，body，footer，每个容器都可以独立访问"
+                           "\n其中 header 和 footer 是水平容器，body 是垂直容器"
+                           "\n这个容器是平面选项卡的 body，在这里尽情添加控件吧！")
 
         footer_button_a = SiSimpleButton(self)
         footer_button_a.resize(32, 32)
