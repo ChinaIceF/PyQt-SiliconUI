@@ -4,11 +4,11 @@ import numpy
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QPushButton
 
-from siui.core.animation import SiExpAnimation
-from siui.core.globals import SiGlobal
 from siui.components.widgets.abstracts.widget import ABCAnimatedWidget
 from siui.components.widgets.label import SiLabel
+from siui.core.animation import SiExpAnimation
 from siui.core.color import Color
+from siui.core.globals import SiGlobal
 
 
 class ABCButton(QPushButton):

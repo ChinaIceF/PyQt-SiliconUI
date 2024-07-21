@@ -2,11 +2,8 @@ from collections.abc import Sequence
 from enum import Enum
 
 from PyQt5.QtGui import QFont
+
 from siui.core.globals import SiGlobal
-
-# 因DPI缩放而引入的因数
-scale_factor = 1  # TODO: 需要从获取缩放比例的模块中获取
-
 
 class SiFont:
     @staticmethod
@@ -18,14 +15,10 @@ class SiFont:
     ) -> QFont:
         font = QFont()
         font.setFamilies(families)
-        font.setPixelSize(SiFont.scaled_size(size))
+        font.setPixelSize(size)
         font.setWeight(weight)
         font.setItalic(italic)
         return font
-
-    @staticmethod
-    def scaled_size(size: int) -> int:
-        return int(size * scale_factor)
 
     @staticmethod
     def fromToken(token) -> QFont:

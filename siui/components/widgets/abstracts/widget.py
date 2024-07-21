@@ -1,7 +1,7 @@
-from PyQt5.QtCore import pyqtSignal, QPoint
+from PyQt5.QtCore import QPoint, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
-from siui.core.animation import SiExpAnimation, SiAnimationGroup
+from siui.core.animation import SiAnimationGroup, SiExpAnimation
 
 
 # 2024.7.3 添加动画控件
