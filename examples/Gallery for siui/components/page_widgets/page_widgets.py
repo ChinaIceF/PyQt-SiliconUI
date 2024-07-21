@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 
 from siui.components import SiTitledWidgetGroup
 from siui.components.page import SiPage
-from siui.components.widgets import SiDenseHContainer, SiLabel, SiPixLabel, SiPushButton, SiDraggableLabel
+from siui.components.widgets import SiDenseHContainer, SiLabel, SiPixLabel, SiPushButton, SiDraggableLabel, SiIconLabel
 from siui.core.globals import SiGlobal
 
 from .option_card import OptionCardPlaneForWidgetDemos
@@ -41,8 +41,13 @@ class ExampleWidgets(SiPage):
             self.demo_label_hinted.setText("测试标签（具有工具提示）")
             self.demo_label_hinted.setHint("使用 setHint 方法设置工具提示")
 
+            self.demo_label_with_svg = SiIconLabel(self)
+            self.demo_label_with_svg.load(SiGlobal.siui.icons["fi-rr-comment"])
+            self.demo_label_with_svg.setText(" 具有 SVG 图标的标签")
+
             self.label_for_text.body().addWidget(self.demo_label)
             self.label_for_text.body().addWidget(self.demo_label_hinted)
+            self.label_for_text.body().addWidget(self.demo_label_with_svg)
             self.label_for_text.body().addPlaceholder(12)
             self.label_for_text.adjustSize()
 
@@ -150,9 +155,13 @@ class ExampleWidgets(SiPage):
             group.addWidget(self.pix_label)
             group.addWidget(self.label_ani)
             group.addWidget(self.draggable_label)
-            group.addPlaceholder(64)
 
+        # 按钮
+        with self.titled_widgets_group as group:
+            group.addTitle("按钮")
 
+        # 添加页脚的空白以增加美观性
+        self.titled_widgets_group.addPlaceholder(64)
 
         # 设置控件组为页面对象
         self.setAttachment(self.titled_widgets_group)
@@ -164,6 +173,7 @@ class ExampleWidgets(SiPage):
         # 文字标签
         self.demo_label.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
         self.demo_label_hinted.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
+        self.demo_label_with_svg.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
         # 标签动画
         self.demo_label_ani.setColorTo(SiGlobal.siui.colors["INTERFACE_BG_E"])
         # 可拖动标签
