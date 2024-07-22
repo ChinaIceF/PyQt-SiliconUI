@@ -24,6 +24,10 @@ class ABCButton(QPushButton):
         # 工具提示内容
         self.hint = ""
 
+        # 颜色，通常 color_a 是按钮主题色
+        self.color_a = None
+        self.color_b = None
+
         # 占位用的被绑定部件，显示在按钮正中央
         self.attachment_ = ABCAnimatedWidget()
 
@@ -34,7 +38,7 @@ class ABCButton(QPushButton):
         self.enabled_click_animation = True
 
         # 绑定点击事件到点击槽函数，这将触发点击动画
-        self.clicked.connect(self._clicked_slot)
+        self.clicked.connect(self._on_self_clicked)
 
         # 提供悬停时的颜色变化动画
         self.hover_highlight = SiLabel(self)
@@ -61,9 +65,8 @@ class ABCButton(QPushButton):
 
     def setAttachment(self, widget):
         """
-        设置绑定部件。被绑定部件将会被设为按钮的子控件，并显示在按钮的正中央
+        设置绑定部件。绑定部件会被设为按钮的子控件，并显示在按钮的正中央
         :param widget: 部件
-        :return:
         """
         # 删除旧的绑定部件
         self.attachment_.deleteLater()
@@ -78,6 +81,25 @@ class ABCButton(QPushButton):
         :return: 被绑定部件
         """
         return self.attachment_
+
+    def setColor(self,
+                 color_a: str,
+                 color_b: str = None):
+        """
+        设置颜色
+        :param color_a: 颜色1
+        :param color_b: 颜色2
+        """
+        self.color_a = color_a
+        if color_b is None is False:
+            self.color_b = color_b
+
+    def getColor(self):
+        """
+        获取颜色
+        :return: (颜色1, 颜色2)
+        """
+        return self.color_a, self.color_b
 
     def setHint(self, text: str):
         """
@@ -123,7 +145,7 @@ class ABCButton(QPushButton):
         """
         self.enabled_click_animation = b
 
-    def _clicked_slot(self):
+    def _on_self_clicked(self):
         if self.enabled_click_animation is True:
             self._run_clicked_ani()
 
@@ -281,6 +303,7 @@ class ABCToggleButton(ABCButton):
     """
     切换按钮抽象类，注意：这并非是复选框的抽象类
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -296,7 +319,7 @@ class ABCToggleButton(ABCButton):
 
         # 创建一个颜色叠层，用于标识被选中的状态
         self.color_label = SiLabel(self)
-        self.color_label.setColor(self.color_when_is_off)   # 初始是关闭状态
+        self.color_label.setColor(self.color_when_is_off)  # 初始是关闭状态
 
         # 把状态切换信号绑定到颜色切换的槽函数上
         self.toggled.connect(self._toggled_handler)

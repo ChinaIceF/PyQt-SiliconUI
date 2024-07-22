@@ -185,7 +185,9 @@ class ABCAnimatedLabel(QLabel):
     def _opacity_ani_handler(self, opacity: float):
         self.setOpacity(opacity)
 
-    def resizeTo(self, w: int, h: int):
+    def resizeTo(self,
+                 w: int,
+                 h: int):
         """
         具动画重设大小到目标尺寸
         :param w: 宽
@@ -232,7 +234,9 @@ class ABCAnimatedLabel(QLabel):
         y = max(y1, min(y2 - self.height(), y))
         return x, y
 
-    def moveTo(self, x: int, y: int):
+    def moveTo(self,
+               x: int,
+               y: int):
         """
         带动画地将标签移动到指定位置
         :param x: 目标横坐标
@@ -307,11 +311,8 @@ class ABCAnimatedLabel(QLabel):
         self.instant_move = b
         if b is True:  # 如果更改为立即移动，立即终止动画，并完成动画
             self.deactivateMove()
-            try:
-                x, y = self.animation_move.target_
-                self.move(x, y)
-            except:
-                pass
+            x, y = self.animation_move.target_
+            self.move(x, y)
 
     def setInstantResize(self, b: bool):
         """
@@ -322,11 +323,8 @@ class ABCAnimatedLabel(QLabel):
         self.instant_resize = b
         if b is True:  # 如果更改为立即重设大小，立即终止动画，并完成动画
             self.deactivateResize()
-            try:
-                w, h = self.animation_resize.target_
-                self.resize(w, h)
-            except:
-                pass
+            w, h = self.animation_resize.target_
+            self.resize(w, h)
 
     def setInstantSetOpacity(self, b: bool):
         """

@@ -190,7 +190,7 @@ class WidgetsExamplePanel(SiDenseVContainer):
 
         button_b = SiPushButton(self)
         button_b.resize(128, 32)
-        button_b.setThemed(True)
+        button_b.setUseTransition(True)
         button_b.attachment().setText("主题按钮")
 
         button_c = SiLongPressButton(self)

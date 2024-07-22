@@ -1,12 +1,13 @@
+import numpy
 from PyQt5.QtCore import Qt
 
 from siui.components import SiTitledWidgetGroup
 from siui.components.page import SiPage
-from siui.components.widgets import SiDenseHContainer, SiLabel, SiPixLabel, SiPushButton, SiDraggableLabel, SiIconLabel
+from siui.components.widgets import SiDenseHContainer, SiDraggableLabel, SiIconLabel, SiLabel, SiPixLabel, SiPushButton
 from siui.core.globals import SiGlobal
 
 from .option_card import OptionCardPlaneForWidgetDemos
-import numpy
+
 
 class ExampleWidgets(SiPage):
     def __init__(self, *args, **kwargs):
@@ -131,8 +132,8 @@ class ExampleWidgets(SiPage):
 
             # 可拖动标签
             self.draggable_label = OptionCardPlaneForWidgetDemos(self)
-            self.draggable_label.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                            "/widgets/label.py")
+            self.draggable_label.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui"
+                                                  "/components/widgets/label.py")
             self.draggable_label.setTitle("可拖动标签")
             self.draggable_label.setFixedWidth(580)
 

@@ -82,7 +82,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
         self.test_new_button.setFixedSize(128, 32)
         self.test_new_button.attachment().setText("重构按钮")
         self.test_new_button.setHint("还有工具提示")
-        self.test_new_button.setThemed(True)
+        self.test_new_button.setUseTransition(True)
 
         self.test_new_button2 = SiLongPressButton(self)
         self.test_new_button2.setFixedSize(128, 32)
