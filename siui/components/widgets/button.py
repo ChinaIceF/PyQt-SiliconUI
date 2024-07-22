@@ -18,12 +18,15 @@ class SiPushButton(ABCPushButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.themed = False  # 是否使用主题颜色
+        self.use_transition = False     # 是否使用过渡色
+
+        # 设置颜色
+        self.repaint()
 
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setAutoAdjustSize(True)
-        self.label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+        self.label.setFont(SiGlobal.siui.fonts["S_BOLD"])
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
@@ -39,8 +42,8 @@ class SiPushButton(ABCPushButton):
         self.label.setStyleSheet(f"color: {SiGlobal.siui.colors['TEXT_B']}")
 
         # 设置按钮表面和阴影的颜色
-        if self.themed is True:
-            # 主题样式
+        if self.use_transition is True:
+            # 使用过渡色
             self.body_top.setStyleSheet("""
                 background-color:qlineargradient(x1:0, y1:0, x2:1, y2:1,
                                  stop:0 {}, stop:1 {})
@@ -54,17 +57,17 @@ class SiPushButton(ABCPushButton):
             )
 
         else:
-            # 非主题样式
+            # 纯色
             self.body_top.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_NORMAL_BG']}")
             self.body_bottom.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_NORMAL_SHADOW']}")
 
-    def setThemed(self, b: bool):
+    def setUseTransition(self, b: bool):
         """
         设置按钮是否成为主题按钮
         :param b: 是否设为主题按钮
         :return:
         """
-        self.themed = b
+        self.use_transition = b
 
 
 class SiLongPressButton(ABCPushButton):
