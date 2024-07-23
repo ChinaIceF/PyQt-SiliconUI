@@ -4,11 +4,11 @@ import numpy
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QPushButton
 
-from siui.components.widgets.abstracts.widget import ABCAnimatedWidget
+from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel
 from siui.core.animation import SiExpAnimation
-from siui.core.color import Color
 from siui.core.globals import SiGlobal
+from siui.core.color import SiColor
 
 
 class ABCButton(QPushButton):
@@ -29,7 +29,7 @@ class ABCButton(QPushButton):
         self.color_b = None
 
         # 占位用的被绑定部件，显示在按钮正中央
-        self.attachment_ = ABCAnimatedWidget()
+        self.attachment_ = SiWidget()
 
         # 被绑定部件偏离中心的像素数
         self.attachment_shifting = numpy.array([0, 0])
@@ -151,7 +151,7 @@ class ABCButton(QPushButton):
 
     def _run_clicked_ani(self):
         self.flash.setColor(SiGlobal.siui.colors["BUTTON_FLASH"])
-        self.flash.setColorTo(Color.transparency(SiGlobal.siui.colors["BUTTON_FLASH"], 0))
+        self.flash.setColorTo(SiColor.trans(SiGlobal.siui.colors["BUTTON_FLASH"], 0))
 
     def enterEvent(self, event):
         super().enterEvent(event)
@@ -164,7 +164,7 @@ class ABCButton(QPushButton):
 
     def leaveEvent(self, event):
         super().enterEvent(event)
-        self.hover_highlight.setColorTo(Color.transparency(SiGlobal.siui.colors["BUTTON_HOVER"], 0))
+        self.hover_highlight.setColorTo(SiColor.trans(SiGlobal.siui.colors["BUTTON_HOVER"], 0))
 
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
             SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(None)

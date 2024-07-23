@@ -6,17 +6,18 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
-import siui
-from siui.components.widgets.abstracts.widget import ABCAnimatedWidget
+from siui.components.widgets.abstracts.widget import SiWidget
+from siui.components.widgets.label import SiLabel
 from siui.core.globals import SiGlobal
 from siui.gui.font import GlobalFont, SiFont
+from siui.core.silicon import Si
 
 
-class ToolTipWindow(ABCAnimatedWidget):
-    def __init__(self, parent=None):
-        super().__init__(
-            parent, Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowTransparentForInput)
+class ToolTipWindow(SiWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowTransparentForInput)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         self.completely_hid = False  # 是否已经完全隐藏（透明度是不是0）
@@ -41,23 +42,23 @@ class ToolTipWindow(ABCAnimatedWidget):
         self.tracker_timer.start()
 
         # 背景颜色，可以用于呈现不同类型的信息
-        self.bg_label = siui.widgets.SiLabel(self)
+        self.bg_label = SiLabel(self)
         self.bg_label.move(self.margin, self.margin)
         self.bg_label.setFixedStyleSheet("border-radius: 6px")
 
         # 文字标签的父对象，防止文字超出界限
-        self.text_container = siui.widgets.SiLabel(self)
+        self.text_container = SiLabel(self)
         self.text_container.move(self.margin, self.margin)
 
         # 文字标签，工具提示就在这里显示，
-        self.text_label = siui.widgets.SiLabel(self.text_container)
+        self.text_label = SiLabel(self.text_container)
         self.text_label.setFixedStyleSheet("padding: 8px")
-        self.text_label.setInstantResize(True)
-        self.text_label.setAutoAdjustSize(True)
+        self.text_label.setSiliconWidgetFlag(Si.InstantResize)
+        self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
 
         # 高光遮罩，当信息刷新时会闪烁一下
-        self.highlight_mask = siui.widgets.SiLabel(self)
+        self.highlight_mask = SiLabel(self)
         self.highlight_mask.move(self.margin, self.margin)
         self.highlight_mask.setFixedStyleSheet("border-radius: 6px")
         self.highlight_mask.setColor("#00FFFFFF")

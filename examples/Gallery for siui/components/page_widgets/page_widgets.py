@@ -5,6 +5,7 @@ from siui.components import SiTitledWidgetGroup
 from siui.components.page import SiPage
 from siui.components.widgets import SiDenseHContainer, SiDraggableLabel, SiIconLabel, SiLabel, SiPixLabel, SiPushButton
 from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 from .option_card import OptionCardPlaneForWidgetDemos
 
@@ -34,11 +35,11 @@ class ExampleWidgets(SiPage):
             self.label_for_text.setFixedWidth(580)
 
             self.demo_label = SiLabel(self)
-            self.demo_label.setAutoAdjustSize(True)
+            self.demo_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
             self.demo_label.setText("测试标签")
 
             self.demo_label_hinted = SiLabel(self)
-            self.demo_label_hinted.setAutoAdjustSize(True)
+            self.demo_label_hinted.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
             self.demo_label_hinted.setText("测试标签（具有工具提示）")
             self.demo_label_hinted.setHint("使用 setHint 方法设置工具提示")
 

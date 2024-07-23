@@ -4,11 +4,12 @@ from PyQt5.QtSvg import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
 from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 class SiLabel(ABCAnimatedLabel):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         super().setFont(SiGlobal.siui.fonts["S_NORMAL"])
 
 class SiPixLabel(SiLabel):
@@ -127,7 +128,7 @@ class SiIconLabel(SiLabel):
 
         # 创建文本标签
         self.text_label = SiLabel(self)
-        self.text_label.setAutoAdjustSize(True)
+        self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.text_label.setFixedHeight(20)  # 固定高度
 

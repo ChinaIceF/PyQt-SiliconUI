@@ -2,10 +2,13 @@ from PyQt5.QtCore import QPoint, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
+from siui.core.color import SiColor
+from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 # 2024.7.3 添加动画控件
-class ABCAnimatedWidget(QWidget):
+class SiWidget(QWidget):
     moved = pyqtSignal(object)
     resized = pyqtSignal(object)
     opacityChanged = pyqtSignal(float)
@@ -14,18 +17,10 @@ class ABCAnimatedWidget(QWidget):
         super().__init__(*args, **kwargs)
 
         self.fixed_stylesheet = ""
-
-        self.instant_move = False  # 是否立即移动而不运行动画
-        self.instant_resize = False  # 是否立即重设大小而不运行动画
-        self.instant_set_opacity = False  # 是否立即重设透明度而不运行动画
-
-        self.move_limits = False  # 是否有限定区域
-
-        self.enable_signal_emission = False # 是否启用moved，resized，opacityChanged信号
+        self.silicon_widget_flags = {}
 
         self.x1, self.y1, self.x2, self.y2 = None, None, None, None
-
-        self.move_anchor = QPoint(0, 0)     # 移动时的基准点位置
+        self.move_anchor = QPoint(0, 0)  # 移动时的基准点位置
 
         self.animation_move = SiExpAnimation(self)
         self.animation_move.setFactor(1/4)
@@ -46,11 +41,59 @@ class ABCAnimatedWidget(QWidget):
         self.animation_opacity.setBias(0.01)
         self.animation_opacity.ticked.connect(self._opacity_ani_handler)
 
+        self.animation_color = SiExpAnimation(self)
+        self.animation_color.setFactor(1/4)
+        self.animation_color.setBias(1)
+        self.animation_color.ticked.connect(self._set_color_handler)
+
         # 创建动画组，以tokenize以上动画
         self.animation_group = SiAnimationGroup()
         self.animation_group.addMember(self.animation_move, token="move")
         self.animation_group.addMember(self.animation_resize, token="resize")
         self.animation_group.addMember(self.animation_opacity, token="opacity")
+        self.animation_group.addMember(self.animation_color, token="color")
+
+    def setStyleSheet(self, stylesheet: str):
+        if self.fixed_stylesheet == "":
+            super().setStyleSheet(stylesheet)
+        else:
+            super().setStyleSheet(self.fixed_stylesheet + ";" + stylesheet)
+
+    def reloadStyleSheet(self):
+        """
+        重载样式表，建议将所有设置样式表的内容重写在此方法中\n
+        此方法在窗口show方法被调用时、主题改变时被调用
+        :return:
+        """
+        return
+
+    def setSiliconWidgetFlag(self,
+                             flag,
+                             on: bool = True):
+        """
+        Set a silicon widget flag on or off to a widget
+        :param flag: silicon widget flag
+        :param on: set to on or off
+        """
+        self.silicon_widget_flags[flag.name] = on
+
+    def setSiliconWidgetFlags(self, flags):
+        """
+        Set silicon widget flags to this widget
+        :param flags: Si.FLAG1 | Si.FLAG2 | ...
+        """
+        for flag in list(flags):
+            self.setSiliconWidgetFlag(flag, on=True)
+
+    def isSiliconWidgetFlagOn(self, flag):
+        """
+        Check whether the flag is on
+        :param flag: silicon widget flag
+        :return: True or False
+        """
+        if flag.name not in self.silicon_widget_flags.keys():
+            return False
+        return self.silicon_widget_flags[flag.name]
 
     def getAnimationGroup(self):
         """
@@ -59,15 +102,9 @@ class ABCAnimatedWidget(QWidget):
         """
         return self.animation_group
 
-    def setStyleSheet(self, stylesheet: str):
-        if self.fixed_stylesheet == "":
-            super().setStyleSheet(stylesheet)
-        else:
-            super().setStyleSheet(self.fixed_stylesheet + ";" + stylesheet)
-
     def setFixedStyleSheet(self, fixed_stylesheet: str):
         """
-        设置样式表前置固定内容，同时将其设为样式表，此后每次运行 setStyleSheet 方法时，都会在提供的样式表前附加这段固定内容
+        设置样式表前置固定内容，同时将其设为样式表，此后每次运行 setStyleSheet 方法时，都会在样式表前附加这段固定内容
         :param fixed_stylesheet: 样式表内容
         :return:
         """
@@ -76,22 +113,17 @@ class ABCAnimatedWidget(QWidget):
 
     def _move_ani_handler(self, arr):
         x, y = arr
-        self.move(int(x), int(y))
+        super().move(int(x), int(y))
 
     def _resize_ani_handler(self, arr):
         w, h = arr
-        self.resize(int(w), int(h))
+        super().resize(int(w), int(h))
 
     def _opacity_ani_handler(self, opacity: float):
         self.setOpacity(opacity)
 
-    def setUseSignals(self, b: bool):
-        """
-        设置是否使用 moved，resized，opacityChanged 信号，通常来说这是关闭的，因为这可能会带来较大的性能开销
-        :param b: 是否使用信号
-        :return:
-        """
-        self.enable_signal_emission = b
+    def _set_color_handler(self, color_value):
+        self.setStyleSheet(f"background-color: {SiColor.toCode(color_value)}")
 
     def setMoveLimits(self,
                       x1: int,
@@ -108,18 +140,12 @@ class ABCAnimatedWidget(QWidget):
         """
         # 拖动控件只能在这个范围内运动
         # 注意！必须满足 x1 <= x2, y1 <= y2
-        self.move_limits = True
+        self.setSiliconWidgetFlag(Si.HasMoveLimits, True)
         self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2
-
-    def hasMoveLimits(self):
-        return self.move_limits
-
-    def removeMoveLimits(self):
-        self.move_limits = False
 
     def _legalize_moving_target(self, x: int, y: int):
         # 使移动的位置合法
-        if self.move_limits is False:
+        if self.isSiliconWidgetFlagOn(Si.HasMoveLimits) is False:
             return x, y
 
         x1, y1, x2, y2 = self.x1, self.y1, self.x2, self.y2
@@ -136,7 +162,7 @@ class ABCAnimatedWidget(QWidget):
         """
         # moveTo 方法不同于 move，它经过动画（如果开启）
         x, y = self._legalize_moving_target(x, y)
-        if self.instant_move is False:
+        if self.isSiliconWidgetFlagOn(Si.InstantMove) is False:
             self.animation_move.setTarget([x, y])
             self.activateMove()
         else:
@@ -149,11 +175,30 @@ class ABCAnimatedWidget(QWidget):
         :param h: 高
         :return:
         """
-        if self.instant_resize is False and self.isVisible() is True:
+        if self.isSiliconWidgetFlagOn(Si.InstantResize) is False and self.isVisible() is True:
             self.animation_resize.setTarget([w, h])
             self.activateResize()
         else:
             self.resize(w, h)
+
+    def setColorTo(self, color_code):
+        """
+        设置目标颜色，同时启动动画
+        :param color_code: 色号
+        :return:
+        """
+        self.animation_color.setTarget(SiColor.toArray(color_code))
+        self.animation_color.try_to_start()
+
+    def setColor(self, color_code):
+        """
+        设置颜色
+        :param color_code: 色号
+        :return:
+        """
+        color_value = SiColor.toArray(color_code)
+        self.animation_color.setCurrent(color_value)
+        self._set_color_handler(color_value)
 
     def setOpacity(self, opacity: float):
         """
@@ -162,7 +207,7 @@ class ABCAnimatedWidget(QWidget):
         :return:
         """
         self.setWindowOpacity(opacity)
-        if self.enable_signal_emission:
+        if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.opacityChanged.emit(self.opacity)
 
     def setOpacityTo(self, opacity: float):
@@ -171,7 +216,7 @@ class ABCAnimatedWidget(QWidget):
         :param opacity: 透明度值 0-1
         :return:
         """
-        if self.instant_set_opacity is False:
+        if self.isSiliconWidgetFlagOn(Si.InstantSetOpacity) is False:
             self.animation_opacity.setTarget(opacity)
             self.activateSetOpacity()
         else:
@@ -204,48 +249,6 @@ class ABCAnimatedWidget(QWidget):
     def isResizeActive(self):
         return self.animation_resize.isActive()
 
-    def setInstantMove(self, b: bool):
-        """
-        设置控件是否立即移动，不再运行移动动画
-        :param b: 是否立即移动
-        :return:
-        """
-        self.instant_move = b
-        if b is True:  # 如果更改为立即移动，立即终止动画，并完成动画
-            self.deactivateMove()
-            try:
-                x, y = self.animation_move.target_
-                self.move(x, y)
-            except:
-                pass
-
-    def setInstantResize(self, b: bool):
-        """
-        设置控件是否立即重设大小，不再运行重设大小动画
-        :param b: 是否立即重设大小
-        :return:
-        """
-        self.instant_resize = b
-        if b is True:  # 如果更改为立即重设大小，立即终止动画，并完成动画
-            self.deactivateResize()
-            try:
-                w, h = self.animation_resize.target_
-                self.resize(w, h)
-            except:
-                pass
-
-    def setInstantSetOpacity(self, b: bool):
-        """
-        设置控件是否立即设置透明度，不再运行设置透明度动画
-        :param b: 是否立即设置透明度
-        :return:
-        """
-        self.instant_set_opacity = b
-        if b is True:
-            self.deactivateSetOpacity()
-            opacity = self.animation_opacity.target_
-            self.setOpacity(opacity)
-
     def resizeEvent(self, event):
         # resizeEvent 事件一旦被调用，控件的尺寸会瞬间改变
         # 并且会立即调用动画的 setCurrent 方法，设置动画开始值为 event 中的 size()
@@ -253,7 +256,7 @@ class ABCAnimatedWidget(QWidget):
         size = event.size()
         w, h = size.width(), size.height()
         self.animation_resize.setCurrent([w, h])
-        if self.enable_signal_emission:
+        if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.resized.emit([w, h])
 
     def setMoveAnchor(self, x, y):
@@ -271,5 +274,5 @@ class ABCAnimatedWidget(QWidget):
         pos = event.pos() + self.move_anchor
         self.animation_move.setCurrent([pos.x(), pos.y()])
 
-        if self.enable_signal_emission:
+        if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.moved.emit([event.pos().x(), event.pos().y()])

@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtSignal
 
-from siui.core.color import Color
+from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.components.widgets import SiLabel
 
@@ -17,9 +17,9 @@ class SiProgressBar(SiLabel):
         # 状态
         self.state_ = "loading"
         self.state_colors = {
-            "loading": SiGlobal.siui.colors["PROGRESSBAR_LOADING"],
-            "processing": SiGlobal.siui.colors["PROGRESSBAR_PROCESSING"],
-            "paused": SiGlobal.siui.colors["PROGRESSBAR_PAUSED"],
+            "loading": SiGlobal.siui.colors["PROGRESS_BAR_LOADING"],
+            "processing": SiGlobal.siui.colors["PROGRESS_BAR_PROCESSING"],
+            "paused": SiGlobal.siui.colors["PROGRESS_BAR_PAUSED"],
         }
 
         # 已完成的百分比值
@@ -101,8 +101,8 @@ class SiProgressBar(SiLabel):
         """
         触发进度闪烁
         """
-        self.flash.setColor(Color.transparency(SiGlobal.siui.colors["PROGRESSBAR_FLASHES"], 0.8))
-        self.flash.setColorTo(Color.transparency(SiGlobal.siui.colors["PROGRESSBAR_FLASHES"], 0.0))
+        self.flash.setColor(SiColor.trans(SiGlobal.siui.colors["PROGRESS_BAR_FLASHES"], 0.8))
+        self.flash.setColorTo(SiColor.trans(SiGlobal.siui.colors["PROGRESS_BAR_FLASHES"], 0.0))
 
     def _resize_progress_according_to_value(self):
         """

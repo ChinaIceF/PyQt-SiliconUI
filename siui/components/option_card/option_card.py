@@ -1,9 +1,10 @@
 from PyQt5.QtCore import Qt
 
-from siui.components.option_card.abstracts import ABCSiOptionCardPlane
-from siui.core.globals import SiGlobal
+from siui.components.option_card.abstracts.option_card import ABCSiOptionCardPlane
 from siui.components.widgets.container import SiDenseHContainer
 from siui.components.widgets.label import SiLabel, SiSvgLabel
+from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 class SiOptionCardLinear(SiLabel):
@@ -33,7 +34,7 @@ class SiOptionCardLinear(SiLabel):
 
         # 文字标签
         self.text_label = SiLabel(self)
-        self.text_label.setAutoAdjustSize(True)
+        self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.text_label.setFixedStyleSheet("padding-top: 20px; padding-bottom: 20px;")
 
         # 控件紧密排列容器
@@ -116,7 +117,7 @@ class SiOptionCardPlane(ABCSiOptionCardPlane):
 
         # 在 header 创建标题
         self.title = SiLabel(self)
-        self.title.setAutoAdjustSize(True)
+        self.title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.title.setFont(SiGlobal.siui.fonts["M_BOLD"])
         self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.title.setFixedHeight(32)

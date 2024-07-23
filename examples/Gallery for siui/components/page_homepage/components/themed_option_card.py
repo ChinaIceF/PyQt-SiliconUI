@@ -1,10 +1,11 @@
-from siui.components.option_card import SiOptionCardPlane
-from siui.components.widgets import SiLabel, SiSimpleButton
-from siui.components.widgets import SiDenseVContainer
-from siui.core.globals import SiGlobal
+import os
+
 from PyQt5.QtCore import Qt
 
-import os
+from siui.components.option_card import SiOptionCardPlane
+from siui.components.widgets import SiDenseVContainer, SiLabel, SiSimpleButton
+from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 class ThemedOptionCardPlane(SiOptionCardPlane):
@@ -35,7 +36,7 @@ class ThemedOptionCardPlane(SiOptionCardPlane):
         link_button_container.setAlignCenter(True)
         link_button_container.setFixedHeight(48)
         link_button_container.addWidget(self.link_button)
-        self.footer().setUseSignals(True)
+        self.footer().setSiliconWidgetFlag(Si.EnableAnimationSignals)
         self.footer().resized.connect(lambda size: link_button_container.setFixedWidth(size[0]))
         self.footer().setFixedHeight(48)
         self.footer().addWidget(link_button_container)

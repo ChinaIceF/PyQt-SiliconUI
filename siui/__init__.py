@@ -10,7 +10,8 @@ import siui.templates as templates
 import siui
 
 # 载入色彩字典
-siui.core.globals.SiGlobal.siui.loadColors(siui.gui.colorsets.ColorsetDark.colors)
+# siui.core.globals.SiGlobal.siui.loadColors(siui.gui.colorsets.ColorsetDark.colors)
+siui.core.globals.SiGlobal.siui.colors = siui.gui.colorsets.DarkColorGroup()
 
 # 加载全局缩放比例
 siui.gui.reload_scale_factor()

@@ -1,6 +1,7 @@
 from siui.components.widgets.container import SiDenseVContainer
 from siui.components.widgets.label import SiLabel
 from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 class GroupTitle(SiLabel):
@@ -13,7 +14,7 @@ class GroupTitle(SiLabel):
         self.title_label = SiLabel(self)
         self.title_label.setFont(SiGlobal.siui.fonts["M_BOLD"])
         self.title_label.setFixedHeight(25)
-        self.title_label.setAutoAdjustSize(True)
+        self.title_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
         # 标题高光，显示在文字下方
         self.title_highlight = SiLabel(self)
