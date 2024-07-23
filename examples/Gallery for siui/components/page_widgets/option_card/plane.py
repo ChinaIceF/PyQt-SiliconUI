@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt
 from siui.components import SiOptionCardPlane
 from siui.components.widgets import SiLabel, SiSimpleButton
 from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 class OptionCardPlaneForWidgetDemos(SiOptionCardPlane):
@@ -14,7 +15,7 @@ class OptionCardPlaneForWidgetDemos(SiOptionCardPlane):
         self.source_code_url = None
 
         self.additional_description = SiLabel(self)
-        self.additional_description.setAutoAdjustSize(True)
+        self.additional_description.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.additional_description.setFixedHeight(24)
         self.additional_description.setAlignment(Qt.AlignLeft | Qt.AlignBottom)
 

@@ -4,9 +4,10 @@ from PyQt5.QtWidgets import QAbstractButton
 from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
 from siui.components.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
 from siui.core.animation import SiExpAnimation
-from siui.core.color import Color
+from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.gui import GlobalFont, SiFont
+from siui.core.silicon import Si
 
 
 class SiPushButton(ABCPushButton):
@@ -20,12 +21,9 @@ class SiPushButton(ABCPushButton):
 
         self.use_transition = False     # 是否使用过渡色
 
-        # 设置颜色
-        self.repaint()
-
         # 实例化文本标签
         self.label = SiIconLabel(self)
-        self.label.setAutoAdjustSize(True)
+        self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.label.setFont(SiGlobal.siui.fonts["S_BOLD"])
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
@@ -58,8 +56,8 @@ class SiPushButton(ABCPushButton):
 
         else:
             # 纯色
-            self.body_top.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_NORMAL_BG']}")
-            self.body_bottom.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_NORMAL_SHADOW']}")
+            self.body_top.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_BG']}")
+            self.body_bottom.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_SHADOW']}")
 
     def setUseTransition(self, b: bool):
         """
@@ -96,7 +94,7 @@ class SiLongPressButton(ABCPushButton):
 
         # 实例化文本标签
         self.label = SiIconLabel(self)
-        self.label.setAutoAdjustSize(True)
+        self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
@@ -110,7 +108,7 @@ class SiLongPressButton(ABCPushButton):
         self.body_top.setStyleSheet("""
             background-color:qlineargradient(x1:{}, y1:0, x2:{}, y2:0,
                                              stop:0 {}, stop:1 {})
-        """.format(p-0.01, p, SiGlobal.siui.colors["BUTTON_LONG_PROGRESS"], SiGlobal.siui.colors["BUTTON_LONG_BG"]))
+        """.format(p-0.01, p, SiGlobal.siui.colors["BUTTON_LONG_PRESS_PROGRESS"], SiGlobal.siui.colors["BUTTON_LONG_PRESS_BG"]))
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
@@ -118,8 +116,8 @@ class SiLongPressButton(ABCPushButton):
         # 设置文字颜色
         self.label.setStyleSheet(f"color: {SiGlobal.siui.colors['TEXT_A']}")
 
-        self.body_top.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_LONG_BG']}")
-        self.body_bottom.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_LONG_SHADOW']}")
+        self.body_top.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_LONG_PRESS_BG']}")
+        self.body_bottom.setStyleSheet(f"background-color: {SiGlobal.siui.colors['BUTTON_LONG_PRESS_SHADOW']}")
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
@@ -152,7 +150,7 @@ class SiToggleButton(ABCToggleButton):
 
         # 实例化文本标签
         self.label = SiIconLabel(self)
-        self.label.setAutoAdjustSize(True)
+        self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.label.setFont(SiGlobal.siui.fonts["S_BOLD"])
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
@@ -160,7 +158,7 @@ class SiToggleButton(ABCToggleButton):
         self.setAttachment(self.label)
 
         # 设置状态颜色为主题色
-        self.setStateColor(Color.transparency(SiGlobal.siui.colors["THEME"], 0.2),
+        self.setStateColor(SiColor.trans(SiGlobal.siui.colors["THEME"], 0.2),
                            SiGlobal.siui.colors["THEME"])
 
     def reloadStyleSheet(self):
@@ -216,7 +214,7 @@ class SiRadioButton(SiLabel):
         self.text_label = SiLabel(self)
         self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
-        self.text_label.setAutoAdjustSize(True)
+        self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
@@ -328,7 +326,7 @@ class SiCheckBox(SiLabel):
         self.text_label = SiLabel(self)
         self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
-        self.text_label.setAutoAdjustSize(True)
+        self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()

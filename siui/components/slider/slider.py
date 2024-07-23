@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import QAbstractSlider
 
-from siui.core.color import Color
-from siui.core.globals import SiGlobal
 from siui.components.widgets import SiDraggableLabel, SiLabel
+from siui.core.color import SiColor
+from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 class SiSliderH(QAbstractSlider):
@@ -30,7 +31,7 @@ class SiSliderH(QAbstractSlider):
         # 滑块
         self.handle = SiDraggableLabel(self.frame)
         self.handle.resize(32, 8)
-        self.handle.setUseSignals(True)
+        self.handle.setSiliconWidgetFlag(Si.EnableAnimationSignals)
         self.handle.setTrack(False)  # 取消自动跟踪鼠标，为了实现换挡动画
         self.handle.setFixedStyleSheet("border-radius: 4px")
         self.handle.dragged.connect(self._dragged_handler)
@@ -91,7 +92,7 @@ class SiSliderH(QAbstractSlider):
         self.setValue(self.minimum() + current_section_index)
 
     def _moved_handler(self, _):   # 当滑块 moved 信号发射时，调用这个方法
-        self.handle.setColor(Color.mix(self.color_high, self.color_low, self._rate_from_handle_pos()))
+        self.handle.setColor(SiColor.mix(self.color_high, self.color_low, self._rate_from_handle_pos()))
         self.mask.setGeometry(self.handle.x(), 0, self.track.width() - self.handle.x(), self.mask.height())
 
     def resizeEvent(self, event):

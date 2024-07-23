@@ -1,9 +1,10 @@
 from PyQt5.QtCore import Qt
 
-from siui.components.widgets.container import SiDenseVContainer, SiDenseHContainer
+from siui.components.widgets.container import SiDenseHContainer, SiDenseVContainer
 from siui.components.widgets.label import SiLabel
 from siui.components.widgets.scrollarea import SiScrollArea
 from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 class SiPage(SiDenseVContainer):
@@ -14,7 +15,7 @@ class SiPage(SiDenseVContainer):
         super().__init__(*args, **kwargs)
 
         self.setSpacing(0)
-        self.setUseSignals(True)
+        self.setSiliconWidgetFlag(Si.EnableAnimationSignals)
 
         # 滚动区域宽度限制
         self.scroll_maximum_width = 10000
@@ -91,7 +92,7 @@ class SiPage(SiDenseVContainer):
         self.title.setFont(SiGlobal.siui.fonts["L_BOLD"])
         self.title.setFixedHeight(32)
         self.title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.title.setAutoAdjustSize(True)
+        self.title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
         # 添加到水平容器
         self.title_container.addPlaceholder(64)

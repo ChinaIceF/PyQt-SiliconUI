@@ -1,1 +1,1 @@
-from siui.core.color.color import Color
+from siui.core.color.color import SiColor

@@ -16,8 +16,9 @@ from siui.components.widgets import (
     SiSimpleButton,
     SiSwitch,
 )
-from siui.core.color import Color
+from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 from .components.themed_option_card import ThemedOptionCardPlane
 
@@ -51,7 +52,7 @@ class ExampleHomepage(SiPage):
             """
             background-color: qlineargradient(x1:0, y1:1, x2:0, y2:0, stop:0 {}, stop:1 {})
             """.format(SiGlobal.siui.colors["INTERFACE_BG_B"],
-                       Color.transparency(SiGlobal.siui.colors["INTERFACE_BG_B"], 0))
+                       SiColor.trans(SiGlobal.siui.colors["INTERFACE_BG_B"], 0))
         )
 
         # 创建大标题和副标题
@@ -66,7 +67,7 @@ class ExampleHomepage(SiPage):
         self.subtitle.setGeometry(64, 72, 500, 48)
         self.subtitle.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.subtitle.setText("基于 PyQt5 的 UI 框架，灵动、优雅而轻便")
-        self.subtitle.setStyleSheet("color: {}".format(Color.transparency(SiGlobal.siui.colors["TEXT_A"], 0.9)))
+        self.subtitle.setStyleSheet("color: {}".format(SiColor.trans(SiGlobal.siui.colors["TEXT_A"], 0.9)))
         self.subtitle.setFont(SiGlobal.siui.fonts["S_BOLD"])
 
         # 创建一个水平容器
@@ -109,12 +110,12 @@ class ExampleHomepage(SiPage):
 
         # 下方区域标签
         self.body_area = SiLabel(self)
-        self.body_area.setUseSignals(True)
+        self.body_area.setSiliconWidgetFlag(Si.EnableAnimationSignals)
         self.body_area.resized.connect(lambda _: self.scroll_container.adjustSize())
 
         # 下面的 titledWidgetGroups
         self.titled_widget_group = SiTitledWidgetGroup(self.body_area)
-        self.titled_widget_group.setUseSignals(True)
+        self.titled_widget_group.setSiliconWidgetFlag(Si.EnableAnimationSignals)
         self.titled_widget_group.resized.connect(lambda size: self.body_area.setFixedHeight(size[1]))
         self.titled_widget_group.move(64, 0)
 
@@ -311,7 +312,7 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         header_button.adjustSize()
 
         body_label = SiLabel(self)
-        body_label.setAutoAdjustSize(True)
+        body_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         body_label.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_B"]))
         body_label.setText("平面选项卡提供了三个容器：header，body，footer，每个容器都可以独立访问"
                            "\n其中 header 和 footer 是水平容器，body 是垂直容器"

@@ -6,6 +6,7 @@ from siui.components.progress_bar import SiProgressBar
 from siui.components.titled_widget_group import SiTitledWidgetGroup
 from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPushButton, SiSimpleButton
 from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 class ExampleOptionCards(SiPage):
@@ -24,20 +25,20 @@ class ExampleOptionCards(SiPage):
 
         # Create a SiTitledWidgetGroup object
         self.titled_widget_group = SiTitledWidgetGroup(self)
-        self.titled_widget_group.setUseSignals(True)
+        self.titled_widget_group.setSiliconWidgetFlag(Si.EnableAnimationSignals)
 
         # create some widgets
         self.welcome_text = SiLabel(self)
         self.welcome_text.setFont(SiGlobal.siui.fonts["XL_BOLD"])
         self.welcome_text.setAlignment(Qt.AlignCenter)
-        self.welcome_text.setAutoAdjustSize(True)
+        self.welcome_text.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.welcome_text.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
         self.welcome_text.setText("让我们开始吧")
 
         self.welcome_text_description = SiLabel(self)
         self.welcome_text_description.setFont(SiGlobal.siui.fonts["M_NORMAL"])
         self.welcome_text_description.setAlignment(Qt.AlignCenter)
-        self.welcome_text_description.setAutoAdjustSize(True)
+        self.welcome_text_description.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.welcome_text_description.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_C"]))
         self.welcome_text_description.setText("从选项卡开始构建你自己的 Silicon 应用程序")
 
@@ -78,7 +79,7 @@ class ExampleOptionCards(SiPage):
         header_button.adjustSize()
 
         body_label = SiLabel(self)
-        body_label.setAutoAdjustSize(True)
+        body_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         body_label.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_B"]))
         body_label.setText("平面选项卡提供了三个容器：header，body，footer，每个容器都可以独立访问\n其中 header 和 footer 是水平容器，body 是垂直容器\n这个容器是平面选项卡的 body，在这里尽情添加控件吧！")
 
