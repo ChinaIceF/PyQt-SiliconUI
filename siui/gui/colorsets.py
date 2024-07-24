@@ -3,6 +3,9 @@ from siui.core.color import SiColor
 
 
 class SiColorGroup:
+    def __getitem__(self, item):
+        return self.colors[item]
+
     def __init__(self,
                  overwrite=None,
                  reference=None):
@@ -54,9 +57,6 @@ class SiColorGroup:
 
     def isValid(self):
         return self.valid_state
-
-    def __getitem__(self, item):
-        return self.colors[item]
 
 
 class DarkColorGroup(SiColorGroup):
