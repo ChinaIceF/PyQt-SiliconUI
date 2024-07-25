@@ -88,10 +88,6 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.TITLE_INDICATOR, "#c58bc2")
         self.assign(SiColor.TITLE_HIGHLIGHT, "#52324E")
 
-        # 按钮
-        self.assign(SiColor.BUTTON_IDLE, "#00FFFFFF")
-        self.assign(SiColor.BUTTON_HOVER, "#10FFFFFF")
-
         # 按钮鼠标相关
         self.assign(SiColor.BUTTON_IDLE, "#00FFFFFF")
         self.assign(SiColor.BUTTON_HOVER, "#10FFFFFF")
@@ -109,12 +105,12 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.BUTTON_ON, "#372456")
         self.assign(SiColor.BUTTON_OFF, "#562b49")
 
-        self.assign(SiColor.RATIO_BUTTON_UNCHECKED, "#1C191F")
-        self.assign(SiColor.RATIO_BUTTON_CHECKED, "#855198")
+        self.assign(SiColor.RADIO_BUTTON_UNCHECKED, "#211F25")
+        self.assign(SiColor.RADIO_BUTTON_CHECKED, "#9c65ae")
 
-        self.assign(SiColor.CHECKBOX_SVG, "#000000")
-        self.assign(SiColor.CHECKBOX_UNCHECKED, "#AFAFAF")
-        self.assign(SiColor.CHECKBOX_CHECKED, "#855198")
+        self.assign(SiColor.CHECKBOX_SVG, "#1C191F")
+        self.assign(SiColor.CHECKBOX_UNCHECKED, "#979797")
+        self.assign(SiColor.CHECKBOX_CHECKED, "#9c65ae")
 
         # 长按按钮
         self.assign(SiColor.BUTTON_LONG_PRESS_PANEL, "#9F3652")

@@ -112,8 +112,8 @@ class SiLongPressButton(ABCPushButton):
         self.body_top.setStyleSheet(
             f"""
             background-color: qlineargradient(x1:{p-0.01}, y1:0, x2:{p}, y2:0,
-                stop:0 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PANEL)},
-                stop:1 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PROGRESS)})
+                stop:0 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PROGRESS)},
+                stop:1 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PANEL)})
             """
         )
 
@@ -186,7 +186,7 @@ class SiSimpleButton(SiToggleButton):
 
 class SiRadioButton(SiLabel):
     """
-    单选组件，提供一个单选按钮和一个文字标签
+    单选组件，提供一个单选按钮和一个文字标签，会自动设置默认大小
     """
     toggled = pyqtSignal(bool)
 
@@ -238,7 +238,7 @@ class SiRadioButton(SiLabel):
         self.adjustSize()
 
     def adjustSize(self):
-        self.resize(20 + 8 + self.text_label.width(), 32)
+        self.resize(20 + 8 + self.text_label.width(), 24)
 
     def setChecked(self, state):
         """
@@ -263,11 +263,11 @@ class SiRadioButton(SiLabel):
 
             # 禁止其切换模式，防止被取消选择
             self.indicator.setCheckable(False)
-            self.indicator_label.setStyleSheet(f"border: 4px solid {self.colorGroup().fromToken(SiColor.RATIO_BUTTON_CHECKED)}")  # noqa: E501
+            self.indicator_label.setStyleSheet(f"border: 4px solid {self.colorGroup().fromToken(SiColor.RADIO_BUTTON_CHECKED)}")  # noqa: E501
         else:
             # 如果被选中状态为假，就允许其切换模式
             self.indicator.setCheckable(True)
-            self.indicator_label.setStyleSheet(f"border: 2px solid {self.colorGroup().fromToken(SiColor.RATIO_BUTTON_UNCHECKED)}")  # noqa: E501
+            self.indicator_label.setStyleSheet(f"border: 3px solid {self.colorGroup().fromToken(SiColor.RADIO_BUTTON_UNCHECKED)}")  # noqa: E501
 
     def _uncheck_all_in_same_parent(self):
         """
@@ -304,11 +304,15 @@ class SiCheckBox(SiLabel):
         self.indicator_label.setFixedStyleSheet("border-radius: 4px")  # 注意：这里是固定样式表
 
         # 一个标签显示打钩的图标
-        svg_data = ('<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" id="Outline" '
-                    'viewBox="0 0 24 24" width="512" height="512"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,'
-                    '0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,'
-                    '5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z" '
-                    f'fill="{self.colorGroup().fromToken(SiColor.CHECKBOX_SVG)}" /></svg>')
+        svg_data = ('<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" '
+                    'xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 '
+                    '0 507.506 507.506" style="enable-background:new 0 0 507.506 507.506;" xml:space="preserve" '
+                    'width="512" height="512"><g><path d="M163.865,436.934c-14.406,'
+                    '0.006-28.222-5.72-38.4-15.915L9.369,304.966c-12.492-12.496-12.492-32.752,0-45.248l0,'
+                    '0   c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,'
+                    '32.752-12.492,45.248,0l0,0   c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,'
+                    '431.214,178.271,436.94,163.865,436.934z" '
+                    f'fill="{self.colorGroup().fromToken(SiColor.CHECKBOX_SVG)}" /></g></svg>')
         self.indicator_icon = SiSvgLabel(self)
         self.indicator_icon.resize(20, 20)
         self.indicator_icon.setSvgSize(12, 12)
@@ -354,7 +358,7 @@ class SiCheckBox(SiLabel):
         self.adjustSize()
 
     def adjustSize(self):
-        self.resize(20 + 8 + self.text_label.width(), 32)
+        self.resize(20 + 8 + self.text_label.width(), 24)
 
     def setChecked(self, state):
         """

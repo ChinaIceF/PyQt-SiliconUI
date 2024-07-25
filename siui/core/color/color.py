@@ -53,8 +53,8 @@ class SiColor(Enum):
     BUTTON_LONG_PRESS_SHADOW = auto()
     BUTTON_LONG_PRESS_PROGRESS = auto()
 
-    RATIO_BUTTON_UNCHECKED = auto()
-    RATIO_BUTTON_CHECKED = auto()
+    RADIO_BUTTON_UNCHECKED = auto()
+    RADIO_BUTTON_CHECKED = auto()
 
     CHECKBOX_SVG = auto()
     CHECKBOX_UNCHECKED = auto()
