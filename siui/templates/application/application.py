@@ -70,10 +70,10 @@ class SiliconApplication(QMainWindow):
         self.app_title.setText("Silicon 应用模版")
 
         # 关闭窗口按钮
-        self.close_window_button = SiSimpleButton(self)
-        self.close_window_button.attachment().load(SiGlobal.siui.icons["fi-rr-cross-small"])
-        self.close_window_button.resize(32, 32)
-        self.close_window_button.clicked.connect(self.close)
+        # self.close_window_button = SiSimpleButton(self)
+        # self.close_window_button.attachment().load(SiGlobal.siui.icons["fi-rr-cross-small"])
+        # self.close_window_button.resize(32, 32)
+        # self.close_window_button.clicked.connect(self.close)
 
         # <- 添加到水平容器
         self.container_title.addPlaceholder(2)
@@ -82,8 +82,8 @@ class SiliconApplication(QMainWindow):
         self.container_title.addPlaceholder(16)
         self.container_title.addWidget(self.app_title)
 
-        self.container_title.addPlaceholder(16, "right")
-        self.container_title.addWidget(self.close_window_button, "right")
+        # self.container_title.addPlaceholder(16, "right")
+        # self.container_title.addWidget(self.close_window_button, "right")
 
         # 创建 page view，它继承自水平容器
         self.page_view = PageView()
