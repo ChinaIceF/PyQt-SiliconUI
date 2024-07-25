@@ -7,8 +7,8 @@
   一个运行方法，从而开始函数链的运行。
 
 · 函数链
-      类的实例，提供添加函数，指定传入参数，提供开
-  始运行方法，提供被执行函数的返回值管理。
+      提供添加函数，指定传入参数，提供开始运行方法，
+  提供被执行函数的返回值管理。
 """
 
 import functools
@@ -138,8 +138,8 @@ class SiFunctionChain:
         return self.results
 
 
-# 触发器函数修饰器
-def trigger(chain: SiFunctionChain):
+# decorator of the trigger function
+def chain_trigger(chain: SiFunctionChain):
     def decorator(trigger_func):
         @functools.wraps(trigger_func)
         def wrapper(*args, **kwargs):

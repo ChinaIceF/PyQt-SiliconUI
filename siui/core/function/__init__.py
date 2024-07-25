@@ -1,1 +1,1 @@
-from siui.core.function.chain import SiFunctionChain
+from siui.core.function.chain import SiFunctionChain, chain_trigger
