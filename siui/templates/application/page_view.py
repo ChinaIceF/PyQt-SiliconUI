@@ -4,6 +4,7 @@ from siui.core.globals import SiGlobal
 from siui.components.widgets import SiLabel, SiToggleButton
 from siui.components.widgets.abstracts import ABCSiNavigationBar
 from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiStackedContainer
+from siui.core.color import SiColor
 
 
 class PageButton(SiToggleButton):
@@ -14,7 +15,8 @@ class PageButton(SiToggleButton):
 
         # 设置自身样式
         self.setBorderRadius(6)
-        self.setStateColor("#00FFFFFF", "#10FFFFFF")
+        self.colorGroup().assign(SiColor.BUTTON_OFF, "#00FFFFFF")
+        self.colorGroup().assign(SiColor.BUTTON_ON, "#10FFFFFF")
 
         # 创建高光指示条，用于指示被选中
         self.active_indicator = SiLabel(self)

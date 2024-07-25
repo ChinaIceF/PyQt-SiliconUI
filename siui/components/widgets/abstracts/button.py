@@ -46,14 +46,14 @@ class ABCButton(QPushButton):
         # 提供悬停时的颜色变化动画
         self.hover_highlight = SiLabel(self)
         self.hover_highlight.stackUnder(self)  # 置于按钮的底部
-        self.hover_highlight.setColor("#00FFFFFF")
+        self.hover_highlight.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_HOVER), 0.0))
         self.hover_highlight.getAnimationGroup().fromToken("color").setBias(0.2)
         self.hover_highlight.getAnimationGroup().fromToken("color").setFactor(1 / 8)
 
         # 提供点击时的颜色变化动画
         self.flash = SiLabel(self)
         self.flash.stackUnder(self)  # 置于按钮的底部
-        self.flash.setColor("#00FFFFFF")
+        self.flash.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_FLASH), 0.0))
         self.flash.getAnimationGroup().fromToken("color").setBias(0.2)
         self.flash.getAnimationGroup().fromToken("color").setFactor(1 / 8)
 
@@ -85,24 +85,12 @@ class ABCButton(QPushButton):
         """
         return self.attachment_
 
-    def setColor(self,
-                 color_a: str,
-                 color_b: str = None):
+    def colorGroup(self):
         """
-        设置颜色
-        :param color_a: 颜色1
-        :param color_b: 颜色2
+        Get the color group of this widget
+        :return: SiColorGroup
         """
-        self.color_a = color_a
-        if color_b is None is False:
-            self.color_b = color_b
-
-    def getColor(self):
-        """
-        获取颜色
-        :return: (颜色1, 颜色2)
-        """
-        return self.color_a, self.color_b
+        return self.color_group
 
     def setHint(self, text: str):
         """
@@ -153,12 +141,12 @@ class ABCButton(QPushButton):
             self._run_clicked_ani()
 
     def _run_clicked_ani(self):
-        self.flash.setColor(SiGlobal.siui.colors["BUTTON_FLASH"])
-        self.flash.setColorTo(SiColor.trans(SiGlobal.siui.colors["BUTTON_FLASH"], 0))
+        self.flash.setColor(self.color_group.fromToken(SiColor.BUTTON_FLASH))
+        self.flash.setColorTo(SiColor.trans(self.color_group.fromToken(SiColor.BUTTON_FLASH), 0))
 
     def enterEvent(self, event):
         super().enterEvent(event)
-        self.hover_highlight.setColorTo(SiGlobal.siui.colors["BUTTON_HOVER"])
+        self.hover_highlight.setColorTo(self.color_group.fromToken(SiColor.BUTTON_HOVER))
 
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
             SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(self)
@@ -167,7 +155,7 @@ class ABCButton(QPushButton):
 
     def leaveEvent(self, event):
         super().enterEvent(event)
-        self.hover_highlight.setColorTo(SiColor.trans(SiGlobal.siui.colors["BUTTON_HOVER"], 0))
+        self.hover_highlight.setColorTo(SiColor.trans(self.color_group.fromToken(SiColor.BUTTON_HOVER), 0))
 
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
             SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(None)
@@ -316,13 +304,9 @@ class ABCToggleButton(ABCButton):
         # 设置自己为可选中
         self.setCheckable(True)
 
-        # 颜色叠层的颜色状态
-        self.color_when_is_on = "20ffffff"
-        self.color_when_is_off = "#00ffffff"
-
         # 创建一个颜色叠层，用于标识被选中的状态
         self.color_label = SiLabel(self)
-        self.color_label.setColor(self.color_when_is_off)  # 初始是关闭状态
+        self.color_label.setColor(self.colorGroup().fromToken(SiColor.BUTTON_OFF))  # 初始是关闭状态
 
         # 把状态切换信号绑定到颜色切换的槽函数上
         self.toggled.connect(self._toggled_handler)
@@ -330,19 +314,6 @@ class ABCToggleButton(ABCButton):
         # 闪光和悬停置顶，防止设定不透明颜色时没有闪光
         self.hover_highlight.raise_()
         self.flash.raise_()
-
-    def setStateColor(self, when_off: str, when_on: str):
-        """
-        设置不同状态下按钮的颜色
-        :param when_off: 当设置为关时的颜色
-        :param when_on: 当设置为开时的颜色
-        :return:
-        """
-        self.color_when_is_off = when_off
-        self.color_when_is_on = when_on
-
-        # 刷新当前颜色
-        self._toggled_handler(self.isChecked())
 
     def setBorderRadius(self, r: int):
         """
@@ -358,11 +329,14 @@ class ABCToggleButton(ABCButton):
         # 设置自身圆角
         self.setFixedStyleSheet(f"border-radius: {self.border_radius}px")
 
+        # 刷新颜色
+        self.color_label.setColor(self.colorGroup().fromToken(SiColor.BUTTON_ON if self.isChecked() else SiColor.BUTTON_OFF))  # noqa: E501
+
     def _toggled_handler(self, state):
         if state is True:
-            self.color_label.setColorTo(self.color_when_is_on)
+            self.color_label.setColorTo(self.colorGroup().fromToken(SiColor.BUTTON_ON))
         else:
-            self.color_label.setColorTo(self.color_when_is_off)
+            self.color_label.setColorTo(self.colorGroup().fromToken(SiColor.BUTTON_OFF))
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

@@ -261,7 +261,8 @@ class WidgetsExamplePanel(SiDenseVContainer):
         button_description = SiSimpleButton(self)
         button_description.attachment().setText("查看更多")
         button_description.attachment().load(SiGlobal.siui.icons["fi-rr-apps-add"])
-        button_description.setColor("#2C2930")
+        button_description.colorGroup().assign(SiColor.BUTTON_OFF, "#2C2930")
+        button_description.reloadStyleSheet()
         button_description.resize(210, 32)
 
         # 查看更多容器
@@ -354,7 +355,9 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         button_description = SiSimpleButton(self)
         button_description.attachment().setText("查看更多")
         button_description.attachment().load(SiGlobal.siui.icons["fi-rr-apps-add"])
-        button_description.setColor("#2C2930")
+        button_description.colorGroup().assign(SiColor.BUTTON_OFF, "#2C2930")
+        button_description.colorGroup().assign(SiColor.BUTTON_ON, "#2C2930")
+        button_description.reloadStyleSheet()
         button_description.resize(210, 32)
 
         # 查看更多容器
