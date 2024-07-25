@@ -7,17 +7,24 @@
   一个运行方法，从而开始函数链的运行。
 
 · 函数链
-      类的实例，提供添加函数，指定传入参数，提供开
-  始运行方法，提供被执行函数的返回值管理。
+      提供添加函数，指定传入参数，提供开始运行方法，
+  提供被执行函数的返回值管理。
 """
 
 import functools
-from typing import Union, Tuple, Callable
+from typing import Callable, Tuple, Union
+
+
+class SiFunctionChainResultReader:
+    def __init__(self, func):
+        self.func = func
+
+    def run(self, index):
+        return self.func(index)
 
 
 class SiFunctionChain:
     def __init__(self):
-        self.trigger = None
         self.functions = []
         self.args = {}
         self.results = {}
@@ -27,24 +34,34 @@ class SiFunctionChain:
         return str(func)
 
     @staticmethod
-    def to_tuple(result):
-        if isinstance(result, tuple):
-            return result
+    def to_subscriptable(data):
+        if hasattr(data, "__getitem__"):
+            return data
         else:
-            return (result,)
+            return (data,)
 
-    def addFunction(self,
-                    function,
-                    args: list,
-                    kwargs: dict):
+    def addFunc(self,
+                function,
+                args: Union[list, None] = None,
+                kwargs: Union[dict, None] = None):
         """
         Add function to this function chain
         :param function: the function you want to add
         :param args: arguments that will be input
         :param kwargs: keyword arguments that will be input
         """
+        if args is None:
+            args = self.fromResult()
+        if kwargs is None:
+            kwargs = {}
         self.functions.append(function)
         self.args[self.get_name(function)] = [args, kwargs]
+
+    def getFunc(self, index=None):
+        if index is None:
+            return self.functions
+        else:
+            return self.functions[index]
 
     def fromResult(self,                                                                    # noqa: C901
                    slice_spec: Union[Union[int, None], Tuple[Union[int, None], Union[int, None]]] = None,
@@ -77,7 +94,7 @@ class SiFunctionChain:
             if func_index is None:
                 if func_index_relative is None:
                     def result(_):
-                        return self.results[self.get_name(self.trigger)]
+                        return self.results["__trigger__"]
                 else:
                     def result(index):
                         return self.results[self.get_name(self.functions[index + func_index_relative])]
@@ -89,32 +106,46 @@ class SiFunctionChain:
                 return self.results[self.get_name(func)]
 
         if isinstance(slice_spec, tuple):
-            return lambda index: result(index)[slice_spec[0]:slice_spec[1]]
+            return SiFunctionChainResultReader(lambda index: result(index)[slice_spec[0]:slice_spec[1]])
         elif isinstance(slice_spec, int):
-            return lambda index: result(index)[slice_spec]
+            return SiFunctionChainResultReader(lambda index: result(index)[slice_spec])
         else:
             raise TypeError(f"Unexpected spec type: {type(slice_spec)}")
 
-    def execute(self, *args, **kwargs):
+    def _execute_and_replace(self, data, index):
+        if isinstance(data, list):
+            return [self._execute_and_replace(item, index) for item in data]
+        elif isinstance(data, tuple):
+            return tuple(self._execute_and_replace(item, index) for item in data)
+        elif isinstance(data, dict):
+            return {key: self._execute_and_replace(value, index) for key, value in data.items()}
+        elif isinstance(data, SiFunctionChainResultReader):
+            return data.run(index)
+        else:
+            return data
+
+    def execute(self, args):
         # store the result of the trigger of this chain
-        self.results[self.get_name(self.trigger)] = [args, kwargs]
+        self.results["__trigger__"] = args
 
         for index, func in enumerate(self.functions):
             key = self.get_name(func)
-            self.results[key] = self.to_tuple(func(*self.args[key][0], **self.args[key][1]))
+            executed_args = self._execute_and_replace(self.args[key][0], index)
+            executed_kwargs = self._execute_and_replace(self.args[key][1], index)
+
+            self.results[key] = self.to_subscriptable(func(*executed_args, **executed_kwargs))
 
         return self.results
 
 
-# 触发器函数修饰器
-def trigger(chain: SiFunctionChain):
+# decorator of the trigger function
+def chain_trigger(chain: SiFunctionChain):
     def decorator(trigger_func):
         @functools.wraps(trigger_func)
         def wrapper(*args, **kwargs):
             result = trigger_func(*args, **kwargs)
 
             # execute function chain, input the triggers' result as the arguments
-            chain.trigger = trigger_func
             chain_result = chain.execute(result)
             return chain_result
 
@@ -123,12 +154,13 @@ def trigger(chain: SiFunctionChain):
     return decorator
 
 
+"""
 def func_todo_1(number):
     print("Function 1 is called", number)
+    return number + 1
 
-
-def func_todo_2():
-    print("Function 2 is called")
+def func_todo_2(number):
+    print("Function 2 is called", number)
 
 
 def func_todo_3():
@@ -136,16 +168,20 @@ def func_todo_3():
 
 
 test_function_chain = SiFunctionChain()
-test_function_chain.addFunction(func_todo_1, [], {})
-test_function_chain.addFunction(func_todo_2, [], {})
-test_function_chain.addFunction(func_todo_3, [], {})
+test_function_chain.addFunc(func_todo_1, [test_function_chain.fromResult(slice_spec=1)])
+test_function_chain.addFunc(func_todo_2, [test_function_chain.fromResult(slice_spec=0, func_index=0)])
+test_function_chain.addFunc(func_todo_3, [])
 
 
 @trigger(test_function_chain)
-def test_trigger_function(number):
-    print("Trigger is called, number", number)
-    return number
+def test_trigger_function(number_a, number_b):
+    print("Trigger is called, number A,B", number_a, number_b)
+    return number_a, number_b, number_a + number_b, number_a * number_b
 
 
 # 测试开始
-test_trigger_function(114514)
+test_trigger_function(114514, 1919)
+test_trigger_function(123, 345)
+
+print(test_function_chain.results)
+"""
