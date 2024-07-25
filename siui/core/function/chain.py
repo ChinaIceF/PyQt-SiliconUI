@@ -12,6 +12,7 @@
 """
 
 import functools
+import random
 from typing import Callable, Tuple, Union
 
 
@@ -23,9 +24,17 @@ class SiFunctionChainResultReader:
         return self.func(index)
 
 
+class CalcLater:
+    def __init__(self, func):
+        self.func = func
+
+    def run(self):
+        return self.func()
+
+
 class SiFunctionChain:
     def __init__(self):
-        self.functions = []
+        self.key_and_func = []
         self.args = {}
         self.results = {}
 
@@ -54,14 +63,15 @@ class SiFunctionChain:
             args = self.fromResult()
         if kwargs is None:
             kwargs = {}
-        self.functions.append(function)
-        self.args[self.get_name(function)] = [args, kwargs]
+        key = str(function) + str(random.random())
+        self.key_and_func.append([key, function])
+        self.args[key] = [args, kwargs]
 
     def getFunc(self, index=None):
         if index is None:
-            return self.functions
+            return [func[1] for func in self.key_and_func]
         else:
-            return self.functions[index]
+            return self.key_and_func[index][1]
 
     def fromResult(self,                                                                    # noqa: C901
                    slice_spec: Union[Union[int, None], Tuple[Union[int, None], Union[int, None]]] = None,
@@ -97,13 +107,13 @@ class SiFunctionChain:
                         return self.results["__trigger__"]
                 else:
                     def result(index):
-                        return self.results[self.get_name(self.functions[index + func_index_relative])]
+                        return self.results[self.key_and_func[index + func_index_relative][0]]
             else:
                 def result(_):
-                    return self.results[self.get_name(self.functions[func_index])]
+                    return self.results[self.key_and_func[func_index][0]]
         else:
             def result(_):
-                return self.results[self.get_name(func)]
+                return self.results[func[0]]
 
         if isinstance(slice_spec, tuple):
             return SiFunctionChainResultReader(lambda index: result(index)[slice_spec[0]:slice_spec[1]])
@@ -121,6 +131,8 @@ class SiFunctionChain:
             return {key: self._execute_and_replace(value, index) for key, value in data.items()}
         elif isinstance(data, SiFunctionChainResultReader):
             return data.run(index)
+        elif isinstance(data, CalcLater):
+            return data.run()
         else:
             return data
 
@@ -128,8 +140,8 @@ class SiFunctionChain:
         # store the result of the trigger of this chain
         self.results["__trigger__"] = args
 
-        for index, func in enumerate(self.functions):
-            key = self.get_name(func)
+        for index, key_and_func in enumerate(self.key_and_func):
+            key, func = key_and_func
             executed_args = self._execute_and_replace(self.args[key][0], index)
             executed_kwargs = self._execute_and_replace(self.args[key][1], index)
 
@@ -173,7 +185,7 @@ test_function_chain.addFunc(func_todo_2, [test_function_chain.fromResult(slice_s
 test_function_chain.addFunc(func_todo_3, [])
 
 
-@trigger(test_function_chain)
+@chain_trigger(test_function_chain)
 def test_trigger_function(number_a, number_b):
     print("Trigger is called, number A,B", number_a, number_b)
     return number_a, number_b, number_a + number_b, number_a * number_b
