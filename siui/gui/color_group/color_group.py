@@ -98,7 +98,7 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.BUTTON_FLASH, "#20FFFFFF")
 
         # 按钮外观
-        self.assign(SiColor.BUTTON_BG, "#49454D")
+        self.assign(SiColor.BUTTON_PANEL, "#49454D")
         self.assign(SiColor.BUTTON_SHADOW, SiColor.mix(self.fromToken(SiColor.INTERFACE_BG_C), "#000000", 0.9))
 
         self.assign(SiColor.BUTTON_THEMED_BG_A, "#52389a")
@@ -106,8 +106,18 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.BUTTON_THEMED_SHADOW_A, "#372456")
         self.assign(SiColor.BUTTON_THEMED_SHADOW_B, "#562b49")
 
+        self.assign(SiColor.BUTTON_ON, "#372456")
+        self.assign(SiColor.BUTTON_OFF, "#562b49")
+
+        self.assign(SiColor.RATIO_BUTTON_UNCHECKED, "#1C191F")
+        self.assign(SiColor.RATIO_BUTTON_CHECKED, "#855198")
+
+        self.assign(SiColor.CHECKBOX_SVG, "#000000")
+        self.assign(SiColor.CHECKBOX_UNCHECKED, "#AFAFAF")
+        self.assign(SiColor.CHECKBOX_CHECKED, "#855198")
+
         # 长按按钮
-        self.assign(SiColor.BUTTON_LONG_PRESS_BG, "#9F3652")
+        self.assign(SiColor.BUTTON_LONG_PRESS_PANEL, "#9F3652")
         self.assign(SiColor.BUTTON_LONG_PRESS_SHADOW, "#6a3246")
         self.assign(SiColor.BUTTON_LONG_PRESS_PROGRESS, "#DA3462")
 

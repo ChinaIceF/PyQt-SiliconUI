@@ -6,6 +6,7 @@ from siui.core.animation import SiAnimationGroup, SiExpAnimation
 from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
+from siui.gui.color_group import SiColorGroup
 
 
 # 2024.7.2 添加动画支持标签
@@ -20,6 +21,9 @@ class ABCAnimatedLabel(QLabel):
         self.hint = ""
         self.fixed_stylesheet = ""
         self.silicon_widget_flags = {}
+
+        # 颜色组
+        self.color_group = SiColorGroup(reference=SiGlobal.siui.colors)
 
         self.x1, self.y1, self.x2, self.y2 = None, None, None, None
         self.move_anchor = QPoint(0, 0)  # 移动时的基准点位置
@@ -96,6 +100,13 @@ class ABCAnimatedLabel(QLabel):
         if flag.name not in self.silicon_widget_flags.keys():
             return False
         return self.silicon_widget_flags[flag.name]
+
+    def colorGroup(self):
+        """
+        Get the color group of this widget
+        :return: SiColorGroup
+        """
+        return self.color_group
 
     def getAnimationGroup(self):
         """

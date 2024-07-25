@@ -37,7 +37,7 @@ class SiColor(Enum):
     BUTTON_FLASH = auto()
 
     # 按钮外观
-    BUTTON_BG = auto()
+    BUTTON_PANEL = auto()
     BUTTON_SHADOW = auto()
 
     BUTTON_THEMED_BG_A = auto()
@@ -45,10 +45,20 @@ class SiColor(Enum):
     BUTTON_THEMED_SHADOW_A = auto()
     BUTTON_THEMED_SHADOW_B = auto()
 
+    BUTTON_ON = auto()
+    BUTTON_OFF = auto()
+
     # LONG_PRESS_BUTTON
-    BUTTON_LONG_PRESS_BG = auto()
+    BUTTON_LONG_PRESS_PANEL = auto()
     BUTTON_LONG_PRESS_SHADOW = auto()
     BUTTON_LONG_PRESS_PROGRESS = auto()
+
+    RATIO_BUTTON_UNCHECKED = auto()
+    RATIO_BUTTON_CHECKED = auto()
+
+    CHECKBOX_SVG = auto()
+    CHECKBOX_UNCHECKED = auto()
+    CHECKBOX_CHECKED = auto()
 
     # 开关
     SWITCH_DEACTIVATE = auto()

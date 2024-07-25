@@ -31,7 +31,7 @@ class SiScrollArea(SiLabel):
 
         # 定义滚动动画，为了让所有控件都能用上滚动动画
         self.widget_scroll_animation = SiExpAnimation(self)
-        self.widget_scroll_animation.setFactor(1/6)
+        self.widget_scroll_animation.setFactor(1/9)
         self.widget_scroll_animation.setBias(1)
         self.widget_scroll_animation.setCurrent([0, 0])
         self.widget_scroll_animation.setTarget([0, 0])

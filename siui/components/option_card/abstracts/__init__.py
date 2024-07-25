@@ -1,1 +1,1 @@
-from siui.components.option_card.abstracts.option_card import *
+from siui.components.option_card.abstracts.option_card import ABCSiOptionCardPlane

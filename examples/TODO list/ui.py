@@ -21,7 +21,7 @@ from siui.components.widgets import (
 from siui.core.animation import SiExpAnimation
 from siui.core.color import Color
 from siui.core.globals import NewGlobal, SiGlobal
-from siui.gui.tooltip import ToolTipWindow
+from siui.components.tooltip.tooltip import ToolTipWindow
 
 # 创建删除队列
 SiGlobal.todo_list = NewGlobal()

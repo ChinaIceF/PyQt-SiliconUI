@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QWidget
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
 from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
 
