@@ -11,14 +11,12 @@ from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.gui.color_group import SiColorGroup
 
-SiGlobal.siui.colors
 
 class ABCButton(QPushButton):
     """
     抽象按钮控件\n
     提供点击、按下、松开的信号和色彩动画
     """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         super().setStyleSheet("background-color: transparent")
