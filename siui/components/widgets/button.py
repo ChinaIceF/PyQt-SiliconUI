@@ -6,8 +6,8 @@ from siui.components.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
 from siui.core.animation import SiExpAnimation
 from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
-from siui.gui import GlobalFont, SiFont
 from siui.core.silicon import Si
+from siui.gui.font import GlobalFont, SiFont
 
 
 class SiPushButton(ABCPushButton):

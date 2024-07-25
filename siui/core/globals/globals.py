@@ -1,5 +1,8 @@
 import time
 
+from siui.gui.color_group import DarkColorGroup
+from siui.gui.font import GlobalFontDict
+
 
 class SiliconUIGlobal:
     """
@@ -11,7 +14,7 @@ class SiliconUIGlobal:
 
     # 颜色字典，存储全部动态设置的颜色
     # 值为 RRGGBB 或 AARRGGBB 色号
-    colors = {}
+    colors = DarkColorGroup()
 
     # 图标字典，储存所有 SVG 类型的图标数据
     # 值为 SVG信息的 bytes
@@ -23,7 +26,7 @@ class SiliconUIGlobal:
 
     # 字体字典，储存所有字体
     # 值为 QFont 类型的字体
-    fonts = {}
+    fonts = GlobalFontDict.fonts
 
     def loadWindows(self, dictionary):
         SiliconUIGlobal.windows.update(dictionary)

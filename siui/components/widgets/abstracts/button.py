@@ -7,9 +7,11 @@ from PyQt5.QtWidgets import QPushButton
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel
 from siui.core.animation import SiExpAnimation
-from siui.core.globals import SiGlobal
 from siui.core.color import SiColor
+from siui.core.globals import SiGlobal
+from siui.gui.color_group import SiColorGroup
 
+SiGlobal.siui.colors
 
 class ABCButton(QPushButton):
     """
@@ -23,6 +25,9 @@ class ABCButton(QPushButton):
 
         # 工具提示内容
         self.hint = ""
+
+        # 颜色组
+        self.color_group = SiColorGroup(reference=SiGlobal.siui.colors)
 
         # 颜色，通常 color_a 是按钮主题色
         self.color_a = None

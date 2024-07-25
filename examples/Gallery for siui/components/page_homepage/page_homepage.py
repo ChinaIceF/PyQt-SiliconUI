@@ -242,11 +242,13 @@ class WidgetsExamplePanel(SiDenseVContainer):
 
         # 滑条
         self.option_card_slider = WidgetsExampleOptionCardPlane(self)
-        self.option_card_slider.setTitle("输入框")
+        self.option_card_slider.setTitle("滑条")
         self.option_card_slider.setFixedWidth(300)
 
         slider = SiSliderH(self)
         slider.setFixedHeight(32)
+        slider.setMinimum(-20)
+        slider.setMaximum(20)
 
         self.option_card_slider.body().setAdjustWidgetsSize(True)
         self.option_card_slider.body().addWidget(slider)

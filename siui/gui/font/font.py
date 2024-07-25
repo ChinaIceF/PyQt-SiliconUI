@@ -3,7 +3,6 @@ from enum import Enum
 
 from PyQt5.QtGui import QFont
 
-from siui.core.globals import SiGlobal
 
 class SiFont:
     @staticmethod
@@ -75,6 +74,5 @@ class GlobalFontDict:
     fonts["L_BOLD_ITALIC"] = GlobalFont.L_BOLD_ITALIC.value
     fonts["XL_BOLD_ITALIC"] = GlobalFont.XL_BOLD_ITALIC.value
 
-
-# 合并到全局字体
-SiGlobal.siui.fonts.update(GlobalFontDict.fonts)
+    def get_font_dict(self):
+        return self.fonts

@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QDesktopWidget, QMainWindow
 from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel, SiSimpleButton
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
-from siui.gui import ToolTipWindow
+from siui.components.tooltip import ToolTipWindow
 
 from .page_view import PageView
 
