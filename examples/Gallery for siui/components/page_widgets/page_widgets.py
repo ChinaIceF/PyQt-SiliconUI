@@ -1,3 +1,5 @@
+import time
+
 import numpy
 from PyQt5.QtCore import Qt
 
