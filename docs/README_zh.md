@@ -37,7 +37,7 @@ start start.py
 
 
 ## 许可证
-PyQt-SiliconUI 使用 [GPLv3](LICENSE) 许可证
+PyQt-SiliconUI 使用 [GPLv3](../LICENSE) 许可证
 
 版权所有 © 2024 by ChinaIceF.
 
