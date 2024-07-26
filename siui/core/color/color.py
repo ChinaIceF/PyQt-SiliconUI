@@ -68,8 +68,9 @@ class SiColor(Enum):
     SCROLL_BAR = auto()
 
     # 进度条
-    PROGRESS_BAR_LOADING = auto()
+    PROGRESS_BAR_TRACK = auto()
     PROGRESS_BAR_PROCESSING = auto()
+    PROGRESS_BAR_COMPLETING = auto()
     PROGRESS_BAR_PAUSED = auto()
     PROGRESS_BAR_FLASHES = auto()
 

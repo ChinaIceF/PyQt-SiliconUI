@@ -15,11 +15,11 @@ class SiProgressBar(SiLabel):
         super().__init__(*args, **kwargs)
 
         # 状态
-        self.state_ = "loading"
+        self.state_ = "processing"
         self.state_colors = {
-            "loading": SiGlobal.siui.colors["PROGRESS_BAR_LOADING"],
-            "processing": SiGlobal.siui.colors["PROGRESS_BAR_PROCESSING"],
-            "paused": SiGlobal.siui.colors["PROGRESS_BAR_PAUSED"],
+            "processing": SiColor.PROGRESS_BAR_PROCESSING,
+            "completing": SiColor.PROGRESS_BAR_COMPLETING,
+            "paused": SiColor.PROGRESS_BAR_PAUSED,
         }
 
         # 已完成的百分比值
@@ -27,38 +27,48 @@ class SiProgressBar(SiLabel):
 
         # 进度条框架
         self.frame = SiLabel(self)
-        self.frame.setFixedHeight(6)
 
         # 进度条轨道
         self.track = SiLabel(self.frame)
-        self.track.setFixedStyleSheet("border-radius: 3px")
 
         # 进度条已完成部分
         self.progress = SiLabel(self.frame)
         self.progress.setFixedHeight(6)
-        self.progress.setFixedStyleSheet("border-radius: 3px")
 
         # 闪烁层
         self.flash = SiLabel(self.frame)
         self.flash.setFixedHeight(6)
         self.flash.getAnimationGroup().fromToken("color").setFactor(1/32)
-        self.flash.setFixedStyleSheet("border-radius: 3px")
+
+        # 轨道高度，这决定了进度条进度显示部分的高度
+        self.track_height = None
+        self.setTrackHeight(4)
+
+    def setTrackHeight(self, height: int):
+        """
+        Set the height of the progress bar's track
+        :param height: height
+        """
+        self.track_height = height
+
+        self.frame.setFixedHeight(height)
+        self.progress.setFixedHeight(height)
+        self.flash.setFixedHeight(height)
+
+        self.track.setFixedStyleSheet(f"border-radius: {height//2}px")
+        self.progress.setFixedStyleSheet(f"border-radius: {height//2}px")
+        self.flash.setFixedStyleSheet(f"border-radius: {height//2}px")
 
     def setState(self, state: str):
         """
         设置进度条状态
-        :param state: loading（加载）, processing（处理）, paused（暂停）
+        :param state: processing（加载）, completing（完成中）, paused（暂停）
         """
-        if state not in ["loading", "processing", "paused"]:
+        if state not in ["processing", "completing", "paused"]:
             raise KeyError(f"Invalid state: {state}")
 
         self.state_ = state
         self.reloadStyleSheet()
-
-        if state in ["loading", "processing"]:
-            self.flash_timer.start()
-        else:
-            self.flash_timer.stop()
 
     def state(self):
         """
@@ -78,6 +88,11 @@ class SiProgressBar(SiLabel):
         self.valueChanged.emit(self.value_)
         self._resize_progress_according_to_value()  # 设置进度位置
 
+        if self.value() == 1.0:
+            self.setState("completing")
+        elif self.state() == "completing":
+            self.setState("processing")
+
         # 刷新工具提示
         self.refreshHint()
 
@@ -95,14 +110,14 @@ class SiProgressBar(SiLabel):
         """
         刷新工具提示，重写该方法以自定义工具提示
         """
-        self.setHint(f"{round(self.value()*100, 2)}<span style='color: {SiGlobal.siui.colors['TEXT_C']}'>%</span>")
+        self.setHint(f"{round(self.value()*100, 2)}<span style='color: {self.colorGroup().fromToken(SiColor.TEXT_C)}'>%</span>")  # noqa: E501
 
     def _flash(self):
         """
         触发进度闪烁
         """
-        self.flash.setColor(SiColor.trans(SiGlobal.siui.colors["PROGRESS_BAR_FLASHES"], 0.8))
-        self.flash.setColorTo(SiColor.trans(SiGlobal.siui.colors["PROGRESS_BAR_FLASHES"], 0.0))
+        self.flash.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.PROGRESS_BAR_FLASHES), 0.8))
+        self.flash.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.PROGRESS_BAR_FLASHES), 0.0))
 
     def _resize_progress_according_to_value(self):
         """
@@ -117,8 +132,8 @@ class SiProgressBar(SiLabel):
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
 
-        self.track.setStyleSheet("background-color: {}".format(SiGlobal.siui.colors["INTERFACE_BG_B"]))
-        self.progress.setColorTo(self.state_colors[self.state()])  # noqa: UP032
+        self.track.setStyleSheet(f"background-color: {self.colorGroup().fromToken(SiColor.PROGRESS_BAR_TRACK)}")
+        self.progress.setColorTo(self.colorGroup().fromToken(self.state_colors[self.state()]))  # noqa: UP032
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

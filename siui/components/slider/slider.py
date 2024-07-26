@@ -53,10 +53,13 @@ class SiSliderH(QAbstractSlider):
         # 滑轨遮罩
         self.mask.setStyleSheet("background-color: {}".format(SiGlobal.siui.colors["INTERFACE_BG_B"]))
 
-    def setValue(self, value: int):
+    def setValue(self,
+                 value: int,
+                 move_to: bool = True):
         """
         设置滑块的值并移动滑块到指定位置
         :param value: 值
+        :param move_to: Use moving animation
         """
         super().setValue(value)
         self.handle.setHint(str(self.value()))
@@ -94,6 +97,10 @@ class SiSliderH(QAbstractSlider):
     def _moved_handler(self, _):   # 当滑块 moved 信号发射时，调用这个方法
         self.handle.setColor(SiColor.mix(self.color_high, self.color_low, self._rate_from_handle_pos()))
         self.mask.setGeometry(self.handle.x(), 0, self.track.width() - self.handle.x(), self.mask.height())
+
+    def showEvent(self, a0):
+        super().showEvent(a0)
+        self._move_handle_according_to_value(move_to=False)  # 刷新滑块位置，防止因初始化时长度未设置成功而导致设置的位置与实际位置不同  # noqa: E501
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

@@ -125,8 +125,9 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.SCROLL_BAR, "#50FFFFFF")
 
         # 进度条
-        self.assign(SiColor.PROGRESS_BAR_LOADING, "#66CBFF")
-        self.assign(SiColor.PROGRESS_BAR_PROCESSING, "#FED966")
+        self.assign(SiColor.PROGRESS_BAR_TRACK, "#252229")
+        self.assign(SiColor.PROGRESS_BAR_PROCESSING, "#66CBFF")
+        self.assign(SiColor.PROGRESS_BAR_COMPLETING, "#FED966")
         self.assign(SiColor.PROGRESS_BAR_PAUSED, "#7F7F7F")
         self.assign(SiColor.PROGRESS_BAR_FLASHES, "#FFFFFF")
 
