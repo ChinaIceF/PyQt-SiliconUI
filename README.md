@@ -8,6 +8,9 @@
   <h2 align="center">PyQt-SiliconUI</h2>
   <p align="center">基于 PyQt5 的UI框架，灵动、优雅而轻便</p>
 
+<p align="center">
+    English | <a href="docs/README_zh.md">简体中文</a>
+</p>
 
 ## 写在最前面
 ### 重构已完成
