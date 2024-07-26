@@ -9,7 +9,7 @@
   <p align="center">基于 PyQt5 的UI框架，灵动、优雅而轻便</p>
 
 <p align="center">
-    <a href="README.md">English</a> | 简体中文
+    <a href="../README.md">English</a> | 简体中文
 </p>
 
 ## 安装
