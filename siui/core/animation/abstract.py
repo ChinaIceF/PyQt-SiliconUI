@@ -26,6 +26,16 @@ class ABCAnimation(QObject):
         self.timer.setInterval(int(1000/global_fps))
         self.timer.timeout.connect(self._process)  # 每经历 interval 时间，传入函数就被触发一次
 
+        # 构建行为计时器
+        self.action_timer = QTimer()
+        self.action_timer.setSingleShot(True)
+
+    def setFPS(self, fps: int):
+        """
+        set fps of the animation.
+        """
+        self.timer.setInterval(int(1000 / fps))
+
     def setTarget(self, target):
         """
         Set the target of the animation.
@@ -80,19 +90,25 @@ class ABCAnimation(QObject):
         """
         return self.timer.isActive()
 
-    def stop(self):
+    def stop(self, delay=None):
         """
-        Stop the animation immediately
-        :return:
+        Stop the animation
+        :param delay: msec, time delay before this action works
         """
-        self.timer.stop()
+        if delay is None:
+            self.timer.stop()
+        else:
+            self.action_timer.singleShot(delay, self.timer.stop)
 
-    def start(self):
+    def start(self, delay=None):
         """
-        Start the animation by using self.timer.start()
-        :return:
+        Start the animation
+        :param delay: msec, time delay before this action works
         """
-        self.timer.start()
+        if delay is None:
+            self.timer.start()
+        else:
+            self.action_timer.singleShot(delay, self.timer.start)
 
     def setInterval(self, interval: int):
         """
@@ -102,11 +118,11 @@ class ABCAnimation(QObject):
         """
         self.timer.setInterval(interval)
 
-    def try_to_start(self):
+    def try_to_start(self, delay=None):
         """
         Start the animation but check whether the animation is active first
         :return: whether this attempt is succeeded.
         """
         if not self.isActive():
-            self.start()
+            self.start(delay=delay)
         return not self.isActive()
