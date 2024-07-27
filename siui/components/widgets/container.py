@@ -1,4 +1,5 @@
 from siui.components.widgets import SiLabel
+import random
 
 
 class ABCDenseContainer(SiLabel):
@@ -456,3 +457,104 @@ class SiStackedContainer(SiLabel):
 
         for widget in self.widgets:
             widget.resize(event.size())
+
+
+class ABCSiFlowContainer(SiLabel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.widgets_ = []
+        self.spacing = [8, 8]
+
+    def widgets(self):
+        """
+        Get the widgets of this container
+        :return: widgets
+        """
+        return self.widgets_
+
+    def addWidget(self, widget, ani=True):
+        """
+        Add widget to this container
+        :param widget: widget
+        :param ani: whether to use animation when arranging widgets
+        """
+        widget.setParent(self)
+        self.widgets_.append(widget)
+        self.arrangeWidgets(ani=ani)
+
+    def removeWidget(self,
+                     widget,
+                     has_existence_check: bool = True,
+                     delete_later: bool = True):
+        """
+        Remove a widget in self.widgets()
+        :param widget: widget you want to remove
+        :param has_existence_check: whether check the existence of the widget in self.widgets()
+        :param delete_later: whether run widget.deleteLater()
+        """
+        if widget in self.widgets_:
+            self.widgets_.pop(self.widgets_.index(widget))
+            if delete_later:
+                widget.deleteLater()
+        elif has_existence_check:
+            raise ValueError(f"Widget {widget} is not in this container")
+        else:
+            pass
+
+    def arrangeWidgets(self, ani=True):
+        """
+        Arrange widgets as its order in self.widgets()
+        """
+        raise NotImplementedError("arrangeWidgets method must be rewrote.")
+
+
+class SiFlowContainer(ABCSiFlowContainer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.line_height = 32
+        self.preferred_height = 0
+
+    def adjustSize(self):
+        self.resize(self.width(), self.preferred_height)
+
+    def shuffle(self, ani=True):
+        """
+        shuffle widgets and rearrange them
+        :param ani: whether to use animation when arranging widgets
+        """
+        random.shuffle(self.widgets_)
+        self.arrangeWidgets(ani=ani)
+
+    def changeIndex(self, from_index, to_index):
+        widget = self.widgets()[from_index]
+        self.widgets_[from_index] = None
+        self.widgets_ = self.widgets_[:to_index] + [widget] + self.widgets_[to_index:]
+        self.widgets_.pop(self.widgets_.index(None))
+        self.arrangeWidgets(no_ani_exceptions=[widget])
+
+    def setLineHeight(self, height, rearrange=True):
+        self.line_height = height
+        if rearrange:
+            self.arrangeWidgets(ani=True)
+
+    def arrangeWidgets(self, ani=True, no_ani_exceptions=None):
+        used_width = 0
+        used_height = 0
+        if no_ani_exceptions is None:
+            no_ani_exceptions = []
+
+        for widget in self.widgets_:
+            widget.setOpacity(0.2)
+            widget.setOpacityTo(1)
+            if self.width() - used_width - self.spacing[0] < widget.width():  # warp when haven't got enough space.
+                used_height += self.spacing[1] + self.line_height
+                used_width = 0
+            if (ani is False) or (widget in no_ani_exceptions):
+                widget.getAnimationGroup().fromToken("move").stop()
+                widget.move(used_width + self.spacing[0], used_height)
+            else:
+                widget.moveTo(used_width + self.spacing[0], used_height)
+            used_width += widget.width() + self.spacing[0]
+
+        self.preferred_height = used_height + self.spacing[1] + self.line_height

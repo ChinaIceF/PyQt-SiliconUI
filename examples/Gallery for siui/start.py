@@ -5,7 +5,7 @@ from ui import MySiliconApp
 
 import siui
 
-# siui.gui.set_scale_factor(1)
+siui.gui.set_scale_factor(1)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -219,6 +219,8 @@ class ABCAnimatedLabel(QLabel):
         :param opacity: 透明度值 0-1
         :return:
         """
+        self.animation_opacity.setCurrent(opacity)
+
         self.opacity_effect = QGraphicsOpacityEffect()
         self.opacity_effect.setOpacity(opacity)
         self.setGraphicsEffect(self.opacity_effect)

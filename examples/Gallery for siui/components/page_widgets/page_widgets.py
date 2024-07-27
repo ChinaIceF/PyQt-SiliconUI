@@ -12,6 +12,7 @@ from siui.components.widgets import (
     SiCheckBox,
     SiDenseHContainer,
     SiDraggableLabel,
+    SiFlowContainer,
     SiIconLabel,
     SiLabel,
     SiLongPressButton,
@@ -215,7 +216,7 @@ class ExampleWidgets(SiPage):
             # 扁平类按钮
             self.flat_buttons = OptionCardPlaneForWidgetDemos(self)
             self.flat_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                             "/widgets/button.py")
+                                               "/widgets/button.py")
             self.flat_buttons.setTitle("扁平类按钮")
             self.flat_buttons.setFixedWidth(600)
 
@@ -280,7 +281,7 @@ class ExampleWidgets(SiPage):
             # 单选框
             self.radio_buttons = OptionCardPlaneForWidgetDemos(self)
             self.radio_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                               "/widgets/button.py")
+                                                "/widgets/button.py")
             self.radio_buttons.setTitle("单选框")
             self.radio_buttons.setFixedWidth(600)
 
@@ -330,21 +331,17 @@ class ExampleWidgets(SiPage):
             # 滑条
             self.sliders = OptionCardPlaneForWidgetDemos(self)
             self.sliders.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                               "/widgets/slider/slider.py")
+                                          "/widgets/slider/slider.py")
             self.sliders.setTitle("滑条")
             self.sliders.setFixedWidth(600)
 
             self.demo_slider = SiSliderH(self)
             self.demo_slider.resize(500, 32)
-
-            self.demo_slider_narrow = SiSliderH(self)
-            self.demo_slider_narrow.resize(500, 32)
-            self.demo_slider_narrow.setMinimum(0)
-            self.demo_slider_narrow.setMaximum(10)
-            self.demo_slider_narrow.setValue(10, move_to=False)
+            self.demo_slider.setMinimum(-20)
+            self.demo_slider.setMaximum(20)
+            self.demo_slider.setValue(0, move_to=False)
 
             self.sliders.body().addWidget(self.demo_slider)
-            self.sliders.body().addWidget(self.demo_slider_narrow)
             self.sliders.body().addPlaceholder(12)
             self.sliders.adjustSize()
 
@@ -408,6 +405,62 @@ class ExampleWidgets(SiPage):
             self.sliders.adjustSize()
 
             group.addWidget(self.sliders)
+
+        # 流式布局
+        with self.titled_widgets_group as group:
+            group.addTitle("流式布局")
+
+            # 进度条
+            self.flow_container = OptionCardPlaneForWidgetDemos(self)
+            self.flow_container.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                 "/widgets/progress_bar/progress_bar.py")
+            self.flow_container.setTitle("流式布局")
+            self.flow_container.setFixedWidth(800)
+
+            self.demo_flow_container = SiFlowContainer(self)
+            self.demo_flow_container.setFixedWidth(700)
+
+            for _ in range(15):
+                label = SiLabel(self)
+                button = SiSimpleButton(label)
+                button.attachment().setFont(SiGlobal.siui.fonts["S_NORMAL"])
+                button.attachment().setText(str(round(random.random(), int(6 * random.random() + 2))))
+                button.colorGroup().assign(SiColor.BUTTON_OFF, button.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+                button.setFixedHeight(32)
+                button.adjustSize()
+                label.getAnimationGroup().fromToken("move").setFPS(60)
+                label.resize(button.size())
+
+                self.demo_flow_container.addWidget(label, ani=False)
+
+            label.getAnimationGroup().fromToken("opacity").ticked.connect(print)
+
+            self.demo_flow_container.adjustSize()
+
+            container_flow_cont_buttons = SiDenseHContainer(self)
+            container_flow_cont_buttons.setFixedHeight(32)
+
+            self.ctrl_flow_cont_shuffle = SiPushButton(self)
+            self.ctrl_flow_cont_shuffle.resize(128, 32)
+            self.ctrl_flow_cont_shuffle.attachment().setText("打乱顺序")
+            self.ctrl_flow_cont_shuffle.clicked.connect(lambda: self.demo_flow_container.shuffle(ani=True))
+
+            self.ctrl_flow_cont_last_to_front = SiPushButton(self)
+            self.ctrl_flow_cont_last_to_front.resize(128, 32)
+            self.ctrl_flow_cont_last_to_front.attachment().setText("末尾元素提前")
+            self.ctrl_flow_cont_last_to_front.clicked.connect(
+                lambda: self.demo_flow_container.changeIndex(len(self.demo_flow_container.widgets())-1, 0)
+            )
+
+            container_flow_cont_buttons.addWidget(self.ctrl_flow_cont_shuffle)
+            container_flow_cont_buttons.addWidget(self.ctrl_flow_cont_last_to_front)
+
+            self.flow_container.body().addWidget(self.demo_flow_container)
+            self.flow_container.body().addWidget(container_flow_cont_buttons)
+            self.flow_container.body().addPlaceholder(12)
+            self.flow_container.adjustSize()
+
+            group.addWidget(self.flow_container)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)
