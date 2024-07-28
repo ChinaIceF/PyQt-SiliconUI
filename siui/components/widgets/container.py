@@ -144,6 +144,30 @@ class SiDenseHContainer(ABCDenseContainer):
 
         raise ValueError(f"Widget provided ({widget}) is not in this container.")
 
+    def getPreferredSize(self):
+        """
+        Get preferred size of this container
+        :return: [width, height]
+        """
+        # 创建计数器
+        left_used = 0
+        right_used = 0
+
+        # 获取各侧宽度
+        for obj in self.widgets_left:
+            left_used += obj.width() + self.spacing
+        for obj in self.widgets_right:
+            right_used += obj.width() + self.spacing
+
+        # 计算总共的宽度，并处理
+        total_used = left_used + right_used
+        total_used -= 0 if self.widgets_left == [] else self.spacing  # 删去多余的 spacing
+        total_used -= 0 if self.widgets_right == [] else self.spacing  # 删去多余的 spacing
+        total_used += self.spacing if self.widgets_left + self.widgets_right == [] else 0  # 防止极端情况下两侧控件紧贴
+        preferred_w = total_used
+
+        return preferred_w, self.height()
+
     def adjustWidgetsGeometry(self):
         """
         调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器s
@@ -204,22 +228,8 @@ class SiDenseHContainer(ABCDenseContainer):
         根据自身具有的控件调整自身的大小
         :return:
         """
-        # 创建计数器
-        left_used = 0
-        right_used = 0
-
-        # 获取各侧宽度
-        for obj in self.widgets_left:
-            left_used += obj.width() + self.spacing
-        for obj in self.widgets_right:
-            right_used += obj.width() + self.spacing
-
-        # 计算总共的宽度，并处理
-        total_used = left_used + right_used
-        total_used -= 0 if self.widgets_left == [] else self.spacing  # 删去多余的 spacing
-        total_used -= 0 if self.widgets_right == [] else self.spacing  # 删去多余的 spacing
-        total_used += self.spacing if self.widgets_left + self.widgets_right == [] else 0  # 防止极端情况下两侧控件紧贴
-        preferred_w = total_used
+        # 获取最佳尺寸
+        preferred_w, _ = self.getPreferredSize()
 
         # 计算所有控件中高度最大的，以保证所有控件在容器中
         # preferred_h = max([obj.height() for obj in self.widgets_left + self.widgets_right])
@@ -274,6 +284,30 @@ class SiDenseVContainer(ABCDenseContainer):
             self.widgets_top = self.widgets_top[:index] + [widget] + self.widgets_top[index:]
 
         self.adjustSize()
+
+    def getPreferredSize(self):
+        """
+        Get preferred size of this container
+        :return: [width, height]
+        """
+        # 创建计数器
+        bottom_used = 0
+        top_used = 0
+
+        # 获取各侧高度
+        for obj in self.widgets_bottom:
+            bottom_used += obj.height() + self.spacing
+        for obj in self.widgets_top:
+            top_used += obj.height() + self.spacing
+
+        # 计算总共的高度，并处理
+        total_used = bottom_used + top_used
+        total_used -= 0 if self.widgets_bottom == [] else self.spacing  # 删去多余的 spacing
+        total_used -= 0 if self.widgets_top == [] else self.spacing  # 删去多余的 spacing
+        total_used += self.spacing if (self.widgets_bottom != [] and self.widgets_top != []) else 0  # 防止两侧控件紧贴
+        preferred_h = total_used
+
+        return self.width(), preferred_h
 
     def getSpareSpace(self):
         """
@@ -369,22 +403,8 @@ class SiDenseVContainer(ABCDenseContainer):
         根据自身具有的控件调整自身的大小
         :return:
         """
-        # 创建计数器
-        bottom_used = 0
-        top_used = 0
-
-        # 获取各侧高度
-        for obj in self.widgets_bottom:
-            bottom_used += obj.height() + self.spacing
-        for obj in self.widgets_top:
-            top_used += obj.height() + self.spacing
-
-        # 计算总共的高度，并处理
-        total_used = bottom_used + top_used
-        total_used -= 0 if self.widgets_bottom == [] else self.spacing  # 删去多余的 spacing
-        total_used -= 0 if self.widgets_top == [] else self.spacing  # 删去多余的 spacing
-        total_used += self.spacing if (self.widgets_bottom != [] and self.widgets_top != []) else 0  # 防止两侧控件紧贴
-        preferred_h = total_used
+        # 获取最佳尺寸
+        _, preferred_h = self.getPreferredSize()
 
         # 计算所有控件中宽度最大的，以保证所有控件在容器中
         # preferred_w = max([obj.width() for obj in self.widgets_bottom + self.widgets_top])

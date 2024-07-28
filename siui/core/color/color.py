@@ -30,6 +30,8 @@ class SiColor(Enum):
     TITLE_INDICATOR = auto()
     TITLE_HIGHLIGHT = auto()
 
+    MENU_BG = auto()
+
     # 按钮
     # 按钮鼠标相关
     BUTTON_IDLE = auto()

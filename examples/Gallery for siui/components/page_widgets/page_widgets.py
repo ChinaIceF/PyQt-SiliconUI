@@ -3,8 +3,10 @@ import time
 
 import numpy
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor
 
 from siui.components import SiTitledWidgetGroup
+from siui.components.menu import SiMenu
 from siui.components.page import SiPage
 from siui.components.progress_bar import SiProgressBar
 from siui.components.slider import SiSliderH
@@ -471,6 +473,36 @@ class ExampleWidgets(SiPage):
             self.flow_container.adjustSize()
 
             group.addWidget(self.flow_container)
+
+        # 菜单测试
+        with self.titled_widgets_group as group:
+            group.addTitle("菜单测试")
+
+            # 进度条
+            self.menus = OptionCardPlaneForWidgetDemos(self)
+            self.menus.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                        "/widgets/progress_bar/progress_bar.py")
+            self.menus.setTitle("菜单测试")
+            self.menus.setFixedWidth(800)
+
+            menu_test = SiMenu()
+            menu_test.setFixedWidth(240)
+            menu_test.addOption("添加新项目", SiGlobal.siui.icons["fi-rr-apps-add"], None)
+            menu_test.addOption("从服务器同步", SiGlobal.siui.icons["fi-rr-cloud-download"], None)
+            menu_test.addOption("共享", SiGlobal.siui.icons["fi-rr-network"], None)
+            menu_test.setShowIcon(True)
+            menu_test.setIndex(1)
+
+            self.demo_show_menu_button = SiPushButton(self)
+            self.demo_show_menu_button.resize(128, 32)
+            self.demo_show_menu_button.attachment().setText("显示菜单")
+            self.demo_show_menu_button.clicked.connect(lambda: menu_test.unfold(QCursor.pos().x(), QCursor.pos().y()))
+
+            self.menus.body().addWidget(self.demo_show_menu_button)
+            self.menus.body().addPlaceholder(12)
+            self.menus.adjustSize()
+
+            group.addWidget(self.menus)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)

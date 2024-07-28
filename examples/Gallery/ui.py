@@ -16,12 +16,12 @@ from SiliconUI.SiOverlay import *
 import SiliconUI.SiGlobal as SiGlobal
 
 import components as Components
-from siui.gui import ToolTipWindow
+from siui.components.tooltip import ToolTipWindow
 import siui
 
 # 加载图标
 import icons
-SiGlobal.icons = icons.ICON_DICT('./icons/icons.dat', siui.core.globals.SiGlobal.siui.colors["SVG_A"])
+SiGlobal.icons = icons.ICON_DICT('./icons/icons.dat', siui.core.globals.SiGlobal.siui.colors["TEXT_A"])
 
 class UserInterface(QMainWindow):
     def __init__(self):
@@ -168,7 +168,7 @@ class UserInterface(QMainWindow):
         self.stackarea.addTab(self.widgets_example, SiGlobal.icons.get('fi-rr-layout-fluid'), '控件')
         self.stackarea.addTab(self.layouts_example, SiGlobal.icons.get('fi-rr-copy'), '布局')
         self.stackarea.addTab(self.glaze_example, SiGlobal.icons.get('fi-rr-list'), 'Silicon Glaze 示例')
-        self.stackarea.addTab(self.experiment_field, SiGlobal.icons.get('fi-rr-bulb'), '实验场')
+        #self.stackarea.addTab(self.experiment_field, SiGlobal.icons.get('fi-rr-bulb'), '实验场')
 
         self.stackarea.addTab(self.options, SiGlobal.icons.get('fi-rr-settings'), '设置', 'bottom')
         self.stackarea.addTab(self.update_logs, SiGlobal.icons.get('fi-rr-e-learning'), '更新日志', 'bottom')
