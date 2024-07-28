@@ -3,7 +3,9 @@ from PyQt5.QtWidgets import QWidget
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
 from siui.core.color import SiColor
+from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
+from siui.gui.color_group import SiColorGroup
 
 
 # 2024.7.3 添加动画控件
@@ -17,6 +19,9 @@ class SiWidget(QWidget):
 
         self.fixed_stylesheet = ""
         self.silicon_widget_flags = {}
+
+        # 颜色组
+        self.color_group = SiColorGroup(reference=SiGlobal.siui.colors)
 
         self.x1, self.y1, self.x2, self.y2 = None, None, None, None
         self.move_anchor = QPoint(0, 0)  # 移动时的基准点位置
@@ -100,6 +105,13 @@ class SiWidget(QWidget):
         :return: 动画组
         """
         return self.animation_group
+
+    def colorGroup(self):
+        """
+        Get the color group of this widget
+        :return: SiColorGroup
+        """
+        return self.color_group
 
     def setFixedStyleSheet(self, fixed_stylesheet: str):
         """
