@@ -421,24 +421,29 @@ class ExampleWidgets(SiPage):
             self.demo_flow_container.setFixedWidth(700)
 
             for _ in range(15):
-                label = SiLabel(self)
+                label = SiDraggableLabel(self)
                 button = SiSimpleButton(label)
                 button.attachment().setFont(SiGlobal.siui.fonts["S_NORMAL"])
                 button.attachment().setText(str(round(random.random(), int(6 * random.random() + 2))))
                 button.colorGroup().assign(SiColor.BUTTON_OFF, button.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
                 button.setFixedHeight(32)
                 button.adjustSize()
+                button.setAttribute(Qt.WA_TransparentForMouseEvents)
                 label.getAnimationGroup().fromToken("move").setFPS(60)
                 label.resize(button.size())
-
                 self.demo_flow_container.addWidget(label, ani=False)
-
-            label.getAnimationGroup().fromToken("opacity").ticked.connect(print)
-
+                self.demo_flow_container.regDraggableWidget(label)
             self.demo_flow_container.adjustSize()
 
             container_flow_cont_buttons = SiDenseHContainer(self)
             container_flow_cont_buttons.setFixedHeight(32)
+
+            self.ctrl_flow_cont_fade_in = SiPushButton(self)
+            self.ctrl_flow_cont_fade_in.resize(128, 32)
+            self.ctrl_flow_cont_fade_in.attachment().setText("淡入")
+            self.ctrl_flow_cont_fade_in.clicked.connect(
+                lambda: self.demo_flow_container.arrangeWidgets(ani=False, all_fade_in=True)
+            )
 
             self.ctrl_flow_cont_shuffle = SiPushButton(self)
             self.ctrl_flow_cont_shuffle.resize(128, 32)
@@ -449,9 +454,14 @@ class ExampleWidgets(SiPage):
             self.ctrl_flow_cont_last_to_front.resize(128, 32)
             self.ctrl_flow_cont_last_to_front.attachment().setText("末尾元素提前")
             self.ctrl_flow_cont_last_to_front.clicked.connect(
-                lambda: self.demo_flow_container.changeIndex(len(self.demo_flow_container.widgets())-1, 0)
+                lambda: self.demo_flow_container.insertToByIndex(
+                    len(self.demo_flow_container.widgets())-1,
+                    0,
+                    no_ani_exceptions=[self.demo_flow_container.widgets()[len(self.demo_flow_container.widgets())-1]]
+                )
             )
 
+            container_flow_cont_buttons.addWidget(self.ctrl_flow_cont_fade_in)
             container_flow_cont_buttons.addWidget(self.ctrl_flow_cont_shuffle)
             container_flow_cont_buttons.addWidget(self.ctrl_flow_cont_last_to_front)
 

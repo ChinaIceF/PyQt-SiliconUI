@@ -1,5 +1,10 @@
-from siui.components.widgets import SiLabel
 import random
+from typing import Union
+
+from PyQt5.Qt import QColor
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+
+from siui.components.widgets import SiLabel
 
 
 class ABCDenseContainer(SiLabel):
@@ -514,47 +519,134 @@ class SiFlowContainer(ABCSiFlowContainer):
         super().__init__(*args, **kwargs)
         self.line_height = 32
         self.preferred_height = 0
+        self.dragging_widget = None
 
     def adjustSize(self):
         self.resize(self.width(), self.preferred_height)
 
-    def shuffle(self, ani=True):
+    def regDraggableWidget(self, widget):
+        """
+        register a widget as a draggable widget
+        """
+        def on_dragging(pos):
+            if self.dragging_widget is None:
+                # drop shadow effect
+                shadow = QGraphicsDropShadowEffect()
+                shadow.setColor(QColor(0, 0, 0, 80))
+                shadow.setOffset(0, 0)
+                shadow.setBlurRadius(32)
+                widget.setGraphicsEffect(shadow)
+                self.dragging_widget = widget
+            self._on_widget_dragged(widget)
+
+        widget.dragged.connect(on_dragging)
+
+    def _on_widget_dragged(self, dragged_widget):
+        self.on_dragging = True
+        dragged_widget.raise_()
+        center_point = dragged_widget.geometry().center()
+
+        for widget in self.widgets():
+            if widget == dragged_widget:
+                continue
+
+            if (widget.geometry().contains(center_point) and
+                    (widget.getAnimationGroup().fromToken("move").isActive() is False)):
+
+                # insert dragged widget to where this widget is.
+                self.insertToByIndex(self.widgets().index(dragged_widget),
+                                     self.widgets().index(widget),
+                                     no_arrange_exceptions=[dragged_widget])
+                break
+
+    def shuffle(self, **kwargs):
         """
         shuffle widgets and rearrange them
-        :param ani: whether to use animation when arranging widgets
         """
         random.shuffle(self.widgets_)
-        self.arrangeWidgets(ani=ani)
+        self.arrangeWidgets(**kwargs)
 
-    def changeIndex(self, from_index, to_index):
+    def swapByIndex(self, from_index, to_index):
+        widget_a = self.widgets()[from_index]
+        widget_b = self.widgets()[to_index]
+        self.widgets_[from_index] = widget_b
+        self.widgets_[to_index] = widget_a
+        self.arrangeWidgets()
+
+    def insertToByIndex(self, from_index, to_index, **kwargs):
         widget = self.widgets()[from_index]
         self.widgets_[from_index] = None
-        self.widgets_ = self.widgets_[:to_index] + [widget] + self.widgets_[to_index:]
+
+        if from_index > to_index:
+            self.widgets_ = self.widgets_[:to_index] + [widget] + self.widgets_[to_index:]
+        else:
+            self.widgets_ = self.widgets_[:to_index+1] + [widget] + self.widgets_[to_index+1:]
+
         self.widgets_.pop(self.widgets_.index(None))
-        self.arrangeWidgets(no_ani_exceptions=[widget])
+        self.arrangeWidgets(**kwargs)
 
     def setLineHeight(self, height, rearrange=True):
         self.line_height = height
         if rearrange:
             self.arrangeWidgets(ani=True)
 
-    def arrangeWidgets(self, ani=True, no_ani_exceptions=None):
+    def arrangeWidgets(self,
+                       ani: bool = True,
+                       all_fade_in: bool = False,
+                       no_arrange_exceptions: Union[list, None] = None,
+                       no_ani_exceptions: Union[list, None] = None):
+        """
+        :param ani: whether widgets perform animation when arranging them
+        :param all_fade_in: let all widgets fade in when arranging them
+        :param no_arrange_exceptions: widgets that will not be arranged
+        :param no_ani_exceptions: widgets that will not perform moving animation.
+        """
         used_width = 0
         used_height = 0
+        delay_counter = 0
+        if no_arrange_exceptions is None:
+            no_arrange_exceptions = []
         if no_ani_exceptions is None:
             no_ani_exceptions = []
 
         for widget in self.widgets_:
-            widget.setOpacity(0.2)
-            widget.setOpacityTo(1)
-            if self.width() - used_width - self.spacing[0] < widget.width():  # warp when haven't got enough space.
+            # warp when haven't got enough space.
+            if self.width() - used_width - self.spacing[0] < widget.width():
                 used_height += self.spacing[1] + self.line_height
                 used_width = 0
+
+            # perform fade in effect
+            if all_fade_in or (widget in no_ani_exceptions):
+                widget.getAnimationGroup().fromToken("opacity").stop()
+                widget.setOpacity(0)
+                widget.getAnimationGroup().fromToken("opacity").setTarget(1)
+                widget.getAnimationGroup().fromToken("opacity").start(delay=200 + delay_counter)
+            delay_counter += 10
+
+            # if we needn't perform animations...
             if (ani is False) or (widget in no_ani_exceptions):
-                widget.getAnimationGroup().fromToken("move").stop()
-                widget.move(used_width + self.spacing[0], used_height)
+                if (widget in no_arrange_exceptions) is False:
+                    widget.getAnimationGroup().fromToken("move").stop()
+                    widget.move(used_width + self.spacing[0], used_height)
+
+            # perform animations
             else:
-                widget.moveTo(used_width + self.spacing[0], used_height)
+                if (widget in no_arrange_exceptions) is False:
+                    widget.moveTo(used_width + self.spacing[0], used_height)
+
+            # add width of this widget to counter
             used_width += widget.width() + self.spacing[0]
 
         self.preferred_height = used_height + self.spacing[1] + self.line_height
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        for widget in self.widgets_:
+            widget.setMoveLimits(0, 0, self.width(), self.height())
+
+    def mouseReleaseEvent(self, ev):
+        super().mouseReleaseEvent(ev)
+        if self.dragging_widget is not None:
+            self.dragging_widget.setGraphicsEffect(None)
+            self.dragging_widget = None
+            self.arrangeWidgets()
