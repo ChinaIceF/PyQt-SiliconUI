@@ -1,1 +1,1 @@
-from siui.components.menu.abstracts.menu import ABCSiMenuOption, ABCSiMenu
+from siui.components.menu.abstracts.menu import ABCSiMenu

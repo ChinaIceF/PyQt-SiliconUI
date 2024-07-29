@@ -27,10 +27,6 @@ class ABCButton(QPushButton):
         # 颜色组
         self.color_group = SiColorGroup(reference=SiGlobal.siui.colors)
 
-        # 颜色，通常 color_a 是按钮主题色
-        self.color_a = None
-        self.color_b = None
-
         # 占位用的被绑定部件，显示在按钮正中央
         self.attachment_ = SiWidget()
 
@@ -38,7 +34,7 @@ class ABCButton(QPushButton):
         self.attachment_shifting = numpy.array([0, 0])
 
         # 启用点击动画，通常在仅需要按下和抬起事件时禁用
-        self.enabled_click_animation = True
+        self.flash_on_clicked = True
 
         # 绑定点击事件到点击槽函数，这将触发点击动画
         self.clicked.connect(self._on_self_clicked)
@@ -48,14 +44,14 @@ class ABCButton(QPushButton):
         self.hover_highlight.stackUnder(self)  # 置于按钮的底部
         self.hover_highlight.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_HOVER), 0.0))
         self.hover_highlight.getAnimationGroup().fromToken("color").setBias(0.2)
-        self.hover_highlight.getAnimationGroup().fromToken("color").setFactor(1 / 8)
+        self.hover_highlight.getAnimationGroup().fromToken("color").setFactor(1/8)
 
         # 提供点击时的颜色变化动画
-        self.flash = SiLabel(self)
-        self.flash.stackUnder(self)  # 置于按钮的底部
-        self.flash.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_FLASH), 0.0))
-        self.flash.getAnimationGroup().fromToken("color").setBias(0.2)
-        self.flash.getAnimationGroup().fromToken("color").setFactor(1 / 8)
+        self.flash_label = SiLabel(self)
+        self.flash_label.stackUnder(self)  # 置于按钮的底部
+        self.flash_label.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_FLASH), 0.0))
+        self.flash_label.getAnimationGroup().fromToken("color").setBias(0.2)
+        self.flash_label.getAnimationGroup().fromToken("color").setFactor(1 / 8)
 
     def setAttachmentShifting(self, x, y):
         """
@@ -108,7 +104,7 @@ class ABCButton(QPushButton):
         :return:
         """
         self.hover_highlight.setFixedStyleSheet(style_sheet)
-        self.flash.setFixedStyleSheet(style_sheet)
+        self.flash_label.setFixedStyleSheet(style_sheet)
 
     def setStyleSheet(self, style_sheet):  # 劫持这个按钮的stylesheet，只能设置outfit的样式表
         """
@@ -118,7 +114,7 @@ class ABCButton(QPushButton):
         :return:
         """
         self.hover_highlight.setStyleSheet(style_sheet)
-        self.flash.setStyleSheet(style_sheet)
+        self.flash_label.setStyleSheet(style_sheet)
 
     def reloadStyleSheet(self):
         """
@@ -128,21 +124,29 @@ class ABCButton(QPushButton):
         """
         return
 
-    def setEnableClickAnimation(self, b: bool):
+    def flashLabel(self):
+        """ get the label that preform flashing animations """
+        return self.flash_label
+
+    def setFlashOnClicked(self, b: bool):
         """
         设置是否启用点击动画
         :param b: 是否启用
         :return:
         """
-        self.enabled_click_animation = b
+        self.flash_on_clicked = b
 
     def _on_self_clicked(self):
-        if self.enabled_click_animation is True:
+        if self.flash_on_clicked is True:
             self._run_clicked_ani()
 
     def _run_clicked_ani(self):
-        self.flash.setColor(self.color_group.fromToken(SiColor.BUTTON_FLASH))
-        self.flash.setColorTo(SiColor.trans(self.color_group.fromToken(SiColor.BUTTON_FLASH), 0))
+        self.flash_label.setColor(self.color_group.fromToken(SiColor.BUTTON_FLASH))
+        self.flash_label.setColorTo(SiColor.trans(self.color_group.fromToken(SiColor.BUTTON_FLASH), 0))
+
+    def flash(self):
+        """ play flash animation once but do nothing else """
+        self._run_clicked_ani()
 
     def enterEvent(self, event):
         super().enterEvent(event)
@@ -178,7 +182,7 @@ class ABCButton(QPushButton):
         w, h = size.width(), size.height()
 
         self.hover_highlight.resize(size)
-        self.flash.resize(size)
+        self.flash_label.resize(size)
 
         self.attachment_.move((w - self.attachment_.width()) // 2 + self.attachment_shifting[0],
                               (h - self.attachment_.height()) // 2 + self.attachment_shifting[1])
@@ -224,7 +228,7 @@ class ABCPushButton(ABCButton):
         w, h = size.width(), size.height()
 
         self.hover_highlight.resize(w, h - 3)
-        self.flash.resize(w, h - 3)
+        self.flash_label.resize(w, h - 3)
 
         self.body_top.resize(w, h - 3)
         self.body_bottom.resize(w, h)
@@ -313,7 +317,7 @@ class ABCToggleButton(ABCButton):
 
         # 闪光和悬停置顶，防止设定不透明颜色时没有闪光
         self.hover_highlight.raise_()
-        self.flash.raise_()
+        self.flash_label.raise_()
 
     def setBorderRadius(self, r: int):
         """

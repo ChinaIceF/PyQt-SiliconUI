@@ -14,7 +14,7 @@ class SiOptionCardLinear(SiLabel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.setFixedStyleSheet("background-color:{};border-radius:4px".format(SiGlobal.siui.colors["INTERFACE_BG_C"]))
+        self.setFixedStyleSheet("background-color:{}; border-radius:4px".format(SiGlobal.siui.colors["INTERFACE_BG_C"]))
 
         # 设定最小高度
         self.setMinimumHeight(80)
@@ -91,6 +91,7 @@ class SiOptionCardLinear(SiLabel):
         self.widgets_container.addWidget(widget, "right")
 
     def adjustSize(self):
+        self.container.resize(self.container.width(), self.text_label.height())
         self.container.adjustSize()
         self.resize(self.container.size())
 
