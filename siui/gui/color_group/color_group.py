@@ -67,7 +67,7 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.THEME_TRANSITION_A, "#52389a")
         self.assign(SiColor.THEME_TRANSITION_B, "#9c4e8b")
 
-        self.assign(SiColor.SVG_NORMAL, "#FFFFFF")
+        self.assign(SiColor.SVG_NORMAL, "#DFDFDF")
         self.assign(SiColor.SVG_THEME, "#855198")
 
         self.assign(SiColor.TOOLTIP_BG, "#ef413a47")

@@ -25,7 +25,7 @@ class SiPushButton(ABCPushButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.label.setFont(SiGlobal.siui.fonts["S_BOLD"])
+        self.label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
@@ -88,7 +88,7 @@ class SiLongPressButton(ABCPushButton):
         self.pressed_state = False
 
         # 关闭自身触发点击的动画，以仅在按下超时后子再触发
-        self.setEnableClickAnimation(False)
+        self.setFlashOnClicked(False)
 
         # 实例化按压线程，并绑定槽函数
         self.hold_thread = LongPressThread(self)
@@ -99,7 +99,7 @@ class SiLongPressButton(ABCPushButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+        self.label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
@@ -158,7 +158,7 @@ class SiToggleButton(ABCToggleButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.label.setFont(SiGlobal.siui.fonts["S_BOLD"])
+        self.label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 绑定到主体

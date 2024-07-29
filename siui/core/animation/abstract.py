@@ -4,10 +4,10 @@ from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
 global_fps = 60
 
+
 class Curve:
     def LINEAR(self, x):
         return x
-
 
 
 class ABCAnimation(QObject):

@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+
 from enum import Enum
 
 from PyQt5.QtGui import QFont
@@ -7,11 +7,13 @@ from PyQt5.QtGui import QFont
 class SiFont:
     @staticmethod
     def getFont(
-            families: Sequence = ["Microsoft YaHei"],
+            families=None,
             size: int = 14,
             weight: QFont.Weight = QFont.Weight.Normal,
             italic: bool = False,
     ) -> QFont:
+        if families is None:
+            families = ["Segoe UI", "Microsoft YaHei", "PingFang SC"]
         font = QFont()
         font.setFamilies(families)
         font.setPixelSize(size)
@@ -38,6 +40,17 @@ class GlobalFont(Enum):
     M_NORMAL_ITALIC = SiFont.getFont(size=20, weight=QFont.Weight.Normal, italic=True)
     L_NORMAL_ITALIC = SiFont.getFont(size=24, weight=QFont.Weight.Normal, italic=True)
     XL_NORMAL_ITALIC = SiFont.getFont(size=32, weight=QFont.Weight.Normal, italic=True)
+
+    # Demi Bold
+    S_DEMI_BOLD = SiFont.getFont(size=14, weight=QFont.Weight.DemiBold, italic=False)
+    M_DEMI_BOLD = SiFont.getFont(size=20, weight=QFont.Weight.DemiBold, italic=False)
+    L_DEMI_BOLD = SiFont.getFont(size=24, weight=QFont.Weight.DemiBold, italic=False)
+    XL_DEMI_BOLD = SiFont.getFont(size=32, weight=QFont.Weight.DemiBold, italic=False)
+
+    S_DEMI_BOLD_ITALIC = SiFont.getFont(size=14, weight=QFont.Weight.DemiBold, italic=True)
+    M_DEMI_BOLD_ITALIC = SiFont.getFont(size=20, weight=QFont.Weight.DemiBold, italic=True)
+    L_DEMI_BOLD_ITALIC = SiFont.getFont(size=24, weight=QFont.Weight.DemiBold, italic=True)
+    XL_DEMI_BOLD_ITALIC = SiFont.getFont(size=32, weight=QFont.Weight.DemiBold, italic=True)
 
     # Bold
     S_BOLD = SiFont.getFont(size=14, weight=QFont.Weight.Bold, italic=False)

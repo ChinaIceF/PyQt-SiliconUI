@@ -66,7 +66,7 @@ class ExampleHomepage(SiPage):
         self.subtitle = SiLabel(self.head_area)
         self.subtitle.setGeometry(64, 72, 500, 48)
         self.subtitle.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-        self.subtitle.setText("基于 PyQt5 的 UI 框架，灵动、优雅而轻便")
+        self.subtitle.setText("A powerful and artistic UI library based on PyQt5")
         self.subtitle.setStyleSheet("color: {}".format(SiColor.trans(SiGlobal.siui.colors["TEXT_A"], 0.9)))
         self.subtitle.setFont(SiGlobal.siui.fonts["S_BOLD"])
 
@@ -79,19 +79,19 @@ class ExampleHomepage(SiPage):
 
         # 添加卡片
         self.option_card_project = ThemedOptionCardPlane(self)
-        self.option_card_project.setTitle("项目主页")
+        self.option_card_project.setTitle("Github Repo")
         self.option_card_project.setFixedSize(218, 270)
         self.option_card_project.setThemeColor("#855198")
         self.option_card_project.setDescription(
-            "访问 GitHub 项目主页，以获取最新版本，报告错误，建言献策，参与开发，查询文档和须知，寻求他人答疑解惑</strong>")  # noqa: E501
+            "check PyQt-SiliconUI Repository on Github to get the latest release, report errors, provide suggestions and more.")  # noqa: E501
         self.option_card_project.setURL("https://github.com/ChinaIceF/PyQt-SiliconUI")
 
         self.option_card_example = ThemedOptionCardPlane(self)
-        self.option_card_example.setTitle("应用示例")
+        self.option_card_example.setTitle("Examples")
         self.option_card_example.setFixedSize(218, 270)
         self.option_card_example.setThemeColor("#7573aa")
-        self.option_card_example.setDescription("学习并快速上手，了解如何使用 SiliconUI 开发你的第一件作品")
-        self.option_card_example.setURL("https://github.com/ChinaIceF/PyQt-SiliconUI")
+        self.option_card_example.setDescription("Check examples to understand how to use PyQt-SiliconUI to develop your first work.")  # noqa: E501
+        self.option_card_example.setURL("Examples are Coming soon...")
 
         # 添加到水平容器
         self.container_for_cards.addPlaceholder(64 - 32)
@@ -123,10 +123,10 @@ class ExampleHomepage(SiPage):
         # 控件的线性选项卡
 
         self.titled_widget_group.setSpacing(16)
-        self.titled_widget_group.addTitle("控件")
+        self.titled_widget_group.addTitle("Widgets")
         self.titled_widget_group.addWidget(WidgetsExamplePanel(self))
 
-        self.titled_widget_group.addTitle("选项卡")
+        self.titled_widget_group.addTitle("Option Cards")
         self.titled_widget_group.addWidget(OptionCardsExamplePanel(self))
 
         self.titled_widget_group.addPlaceholder(64)
@@ -154,12 +154,12 @@ class WidgetsExampleOptionCardPlane(SiOptionCardPlane):
         self.button_bug = SiSimpleButton(self)
         self.button_bug.attachment().load(SiGlobal.siui.icons["fi-rr-bug"])
         self.button_bug.resize(32, 32)
-        self.button_bug.setHint("报告问题")
+        self.button_bug.setHint("Report bugs")
 
         self.button_source_code = SiSimpleButton(self)
         self.button_source_code.attachment().load(SiGlobal.siui.icons["fi-rr-link"])
         self.button_source_code.resize(32, 32)
-        self.button_source_code.setHint("查看源代码")
+        self.button_source_code.setHint("Source code")
 
         self.header().addWidget(self.button_source_code, "right")
         self.header().addWidget(self.button_bug, "right")
@@ -180,23 +180,23 @@ class WidgetsExamplePanel(SiDenseVContainer):
         # 上面的两个选项卡，按钮和开关
         # 按钮
         self.option_card_button = WidgetsExampleOptionCardPlane(self)
-        self.option_card_button.setTitle("按钮")
+        self.option_card_button.setTitle("Push Button")
 
         option_card_button_container_h = SiDenseHContainer(self)
         option_card_button_container_h.setFixedHeight(32)
 
         button_a = SiPushButton(self)
         button_a.resize(128, 32)
-        button_a.attachment().setText("普通按钮")
+        button_a.attachment().setText("Push Button")
 
         button_b = SiPushButton(self)
         button_b.resize(128, 32)
         button_b.setUseTransition(True)
-        button_b.attachment().setText("主题按钮")
+        button_b.attachment().setText("Themed")
 
         button_c = SiLongPressButton(self)
         button_c.resize(128, 32)
-        button_c.attachment().setText("长按按钮")
+        button_c.attachment().setText("Hold-to-Confirm")
 
         option_card_button_container_h.addWidget(button_a)
         option_card_button_container_h.addWidget(button_b)
@@ -206,7 +206,7 @@ class WidgetsExamplePanel(SiDenseVContainer):
 
         # 开关
         option_card_switch = WidgetsExampleOptionCardPlane(self)
-        option_card_switch.setTitle("开关")
+        option_card_switch.setTitle("Switch")
         option_card_switch.setFixedWidth(300)
 
         option_card_switch_container_h = SiDenseHContainer(self)
@@ -232,7 +232,7 @@ class WidgetsExamplePanel(SiDenseVContainer):
         # 下面的两个选项卡，输入框和滑动条
         # 输入框
         self.option_card_edit = WidgetsExampleOptionCardPlane(self)
-        self.option_card_edit.setTitle("输入框")
+        self.option_card_edit.setTitle("Line Edit")
         self.option_card_edit.setFixedWidth(300)
 
         line_edit = SiLineEdit(self)
@@ -242,7 +242,7 @@ class WidgetsExamplePanel(SiDenseVContainer):
 
         # 滑条
         self.option_card_slider = WidgetsExampleOptionCardPlane(self)
-        self.option_card_slider.setTitle("滑条")
+        self.option_card_slider.setTitle("Slider")
         self.option_card_slider.setFixedWidth(300)
 
         slider = SiSliderH(self)
@@ -259,7 +259,7 @@ class WidgetsExamplePanel(SiDenseVContainer):
 
         # 解释按钮
         button_description = SiSimpleButton(self)
-        button_description.attachment().setText("查看更多")
+        button_description.attachment().setText("See More")
         button_description.attachment().load(SiGlobal.siui.icons["fi-rr-apps-add"])
         button_description.colorGroup().assign(SiColor.BUTTON_OFF, "#2C2930")
         button_description.reloadStyleSheet()
@@ -292,14 +292,14 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         # 线性选项卡
         attached_button_a = SiPushButton(self)
         attached_button_a.resize(128, 32)
-        attached_button_a.attachment().setText("绑定按钮")
+        attached_button_a.attachment().setText("Attachment")
 
         attached_button_b = SiPushButton(self)
         attached_button_b.resize(32, 32)
         attached_button_b.attachment().load(SiGlobal.siui.icons["fi-rr-portrait"])
 
         self.option_card_linear_attaching = SiOptionCardLinear(self)
-        self.option_card_linear_attaching.setTitle("绑定控件", "线性选项卡提供水平容器，可以添加任意控件，不限数量")
+        self.option_card_linear_attaching.setTitle("Attach Widgets", "The linear option card provides a horizontal container where any control can be added,\nwith no limit on the number")
         self.option_card_linear_attaching.load(SiGlobal.siui.icons["fi-rr-sign-in"])
         self.option_card_linear_attaching.addWidget(attached_button_a)
         self.option_card_linear_attaching.addWidget(attached_button_b)
@@ -310,34 +310,34 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         # 平面选项卡
         header_button = SiSimpleButton(self)
         header_button.setFixedHeight(32)
-        header_button.attachment().setText("Header 区域")
+        header_button.attachment().setText("Header Attachment")
         header_button.attachment().load(SiGlobal.siui.icons["fi-rr-portrait"])
         header_button.adjustSize()
 
         body_label = SiLabel(self)
         body_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         body_label.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_B"]))
-        body_label.setText("平面选项卡提供了三个容器：header，body，footer，每个容器都可以独立访问"
-                           "\n其中 header 和 footer 是水平容器，body 是垂直容器"
-                           "\n这个容器是平面选项卡的 body，在这里尽情添加控件吧！")
+        body_label.setText("SiOptionCardPlane provides three containers: header, body, and footer."
+                           "\nHeader and Footer are SiDenseHContainer, while body is a SiDenseVContainer."
+                           "\nHere is the body container, where you can realize your interface function. Enjoy it!")
 
         footer_button_a = SiSimpleButton(self)
         footer_button_a.resize(32, 32)
         footer_button_a.attachment().load(SiGlobal.siui.icons["fi-rr-pencil"])
-        footer_button_a.setHint("绘制")
+        footer_button_a.setHint("Draw")
 
         footer_button_b = SiSimpleButton(self)
         footer_button_b.resize(32, 32)
         footer_button_b.attachment().load(SiGlobal.siui.icons["fi-rr-eye-dropper"])
-        footer_button_b.setHint("取色器")
+        footer_button_b.setHint("Eyedropper")
 
         footer_button_c = SiSimpleButton(self)
         footer_button_c.resize(32, 32)
         footer_button_c.attachment().load(SiGlobal.siui.icons["fi-rr-disk"])
-        footer_button_c.setHint("保存")
+        footer_button_c.setHint("Save")
 
         self.option_card_plane_beginning = SiOptionCardPlane(self)
-        self.option_card_plane_beginning.setTitle("平面选项卡")
+        self.option_card_plane_beginning.setTitle("Plane Option Card")
         self.option_card_plane_beginning.header().addWidget(header_button, side="right")
         self.option_card_plane_beginning.body().addWidget(body_label, side="top")
         self.option_card_plane_beginning.footer().setFixedHeight(64)
@@ -353,7 +353,7 @@ class OptionCardsExamplePanel(SiDenseVContainer):
 
         # 解释按钮
         button_description = SiSimpleButton(self)
-        button_description.attachment().setText("查看更多")
+        button_description.attachment().setText("See More")
         button_description.attachment().load(SiGlobal.siui.icons["fi-rr-apps-add"])
         button_description.colorGroup().assign(SiColor.BUTTON_OFF, "#2C2930")
         button_description.colorGroup().assign(SiColor.BUTTON_ON, "#2C2930")
