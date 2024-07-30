@@ -124,11 +124,11 @@ class SiWidget(QWidget):
 
     def _move_ani_handler(self, arr):
         x, y = arr
-        super().move(int(x), int(y))
+        self.move(int(x), int(y))
 
     def _resize_ani_handler(self, arr):
         w, h = arr
-        super().resize(int(w), int(h))
+        self.resize(int(w), int(h))
 
     def _opacity_ani_handler(self, opacity: float):
         self.setOpacity(opacity)
@@ -272,6 +272,9 @@ class SiWidget(QWidget):
 
     def setMoveAnchor(self, x, y):
         self.move_anchor = QPoint(x, y)
+
+    def moveAnchor(self):
+        return self.move_anchor
 
     def move(self, *args):  # 重写移动方法，从而按照锚点的位置移动控件
         point = QPoint(*args)

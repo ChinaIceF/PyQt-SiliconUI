@@ -516,8 +516,10 @@ class ExampleWidgets(SiPage):
             self.demo_combobox.addOption("唱跳Rap篮球")
             self.demo_combobox.addOption("鸡你实在是太美")
             self.demo_combobox.addOption("我们一起学鸡叫")
+            for i in range(20):
+                self.demo_combobox.addOption(str(i))
             self.demo_combobox.menu().setShowIcon(False)
-            self.demo_combobox.menu().setIndex(0)
+            self.demo_combobox.menu().setIndex(3)
 
             self.menus.body().addWidget(self.demo_show_menu_button)
             self.menus.body().addWidget(self.demo_combobox)

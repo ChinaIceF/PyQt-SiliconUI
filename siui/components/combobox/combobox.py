@@ -2,6 +2,7 @@
 from PyQt5.QtCore import Qt
 
 from siui.components.combobox.abstracts import ABCSiComboBox
+from siui.components.menu.abstracts.ani_manager import AnimationManager
 from siui.components.menu.menu import SiMenu
 from siui.components.widgets.button import SiSimpleButton
 from siui.components.widgets.label import SiLabel
@@ -16,6 +17,7 @@ class SiComboBox(ABCSiComboBox):
 
         self.setMenu(SiMenu())
         self.menu().setSelectionMenu(True)
+        self.menu().setAnimationManager(AnimationManager.EXPAND)
 
         self.value_label = SiLabel(self)
         self.value_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
