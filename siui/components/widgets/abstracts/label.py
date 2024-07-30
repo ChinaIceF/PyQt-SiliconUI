@@ -294,7 +294,6 @@ class ABCAnimatedLabel(QLabel):
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.moved.emit([event.pos().x(), event.pos().y()])
 
-
     def setHint(self, text: str):
         """
         Set the tooltip for the label

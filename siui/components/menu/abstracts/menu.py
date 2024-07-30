@@ -8,6 +8,7 @@ from siui.components.widgets.container import SiDenseVContainer
 from siui.components.widgets.label import SiLabel
 from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
+from siui.core.silicon import Si
 
 
 class ABCSiMenu(SiWidget):
@@ -22,14 +23,20 @@ class ABCSiMenu(SiWidget):
         self.options_ = []
         self.waken_option = None
         self.is_selection_menu = True
+        self.current_index = None
+        self.current_value = None
+        self.animation_manager = None
+        self.maximum_shown_options = 100
         self.margin = 32
         self.padding = 4
-        self.current_value = None
 
         self.setMoveAnchor(self.margin + self.padding, self.margin + self.padding)
         self.setMinimumSize(self.margin*2, self.margin*2)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
+
+        self.frame_debugging = SiLabel(self)
+        self.frame_debugging.setStyleSheet("background-color: transparent")
 
         self.body_frame = SiWidget(self)
 
@@ -74,7 +81,6 @@ class ABCSiMenu(SiWidget):
 
     def setWakenOption(self, option_from_parent_menu):
         """ set the waken option of this menu """
-        self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
         self.waken_option = option_from_parent_menu
 
     def wakenOption(self):
@@ -99,6 +105,14 @@ class ABCSiMenu(SiWidget):
     def setIndex(self, index):
         """ Set current index of this menu """
         self.options()[index].setSelected(True)
+        self.current_index = index
+        self.current_value = self.options()[index].value()
+
+    def index(self):
+        return self.current_index
+
+    def value(self):
+        return self.current_value
 
     def addOption(self,
                   text: str,
@@ -121,20 +135,11 @@ class ABCSiMenu(SiWidget):
         """ get the options of this menu """
         return self.options_
 
-    def unfold(self, x, y):
-        """ unfold the menu """
-        self.unfoldSignal.emit()
+    def setAnimationManager(self, token):
+        self.animation_manager = token.value
 
-        _, body_preferred_height = self.body_.getPreferredSize()
-        self.move(x, y)
-        self.show()
-
-        target_height = body_preferred_height + self.margin * 2 + self.padding * 2
-        self.resize(self.width(), int(target_height * 0.6))
-        self.resizeTo(self.width(), target_height)
-
-        self.flash_layer.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_FLASH), 1))
-        self.flash_layer.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_FLASH), 0))
+    def animationManager(self):
+        return self.animation_manager
 
     def closeEvent(self, a0):
         super().closeEvent(a0)
@@ -150,20 +155,10 @@ class ABCSiMenu(SiWidget):
     def setContentFixedWidth(self, w):
         self.setFixedWidth(w + self.padding*2 + self.margin*2)
 
+    def unfold(self, x, y):
+        """ unfold the menu """
+        self.animationManager().on_parent_unfolded(self, x, y)
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        size = event.size()
-        self.flash_layer.setGeometry(self.margin,
-                                     self.margin,
-                                     size.width() - self.margin * 2,
-                                     size.height() - self.margin * 2)
-        self.body_frame.setGeometry(self.margin,
-                                    self.margin,
-                                    size.width() - self.margin * 2,
-                                    size.height() - self.margin * 2)
-        self.body_panel.resize(size.width() - self.margin * 2,
-                               size.height() - self.margin * 2)
-        self.body_.setGeometry(self.padding,
-                               self.padding,
-                               size.width() - self.margin * 2 - self.padding * 2,
-                               size.height() - self.margin * 2 - self.padding * 2)
+        self.animationManager().on_parent_resized(self, event)
