@@ -102,7 +102,6 @@ class AnimationManagerExpand(ABCAnimationManager):
                                  size.height() - parent.margin * 2 - parent.padding * 2)
 
 
-
 class AnimationManager(Enum):
     PULL_DOWN = AnimationManagerPullDown()
     EXPAND = AnimationManagerPullDown()
