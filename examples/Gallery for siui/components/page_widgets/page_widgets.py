@@ -488,17 +488,17 @@ class ExampleWidgets(SiPage):
             self.menus.setFixedWidth(800)
 
             menu_child_menu_test = SiMenu()
-            menu_child_menu_test.setFixedWidth(200)
+            menu_child_menu_test.setFixedWidth(180)
             menu_child_menu_test.addOption("组", icon=SiGlobal.siui.icons["fi-rr-folder-add"])
             menu_child_menu_test.addOption("文件", icon=SiGlobal.siui.icons["fi-rr-file-add"])
             menu_child_menu_test.setShowIcon(True)
             menu_child_menu_test.setSelectionMenu(False)
 
             menu_test = SiMenu()
-            menu_test.setFixedWidth(240)
-            menu_test.addOption("添加新项目", icon=SiGlobal.siui.icons["fi-rr-apps-add"], child_menu=menu_child_menu_test)
-            menu_test.addOption("从服务器同步", icon=SiGlobal.siui.icons["fi-rr-cloud-download"])
+            menu_test.setFixedWidth(260)
+            menu_test.addOption("具有子目录的项", icon=SiGlobal.siui.icons["fi-rr-apps-add"], child_menu=menu_child_menu_test)
             menu_test.addOption("没图标的选项")
+            menu_test.addOption("从服务器同步", icon=SiGlobal.siui.icons["fi-rr-cloud-download"])
             menu_test.addOption("共享", icon=SiGlobal.siui.icons["fi-rr-network"])
             menu_test.setSelectionMenu(False)
             menu_test.setShowIcon(True)
@@ -516,8 +516,6 @@ class ExampleWidgets(SiPage):
             self.demo_combobox.addOption("唱跳Rap篮球")
             self.demo_combobox.addOption("鸡你实在是太美")
             self.demo_combobox.addOption("我们一起学鸡叫")
-            for i in range(20):
-                self.demo_combobox.addOption(str(i))
             self.demo_combobox.menu().setShowIcon(False)
             self.demo_combobox.menu().setIndex(3)
 

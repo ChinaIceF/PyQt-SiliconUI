@@ -26,7 +26,6 @@ class ABCSiMenu(SiWidget):
         self.current_index = None
         self.current_value = None
         self.animation_manager = None
-        self.maximum_shown_options = 100
         self.margin = 32
         self.padding = 4
 
