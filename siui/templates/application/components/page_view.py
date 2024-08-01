@@ -137,6 +137,7 @@ class StackedContainerWithShowUpAnimation(SiStackedContainer):
         self.widgets[index].move(0, 64)
         self.widgets[index].moveTo(0, 0)
 
+
 class PageView(SiDenseHContainer):
     """
     页面视图，包括左侧的导航栏和右侧的页面

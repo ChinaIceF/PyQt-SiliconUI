@@ -1,7 +1,8 @@
+import time
 
 from PyQt5.Qt import QColor
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QApplication
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.container import SiDenseVContainer
@@ -35,7 +36,7 @@ class ABCSiMenu(SiWidget):
         self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
 
         self.frame_debugging = SiLabel(self)
-        self.frame_debugging.setStyleSheet("background-color: transparent")
+        self.frame_debugging.setStyleSheet("background-color: #20FF0000")
 
         self.body_frame = SiWidget(self)
 
@@ -158,6 +159,12 @@ class ABCSiMenu(SiWidget):
         """ unfold the menu """
         self.animationManager().on_parent_unfolded(self, x, y)
 
+    def repaint(self):
+        print("repainting..")
+        super().update()
+        print("repainted!")
+
     def resizeEvent(self, event):
-        super().resizeEvent(event)
         self.animationManager().on_parent_resized(self, event)
+        super().resizeEvent(event)
+        #time.sleep(1)

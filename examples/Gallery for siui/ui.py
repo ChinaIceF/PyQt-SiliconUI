@@ -19,13 +19,13 @@ class MySiliconApp(SiliconApplication):
         super().__init__(*args, **kwargs)
 
         self.setMinimumSize(1024, 380)
-        self.init_my_app_ui()
         self.resize(1200, 900)
+        self.init_my_app_ui()
+        self.setPage(0)
+
+        SiGlobal.siui.reloadAllWindowsStyleSheet()
 
     def init_my_app_ui(self):
         self.addPage(ExampleHomepage(self), SiGlobal.siui.icons["fi-rr-home"], "主页", "top")
         self.addPage(ExampleOptionCards(self), SiGlobal.siui.icons["fi-rr-rectangle-horizontal"], "选项卡", "top")
         self.addPage(ExampleWidgets(self), SiGlobal.siui.icons["fi-rr-cube"], "控件", "top")
-
-    def showEvent(self, a0):
-        super().showEvent(a0)
