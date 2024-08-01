@@ -43,15 +43,15 @@ class ABCButton(QPushButton):
         self.hover_highlight = SiLabel(self)
         self.hover_highlight.stackUnder(self)  # 置于按钮的底部
         self.hover_highlight.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_HOVER), 0.0))
-        self.hover_highlight.getAnimationGroup().fromToken("color").setBias(0.2)
-        self.hover_highlight.getAnimationGroup().fromToken("color").setFactor(1/8)
+        self.hover_highlight.animationGroup().fromToken("color").setBias(0.2)
+        self.hover_highlight.animationGroup().fromToken("color").setFactor(1 / 8)
 
         # 提供点击时的颜色变化动画
         self.flash_label = SiLabel(self)
         self.flash_label.stackUnder(self)  # 置于按钮的底部
         self.flash_label.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_FLASH), 0.0))
-        self.flash_label.getAnimationGroup().fromToken("color").setBias(0.2)
-        self.flash_label.getAnimationGroup().fromToken("color").setFactor(1 / 8)
+        self.flash_label.animationGroup().fromToken("color").setBias(0.2)
+        self.flash_label.animationGroup().fromToken("color").setFactor(1 / 8)
 
     def setAttachmentShifting(self, x, y):
         """

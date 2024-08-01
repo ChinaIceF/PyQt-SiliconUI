@@ -46,7 +46,7 @@ class ABCSiMenu(SiWidget):
         self.flash_layer = SiLabel(self)
         self.flash_layer.setFixedStyleSheet("border-radius: 6px")
         self.flash_layer.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self.flash_layer.getAnimationGroup().fromToken("color").setFactor(1/16)
+        self.flash_layer.animationGroup().fromToken("color").setFactor(1 / 16)
 
         self.body_ = SiDenseVContainer(self.body_panel)
         self.body_.setAdjustWidgetsSize(True)

@@ -433,7 +433,7 @@ class ExampleWidgets(SiPage):
                 button.setFixedHeight(32)
                 button.adjustSize()
                 button.setAttribute(Qt.WA_TransparentForMouseEvents)
-                label.getAnimationGroup().fromToken("move").setFPS(60)
+                label.animationGroup().fromToken("move").setFPS(60)
                 label.resize(button.size())
                 self.demo_flow_container.addWidget(label, ani=False)
                 self.demo_flow_container.regDraggableWidget(label)

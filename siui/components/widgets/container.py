@@ -571,7 +571,7 @@ class SiFlowContainer(ABCSiFlowContainer):
                 continue
 
             if (widget.geometry().contains(center_point) and
-                    (widget.getAnimationGroup().fromToken("move").isActive() is False)):
+                    (widget.animationGroup().fromToken("move").isActive() is False)):
 
                 # insert dragged widget to where this widget is.
                 self.insertToByIndex(self.widgets().index(dragged_widget),
@@ -637,16 +637,16 @@ class SiFlowContainer(ABCSiFlowContainer):
 
             # perform fade in effect
             if all_fade_in or (widget in no_ani_exceptions):
-                widget.getAnimationGroup().fromToken("opacity").stop()
+                widget.animationGroup().fromToken("opacity").stop()
                 widget.setOpacity(0)
-                widget.getAnimationGroup().fromToken("opacity").setTarget(1)
-                widget.getAnimationGroup().fromToken("opacity").start(delay=200 + delay_counter)
+                widget.animationGroup().fromToken("opacity").setTarget(1)
+                widget.animationGroup().fromToken("opacity").start(delay=200 + delay_counter)
             delay_counter += 10
 
             # if we needn't perform animations...
             if (ani is False) or (widget in no_ani_exceptions):
                 if (widget in no_arrange_exceptions) is False:
-                    widget.getAnimationGroup().fromToken("move").stop()
+                    widget.animationGroup().fromToken("move").stop()
                     widget.move(used_width + self.spacing[0], used_height)
 
             # perform animations
