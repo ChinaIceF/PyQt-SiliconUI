@@ -37,7 +37,7 @@ class SiScrollArea(SiLabel):
         self.widget_scroll_animation.setTarget([0, 0])
         self.widget_scroll_animation.ticked.connect(lambda pos: self.attachment_.move(int(pos[0]), int(pos[1])))
 
-        self.getAnimationGroup().addMember(self.widget_scroll_animation, "scroll")
+        self.animationGroup().addMember(self.widget_scroll_animation, "scroll")
 
     def reloadStyleSheet(self):
         """

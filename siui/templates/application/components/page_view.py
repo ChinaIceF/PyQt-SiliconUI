@@ -133,9 +133,10 @@ class StackedContainerWithShowUpAnimation(SiStackedContainer):
     def setCurrentIndex(self, index: int):
         super().setCurrentIndex(index)
 
-        self.widgets[index].getAnimationGroup().fromToken("move").setFactor(1/5)
+        self.widgets[index].animationGroup().fromToken("move").setFactor(1 / 5)
         self.widgets[index].move(0, 64)
         self.widgets[index].moveTo(0, 0)
+
 
 class PageView(SiDenseHContainer):
     """

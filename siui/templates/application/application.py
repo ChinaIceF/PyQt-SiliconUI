@@ -6,7 +6,8 @@ from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiLabe
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
-from .page_view import PageView
+from siui.templates.application.components.page_view import PageView
+from siui.templates.application.components.message.layer import MessageLayer
 
 
 class SiliconApplication(QMainWindow):
@@ -25,16 +26,10 @@ class SiliconApplication(QMainWindow):
         SiGlobal.siui.windows["TOOL_TIP"].setOpacity(0)
 
         # 构建界面
-        self.init_ui()
+        self.initialize_main_interface()
+        self.initialize_message_layer()
 
-        # 重载全部窗口的样式表
-        SiGlobal.siui.reloadAllWindowsStyleSheet()
-
-    def init_ui(self):
-        """
-        构建界面
-        """
-
+    def initialize_main_interface(self):
         # 初始化窗口
         screen_geo = QDesktopWidget().screenGeometry()
         w, h = 1200, 700
@@ -92,6 +87,12 @@ class SiliconApplication(QMainWindow):
         self.container_title_and_content.addWidget(self.container_title)
         self.container_title_and_content.addWidget(self.page_view)
 
+    def initialize_message_layer(self):
+        self.message_layer = MessageLayer(self)
+
+    def messageLayer(self):
+        return self.message_layer
+
     def addPage(self, page, svg_data: bytes, hint: str, side="top"):
         """
         添加新页面
@@ -101,6 +102,10 @@ class SiliconApplication(QMainWindow):
         :param side: 页面按钮置于哪一侧
         """
         self.page_view.addPage(page, svg_data, hint, side)
+
+    def setPage(self, index):
+        """ Set current page by index """
+        self.page_view.stacked_container.setCurrentIndex(index)
 
     def reloadStyleSheet(self):
         """
@@ -123,7 +128,5 @@ class SiliconApplication(QMainWindow):
         self.container_title_and_content.resize(w, h)
         self.page_view.resize(w, h-64)
 
-    def showEvent(self, a0):
-        super().showEvent(a0)
-        SiGlobal.siui.reloadAllWindowsStyleSheet()
-        self.page_view.stacked_container.setCurrentIndex(0)  # 显示第一页
+        self.message_layer.resize(w, h)
+

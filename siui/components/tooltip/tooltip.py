@@ -21,7 +21,7 @@ class ToolTipWindow(SiWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         self.completely_hid = False  # 是否已经完全隐藏（透明度是不是0）
-        self.getAnimationGroup().fromToken("opacity").finished.connect(self._completely_hid_signal_handler)
+        self.animationGroup().fromToken("opacity").finished.connect(self._completely_hid_signal_handler)
 
         self.margin = 8  # 周围给阴影预留的间隔空间
         self.shadow_size = 8  # 阴影

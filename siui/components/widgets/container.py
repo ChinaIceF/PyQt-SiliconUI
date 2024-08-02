@@ -1,16 +1,19 @@
 import random
+import time
 from typing import Union
 
 from PyQt5.Qt import QColor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components.widgets import SiLabel
+from siui.components.widgets.abstracts.widget import SiWidget
 
 
-class ABCDenseContainer(SiLabel):
+class ABCDenseContainer(SiWidget):
     """
     密堆容器抽象类
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
 
@@ -421,6 +424,7 @@ class SiStackedContainer(SiLabel):
     """
     允许堆叠的容器，可以绑定多个界面，并只显示其中一个
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -484,18 +488,22 @@ class SiStackedContainer(SiLabel):
             widget.resize(event.size())
 
 
-class ABCSiFlowContainer(SiLabel):
+class ABCSiFlowContainer(SiWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.widgets_ = []
+        self.dragging_widget = None
         self.spacing = [8, 8]
 
+    def setSpacing(self, horizontal=None, vertical=None):
+        if horizontal is not None:
+            self.spacing[0] = horizontal
+        if vertical is not None:
+            self.spacing[1] = vertical
+
     def widgets(self):
-        """
-        Get the widgets of this container
-        :return: widgets
-        """
+        """ Get the widgets of this container """
         return self.widgets_
 
     def addWidget(self, widget, ani=True):
@@ -528,26 +536,35 @@ class ABCSiFlowContainer(SiLabel):
             pass
 
     def arrangeWidgets(self, ani=True):
-        """
-        Arrange widgets as its order in self.widgets()
-        """
+        """ Arrange widgets as its order in self.widgets() """
         raise NotImplementedError("arrangeWidgets method must be rewrote.")
 
+    def shuffle(self, **kwargs):
+        """ shuffle widgets and rearrange them """
+        random.shuffle(self.widgets_)
+        self.arrangeWidgets(**kwargs)
 
-class SiFlowContainer(ABCSiFlowContainer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.line_height = 32
-        self.preferred_height = 0
-        self.dragging_widget = None
+    def swapByIndex(self, from_index, to_index):
+        widget_a = self.widgets()[from_index]
+        widget_b = self.widgets()[to_index]
+        self.widgets_[from_index] = widget_b
+        self.widgets_[to_index] = widget_a
+        self.arrangeWidgets()
 
-    def adjustSize(self):
-        self.resize(self.width(), self.preferred_height)
+    def insertToByIndex(self, from_index, to_index, **kwargs):
+        widget = self.widgets()[from_index]
+        self.widgets_[from_index] = None
+
+        if from_index > to_index:
+            self.widgets_ = self.widgets_[:to_index] + [widget] + self.widgets_[to_index:]
+        else:
+            self.widgets_ = self.widgets_[:to_index + 1] + [widget] + self.widgets_[to_index + 1:]
+
+        self.widgets_.pop(self.widgets_.index(None))
+        self.arrangeWidgets(**kwargs)
 
     def regDraggableWidget(self, widget):
-        """
-        register a widget as a draggable widget
-        """
+        """ register a widget as a draggable widget """
         def on_dragging(pos):
             if self.dragging_widget is None:
                 # drop shadow effect
@@ -571,39 +588,34 @@ class SiFlowContainer(ABCSiFlowContainer):
                 continue
 
             if (widget.geometry().contains(center_point) and
-                    (widget.getAnimationGroup().fromToken("move").isActive() is False)):
-
+                    (widget.animationGroup().fromToken("move").isActive() is False)):
                 # insert dragged widget to where this widget is.
                 self.insertToByIndex(self.widgets().index(dragged_widget),
                                      self.widgets().index(widget),
                                      no_arrange_exceptions=[dragged_widget])
                 break
 
-    def shuffle(self, **kwargs):
-        """
-        shuffle widgets and rearrange them
-        """
-        random.shuffle(self.widgets_)
-        self.arrangeWidgets(**kwargs)
+    def mouseReleaseEvent(self, ev):
+        super().mouseReleaseEvent(ev)
+        if self.dragging_widget is not None:
+            self.dragging_widget.setGraphicsEffect(None)
+            self.dragging_widget = None
+            self.arrangeWidgets()
 
-    def swapByIndex(self, from_index, to_index):
-        widget_a = self.widgets()[from_index]
-        widget_b = self.widgets()[to_index]
-        self.widgets_[from_index] = widget_b
-        self.widgets_[to_index] = widget_a
-        self.arrangeWidgets()
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        for widget in self.widgets_:
+            widget.setMoveLimits(0, 0, self.width(), self.height())
 
-    def insertToByIndex(self, from_index, to_index, **kwargs):
-        widget = self.widgets()[from_index]
-        self.widgets_[from_index] = None
 
-        if from_index > to_index:
-            self.widgets_ = self.widgets_[:to_index] + [widget] + self.widgets_[to_index:]
-        else:
-            self.widgets_ = self.widgets_[:to_index+1] + [widget] + self.widgets_[to_index+1:]
+class SiFlowContainer(ABCSiFlowContainer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.line_height = 32
+        self.preferred_height = 0
 
-        self.widgets_.pop(self.widgets_.index(None))
-        self.arrangeWidgets(**kwargs)
+    def adjustSize(self):
+        self.resize(self.width(), self.preferred_height)
 
     def setLineHeight(self, height, rearrange=True):
         self.line_height = height
@@ -637,16 +649,16 @@ class SiFlowContainer(ABCSiFlowContainer):
 
             # perform fade in effect
             if all_fade_in or (widget in no_ani_exceptions):
-                widget.getAnimationGroup().fromToken("opacity").stop()
+                widget.animationGroup().fromToken("opacity").stop()
                 widget.setOpacity(0)
-                widget.getAnimationGroup().fromToken("opacity").setTarget(1)
-                widget.getAnimationGroup().fromToken("opacity").start(delay=200 + delay_counter)
+                widget.animationGroup().fromToken("opacity").setTarget(1)
+                widget.animationGroup().fromToken("opacity").start(delay=200 + delay_counter)
             delay_counter += 10
 
             # if we needn't perform animations...
             if (ani is False) or (widget in no_ani_exceptions):
                 if (widget in no_arrange_exceptions) is False:
-                    widget.getAnimationGroup().fromToken("move").stop()
+                    widget.animationGroup().fromToken("move").stop()
                     widget.move(used_width + self.spacing[0], used_height)
 
             # perform animations
@@ -659,14 +671,62 @@ class SiFlowContainer(ABCSiFlowContainer):
 
         self.preferred_height = used_height + self.spacing[1] + self.line_height
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        for widget in self.widgets_:
-            widget.setMoveLimits(0, 0, self.width(), self.height())
 
-    def mouseReleaseEvent(self, ev):
-        super().mouseReleaseEvent(ev)
-        if self.dragging_widget is not None:
-            self.dragging_widget.setGraphicsEffect(None)
-            self.dragging_widget = None
-            self.arrangeWidgets()
+class SiMasonryContainer(ABCSiFlowContainer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.columns = 2  # How many columns that this container has
+        self.column_width = 160  # width of each column
+        self.preferred_height = None
+
+    def setColumns(self, n):
+        self.columns = n
+
+    def setColumnWidth(self, width):
+        self.column_width = width
+
+    def arrangeWidgets(self,
+                       ani=True,
+                       no_arrange_exceptions: Union[list, None] = None,
+                       no_ani_exceptions: Union[list, None] = None):
+
+        used_height = [0 for _ in range(self.columns)]
+        ani_delay_counter = 0
+        if no_arrange_exceptions is None:
+            no_arrange_exceptions = []
+        if no_ani_exceptions is None:
+            no_ani_exceptions = []
+
+        for index, widget in enumerate(self.widgets_):
+            column_index = index % self.columns
+
+            if widget not in no_arrange_exceptions:
+                if (ani is True) and (widget not in no_ani_exceptions):
+                    widget.animationGroup().fromToken("move").stop()
+                    widget.animationGroup().fromToken("move").setTarget(
+                        [column_index * (self.column_width + self.spacing[0]), used_height[column_index]])
+                    widget.animationGroup().fromToken("move").start()
+                else:
+                    widget.animationGroup().fromToken("move").stop()
+                    widget.move(column_index * (self.column_width + self.spacing[0]), used_height[column_index])
+
+            used_height[column_index] += widget.height() + self.spacing[1]
+            ani_delay_counter += 10
+
+        self.resize(self.width(), max(used_height))
+        self.preferred_height = used_height
+
+    def adjustColumnAmount(self, width=None):
+        """ Adjust the column amount of this container based on its width. """
+        if width is None:
+            width = self.width()
+        else:
+            self.resize(width, self.height())
+
+        self.setColumns(self.calculateColumnAmount(width))
+        self.arrangeWidgets()
+
+    def calculateColumnAmount(self, width):
+        """ Calculate column amount based on width provided. """
+        return (width + self.spacing[0]) // (self.column_width + self.spacing[0])
+

@@ -38,7 +38,7 @@ class SiProgressBar(SiLabel):
         # 闪烁层
         self.flash = SiLabel(self.frame)
         self.flash.setFixedHeight(6)
-        self.flash.getAnimationGroup().fromToken("color").setFactor(1/32)
+        self.flash.animationGroup().fromToken("color").setFactor(1 / 32)
 
         # 轨道高度，这决定了进度条进度显示部分的高度
         self.track_height = None

@@ -1,5 +1,5 @@
 
-from PyQt5.QtCore import QPoint, pyqtSignal
+from PyQt5.QtCore import QPoint, pyqtSignal, QSize
 from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
@@ -69,7 +69,6 @@ class ABCAnimatedLabel(QLabel):
         """
         重载样式表，建议将所有设置样式表的内容重写在此方法中\n
         此方法在窗口show方法被调用时、主题改变时被调用
-        :return:
         """
         return
 
@@ -108,7 +107,7 @@ class ABCAnimatedLabel(QLabel):
         """
         return self.color_group
 
-    def getAnimationGroup(self):
+    def animationGroup(self):
         """
         返回动画组
         :return: 动画组
@@ -166,43 +165,6 @@ class ABCAnimatedLabel(QLabel):
         y = max(y1, min(y2 - self.height(), y))
         return x, y
 
-    def moveTo(self, x: int, y: int):
-        """
-        带动画地将控件移动到指定位置
-        :param x: 目标横坐标
-        :param y: 目标纵坐标
-        :return:
-        """
-        # moveTo 方法不同于 move，它经过动画（如果开启）
-        x, y = self._legalize_moving_target(x, y)
-        if self.isSiliconWidgetFlagOn(Si.InstantMove) is False:
-            self.animation_move.setTarget([x, y])
-            self.activateMove()
-        else:
-            self.move(x, y)
-
-    def resizeTo(self, w: int, h: int):
-        """
-        具动画重设大小到目标尺寸
-        :param w: 宽
-        :param h: 高
-        :return:
-        """
-        if self.isSiliconWidgetFlagOn(Si.InstantResize) is False and self.isVisible() is True:
-            self.animation_resize.setTarget([w, h])
-            self.activateResize()
-        else:
-            self.resize(w, h)
-
-    def setColorTo(self, color_code):
-        """
-        设置目标颜色，同时启动动画
-        :param color_code: 色号
-        :return:
-        """
-        self.animation_color.setTarget(SiColor.toArray(color_code))
-        self.animation_color.try_to_start()
-
     def setColor(self, color_code):
         """
         设置颜色
@@ -212,6 +174,15 @@ class ABCAnimatedLabel(QLabel):
         color_value = SiColor.toArray(color_code)
         self.animation_color.setCurrent(color_value)
         self._set_color_handler(color_value)
+
+    def setColorTo(self, color_code):
+        """
+        设置目标颜色，同时启动动画
+        :param color_code: 色号
+        :return:
+        """
+        self.animation_color.setTarget(SiColor.toArray(color_code))
+        self.animation_color.try_to_start()
 
     def setOpacity(self, opacity: float):
         """
@@ -266,23 +237,25 @@ class ABCAnimatedLabel(QLabel):
     def isResizeActive(self):
         return self.animation_resize.isActive()
 
-    def resizeEvent(self, event):
-        # resizeEvent 事件一旦被调用，控件的尺寸会瞬间改变
-        # 并且会立即调用动画的 setCurrent 方法，设置动画开始值为 event 中的 size()
-        super().resizeEvent(event)
-        size = event.size()
-        w, h = size.width(), size.height()
-        self.animation_resize.setCurrent([w, h])
-        if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
-            self.resized.emit([w, h])
-
     def setMoveAnchor(self, x, y):
         self.move_anchor = QPoint(x, y)
+
+    def moveAnchor(self):
+        return self.move_anchor
 
     def move(self, *args):  # 重写移动方法，从而按照锚点的位置移动控件
         point = QPoint(*args)
         anchor_adjusted_point = point - self.move_anchor
         super().move(anchor_adjusted_point)
+
+    def moveTo(self, x: int, y: int):
+        """ 带动画地将控件移动到指定位置 """
+        x, y = self._legalize_moving_target(x, y)
+        if self.isSiliconWidgetFlagOn(Si.InstantMove) is False:
+            self.animation_move.setTarget([x, y])
+            self.activateMove()
+        else:
+            self.move(x, y)
 
     def moveEvent(self, event):
         # moveEvent 事件一旦被调用，控件的位置会瞬间改变
@@ -293,6 +266,24 @@ class ABCAnimatedLabel(QLabel):
 
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.moved.emit([event.pos().x(), event.pos().y()])
+
+    def resizeTo(self, w: int, h: int):
+        """ 具动画重设大小到目标尺寸 """
+        if self.isSiliconWidgetFlagOn(Si.InstantResize) is False and self.isVisible() is True:
+            self.animation_resize.setTarget([w, h])
+            self.activateResize()
+        else:
+            self.resize(w, h)
+
+    def resizeEvent(self, event):
+        # resizeEvent 事件一旦被调用，控件的尺寸会瞬间改变
+        # 并且会立即调用动画的 setCurrent 方法，设置动画开始值为 event 中的 size()
+        super().resizeEvent(event)
+        size = event.size()
+        w, h = size.width(), size.height()
+        self.animation_resize.setCurrent([w, h])
+        if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
+            self.resized.emit([w, h])
 
     def setHint(self, text: str):
         """

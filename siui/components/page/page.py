@@ -131,5 +131,5 @@ class SiPage(SiDenseVContainer):
         scroll_widget_y = self.scroll_area.attachment().y()
 
         self.scroll_area.attachment().move(scroll_widget_x, scroll_widget_y)
-        self.scroll_area.getAnimationGroup().fromToken("scroll").setTarget([scroll_widget_x, scroll_widget_y])
-        self.scroll_area.getAnimationGroup().fromToken("scroll").setCurrent([scroll_widget_x, scroll_widget_y])
+        self.scroll_area.animationGroup().fromToken("scroll").setTarget([scroll_widget_x, scroll_widget_y])
+        self.scroll_area.animationGroup().fromToken("scroll").setCurrent([scroll_widget_x, scroll_widget_y])

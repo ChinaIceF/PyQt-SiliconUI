@@ -25,6 +25,7 @@ from siui.components.widgets import (
     SiSimpleButton,
     SiSwitch,
     SiToggleButton,
+    SiMasonryContainer,
 )
 from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
@@ -414,7 +415,7 @@ class ExampleWidgets(SiPage):
         with self.titled_widgets_group as group:
             group.addTitle("流式布局")
 
-            # 进度条
+            # 流式布局
             self.flow_container = OptionCardPlaneForWidgetDemos(self)
             self.flow_container.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                  "/widgets/progress_bar/progress_bar.py")
@@ -433,7 +434,7 @@ class ExampleWidgets(SiPage):
                 button.setFixedHeight(32)
                 button.adjustSize()
                 button.setAttribute(Qt.WA_TransparentForMouseEvents)
-                label.getAnimationGroup().fromToken("move").setFPS(60)
+                label.button = button
                 label.resize(button.size())
                 self.demo_flow_container.addWidget(label, ani=False)
                 self.demo_flow_container.regDraggableWidget(label)
@@ -474,7 +475,37 @@ class ExampleWidgets(SiPage):
             self.flow_container.body().addPlaceholder(12)
             self.flow_container.adjustSize()
 
+            # 瀑布流
+            self.masonry_container = OptionCardPlaneForWidgetDemos(self)
+            self.masonry_container.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                    "/widgets/progress_bar/progress_bar.py")
+            self.masonry_container.setTitle("瀑布流")
+            self.masonry_container.setFixedWidth(800)
+
+            self.demo_masonry_container = SiMasonryContainer(self)
+            self.demo_masonry_container.setFixedWidth(700)
+            self.demo_masonry_container.setColumns(4)
+
+            for _ in range(16):
+                label = SiDraggableLabel(self)
+                button = SiSimpleButton(label)
+                button.colorGroup().assign(SiColor.BUTTON_OFF, button.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+                button.resize(160, int(random.random() * 50 + 70))
+                button.setAttribute(Qt.WA_TransparentForMouseEvents)
+                label.button = button
+                label.setFixedStyleSheet("border-radius: 4px")
+                label.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+                label.resize(button.size())
+
+                self.demo_masonry_container.addWidget(label, ani=False)
+                self.demo_masonry_container.regDraggableWidget(label)
+
+            self.masonry_container.body().addWidget(self.demo_masonry_container)
+            self.masonry_container.body().addPlaceholder(12)
+            self.masonry_container.adjustSize()
+
             group.addWidget(self.flow_container)
+            group.addWidget(self.masonry_container)
 
         # 菜单测试
         with self.titled_widgets_group as group:

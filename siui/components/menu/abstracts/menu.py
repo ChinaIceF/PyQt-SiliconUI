@@ -1,7 +1,8 @@
+import time
 
 from PyQt5.Qt import QColor
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QApplication
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.container import SiDenseVContainer
@@ -45,7 +46,7 @@ class ABCSiMenu(SiWidget):
         self.flash_layer = SiLabel(self)
         self.flash_layer.setFixedStyleSheet("border-radius: 6px")
         self.flash_layer.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self.flash_layer.getAnimationGroup().fromToken("color").setFactor(1/16)
+        self.flash_layer.animationGroup().fromToken("color").setFactor(1/16)
 
         self.body_ = SiDenseVContainer(self.body_panel)
         self.body_.setAdjustWidgetsSize(True)
@@ -159,5 +160,5 @@ class ABCSiMenu(SiWidget):
         self.animationManager().on_parent_unfolded(self, x, y)
 
     def resizeEvent(self, event):
-        super().resizeEvent(event)
         self.animationManager().on_parent_resized(self, event)
+        super().resizeEvent(event)

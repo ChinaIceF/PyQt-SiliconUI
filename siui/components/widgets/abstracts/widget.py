@@ -99,7 +99,7 @@ class SiWidget(QWidget):
             return False
         return self.silicon_widget_flags[flag.name]
 
-    def getAnimationGroup(self):
+    def animationGroup(self):
         """
         返回动画组
         :return: 动画组
@@ -290,3 +290,4 @@ class SiWidget(QWidget):
 
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.moved.emit([event.pos().x(), event.pos().y()])
+
