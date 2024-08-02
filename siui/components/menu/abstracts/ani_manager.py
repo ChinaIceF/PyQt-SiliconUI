@@ -107,6 +107,7 @@ class AnimationManagerExpand(ABCAnimationManager):
 
         #time.sleep(0.5)
 
+
 class AnimationManager(Enum):
     PULL_DOWN = AnimationManagerPullDown()
-    EXPAND = AnimationManagerExpand()
+    EXPAND = AnimationManagerPullDown()  # temporarily use pulling down due to flicks in expanding animations

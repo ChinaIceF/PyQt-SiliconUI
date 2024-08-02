@@ -290,3 +290,4 @@ class SiWidget(QWidget):
 
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.moved.emit([event.pos().x(), event.pos().y()])
+

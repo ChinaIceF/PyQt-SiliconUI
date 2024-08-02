@@ -7,7 +7,7 @@ from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
 from siui.templates.application.components.page_view import PageView
-from siui.templates.application.components.message_layer import MessageLayer
+from siui.templates.application.components.message.layer import MessageLayer
 
 
 class SiliconApplication(QMainWindow):

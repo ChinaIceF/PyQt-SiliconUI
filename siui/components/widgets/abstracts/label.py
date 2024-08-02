@@ -27,7 +27,6 @@ class ABCAnimatedLabel(QLabel):
 
         self.x1, self.y1, self.x2, self.y2 = None, None, None, None
         self.move_anchor = QPoint(0, 0)  # 移动时的基准点位置
-        self.resize_anchor = QPoint(0, 0)  # 重设大小时基准点
 
         self.animation_move = SiExpAnimation(self)
         self.animation_move.setFactor(1/4)
@@ -267,12 +266,6 @@ class ABCAnimatedLabel(QLabel):
 
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.moved.emit([event.pos().x(), event.pos().y()])
-
-    def setResizeAnchor(self, x, y):
-        self.resize_anchor = QPoint(x, y)
-
-    def resizeAnchor(self):
-        return self.resize_anchor
 
     def resizeTo(self, w: int, h: int):
         """ 具动画重设大小到目标尺寸 """

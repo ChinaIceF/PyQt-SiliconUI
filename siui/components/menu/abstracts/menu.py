@@ -36,7 +36,7 @@ class ABCSiMenu(SiWidget):
         self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
 
         self.frame_debugging = SiLabel(self)
-        self.frame_debugging.setStyleSheet("background-color: #20FF0000")
+        self.frame_debugging.setStyleSheet("background-color: transparent")
 
         self.body_frame = SiWidget(self)
 
@@ -46,7 +46,7 @@ class ABCSiMenu(SiWidget):
         self.flash_layer = SiLabel(self)
         self.flash_layer.setFixedStyleSheet("border-radius: 6px")
         self.flash_layer.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self.flash_layer.animationGroup().fromToken("color").setFactor(1 / 16)
+        self.flash_layer.animationGroup().fromToken("color").setFactor(1/16)
 
         self.body_ = SiDenseVContainer(self.body_panel)
         self.body_.setAdjustWidgetsSize(True)
@@ -159,12 +159,6 @@ class ABCSiMenu(SiWidget):
         """ unfold the menu """
         self.animationManager().on_parent_unfolded(self, x, y)
 
-    def repaint(self):
-        print("repainting..")
-        super().update()
-        print("repainted!")
-
     def resizeEvent(self, event):
         self.animationManager().on_parent_resized(self, event)
         super().resizeEvent(event)
-        #time.sleep(1)
