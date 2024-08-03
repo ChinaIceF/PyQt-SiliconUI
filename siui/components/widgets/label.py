@@ -12,6 +12,7 @@ class SiLabel(ABCAnimatedLabel):
         super().__init__(*args, **kwargs)
         super().setFont(SiGlobal.siui.fonts["S_NORMAL"])
 
+
 class SiPixLabel(SiLabel):
     """
     为显示图片提供支持的标签，支持图片的圆角处理
@@ -122,9 +123,9 @@ class SiIconLabel(SiLabel):
         self.has_text_flag = False  # 设置文本后为真
 
         # 创建图标标签
-        self.icon = SiSvgLabel(self)
-        self.icon.resize(16, 16)
-        self.icon.setSvgSize(16, 16)
+        self.icon_ = SiSvgLabel(self)
+        self.icon_.resize(16, 16)
+        self.icon_.setSvgSize(16, 16)
 
         # 创建文本标签
         self.text_label = SiLabel(self)
@@ -138,6 +139,12 @@ class SiIconLabel(SiLabel):
     def setFixedStyleSheet(self, fixed_stylesheet: str):
         self.text_label.setStyleSheet(fixed_stylesheet)
 
+    def icon(self):
+        return self.icon_
+
+    def label(self):
+        return self.text_label
+
     def load(self, path_or_data):
         """
         从字符串或者文件加载 svg 数据
@@ -145,7 +152,7 @@ class SiIconLabel(SiLabel):
         :return:
         """
         self.has_icon_flag = True
-        self.icon.load(path_or_data)
+        self.icon_.load(path_or_data)
         self.adjustSize()    # 保证布局正常
 
     def setSvgSize(self, w, h):
@@ -154,8 +161,8 @@ class SiIconLabel(SiLabel):
         :param w: 宽度
         :param h: 高度
         """
-        self.icon.resize(w, h)  # 这里直接设为一样，避免边缘切割
-        self.icon.setSvgSize(w, h)
+        self.icon_.resize(w, h)  # 这里直接设为一样，避免边缘切割
+        self.icon_.setSvgSize(w, h)
         self.adjustSize()    # 保证布局正常
 
     def setFont(self, a0):
@@ -173,10 +180,10 @@ class SiIconLabel(SiLabel):
 
         preferred_width = (int(self.has_text_flag) * self.text_label.width() +
                            int(self.has_text_flag and self.has_icon_flag) * 4 +
-                           int(self.has_icon_flag) * self.icon.width())
+                           int(self.has_icon_flag) * self.icon_.width())
 
         preferred_height = max(int(self.has_text_flag) * self.text_label.height(),
-                               int(self.has_icon_flag) * self.icon.height())
+                               int(self.has_icon_flag) * self.icon_.height())
 
         self.resize(preferred_width, preferred_height)
 
@@ -185,7 +192,7 @@ class SiIconLabel(SiLabel):
         size = event.size()
         w, h = size.width(), size.height()
 
-        self.icon.move(0, (h - self.icon.height()) // 2)
+        self.icon_.move(0, (h - self.icon_.height()) // 2)
         self.text_label.move(w - self.text_label.width(), (h - self.text_label.height()) // 2 - 1)  # 减一调整显示位置归正
 
 

@@ -1,5 +1,8 @@
+from PyQt5.QtWidgets import QDesktopWidget
+
 import icons
 from components.page_homepage import ExampleHomepage
+from components.page_icons import ExampleIcons
 from components.page_option_cards import ExampleOptionCards
 from components.page_widgets import ExampleWidgets
 
@@ -19,7 +22,11 @@ class MySiliconApp(SiliconApplication):
         super().__init__(*args, **kwargs)
 
         self.setMinimumSize(1024, 380)
-        self.resize(1200, 900)
+        self.resize(1240, 910)
+        screen_geo = QDesktopWidget().screenGeometry()
+        self.setGeometry((screen_geo.width() - self.width()) // 2, (screen_geo.height() - self.height()) // 2,
+                         self.width(), self.height())
+
         self.init_my_app_ui()
         self.setPage(0)
 
@@ -27,5 +34,6 @@ class MySiliconApp(SiliconApplication):
 
     def init_my_app_ui(self):
         self.addPage(ExampleHomepage(self), SiGlobal.siui.icons["fi-rr-home"], "主页", "top")
+        self.addPage(ExampleIcons(self), SiGlobal.siui.icons["fi-rr-apps"], "图标库", "top")
         self.addPage(ExampleOptionCards(self), SiGlobal.siui.icons["fi-rr-rectangle-horizontal"], "选项卡", "top")
         self.addPage(ExampleWidgets(self), SiGlobal.siui.icons["fi-rr-cube"], "控件", "top")

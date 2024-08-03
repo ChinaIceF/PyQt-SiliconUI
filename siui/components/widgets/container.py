@@ -3,6 +3,7 @@ import time
 from typing import Union
 
 from PyQt5.Qt import QColor
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components.widgets import SiLabel
@@ -506,30 +507,40 @@ class ABCSiFlowContainer(SiWidget):
         """ Get the widgets of this container """
         return self.widgets_
 
-    def addWidget(self, widget, ani=True):
-        """
-        Add widget to this container
-        :param widget: widget
-        :param ani: whether to use animation when arranging widgets
-        """
+    def addWidget(self, widget, arrange=True, ani=True):
+        """ Add widget to this container """
         widget.setParent(self)
         self.widgets_.append(widget)
-        self.arrangeWidgets(ani=ani)
+        if arrange is True:
+            self.arrangeWidgets(ani=ani)
 
     def removeWidget(self,
                      widget,
                      has_existence_check: bool = True,
-                     delete_later: bool = True):
+                     delete_later: bool = True,
+                     fade_out: bool = False,
+                     fade_out_delay: int = 0):
         """
         Remove a widget in self.widgets()
         :param widget: widget you want to remove
         :param has_existence_check: whether check the existence of the widget in self.widgets()
         :param delete_later: whether run widget.deleteLater()
+        :param fade_out: run fade out animation when removing this widget
+        :param fade_out_delay: delay before run fade out animation
         """
         if widget in self.widgets_:
             self.widgets_.pop(self.widgets_.index(widget))
-            if delete_later:
-                widget.deleteLater()
+
+            if fade_out:
+                widget.animationGroup().fromToken("opacity").setTarget(0)
+                widget.animationGroup().fromToken("opacity").start(delay=fade_out_delay)
+                if delete_later:
+                    delete_timer = QTimer(widget)
+                    delete_timer.singleShot(fade_out_delay + 100, widget.deleteLater)
+            else:
+                if delete_later:
+                    widget.deleteLater()
+
         elif has_existence_check:
             raise ValueError(f"Widget {widget} is not in this container")
         else:
@@ -625,11 +636,15 @@ class SiFlowContainer(ABCSiFlowContainer):
     def arrangeWidgets(self,
                        ani: bool = True,
                        all_fade_in: bool = False,
+                       fade_in_delay: int = 200,
+                       fade_in_delay_cumulate_rate: int = 10,
                        no_arrange_exceptions: Union[list, None] = None,
                        no_ani_exceptions: Union[list, None] = None):
         """
         :param ani: whether widgets perform animation when arranging them
         :param all_fade_in: let all widgets fade in when arranging them
+        :param fade_in_delay: time delay before run fade in animation
+        :param fade_in_delay_cumulate_rate: cumulate rate of delay
         :param no_arrange_exceptions: widgets that will not be arranged
         :param no_ani_exceptions: widgets that will not perform moving animation.
         """
@@ -652,8 +667,8 @@ class SiFlowContainer(ABCSiFlowContainer):
                 widget.animationGroup().fromToken("opacity").stop()
                 widget.setOpacity(0)
                 widget.animationGroup().fromToken("opacity").setTarget(1)
-                widget.animationGroup().fromToken("opacity").start(delay=200 + delay_counter)
-            delay_counter += 10
+                widget.animationGroup().fromToken("opacity").start(delay=fade_in_delay + delay_counter)
+            delay_counter += fade_in_delay_cumulate_rate
 
             # if we needn't perform animations...
             if (ani is False) or (widget in no_ani_exceptions):

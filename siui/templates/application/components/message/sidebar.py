@@ -32,7 +32,8 @@ class MessageSidebar(SiMasonryContainer):
              title: str = None,
              msg_type: int = 0,
              slot=None,
-             close_on_clicked=True,):
+             close_on_clicked=True,
+             fold_after: int = None):
         """ Create a simple message box which only has a label and send it to sidebar """
         new_message_box = SiSideMessageBox(self)
         new_message_box.setMessageType(msg_type)
@@ -91,6 +92,9 @@ class MessageSidebar(SiMasonryContainer):
 
             new_message_box.content().container().addWidget(title_label)
             new_message_box.content().container().addWidget(description_label)
+
+        if fold_after is not None:
+            new_message_box.setFoldAfter(fold_after)
 
         new_message_box.adjustSize()
         self.sendMessageBox(new_message_box)
