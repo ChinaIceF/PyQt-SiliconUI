@@ -122,6 +122,7 @@ class ABCButton(QPushButton):
         此方法在窗口show方法被调用时、主题改变时被调用
         :return:
         """
+        self.attachment().reloadStyleSheet()
         return
 
     def flashLabel(self):

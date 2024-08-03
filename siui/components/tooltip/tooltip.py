@@ -28,7 +28,6 @@ class ToolTipWindow(SiWidget):
 
         self.now_inside_of = None  # 在哪个控件内部（最近一次被谁触发过显示事件）
 
-        # 创建QGraphicsDropShadowEffect对象，这将为窗口创造阴影
         shadow = QGraphicsDropShadowEffect()
         shadow.setColor(QColor(0, 0, 0, 128))
         shadow.setOffset(0, 0)
