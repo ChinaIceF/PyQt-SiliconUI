@@ -84,6 +84,13 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.TEXT_D, "#AFAFAF")
         self.assign(SiColor.TEXT_E, "#979797")
 
+        self.assign(SiColor.SIDE_MSG_FLASH, "#50FFFFFF")
+        self.assign(SiColor.SIDE_MSG_THEME_NORMAL, "#242027")
+        self.assign(SiColor.SIDE_MSG_THEME_SUCCESS, "#519868")
+        self.assign(SiColor.SIDE_MSG_THEME_INFO, "#855198")
+        self.assign(SiColor.SIDE_MSG_THEME_WARNING, "#986351")
+        self.assign(SiColor.SIDE_MSG_THEME_ERROR, "#98515b")
+
         self.assign(SiColor.MENU_BG, "#2C2930")
 
         # 标题相关

@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QPoint, pyqtSignal
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QGraphicsOpacityEffect
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
 from siui.core.color import SiColor
@@ -217,9 +217,11 @@ class SiWidget(QWidget):
         :param opacity: 透明度值 0-1
         :return:
         """
+        self.animation_opacity.setCurrent(opacity)
+
         self.setWindowOpacity(opacity)
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
-            self.opacityChanged.emit(self.opacity)
+            self.opacityChanged.emit(opacity)
 
     def setOpacityTo(self, opacity: float):
         """

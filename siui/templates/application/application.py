@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDesktopWidget, QMainWindow
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QDesktopWidget, QMainWindow, QGraphicsDropShadowEffect
 
 from siui.components.tooltip import ToolTipWindow
 from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel
@@ -7,7 +8,7 @@ from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
 from siui.templates.application.components.page_view import PageView
-from siui.templates.application.components.message.layer import MessageLayer
+from siui.templates.application.components.message.sidebar import MessageSidebar
 
 
 class SiliconApplication(QMainWindow):
@@ -27,7 +28,7 @@ class SiliconApplication(QMainWindow):
 
         # 构建界面
         self.initialize_main_interface()
-        self.initialize_message_layer()
+        self.initialize_message_sidebar()
 
     def initialize_main_interface(self):
         # 初始化窗口
@@ -87,11 +88,18 @@ class SiliconApplication(QMainWindow):
         self.container_title_and_content.addWidget(self.container_title)
         self.container_title_and_content.addWidget(self.page_view)
 
-    def initialize_message_layer(self):
-        self.message_layer = MessageLayer(self)
+    def initialize_message_sidebar(self):
+        self.message_sidebar = MessageSidebar(self)
+        self.message_sidebar.adjustSize()
+        # drop shadow effect
+        shadow = QGraphicsDropShadowEffect(self.message_sidebar)
+        shadow.setColor(QColor(28, 25, 31, 200))
+        shadow.setOffset(0, 0)
+        shadow.setBlurRadius(64)
+        self.message_sidebar.setGraphicsEffect(shadow)
 
-    def messageLayer(self):
-        return self.message_layer
+    def messageSidebar(self):
+        return self.message_sidebar
 
     def addPage(self, page, svg_data: bytes, hint: str, side="top"):
         """
@@ -128,5 +136,5 @@ class SiliconApplication(QMainWindow):
         self.container_title_and_content.resize(w, h)
         self.page_view.resize(w, h-64)
 
-        self.message_layer.resize(w, h)
+        self.message_sidebar.setGeometry(w - 400, 80, 400, self.message_sidebar.height())
 

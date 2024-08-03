@@ -30,6 +30,13 @@ class SiColor(Enum):
     TITLE_INDICATOR = auto()
     TITLE_HIGHLIGHT = auto()
 
+    SIDE_MSG_FLASH = auto()
+    SIDE_MSG_THEME_NORMAL = auto()
+    SIDE_MSG_THEME_SUCCESS = auto()
+    SIDE_MSG_THEME_INFO = auto()
+    SIDE_MSG_THEME_WARNING = auto()
+    SIDE_MSG_THEME_ERROR = auto()
+
     MENU_BG = auto()
 
     # 按钮

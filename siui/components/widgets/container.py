@@ -677,7 +677,7 @@ class SiMasonryContainer(ABCSiFlowContainer):
         super().__init__(*args, **kwargs)
         self.columns = 2  # How many columns that this container has
         self.column_width = 160  # width of each column
-        self.preferred_height = None
+        self.preferred_height = 0
 
     def setColumns(self, n):
         self.columns = n
@@ -688,7 +688,8 @@ class SiMasonryContainer(ABCSiFlowContainer):
     def arrangeWidgets(self,
                        ani=True,
                        no_arrange_exceptions: Union[list, None] = None,
-                       no_ani_exceptions: Union[list, None] = None):
+                       no_ani_exceptions: Union[list, None] = None,
+                       adjust_size: bool = True):
 
         used_height = [0 for _ in range(self.columns)]
         ani_delay_counter = 0
@@ -713,8 +714,9 @@ class SiMasonryContainer(ABCSiFlowContainer):
             used_height[column_index] += widget.height() + self.spacing[1]
             ani_delay_counter += 10
 
-        self.resize(self.width(), max(used_height))
-        self.preferred_height = used_height
+        self.preferred_height = max(max(used_height) - self.spacing[1], 0)
+        if adjust_size is True:
+            self.adjustSize()
 
     def adjustColumnAmount(self, width=None):
         """ Adjust the column amount of this container based on its width. """
@@ -730,3 +732,5 @@ class SiMasonryContainer(ABCSiFlowContainer):
         """ Calculate column amount based on width provided. """
         return (width + self.spacing[0]) // (self.column_width + self.spacing[0])
 
+    def adjustSize(self):
+        self.resize(self.width(), self.preferred_height)
