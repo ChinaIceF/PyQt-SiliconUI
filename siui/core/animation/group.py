@@ -1,4 +1,4 @@
-from siui.core.animation.abstract import ABCAnimation
+from siui.core.animation.abstract import ABCSiAnimation
 
 
 class SiAnimationGroup:
@@ -15,7 +15,7 @@ class SiAnimationGroup:
         self.animations.append(ani)
         self.tokens.append(token)
 
-    def fromToken(self, aim_token: str) -> ABCAnimation:
+    def fromToken(self, aim_token: str) -> ABCSiAnimation:
         for ani, token in zip(self.animations, self.tokens):
             if token == aim_token:
                 return ani

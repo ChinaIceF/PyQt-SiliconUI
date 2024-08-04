@@ -10,7 +10,7 @@ class Curve:
         return x
 
 
-class ABCAnimation(QObject):
+class ABCSiAnimation(QObject):
     ticked = pyqtSignal(object)     # 动画进行一刻的信号
     finished = pyqtSignal(object)   # 动画完成的信号，回传目标值
 
@@ -74,6 +74,9 @@ class ABCAnimation(QObject):
         return self.target_ - self.current_
 
     def _step_length(self):
+        raise NotImplementedError()
+
+    def _process(self):
         raise NotImplementedError()
 
     def isCompleted(self):
