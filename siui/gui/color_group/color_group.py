@@ -84,7 +84,7 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.TEXT_D, "#AFAFAF")
         self.assign(SiColor.TEXT_E, "#979797")
 
-        self.assign(SiColor.SIDE_MSG_FLASH, "#50FFFFFF")
+        self.assign(SiColor.SIDE_MSG_FLASH, "#90FFFFFF")
         self.assign(SiColor.SIDE_MSG_THEME_NORMAL, "#242027")
         self.assign(SiColor.SIDE_MSG_THEME_SUCCESS, "#519868")
         self.assign(SiColor.SIDE_MSG_THEME_INFO, "#855198")

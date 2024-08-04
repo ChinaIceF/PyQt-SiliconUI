@@ -3,7 +3,7 @@ import numpy
 import siui.core.animation.abstract as abstract
 
 
-class SiExpAnimation(abstract.ABCAnimation):
+class SiExpAnimation(abstract.ABCSiAnimation):
     """
     级数动画类，每次动画的进行步长都与当前进度有关
     """
@@ -66,7 +66,7 @@ class SiExpAnimation(abstract.ABCAnimation):
         self.ticked.emit(self.current_)
 
 
-class SiCounterAnimation(abstract.ABCAnimation):
+class SiCounterAnimation(abstract.ABCSiAnimation):
     def __init__(self, parent=None):
         super().__init__(parent)
 

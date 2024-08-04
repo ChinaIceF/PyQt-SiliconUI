@@ -14,7 +14,6 @@ class SiSideMessageContent(SiWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.contains_mouse_flag = False
         self.theme_wing_width = 32
         self.msg_type = 0
         self.msg_color_tokens = [
@@ -99,18 +98,17 @@ class SiSideMessageContent(SiWidget):
 
     def enterEvent(self, a0):
         super().enterEvent(a0)
-        self.contains_mouse_flag = True
-        self.flash_layer.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH), 0.1))
+        self.flash_layer.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH), 0.07))
+        self.parent().fold_timer.stop()
 
     def leaveEvent(self, a0):
         super().leaveEvent(a0)
-        self.contains_mouse_flag = False
         self.flash_layer.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH), 0))
+        self.parent().fold_timer.start()
 
     def mouseReleaseEvent(self, a0):
         super().mouseReleaseEvent(a0)
-        if self.contains_mouse_flag is True:
-            self.clicked.emit()
+        self.clicked.emit()
 
     def closeEvent(self, a0):
         super().closeEvent(a0)
@@ -125,8 +123,16 @@ class SiSideMessageBox(SiWidget):
         self.content_.clicked.connect(self.clicked.emit)
         self.content_.show()
 
+        self.fold_timer = QTimer(self)
+        self.fold_timer.setSingleShot(True)
+        self.fold_timer.setInterval(1000)
+
+    def startShowTimer(self):
+        self.show_timer.start()
+
     def show(self):
         super().show()
+        self.fold_timer.start()
         self.showContent()
 
     def content(self):
@@ -137,6 +143,10 @@ class SiSideMessageBox(SiWidget):
 
     def setMessageType(self, index):
         self.content_.setMessageType(index)
+
+    def setFoldAfter(self, msec):
+        self.fold_timer.setInterval(msec)
+        self.fold_timer.timeout.connect(self.closeLater)
 
     def closeLater(self):
         self.lower()

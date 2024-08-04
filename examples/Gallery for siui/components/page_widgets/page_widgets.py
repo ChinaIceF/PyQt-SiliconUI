@@ -5,7 +5,7 @@ import numpy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 
-from siui.components import SiTitledWidgetGroup
+from siui.components import SiTitledWidgetGroup, SiCircularProgressBar
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
@@ -357,11 +357,11 @@ class ExampleWidgets(SiPage):
             group.addTitle("进度条")
 
             # 进度条
-            self.sliders = OptionCardPlaneForWidgetDemos(self)
-            self.sliders.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+            self.progress_bar_linear = OptionCardPlaneForWidgetDemos(self)
+            self.progress_bar_linear.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                           "/widgets/progress_bar/progress_bar.py")
-            self.sliders.setTitle("进度条")
-            self.sliders.setFixedWidth(800)
+            self.progress_bar_linear.setTitle("进度条")
+            self.progress_bar_linear.setFixedWidth(800)
 
             self.demo_progress_bar = SiProgressBar(self)
             self.demo_progress_bar.resize(700, 32)
@@ -404,12 +404,63 @@ class ExampleWidgets(SiPage):
             container_progress_bar_ctrl_buttons.addWidget(self.ctrl_progress_bar_completing, side="right")
             container_progress_bar_ctrl_buttons.addWidget(self.ctrl_progress_bar_processing, side="right")
 
-            self.sliders.body().addWidget(self.demo_progress_bar)
-            self.sliders.body().addWidget(container_progress_bar_ctrl_buttons)
-            self.sliders.body().addPlaceholder(12)
-            self.sliders.adjustSize()
+            self.progress_bar_linear.body().addWidget(self.demo_progress_bar)
+            self.progress_bar_linear.body().addWidget(container_progress_bar_ctrl_buttons)
+            self.progress_bar_linear.body().addPlaceholder(12)
+            self.progress_bar_linear.adjustSize()
 
-            group.addWidget(self.sliders)
+            # 环形进度条
+            self.progress_bar_circular = OptionCardPlaneForWidgetDemos(self)
+            self.progress_bar_circular.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui"
+                                                        "/components/widgets/progress_bar/progress_bar.py")
+            self.progress_bar_circular.setTitle("环形进度条")
+            self.progress_bar_circular.setFixedWidth(800)
+
+            self.demo_progress_bar_circular = SiCircularProgressBar(self)
+            self.demo_progress_bar_circular.resize(32, 32)
+            self.demo_progress_bar_circular.setValue(0)
+
+            container_progress_bar_circular_ctrl_buttons = SiDenseHContainer(self)
+            container_progress_bar_circular_ctrl_buttons.setFixedHeight(32)
+            container_progress_bar_circular_ctrl_buttons.setFixedWidth(700)
+
+            self.ctrl_progress_bar_circular_random_value = SiPushButton(self)
+            self.ctrl_progress_bar_circular_random_value.resize(128, 32)
+            self.ctrl_progress_bar_circular_random_value.attachment().setText("随机进度")
+            self.ctrl_progress_bar_circular_random_value.clicked.connect(lambda: self.demo_progress_bar_circular.setValue(random.random()))  # noqa: E501
+
+            self.ctrl_progress_bar_circular_random_stepping = SiPushButton(self)
+            self.ctrl_progress_bar_circular_random_stepping.resize(128, 32)
+            self.ctrl_progress_bar_circular_random_stepping.attachment().setText("随机步进")
+            self.ctrl_progress_bar_circular_random_stepping.clicked.connect(lambda: self.demo_progress_bar_circular.setValue(self.demo_progress_bar_circular.value() + 0.1 * random.random()))  # noqa: E501
+
+            container_progress_bar_circular_ctrl_buttons.addWidget(self.ctrl_progress_bar_circular_random_value)
+            container_progress_bar_circular_ctrl_buttons.addWidget(self.ctrl_progress_bar_circular_random_stepping)
+
+            self.progress_bar_circular.body().addWidget(self.demo_progress_bar_circular)
+            self.progress_bar_circular.body().addWidget(container_progress_bar_circular_ctrl_buttons)
+            self.progress_bar_circular.body().addPlaceholder(12)
+            self.progress_bar_circular.adjustSize()
+
+            # 环形不确定进度条
+            self.progress_bar_circular_indeterminate = OptionCardPlaneForWidgetDemos(self)
+            self.progress_bar_circular_indeterminate.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI"
+                                                                      "/blob/main/siui/components/widgets"
+                                                                      "/progress_bar/progress_bar.py")
+            self.progress_bar_circular_indeterminate.setTitle("环形不确定进度条")
+            self.progress_bar_circular_indeterminate.setFixedWidth(800)
+
+            self.demo_progress_bar_circular_indeterminate = SiCircularProgressBar(self)
+            self.demo_progress_bar_circular_indeterminate.resize(32, 32)
+            self.demo_progress_bar_circular_indeterminate.setIndeterminate(True)
+
+            self.progress_bar_circular_indeterminate.body().addWidget(self.demo_progress_bar_circular_indeterminate)
+            self.progress_bar_circular_indeterminate.body().addPlaceholder(12)
+            self.progress_bar_circular_indeterminate.adjustSize()
+
+            group.addWidget(self.progress_bar_linear)
+            group.addWidget(self.progress_bar_circular)
+            group.addWidget(self.progress_bar_circular_indeterminate)
 
         # 流式布局
         with self.titled_widgets_group as group:
@@ -582,7 +633,6 @@ class ExampleWidgets(SiPage):
             self.demo_send_message_to_sidebar_custom.resize(128, 32)
             self.demo_send_message_to_sidebar_custom.attachment().setText("发送自定义信息")
             self.demo_send_message_to_sidebar_custom.clicked.connect(send_custom_message)
-
 
             self.side_messages.body().addWidget(self.demo_send_message_to_sidebar)
             self.side_messages.body().addWidget(self.demo_send_message_to_sidebar_titled)

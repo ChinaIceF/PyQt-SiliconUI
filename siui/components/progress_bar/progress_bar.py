@@ -1,14 +1,16 @@
-from PyQt5.QtCore import pyqtSignal
+import numpy
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QPainter, QPen, QColor
 
+from siui.components.widgets.abstracts.widget import SiWidget
+from siui.core.animation import SiExpAnimation
+from siui.core.animation.abstract import ABCSiAnimation
 from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.components.widgets import SiLabel
 
 
 class SiProgressBar(SiLabel):
-    """
-    进度条
-    """
     valueChanged = pyqtSignal(float)
 
     def __init__(self, *args, **kwargs):
@@ -145,3 +147,109 @@ class SiProgressBar(SiLabel):
 
         # 重设大小之后，进度按比例缩放
         self._resize_progress_according_to_value()
+
+
+class WaveAnimation(ABCSiAnimation):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.t = 0
+        self.step = 1/60 * numpy.pi * 2 * 2
+        self.omiga = 1
+        self.b = 1.4
+        self.speed_factor = 0.1
+        self.setCurrent(0)
+
+    def setSpeedFactor(self, speed_factor):
+        self.speed_factor = speed_factor
+
+    def _process(self):
+        step_length = self._step_length()
+        self.setCurrent(self.current_ + step_length)
+        self.ticked.emit(self.current_ * self.speed_factor)
+        self.t += self.step
+
+    def _step_length(self):
+        return (1 - self.omiga * numpy.sin(self.t * self.omiga)) / (2 * self.b) + 1
+
+
+class SiCircularProgressBar(SiLabel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.indeterminate_ = False
+        self.indeterminate_value = 0
+        self.value_ = 0
+        self.bar_width = 4
+        self.ani_value = 0
+        self.margins = (2, 2, -2, -2)
+
+        self.animationGroup().addMember(WaveAnimation(self), "indeterminate_process")
+        self.animationGroup().fromToken("indeterminate_process").ticked.connect(self.on_indeterminate_process_ani_ticked)
+        self.animationGroup().fromToken("indeterminate_process").setSpeedFactor(1/16*0.2)
+
+        self.animationGroup().addMember(SiExpAnimation(self), "value")
+        self.animationGroup().fromToken("value").ticked.connect(self.on_value_ani_ticked)
+        self.animationGroup().fromToken("value").setFactor(1/6)
+        self.animationGroup().fromToken("value").setBias(0.001)
+
+    def setIndeterminate(self, on):
+        self.indeterminate_ = on
+        if self.indeterminate_ is True:
+            self.setHint("Processing...")
+            self.animationGroup().fromToken("indeterminate_process").start()
+
+    def setBarWidth(self, width):
+        self.bar_width = width
+        self.update()
+
+    def value(self):
+        return self.value_
+
+    def setValue(self, value):
+        self.value_ = max(0, min(value, 1))
+        self.animationGroup().fromToken("value").setTarget(self.value_)
+        self.animationGroup().fromToken("value").try_to_start()
+        if self.indeterminate_ is False:
+            self.setHint(f"{round(self.value_*100, 1)}%")
+
+    def setMargins(self, left, top, right, bottom):
+        self.margins = (left, top, -right, -bottom)
+
+    def on_value_ani_ticked(self, value):
+        self.ani_value = value
+        self.update()
+
+    def on_indeterminate_process_ani_ticked(self, value):
+        self.indeterminate_value = value
+        self.update()
+
+    def hideEvent(self, a0):
+        super().hideEvent(a0)
+        self.animationGroup().fromToken("indeterminate_process").stop()
+
+    def showEvent(self, a0):
+        super().showEvent(a0)
+        if self.indeterminate_ is True:
+            self.animationGroup().fromToken("indeterminate_process").start()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        color_array = SiColor.toArray(self.colorGroup().fromToken(SiColor.PROGRESS_BAR_PROCESSING))[1:4]
+        pen = QPen(QColor(*color_array), self.bar_width)
+        pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+        painter.setPen(pen)
+
+        if self.indeterminate_ is True:
+            start_angle = 360 * 16 * (self.indeterminate_value % 1)
+            span_angle = 300 * 16
+        else:
+            start_angle = 360 * 16 * 0.25
+            span_angle = -360 * 16 * (self.ani_value + 0.001) / 1.001  # 翻转方向，使进度顺时针方向旋转
+
+        rect = self.rect()
+        rect.adjust(*self.margins)
+
+        painter.drawArc(rect, start_angle, span_angle)
