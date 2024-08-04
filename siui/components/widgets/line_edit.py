@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt
 
+from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.components.widgets import SiLabel
 from siui.components.widgets.abstracts import ABCSiLineEdit
@@ -34,10 +35,11 @@ class SiLineEdit(SiLabel):
         """
         super().reloadStyleSheet()
 
-        self.outfit_label_top.setStyleSheet("background-color: {}".format(SiGlobal.siui.colors["INTERFACE_BG_B"]))
+        self.outfit_label_top.setStyleSheet("background-color: {}".format(self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)))
         self.outfit_label_bottom.setStyleSheet("""
             background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {}, stop:1 {});
-            """.format(SiGlobal.siui.colors["THEME_TRANSITION_A"], SiGlobal.siui.colors["THEME_TRANSITION_B"]))
+            """.format(self.colorGroup().fromToken(SiColor.THEME_TRANSITION_A),
+                       self.colorGroup().fromToken(SiColor.THEME_TRANSITION_B)))
 
     def attachment(self):
         """

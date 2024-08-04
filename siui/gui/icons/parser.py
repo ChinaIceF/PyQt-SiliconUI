@@ -7,6 +7,9 @@ class SiGlobalIconPack:
 
     def __init__(self):
         self.icons = {}
+        self.icons_classified = {
+            "__unclassified__": {}
+        }
 
         # load internal icon packages
         self.reload_internals()
@@ -17,6 +20,8 @@ class SiGlobalIconPack:
             self.load_from_file(full_path)
 
     def load_from_file(self, path):
+        class_name = os.path.basename(path)
+        self.append_class(class_name)
         with open(path, encoding="utf-8") as file:
             for line in file.readlines():
                 if line[0:2] == "##":
@@ -26,17 +31,34 @@ class SiGlobalIconPack:
 
                 line = line.strip()
                 icon_name, icon_data = line.split("////")
-                self.append(icon_name, icon_data)
+                self.append(icon_name, icon_data, class_name)
 
-    def append(self, name, data):
+    def append_class(self, class_name, force=False):
+        if class_name in self.icons_classified.keys() and (force is False):
+            raise ValueError("Class name {} is already exist.".format(class_name))
+        self.icons_classified[class_name] = {}
+
+    def append(self, name, data, class_name: str = "__unclassified__"):
         self.icons[name] = data
+        self.icons_classified[class_name][name] = data
 
     def get(self, name, color_code: str = "#212121"):
         return self.icons[name].replace("<<<COLOR_CODE>>>", color_code).encode()
 
-    def get_dict(self):
-        return self.icons
+    @staticmethod
+    def get_from_data(data, color_code: str = "#212121"):
+        return data.replace("<<<COLOR_CODE>>>", color_code).encode()
 
+    def get_dict(self, class_name=None):
+        """
+        Get dictionary of an icon package.
+        If class name is assigned, returns the specific package dictionary.
+        If class name is None, returns a dictionary that contains all icons.
+        """
+        if class_name is None:
+            return self.icons
+        else:
+            return self.icons_classified[class_name]
 
-mypack = SiGlobalIconPack()
-print(mypack.get("ic_fluent_calendar_3_day_light", "#FFFFFF"))
+    def get_class_names(self):
+        return self.icons_classified.keys()

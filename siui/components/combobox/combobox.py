@@ -35,10 +35,10 @@ class SiComboBox(ABCSiComboBox):
         self.unfold_menu_button.flashLabel().setOpacity(0.6)
         self.unfold_menu_button.flashLabel().animationGroup().fromToken("color").setFactor(1 / 16)  # slow down ani
 
-        self.menu().valueChanged.connect(lambda x: self.value_label.setText(str(x)))
+        self.menu().indexChanged.connect(lambda x: self.value_label.setText(self.menu().options()[x].text()))
+        self.menu().indexChanged.connect(self.indexChanged)
         self.menu().valueChanged.connect(lambda _: self.unfold_menu_button.flash())
         self.menu().valueChanged.connect(self.valueChanged)
-        self.menu().indexChanged.connect(self.indexChanged)
 
     def addOption(self,
                   text: str,

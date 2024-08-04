@@ -2,6 +2,7 @@ import time
 
 from siui.gui.color_group import DarkColorGroup
 from siui.gui.font import GlobalFontDict
+from siui.gui.icons.parser import SiGlobalIconPack
 
 
 class SiliconUIGlobal:
@@ -19,6 +20,7 @@ class SiliconUIGlobal:
     # 图标字典，储存所有 SVG 类型的图标数据
     # 值为 SVG信息的 bytes
     icons = {}
+    iconpack = SiGlobalIconPack()
 
     # 样式表字典，储存所有动态样式表
     # 值为字符串
