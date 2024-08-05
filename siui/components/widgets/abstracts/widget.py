@@ -1,4 +1,7 @@
-from PyQt5.QtCore import QPoint, pyqtSignal
+import os
+
+from PyQt5.QtCore import QPoint, pyqtSignal, Qt, QRectF, QRect
+from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtWidgets import QWidget, QGraphicsOpacityEffect
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
@@ -19,6 +22,8 @@ class SiWidget(QWidget):
 
         self.fixed_stylesheet = ""
         self.silicon_widget_flags = {}
+
+        self.center_widget = None
 
         # 颜色组
         self.color_group = SiColorGroup(reference=SiGlobal.siui.colors)
@@ -50,12 +55,20 @@ class SiWidget(QWidget):
         self.animation_color.setBias(1)
         self.animation_color.ticked.connect(self._set_color_handler)
 
+        self.animation_showing = SiExpAnimation(self)
+        self.animation_showing.setFactor(1/16)
+        self.animation_showing.setBias(0.06)
+        self.animation_showing.setCurrent(1)
+        self.animation_showing.ticked.connect(self._on_showing_ani_ticked)
+        self.showing_ani_progress = 1
+
         # 创建动画组，以tokenize以上动画
         self.animation_group = SiAnimationGroup()
         self.animation_group.addMember(self.animation_move, token="move")
         self.animation_group.addMember(self.animation_resize, token="resize")
         self.animation_group.addMember(self.animation_opacity, token="opacity")
         self.animation_group.addMember(self.animation_color, token="color")
+        self.animation_group.addMember(self.animation_showing, token="showing")
 
     def setStyleSheet(self, stylesheet: str):
         if self.fixed_stylesheet == "":
@@ -81,14 +94,6 @@ class SiWidget(QWidget):
         """
         self.silicon_widget_flags[flag.name] = on
 
-    def setSiliconWidgetFlags(self, flags):
-        """
-        Set silicon widget flags to this widget
-        :param flags: Si.FLAG1 | Si.FLAG2 | ...
-        """
-        for flag in list(flags):
-            self.setSiliconWidgetFlag(flag, on=True)
-
     def isSiliconWidgetFlagOn(self, flag):
         """
         Check whether the flag is on
@@ -112,6 +117,12 @@ class SiWidget(QWidget):
         :return: SiColorGroup
         """
         return self.color_group
+
+    def setCenterWidget(self, widget):
+        self.center_widget = widget
+
+    def centerWidget(self):
+        return self.center_widget
 
     def setFixedStyleSheet(self, fixed_stylesheet: str):
         """
@@ -271,6 +282,66 @@ class SiWidget(QWidget):
         self.animation_resize.setCurrent([w, h])
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.resized.emit([w, h])
+
+        if self.center_widget is not None:
+            self.center_widget.move((self.width() - self.center_widget.width()) // 2,
+                                    (self.height() - self.center_widget.height()) // 2)
+
+    def showCenterWidgetFadeIn(self):
+        self.animationGroup().fromToken("showing").setTarget(1)
+        self.animationGroup().fromToken("showing").try_to_start()
+
+    def hideCenterWidgetFadeOut(self):
+        self.animationGroup().fromToken("showing").setTarget(0)
+        self.animationGroup().fromToken("showing").try_to_start()
+
+    def _on_showing_ani_ticked(self, progress):
+        self.update()
+
+    def paintEvent(self, event):
+        if self.center_widget is None:
+            return
+
+        if self.animationGroup().fromToken("showing").isActive() is False:
+            return
+
+        progress = self.animationGroup().fromToken("showing").current()
+        qt_scale_factor = float(os.environ["QT_SCALE_FACTOR"])
+
+        a = 8.5
+        b = 0.4
+        scale_factor = min(((1 - pow(2, -a * progress)) * b + (1-b)) / ((1 - pow(2, -a * 1)) * b + (1-b)), 1)
+        opacity_factor = min((1 - pow(2, -a * progress)) / (1 - pow(2, -a * 1)), 1)
+
+        # create painter
+        painter = QPainter(self)
+        painter.setRenderHints(QPainter.RenderHint.Antialiasing |
+                               QPainter.RenderHint.TextAntialiasing |
+                               QPainter.RenderHint.SmoothPixmapTransform)
+
+        # render self to pixmap
+        pixmap = QPixmap(self.center_widget.size() * qt_scale_factor)
+        pixmap.setDevicePixelRatio(qt_scale_factor)
+        pixmap.fill(Qt.transparent)
+        self.center_widget.render(pixmap, flags=QWidget.RenderFlag.DrawChildren)  # render all its children
+
+        # get rect of this widget, translate the painter to center of the rect
+        rect = QRectF(0, 0, self.width(), self.height())
+        painter.translate(rect.center())
+
+        # draw pixmap to the painter
+        painter.scale(scale_factor, scale_factor)
+        painter.setOpacity(opacity_factor)
+        painter.drawPixmap(QRect(-self.center_widget.width()/2,
+                                 -self.center_widget.height()/2,
+                                 self.center_widget.width(),
+                                 self.center_widget.height()),
+                           pixmap)
+
+        if progress >= 1:
+            self.center_widget.show()
+        else:
+            self.center_widget.hide()
 
     def setMoveAnchor(self, x, y):
         self.move_anchor = QPoint(x, y)

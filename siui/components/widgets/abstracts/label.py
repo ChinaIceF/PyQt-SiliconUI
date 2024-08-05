@@ -82,14 +82,6 @@ class ABCAnimatedLabel(QLabel):
         """
         self.silicon_widget_flags[flag.name] = on
 
-    def setSiliconWidgetFlags(self, flags):
-        """
-        Set silicon widget flags to this widget
-        :param flags: Si.FLAG1 | Si.FLAG2 | ...
-        """
-        for flag in list(flags):
-            self.setSiliconWidgetFlag(flag, on=True)
-
     def isSiliconWidgetFlagOn(self, flag):
         """
         Check whether the flag is on

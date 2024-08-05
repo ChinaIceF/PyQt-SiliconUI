@@ -12,18 +12,13 @@ class SiWidgetFlags(Flag):
     EnableAnimationSignals = auto()     # 是否启用moved，resized，opacityChanged信号
 
 
-class SiSomethingEnums(Enum):
-    NameA = 1
-
-
-class Si(Flag):
+class Si(Enum):
     # the namespace of SiliconUI
-    FlashOnHintUpdated = SiWidgetFlags.FlashOnHintUpdated.value
-    InstantMove = SiWidgetFlags.InstantMove.value
-    InstantResize = SiWidgetFlags.InstantResize.value
-    InstantSetOpacity = SiWidgetFlags.InstantSetOpacity.value
-    HasMoveLimits = SiWidgetFlags.HasMoveLimits.value
-    AdjustSizeOnTextChanged = SiWidgetFlags.AdjustSizeOnTextChanged.value
-    EnableAnimationSignals = SiWidgetFlags.EnableAnimationSignals.value
-
-    NameA = SiSomethingEnums.NameA.value
+    FlashOnHintUpdated = auto()
+    InstantMove = auto()
+    InstantResize = auto()
+    InstantSetOpacity = auto()
+    HasMoveLimits = auto()
+    AdjustSizeOnTextChanged = auto()
+    EnableAnimationSignals = auto()
+    HasShowingUpAnimation = auto()

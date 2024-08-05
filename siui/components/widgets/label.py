@@ -69,12 +69,13 @@ class SiPixLabel(SiLabel):
 
         painter.setClipPath(path)
         painter.drawPixmap(0, 0, p)
+        painter.end()
+
         self.setPixmap(self.target)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.draw()
-
 
 class SiSvgLabel(SiLabel):
     """
