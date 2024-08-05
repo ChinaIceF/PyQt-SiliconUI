@@ -674,12 +674,12 @@ class SiFlowContainer(ABCSiFlowContainer):
             if (ani is False) or (widget in no_ani_exceptions):
                 if (widget in no_arrange_exceptions) is False:
                     widget.animationGroup().fromToken("move").stop()
-                    widget.move(used_width + self.spacing[0], used_height)
+                    widget.move(used_width, used_height)
 
             # perform animations
             else:
                 if (widget in no_arrange_exceptions) is False:
-                    widget.moveTo(used_width + self.spacing[0], used_height)
+                    widget.moveTo(used_width, used_height)
 
             # add width of this widget to counter
             used_width += widget.width() + self.spacing[0]

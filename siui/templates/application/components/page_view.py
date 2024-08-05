@@ -109,7 +109,7 @@ class PageNavigator(ABCSiNavigationBar):
         new_page_button.setStyleSheet("background-color: #20FF0000")
         new_page_button.resize(40, 40)
         new_page_button.setHint(hint)
-        new_page_button.attachment().setSvgSize(16, 16)
+        new_page_button.attachment().setSvgSize(20, 20)
         new_page_button.attachment().load(svg_data)
         new_page_button.activated.connect(func_when_active)
 

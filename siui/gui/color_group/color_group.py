@@ -122,8 +122,8 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.CHECKBOX_CHECKED, "#9c65ae")
 
         # 长按按钮
-        self.assign(SiColor.BUTTON_LONG_PRESS_PANEL, "#9F3652")
-        self.assign(SiColor.BUTTON_LONG_PRESS_SHADOW, "#6a3246")
+        self.assign(SiColor.BUTTON_LONG_PRESS_PANEL, "#932a48")
+        self.assign(SiColor.BUTTON_LONG_PRESS_SHADOW, "#642d41")
         self.assign(SiColor.BUTTON_LONG_PRESS_PROGRESS, "#DA3462")
 
         # 开关

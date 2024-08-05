@@ -50,7 +50,7 @@ class ExampleOptionCards(SiPage):
         # 线性选项卡
         self.option_card_linear_beginning = SiOptionCardLinear(self)
         self.option_card_linear_beginning.setTitle("使用线性选项卡搭建框架", "从线性选项卡这一基础元素开始构建你的应用界面")
-        self.option_card_linear_beginning.load(SiGlobal.siui.icons["fi-rr-rectangle-horizontal"])
+        self.option_card_linear_beginning.load(SiGlobal.siui.iconpack.get("ic_fluent_rectangle_landscape_regular"))
 
         attached_button_a = SiPushButton(self)
         attached_button_a.resize(128, 32)
@@ -58,11 +58,11 @@ class ExampleOptionCards(SiPage):
 
         attached_button_b = SiPushButton(self)
         attached_button_b.resize(32, 32)
-        attached_button_b.attachment().load(SiGlobal.siui.icons["fi-rr-portrait"])
+        attached_button_b.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_attach_regular"))
 
         self.option_card_linear_attaching = SiOptionCardLinear(self)
         self.option_card_linear_attaching.setTitle("绑定控件", "线性选项卡提供水平容器，可以添加任意控件，不限数量")
-        self.option_card_linear_attaching.load(SiGlobal.siui.icons["fi-rr-sign-in"])
+        self.option_card_linear_attaching.load(SiGlobal.siui.iconpack.get("ic_fluent_attach_regular"))
         self.option_card_linear_attaching.addWidget(attached_button_a)
         self.option_card_linear_attaching.addWidget(attached_button_b)
 
@@ -75,7 +75,7 @@ class ExampleOptionCards(SiPage):
         header_button = SiSimpleButton(self)
         header_button.setFixedHeight(32)
         header_button.attachment().setText("Header 区域")
-        header_button.attachment().load(SiGlobal.siui.icons["fi-rr-portrait"])
+        header_button.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_window_header_horizontal_regular"))
         header_button.adjustSize()
 
         body_label = SiLabel(self)
@@ -85,17 +85,17 @@ class ExampleOptionCards(SiPage):
 
         footer_button_a = SiSimpleButton(self)
         footer_button_a.resize(32, 32)
-        footer_button_a.attachment().load(SiGlobal.siui.icons["fi-rr-pencil"])
+        footer_button_a.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_pen_regular"))
         footer_button_a.setHint("绘制")
 
         footer_button_b = SiSimpleButton(self)
         footer_button_b.resize(32, 32)
-        footer_button_b.attachment().load(SiGlobal.siui.icons["fi-rr-eye-dropper"])
+        footer_button_b.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_eyedropper_regular"))
         footer_button_b.setHint("取色器")
 
         footer_button_c = SiSimpleButton(self)
         footer_button_c.resize(32, 32)
-        footer_button_c.attachment().load(SiGlobal.siui.icons["fi-rr-disk"])
+        footer_button_c.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_save_regular"))
         footer_button_c.setHint("保存")
 
         self.option_card_plane_beginning = SiOptionCardPlane(self)
@@ -127,7 +127,7 @@ class ExampleOptionCards(SiPage):
 
         container_description = SiOptionCardLinear(self)
         container_description.setTitle("嵌套容器", "让你的界面布局更加美观和直观")
-        container_description.load(SiGlobal.siui.icons["fi-rr-layout-fluid"])
+        container_description.load(SiGlobal.siui.iconpack.get("ic_fluent_slide_layout_regular"))
 
         container_plane_left_bottom = SiOptionCardPlane(self)
         container_plane_left_bottom.setTitle("资源监视器")

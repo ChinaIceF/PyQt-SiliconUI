@@ -152,12 +152,12 @@ class WidgetsExampleOptionCardPlane(SiOptionCardPlane):
         super().__init__(*args, **kwargs)
 
         self.button_bug = SiSimpleButton(self)
-        self.button_bug.attachment().load(SiGlobal.siui.icons["fi-rr-bug"])
+        self.button_bug.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_bug_regular"))
         self.button_bug.resize(32, 32)
         self.button_bug.setHint("Report bugs")
 
         self.button_source_code = SiSimpleButton(self)
-        self.button_source_code.attachment().load(SiGlobal.siui.icons["fi-rr-link"])
+        self.button_source_code.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_open_regular"))
         self.button_source_code.resize(32, 32)
         self.button_source_code.setHint("Source code")
 
@@ -260,7 +260,7 @@ class WidgetsExamplePanel(SiDenseVContainer):
         # 解释按钮
         button_description = SiSimpleButton(self)
         button_description.attachment().setText("See More")
-        button_description.attachment().load(SiGlobal.siui.icons["fi-rr-apps-add"])
+        button_description.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_apps_add_in_regular"))
         button_description.colorGroup().assign(SiColor.BUTTON_OFF, "#2C2930")
         button_description.reloadStyleSheet()
         button_description.resize(210, 32)
@@ -296,11 +296,11 @@ class OptionCardsExamplePanel(SiDenseVContainer):
 
         attached_button_b = SiPushButton(self)
         attached_button_b.resize(32, 32)
-        attached_button_b.attachment().load(SiGlobal.siui.icons["fi-rr-portrait"])
+        attached_button_b.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_attach_regular"))
 
         self.option_card_linear_attaching = SiOptionCardLinear(self)
         self.option_card_linear_attaching.setTitle("Attach Widgets", "The linear option card provides a horizontal container where any control can be added,\nwith no limit on the number")
-        self.option_card_linear_attaching.load(SiGlobal.siui.icons["fi-rr-sign-in"])
+        self.option_card_linear_attaching.load(SiGlobal.siui.iconpack.get("ic_fluent_attach_regular"))
         self.option_card_linear_attaching.addWidget(attached_button_a)
         self.option_card_linear_attaching.addWidget(attached_button_b)
 
@@ -311,7 +311,7 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         header_button = SiSimpleButton(self)
         header_button.setFixedHeight(32)
         header_button.attachment().setText("Header Attachment")
-        header_button.attachment().load(SiGlobal.siui.icons["fi-rr-portrait"])
+        header_button.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_window_header_horizontal_regular"))
         header_button.adjustSize()
 
         body_label = SiLabel(self)
@@ -323,17 +323,17 @@ class OptionCardsExamplePanel(SiDenseVContainer):
 
         footer_button_a = SiSimpleButton(self)
         footer_button_a.resize(32, 32)
-        footer_button_a.attachment().load(SiGlobal.siui.icons["fi-rr-pencil"])
+        footer_button_a.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_pen_regular"))
         footer_button_a.setHint("Draw")
 
         footer_button_b = SiSimpleButton(self)
         footer_button_b.resize(32, 32)
-        footer_button_b.attachment().load(SiGlobal.siui.icons["fi-rr-eye-dropper"])
+        footer_button_b.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_eyedropper_regular"))
         footer_button_b.setHint("Eyedropper")
 
         footer_button_c = SiSimpleButton(self)
         footer_button_c.resize(32, 32)
-        footer_button_c.attachment().load(SiGlobal.siui.icons["fi-rr-disk"])
+        footer_button_c.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_save_regular"))
         footer_button_c.setHint("Save")
 
         self.option_card_plane_beginning = SiOptionCardPlane(self)
@@ -354,7 +354,7 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         # 解释按钮
         button_description = SiSimpleButton(self)
         button_description.attachment().setText("See More")
-        button_description.attachment().load(SiGlobal.siui.icons["fi-rr-apps-add"])
+        button_description.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_apps_add_in_regular"))
         button_description.colorGroup().assign(SiColor.BUTTON_OFF, "#2C2930")
         button_description.colorGroup().assign(SiColor.BUTTON_ON, "#2C2930")
         button_description.reloadStyleSheet()

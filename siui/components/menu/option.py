@@ -38,6 +38,7 @@ class SiMenuOption(SiDenseHContainer):
         super().__init__(parent_menu)  # parent will be overwritten when added to container
 
         self.value_ = text if value is None else value
+        self.text_ = text
         self.parent_menu = parent_menu
         self.child_menu = child_menu
         if self.child_menu is not None:
@@ -129,6 +130,9 @@ class SiMenuOption(SiDenseHContainer):
 
     def value(self):
         return self.value_
+
+    def text(self):
+        return self.text_
 
     def setShowIcon(self, state):
         if state:

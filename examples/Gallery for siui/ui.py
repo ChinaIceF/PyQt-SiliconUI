@@ -33,7 +33,7 @@ class MySiliconApp(SiliconApplication):
         SiGlobal.siui.reloadAllWindowsStyleSheet()
 
     def init_my_app_ui(self):
-        self.addPage(ExampleHomepage(self), SiGlobal.siui.icons["fi-rr-home"], "主页", "top")
-        self.addPage(ExampleIcons(self), SiGlobal.siui.icons["fi-rr-apps"], "图标库", "top")
-        self.addPage(ExampleOptionCards(self), SiGlobal.siui.icons["fi-rr-rectangle-horizontal"], "选项卡", "top")
-        self.addPage(ExampleWidgets(self), SiGlobal.siui.icons["fi-rr-cube"], "控件", "top")
+        self.addPage(ExampleHomepage(self), SiGlobal.siui.iconpack.get("ic_fluent_home_filled"), "主页", "top")
+        self.addPage(ExampleIcons(self), SiGlobal.siui.iconpack.get("ic_fluent_diversity_filled"), "图标库", "top")
+        self.addPage(ExampleOptionCards(self), SiGlobal.siui.iconpack.get("ic_fluent_align_space_evenly_vertical_filled"), "选项卡", "top")
+        self.addPage(ExampleWidgets(self), SiGlobal.siui.iconpack.get("ic_fluent_box_multiple_filled"), "控件", "top")

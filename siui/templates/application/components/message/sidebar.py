@@ -1,4 +1,5 @@
 import random
+from typing import Union
 
 from PyQt5.QtCore import QTimer
 
@@ -31,6 +32,7 @@ class MessageSidebar(SiMasonryContainer):
              text: str,
              title: str = None,
              msg_type: int = 0,
+             icon: Union[bytes, str] = None,
              slot=None,
              close_on_clicked=True,
              fold_after: int = None):
@@ -95,6 +97,9 @@ class MessageSidebar(SiMasonryContainer):
 
         if fold_after is not None:
             new_message_box.setFoldAfter(fold_after)
+
+        if icon is not None:
+            new_message_box.content().themeIcon().load(icon)
 
         new_message_box.adjustSize()
         self.sendMessageBox(new_message_box)
