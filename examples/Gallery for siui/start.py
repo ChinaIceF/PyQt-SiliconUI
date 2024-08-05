@@ -7,8 +7,7 @@ from PyQt5.QtWidgets import QApplication
 from siui.core.globals import SiGlobal
 from ui import MySiliconApp
 
-import siui
-
+# import siui
 # siui.gui.set_scale_factor(1)
 
 

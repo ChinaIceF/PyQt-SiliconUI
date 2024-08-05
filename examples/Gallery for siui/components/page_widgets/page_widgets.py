@@ -418,7 +418,7 @@ class ExampleWidgets(SiPage):
 
             self.demo_progress_bar_circular = SiCircularProgressBar(self)
             self.demo_progress_bar_circular.resize(32, 32)
-            self.demo_progress_bar_circular.setValue(0)
+            self.demo_progress_bar_circular.setValue(0.7)
 
             container_progress_bar_circular_ctrl_buttons = SiDenseHContainer(self)
             container_progress_bar_circular_ctrl_buttons.setFixedHeight(32)
