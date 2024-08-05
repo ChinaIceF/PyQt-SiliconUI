@@ -69,7 +69,7 @@ class ExampleWidgets(SiPage):
             self.demo_label_hinted.setHint("使用 setHint 方法设置工具提示")
 
             self.demo_label_with_svg = SiIconLabel(self)
-            self.demo_label_with_svg.load(SiGlobal.siui.icons["fi-rr-comment"])
+            self.demo_label_with_svg.load(SiGlobal.siui.iconpack.get("ic_fluent_comment_link_regular"))
             self.demo_label_with_svg.setText(" 具有 SVG 图标的标签")
 
             self.label_for_text.body().addWidget(self.demo_label)
@@ -230,7 +230,7 @@ class ExampleWidgets(SiPage):
 
             self.demo_toggle_button_a = SiToggleButton(self)
             self.demo_toggle_button_a.resize(96, 32)
-            self.demo_toggle_button_a.attachment().load(SiGlobal.siui.icons["fi-rr-bookmark"])
+            self.demo_toggle_button_a.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_bookmark_regular"))
             self.demo_toggle_button_a.attachment().setText("收藏")
             self.demo_toggle_button_a.setHint("切换按钮，有开关两个状态可切换")
             self.demo_toggle_button_a.colorGroup().assign(SiColor.BUTTON_OFF, "#3b373f")
@@ -239,7 +239,7 @@ class ExampleWidgets(SiPage):
 
             self.demo_toggle_button_b = SiToggleButton(self)
             self.demo_toggle_button_b.resize(32, 32)
-            self.demo_toggle_button_b.attachment().load(SiGlobal.siui.icons["fi-rr-bookmark"])
+            self.demo_toggle_button_b.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_bookmark_regular"))
             self.demo_toggle_button_b.setHint("收藏")
             self.demo_toggle_button_b.colorGroup().assign(SiColor.BUTTON_OFF, "#3b373f")
             self.demo_toggle_button_b.colorGroup().assign(SiColor.BUTTON_ON, "#855198")
@@ -253,13 +253,13 @@ class ExampleWidgets(SiPage):
 
             self.demo_simple_button_a = SiSimpleButton(self)
             self.demo_simple_button_a.resize(96, 32)
-            self.demo_simple_button_a.attachment().load(SiGlobal.siui.icons["fi-rr-refresh"])
+            self.demo_simple_button_a.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_arrow_sync_regular"))
             self.demo_simple_button_a.attachment().setText("刷新")
             self.demo_simple_button_a.setHint("简单按钮，追求简洁清晰")
 
             self.demo_simple_button_b = SiSimpleButton(self)
             self.demo_simple_button_b.resize(32, 32)
-            self.demo_simple_button_b.attachment().load(SiGlobal.siui.icons["fi-rr-refresh"])
+            self.demo_simple_button_b.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_arrow_sync_regular"))
             self.demo_simple_button_b.setHint("刷新")
 
             container_flat_buttons_b.addWidget(self.demo_simple_button_a)
@@ -571,17 +571,17 @@ class ExampleWidgets(SiPage):
 
             menu_child_menu_test = SiMenu()
             menu_child_menu_test.setFixedWidth(180)
-            menu_child_menu_test.addOption("组", icon=SiGlobal.siui.icons["fi-rr-folder-add"])
-            menu_child_menu_test.addOption("文件", icon=SiGlobal.siui.icons["fi-rr-file-add"])
+            menu_child_menu_test.addOption("组", icon=SiGlobal.siui.iconpack.get("ic_fluent_folder_add_regular"))
+            menu_child_menu_test.addOption("文件", icon=SiGlobal.siui.iconpack.get("ic_fluent_document_add_regular"))
             menu_child_menu_test.setShowIcon(True)
             menu_child_menu_test.setSelectionMenu(False)
 
             menu_test = SiMenu()
             menu_test.setFixedWidth(260)
-            menu_test.addOption("具有子目录的项", icon=SiGlobal.siui.icons["fi-rr-apps-add"], child_menu=menu_child_menu_test)
+            menu_test.addOption("具有子目录的项", icon=SiGlobal.siui.iconpack.get("ic_fluent_add_circle_regular"), child_menu=menu_child_menu_test)
             menu_test.addOption("没图标的选项")
-            menu_test.addOption("从服务器同步", icon=SiGlobal.siui.icons["fi-rr-cloud-download"])
-            menu_test.addOption("共享", icon=SiGlobal.siui.icons["fi-rr-network"])
+            menu_test.addOption("从服务器同步", icon=SiGlobal.siui.iconpack.get("ic_fluent_cloud_sync_regular"))
+            menu_test.addOption("共享", icon=SiGlobal.siui.iconpack.get("ic_fluent_share_regular"))
             menu_test.setSelectionMenu(False)
             menu_test.setShowIcon(True)
 

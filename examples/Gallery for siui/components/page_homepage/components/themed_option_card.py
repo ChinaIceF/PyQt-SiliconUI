@@ -30,7 +30,7 @@ class ThemedOptionCardPlane(SiOptionCardPlane):
         # 链接按钮
         self.link_button = SiSimpleButton(self)
         self.link_button.setFixedSize(32, 32)
-        self.link_button.attachment().load(SiGlobal.siui.icons["fi-rr-link"])
+        self.link_button.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_open_regular"))
 
         link_button_container = SiDenseVContainer(self)
         link_button_container.setAlignCenter(True)

@@ -10,12 +10,17 @@ from siui.core.effect import SiQuickEffect
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
+import pyperclip
+
 
 def get_on_button_clicked_func(button):
-    return lambda: SiGlobal.siui.windows["TOOL_TIP"].setText(
-                f"{button.objectName()}<br>"
-                f'<span style="color: {button.colorGroup().fromToken(SiColor.TEXT_D)}">复制成功</span>',
-            )
+    def on_button_clicked():
+        pyperclip.copy(button.objectName())
+        SiGlobal.siui.windows["TOOL_TIP"].setText(
+            f"{button.objectName()}<br>"
+            f'<span style="color: {button.colorGroup().fromToken(SiColor.TEXT_D)}">复制成功</span>',
+        )
+    return on_button_clicked
 
 
 def levenshtein_distance(s1, s2):

@@ -20,14 +20,14 @@ class OptionCardPlaneForWidgetDemos(SiOptionCardPlane):
         self.additional_description.setAlignment(Qt.AlignLeft | Qt.AlignBottom)
 
         self.button_bug = SiSimpleButton(self)
-        self.button_bug.attachment().load(SiGlobal.siui.icons["fi-rr-bug"])
+        self.button_bug.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_bug_regular"))
         self.button_bug.resize(32, 32)
         self.button_bug.setHint("报告问题")
         self.button_bug.clicked.connect(
             lambda: os.system("start https://github.com/ChinaIceF/PyQt-SiliconUI/issues/new"))
 
         self.button_source_code = SiSimpleButton(self)
-        self.button_source_code.attachment().load(SiGlobal.siui.icons["fi-rr-link"])
+        self.button_source_code.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_open_regular"))
         self.button_source_code.resize(32, 32)
         self.button_source_code.setHint("查看源代码")
         self.button_source_code.clicked.connect(self.openSourceCode)

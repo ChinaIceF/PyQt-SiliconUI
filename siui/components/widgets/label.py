@@ -85,6 +85,8 @@ class SiSvgLabel(SiLabel):
 
         # 创建 QSvgWidget
         self.svg_widget = QSvgWidget(self)
+        self.setSvgSize(20, 20)
+        self.resize(24, 24)
 
     def load(self, path_or_data):
         """
@@ -124,8 +126,8 @@ class SiIconLabel(SiLabel):
 
         # 创建图标标签
         self.icon_ = SiSvgLabel(self)
-        self.icon_.resize(16, 16)
-        self.icon_.setSvgSize(16, 16)
+        self.icon_.resize(24, 24)
+        self.icon_.setSvgSize(20, 20)
 
         # 创建文本标签
         self.text_label = SiLabel(self)

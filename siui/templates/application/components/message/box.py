@@ -30,10 +30,10 @@ class SiSideMessageContent(SiWidget):
         self.panel = SiLabel(self)
         self.panel.setFixedStyleSheet("border-radius: 6px; border-top-left-radius: 2px")
 
-        self.icon = SiSvgLabel(self)
-        self.icon.resize(32, 32)
-        self.icon.setSvgSize(16, 16)
-        self.icon.load(SiGlobal.siui.icons["fi-rr-check"])
+        self.theme_icon = SiSvgLabel(self)
+        self.theme_icon.resize(32, 32)
+        self.theme_icon.setSvgSize(20, 20)
+        self.theme_icon.load(SiGlobal.siui.iconpack.get("ic_fluent_info_regular"))
 
         self.container_ = SiDenseVContainer(self)
         self.container_.setAdjustWidgetsSize(True)
@@ -41,7 +41,7 @@ class SiSideMessageContent(SiWidget):
 
         self.close_button = SiSimpleButton(self)
         self.close_button.setBorderRadius(6)
-        self.close_button.attachment().load(SiGlobal.siui.icons["fi-rr-cross-small"])
+        self.close_button.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_checkmark_regular"))
         self.close_button.clicked.connect(self.parent().closeLater)
 
         self.flash_layer = SiLabel(self)
@@ -66,6 +66,9 @@ class SiSideMessageContent(SiWidget):
     def container(self):
         return self.container_
 
+    def themeIcon(self):
+        return self.theme_icon
+
     def flash(self):
         self.flash_layer.setColor(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH))
         self.flash_layer.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH), 0))
@@ -84,7 +87,7 @@ class SiSideMessageContent(SiWidget):
                                event.size().width() - self.theme_wing_width,
                                event.size().height() - 1)
 
-        self.icon.move(0, (event.size().height() - self.icon.height())//2)
+        self.theme_icon.move(0, (event.size().height() - self.theme_icon.height()) // 2)
 
         self.container_.setGeometry(self.theme_wing_width,
                                     0,

@@ -1,11 +1,15 @@
 import os
 
+from siui.core.color import SiColor
+
 
 class SiGlobalIconPack:
     current_module_path = os.path.dirname(os.path.abspath(__file__))
     package_folder_path = os.path.join(current_module_path, 'packages')
 
     def __init__(self):
+        self.default_color = None
+
         self.icons = {}
         self.icons_classified = {
             "__unclassified__": {}
@@ -13,6 +17,9 @@ class SiGlobalIconPack:
 
         # load internal icon packages
         self.reload_internals()
+
+    def set_default_color(self, code):
+        self.default_color = code
 
     def reload_internals(self):
         for package_filename in os.listdir(self.package_folder_path):
@@ -42,11 +49,12 @@ class SiGlobalIconPack:
         self.icons[name] = data
         self.icons_classified[class_name][name] = data
 
-    def get(self, name, color_code: str = "#212121"):
+    def get(self, name, color_code: str = None):
+        color_code = self.default_color if color_code is None else color_code
         return self.icons[name].replace("<<<COLOR_CODE>>>", color_code).encode()
 
-    @staticmethod
-    def get_from_data(data, color_code: str = "#212121"):
+    def get_from_data(self, data, color_code: str = None):
+        color_code = self.default_color if color_code is None else color_code
         return data.replace("<<<COLOR_CODE>>>", color_code).encode()
 
     def get_dict(self, class_name=None):
