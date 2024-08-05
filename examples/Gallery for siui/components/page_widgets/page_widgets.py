@@ -5,7 +5,7 @@ import numpy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 
-from siui.components import SiTitledWidgetGroup, SiCircularProgressBar
+from siui.components import SiTitledWidgetGroup, SiCircularProgressBar, SiWidget, SiOptionCardLinear
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
@@ -86,7 +86,8 @@ class ExampleWidgets(SiPage):
             self.pix_label.setFixedWidth(600)
 
             container_pix_label = SiDenseHContainer(self)
-            container_pix_label.setFixedHeight(80)
+            container_pix_label.setAlignCenter(True)
+            container_pix_label.setFixedHeight(80 + 24)
 
             self.demo_pix_label_a = SiPixLabel(self)
             self.demo_pix_label_a.setFixedSize(80, 80)
@@ -177,11 +178,52 @@ class ExampleWidgets(SiPage):
             self.draggable_label.body().addPlaceholder(12)
             self.draggable_label.adjustSize()
 
+            # 控件显示效果
+            self.showup_effect = OptionCardPlaneForWidgetDemos(self)
+            self.showup_effect.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui"
+                                                  "/components/widgets/label.py")
+            self.showup_effect.setTitle("控件显示效果")
+            self.showup_effect.setFixedWidth(600)
+
+            self.demo_widget = SiWidget(self)
+            self.demo_widget.resize(350, 96)
+
+            self.attachment_option_card = SiOptionCardLinear(self.demo_widget)
+            self.attachment_option_card.load(SiGlobal.siui.iconpack.get("ic_fluent_card_ui_regular"))
+            self.attachment_option_card.setTitle("测试选项卡",
+                                                 "点击按钮，播放显示或隐藏动画")
+            self.attachment_option_card.setFixedWidth(350)
+            self.attachment_option_card.adjustSize()
+
+            self.demo_widget.setCenterWidget(self.attachment_option_card)
+
+            container_showup_effect = SiDenseHContainer(self)
+            container_showup_effect.setFixedHeight(32)
+
+            self.ctrl_show_ani_button = SiPushButton(self)
+            self.ctrl_show_ani_button.attachment().setText("播放显示动画")
+            self.ctrl_show_ani_button.resize(128, 32)
+            self.ctrl_show_ani_button.clicked.connect(self.demo_widget.showCenterWidgetFadeIn)
+
+            self.ctrl_hide_ani_button = SiPushButton(self)
+            self.ctrl_hide_ani_button.attachment().setText("播放隐藏动画")
+            self.ctrl_hide_ani_button.resize(128, 32)
+            self.ctrl_hide_ani_button.clicked.connect(self.demo_widget.hideCenterWidgetFadeOut)
+
+            container_showup_effect.addWidget(self.ctrl_show_ani_button)
+            container_showup_effect.addWidget(self.ctrl_hide_ani_button)
+
+            self.showup_effect.body().addWidget(self.demo_widget)
+            self.showup_effect.body().addWidget(container_showup_effect)
+            self.showup_effect.body().addPlaceholder(12)
+            self.showup_effect.adjustSize()
+
             # <- 添加到控件组
             group.addWidget(self.label_for_text)
             group.addWidget(self.pix_label)
             group.addWidget(self.label_ani)
             group.addWidget(self.draggable_label)
+            group.addWidget(self.showup_effect)
 
         # 按钮
         with self.titled_widgets_group as group:
