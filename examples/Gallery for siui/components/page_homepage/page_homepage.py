@@ -17,6 +17,7 @@ from siui.components.widgets import (
     SiSwitch,
 )
 from siui.core.color import SiColor
+from siui.core.effect import SiQuickEffect
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
@@ -101,12 +102,7 @@ class ExampleHomepage(SiPage):
         # 添加到滚动区域容器
         self.scroll_container.addWidget(self.head_area)
 
-        # 创建QGraphicsDropShadowEffect对象，为水平容器创造阴影
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setColor(QColor(0, 0, 0, 80))
-        shadow.setOffset(0, 0)
-        shadow.setBlurRadius(48)
-        self.container_for_cards.setGraphicsEffect(shadow)
+        SiQuickEffect.applyDropShadowOn(self.container_for_cards, color=(0, 0, 0, 80), blur_radius=48)
 
         # 下方区域标签
         self.body_area = SiLabel(self)

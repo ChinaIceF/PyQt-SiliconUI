@@ -231,6 +231,7 @@ class SiWidget(QWidget):
         self.animation_opacity.setCurrent(opacity)
 
         self.setWindowOpacity(opacity)
+
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.opacityChanged.emit(opacity)
 

@@ -15,6 +15,8 @@ class SiColor(Enum):
 
     TOOLTIP_BG = auto()
 
+    LAYER_DIM = auto()
+
     INTERFACE_BG_A = auto()
     INTERFACE_BG_B = auto()
     INTERFACE_BG_C = auto()
