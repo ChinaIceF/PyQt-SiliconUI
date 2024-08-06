@@ -1,12 +1,12 @@
-import random
 from typing import Union
 
-from siui.components import SiLabel
-from siui.components.widgets.container import SiMasonryContainer
+from siui.components import SiMasonryContainer, SiLabel
 from siui.core.color import SiColor
+from siui.core.effect import SiQuickEffect
 from siui.core.silicon import Si
 from siui.gui import SiFont, GlobalFont
-from siui.templates.application.components.message.box import SiSideMessageBox
+from .messagebox import SiSideMessageBox
+from ..layer import SiLayer
 
 
 class MessageSidebar(SiMasonryContainer):
@@ -105,3 +105,12 @@ class MessageSidebar(SiMasonryContainer):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.debug_label.resize(event.size())
+
+
+class LayerRightMessageSidebar(MessageSidebar):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        SiQuickEffect.applyDropShadowOn(self,
+                                        color=(28, 25, 31, 200),
+                                        blur_radius=64)

@@ -6,14 +6,14 @@ from siui.templates.application.components.message.box import SiSideMessageBox
 
 
 def send_simple_message():
-    SiGlobal.siui.windows["MAIN_WINDOW"].messageSidebar().send(
+    SiGlobal.siui.windows["MAIN_WINDOW"].rightMessageSidebar().send(
         "这是一条测试消息\n"
         "比具标题信息更加简洁方便"
     )
 
 
 def send_titled_message():
-    SiGlobal.siui.windows["MAIN_WINDOW"].messageSidebar().send(
+    SiGlobal.siui.windows["MAIN_WINDOW"].rightMessageSidebar().send(
         title="Sent Successfully",
         text="A titled message has been successfully sent to the sidebar.\n" +
              "Click this message box for more information.",
@@ -92,4 +92,4 @@ def send_custom_message():
     new_message_box.content().container().addPlaceholder(32)
     new_message_box.adjustSize()
 
-    SiGlobal.siui.windows["MAIN_WINDOW"].messageSidebar().sendMessageBox(new_message_box)
+    SiGlobal.siui.windows["MAIN_WINDOW"].rightMessageSidebar().sendMessageBox(new_message_box)

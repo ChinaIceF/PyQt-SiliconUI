@@ -70,6 +70,8 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.SVG_NORMAL, "#DFDFDF")
         self.assign(SiColor.SVG_THEME, "#855198")
 
+        self.assign(SiColor.LAYER_DIM, "#7F000000")
+
         self.assign(SiColor.TOOLTIP_BG, "#ef413a47")
 
         self.assign(SiColor.INTERFACE_BG_A, "#1C191F")

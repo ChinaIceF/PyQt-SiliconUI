@@ -57,7 +57,7 @@ class ExampleWidgets(SiPage):
             self.label_for_text.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                  "/widgets/label.py")
             self.label_for_text.setTitle("文字标签")
-            self.label_for_text.setFixedWidth(600)
+            self.label_for_text.setFixedWidth(800)
 
             self.demo_label = SiLabel(self)
             self.demo_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
@@ -83,7 +83,7 @@ class ExampleWidgets(SiPage):
             self.pix_label.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                             "/widgets/label.py")
             self.pix_label.setTitle("图片标签")
-            self.pix_label.setFixedWidth(600)
+            self.pix_label.setFixedWidth(800)
 
             container_pix_label = SiDenseHContainer(self)
             container_pix_label.setAlignCenter(True)
@@ -116,7 +116,7 @@ class ExampleWidgets(SiPage):
                                             "/widgets/label.py")
             self.label_ani.setTitle("标签动画")
             self.label_ani.setAdditionalDescription("特性")
-            self.label_ani.setFixedWidth(600)
+            self.label_ani.setFixedWidth(800)
 
             self.demo_move_area = SiLabel(self)
             self.demo_move_area.setFixedSize(526, 80)
@@ -162,7 +162,7 @@ class ExampleWidgets(SiPage):
             self.draggable_label.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui"
                                                   "/components/widgets/label.py")
             self.draggable_label.setTitle("可拖动标签")
-            self.draggable_label.setFixedWidth(600)
+            self.draggable_label.setFixedWidth(800)
 
             self.demo_drag_area = SiLabel(self)
             self.demo_drag_area.setFixedSize(526, 80)
@@ -183,7 +183,7 @@ class ExampleWidgets(SiPage):
             self.showup_effect.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui"
                                                   "/components/widgets/label.py")
             self.showup_effect.setTitle("控件显示效果")
-            self.showup_effect.setFixedWidth(600)
+            self.showup_effect.setFixedWidth(800)
 
             self.demo_widget = SiWidget(self)
             self.demo_widget.resize(350, 96)
@@ -234,7 +234,7 @@ class ExampleWidgets(SiPage):
             self.push_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                "/widgets/button.py")
             self.push_buttons.setTitle("按压按钮")
-            self.push_buttons.setFixedWidth(600)
+            self.push_buttons.setFixedWidth(800)
 
             container_push_buttons = SiDenseHContainer(self)
             container_push_buttons.setFixedHeight(32)
@@ -265,7 +265,7 @@ class ExampleWidgets(SiPage):
             self.flat_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                "/widgets/button.py")
             self.flat_buttons.setTitle("扁平类按钮")
-            self.flat_buttons.setFixedWidth(600)
+            self.flat_buttons.setFixedWidth(800)
 
             container_flat_buttons_a = SiDenseHContainer(self)
             container_flat_buttons_a.setFixedHeight(32)
@@ -317,7 +317,7 @@ class ExampleWidgets(SiPage):
             self.switches.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                            "/widgets/button.py")
             self.switches.setTitle("开关")
-            self.switches.setFixedWidth(600)
+            self.switches.setFixedWidth(800)
 
             self.demo_switch = SiSwitch(self)
 
@@ -330,7 +330,7 @@ class ExampleWidgets(SiPage):
             self.radio_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                 "/widgets/button.py")
             self.radio_buttons.setTitle("单选框")
-            self.radio_buttons.setFixedWidth(600)
+            self.radio_buttons.setFixedWidth(800)
 
             self.demo_radio_button_a = SiRadioButton(self)
             self.demo_radio_button_a.setText("西红柿炒鸡蛋")
@@ -352,7 +352,7 @@ class ExampleWidgets(SiPage):
             self.checkboxes.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                              "/widgets/button.py")
             self.checkboxes.setTitle("多选框")
-            self.checkboxes.setFixedWidth(600)
+            self.checkboxes.setFixedWidth(800)
 
             self.demo_checkbox_a = SiCheckBox(self)
             self.demo_checkbox_a.setText("安装基本组件")
@@ -380,7 +380,7 @@ class ExampleWidgets(SiPage):
             self.sliders.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                           "/widgets/slider/slider.py")
             self.sliders.setTitle("滑条")
-            self.sliders.setFixedWidth(600)
+            self.sliders.setFixedWidth(800)
 
             self.demo_slider = SiSliderH(self)
             self.demo_slider.resize(500, 32)

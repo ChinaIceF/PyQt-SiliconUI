@@ -166,17 +166,17 @@ class PageView(SiDenseHContainer):
     def _get_page_toggle_method(self, index):
         return lambda: self.stacked_container.setCurrentIndex(index)
 
-    def addPage(self, page, svg_data, hint, side="top"):
+    def addPage(self, page, icon, hint, side="top"):
         """
         添加页面，这会在导航栏添加一个按钮，并在堆叠容器中添加页面
         :param page: 页面控件
-        :param svg_data: 按钮的 svg 数据
+        :param icon: 按钮的 svg 数据或路径
         :param hint: 工具提示
         :param side: 按钮添加在哪一侧
         """
         self.stacked_container.addWidget(page)
         self.page_navigator.addPageButton(
-            svg_data,
+            icon,
             hint,
             self._get_page_toggle_method(self.stacked_container.widgetsAmount() - 1),
             side

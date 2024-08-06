@@ -187,6 +187,13 @@ class ABCAnimatedLabel(QLabel):
         self.opacity_effect = QGraphicsOpacityEffect()
         self.opacity_effect.setOpacity(opacity)
         self.setGraphicsEffect(self.opacity_effect)
+
+        if opacity == 0:
+            self.hide()
+
+        if (opacity > 0) and (self.isVisible() is False):
+            self.show()
+
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.opacityChanged.emit(opacity)
 
