@@ -252,4 +252,4 @@ class SiCircularProgressBar(SiLabel):
         rect = self.rect()
         rect.adjust(*self.margins)
 
-        painter.drawArc(rect, start_angle, span_angle)
+        painter.drawArc(rect, int(start_angle), int(span_angle))
