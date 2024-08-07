@@ -8,23 +8,16 @@ from siui.core.silicon import Si
 
 
 class SiPage(SiDenseVContainer):
-    """
-    页面类，实例化后作为 SiliconApplication 中的单个页面
-    """
+    """ 页面类，实例化后作为 SiliconApplication 中的单个页面 """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.setSpacing(0)
         self.setSiliconWidgetFlag(Si.EnableAnimationSignals)
 
-        # 滚动区域宽度限制
-        self.scroll_maximum_width = 10000
-
-        # 标题引入的高度偏移，内容的高度要减去标题的高度
-        self.title_height = 0
-
-        # 左右空白区域的宽度
-        self.padding = 0
+        self.scroll_maximum_width = 10000   # 滚动区域宽度限制
+        self.title_height = 0               # 标题引入的高度偏移，内容的高度要减去标题的高度
+        self.padding = 0                    # 左右空白区域的宽度
 
         # 滚动区域对齐方式
         self.scroll_alignment = Qt.AlignCenter
@@ -37,23 +30,17 @@ class SiPage(SiDenseVContainer):
         self.addWidget(self.scroll_area)
 
     def setAttachment(self, widget):
-        """
-        设置子控件
-        :param widget: 子控件
-        """
+        """ 设置子控件 """
         self.scroll_area.setAttachment(widget)
 
     def attachment(self):
-        """
-        获取子控件
-        """
+        """ 获取子控件 """
         return self.scroll_area.attachment()
 
     def setScrollMaximumWidth(self, width: int):
         """
         设置滚动区域的子控件的最大宽度
         :param width: 最大宽度
-        :return:
         """
         self.scroll_maximum_width = width
         self.resize(self.size())

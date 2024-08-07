@@ -44,6 +44,5 @@ class MySiliconApp(SiliconApplication):
                                  hint="控件", side="top")
 
         self.layerMain().setPage(0)
-        self.layerMain().showDimMask()
 
         SiGlobal.siui.reloadAllWindowsStyleSheet()

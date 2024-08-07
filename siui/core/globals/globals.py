@@ -58,6 +58,10 @@ class SiliconUIGlobal:
                 pass
             self._reloadWidgetStyleSheet(window)
 
+    def reloadStyleSheetRecursively(self, widget):
+        """ run reloadStyleSheet() for all children of this widget """
+        self._reloadWidgetStyleSheet(widget)
+
     def _reloadWidgetStyleSheet(self, widget):
         for child in widget.children():
             self._reloadWidgetStyleSheet(child)

@@ -235,6 +235,9 @@ class SiWidget(QWidget):
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.opacityChanged.emit(opacity)
 
+        if (opacity == 0) and self.isSiliconWidgetFlagOn(Si.DeleteOnHidden):
+            self.deleteLater()
+
     def setOpacityTo(self, opacity: float):
         """
         带动画地设置控件的透明度
@@ -365,3 +368,7 @@ class SiWidget(QWidget):
         if self.isSiliconWidgetFlagOn(Si.EnableAnimationSignals):
             self.moved.emit([event.pos().x(), event.pos().y()])
 
+    def hideEvent(self, a0):
+        super().hideEvent(a0)
+        if self.isSiliconWidgetFlagOn(Si.DeleteOnHidden):
+            self.deleteLater()

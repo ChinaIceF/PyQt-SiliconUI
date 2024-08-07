@@ -33,6 +33,8 @@ from siui.core.silicon import Si
 
 from .option_card import OptionCardPlaneForWidgetDemos
 from .components.side_msg_box import send_simple_message, send_titled_message, send_custom_message
+from .components.child_page_example import ChildPageExample
+
 
 class ExampleWidgets(SiPage):
     def __init__(self, *args, **kwargs):
@@ -683,6 +685,30 @@ class ExampleWidgets(SiPage):
             self.side_messages.adjustSize()
 
             group.addWidget(self.side_messages)
+
+        # 子页面
+        with self.titled_widgets_group as group:
+            group.addTitle("子页面")
+
+            # 子页面
+            self.child_pages = OptionCardPlaneForWidgetDemos(self)
+            self.child_pages.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.child_pages.setTitle("子页面")
+            self.child_pages.setFixedWidth(800)
+
+            self.ctrl_show_child_pages_example = SiPushButton(self)
+            self.ctrl_show_child_pages_example.resize(128, 32)
+            self.ctrl_show_child_pages_example.attachment().setText("显示示例子页面")
+            self.ctrl_show_child_pages_example.clicked.connect(
+                lambda: SiGlobal.siui.windows["MAIN_WINDOW"].layerChildPage().setChildPage(ChildPageExample())
+            )
+
+            self.child_pages.body().addWidget(self.ctrl_show_child_pages_example)
+            self.child_pages.body().addPlaceholder(12)
+            self.child_pages.adjustSize()
+
+            group.addWidget(self.child_pages)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)

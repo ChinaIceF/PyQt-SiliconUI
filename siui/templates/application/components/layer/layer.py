@@ -1,6 +1,5 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 
-from siui.components import SiSimpleButton
 from siui.components.widgets.label import SiLabel
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.core.color import SiColor
@@ -18,29 +17,33 @@ class SiLabelHasClickedSignal(SiLabel):
 
 class SiLayer(SiWidget):
     closed = pyqtSignal()
-    closedToUpper = pyqtSignal(bool)
+    showed = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.close_upper_layer_on_dim_clicked = True
+        self.close_on_dim_clicked = True
 
         self.dim_ = SiLabelHasClickedSignal(self)
         self.dim_.setColor(self.colorGroup().fromToken(SiColor.LAYER_DIM))
         self.dim_.setOpacity(0)
         self.dim_.clicked.connect(self.on_dim_layer_clicked)
 
-    def setCloseUpperLayerOnDimClicked(self, on):
-        self.close_upper_layer_on_dim_clicked = on
+    def setCloseOnDimClicked(self, on):
+        self.close_on_dim_clicked = on
 
     def on_dim_layer_clicked(self):
-        if self.close_upper_layer_on_dim_clicked is True:
-            self.hideDimMask()
-        self.closedToUpper.emit(self.close_upper_layer_on_dim_clicked)
+        if self.close_on_dim_clicked is True:
+            self.closeLayer()
 
     def closeLayer(self):
         self.closed.emit()
-        self.closedToUpper.emit(self.close_upper_layer_on_dim_clicked)
+        self.hideDimMask()
+
+    def showLayer(self):
+        self.showed.emit()
+        self.show()
+        self.showDimMask()
 
     def showDimMask(self, ani=True):
         if ani is True:
@@ -53,3 +56,7 @@ class SiLayer(SiWidget):
             self.dim_.setOpacityTo(0)
         else:
             self.dim_.setOpacity(0)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.dim_.resize(event.size())
