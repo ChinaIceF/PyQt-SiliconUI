@@ -51,15 +51,13 @@ class LayerMain(SiLayer):
         self.container_title_and_content.addWidget(self.container_title)
         self.container_title_and_content.addWidget(self.page_view)
 
-        self.dim_.raise_()
+        # 隐藏阴影层，因为没有任何用
+        self.dim_.hide()
 
     def reloadStyleSheet(self):
-        self.background_label.setStyleSheet(
-            """
-            background-color: {};
-            border: 1px solid {};
-            """.format(self.colorGroup().fromToken(SiColor.INTERFACE_BG_A),
-                       self.colorGroup().fromToken(SiColor.INTERFACE_BG_B))
+        self.background_label.setStyleSheet("background-color: {}; border: 1px solid {};".format(
+            self.colorGroup().fromToken(SiColor.INTERFACE_BG_A),
+            self.colorGroup().fromToken(SiColor.INTERFACE_BG_B))
         )
         self.app_title.setStyleSheet("color: {}".format(self.colorGroup().fromToken(SiColor.TEXT_B)))
 

@@ -1,7 +1,7 @@
-from enum import Enum, Flag, auto
+from enum import Enum, auto
 
-
-class SiWidgetFlags(Flag):
+class Si(Enum):
+    # the namespace of SiliconUI
     # Flags for SiWidget
     FlashOnHintUpdated = auto()         # 在工具提示被重新设置时，使工具提示闪烁
     InstantMove = auto()                # 是否立即移动而不运行动画
@@ -10,15 +10,4 @@ class SiWidgetFlags(Flag):
     HasMoveLimits = auto()              # 是否有移动限定区域
     AdjustSizeOnTextChanged = auto()    # 是否在setText被调用时自动调整空间大小
     EnableAnimationSignals = auto()     # 是否启用moved，resized，opacityChanged信号
-
-
-class Si(Enum):
-    # the namespace of SiliconUI
-    FlashOnHintUpdated = auto()
-    InstantMove = auto()
-    InstantResize = auto()
-    InstantSetOpacity = auto()
-    HasMoveLimits = auto()
-    AdjustSizeOnTextChanged = auto()
-    EnableAnimationSignals = auto()
-    HasShowingUpAnimation = auto()
+    DeleteOnHidden = auto()             # 下一次被隐藏时，运行 deleteLater()
