@@ -9,7 +9,7 @@ from siui.templates.application.components.layer.layer_child_page.layer_child_pa
 from siui.templates.application.components.layer.layer_main.layer_main import LayerMain
 from siui.templates.application.components.layer.layer_right_message_sidebar.layer_right_message_sidebar import \
     LayerRightMessageSidebar
-
+from siui.templates.application.components.layer.layer_modal_dialog.layer_modal_dialog import LayerModalDialog
 
 class SiliconApplication(QMainWindow):
     """
@@ -32,6 +32,7 @@ class SiliconApplication(QMainWindow):
         self.layer_main = LayerMain(self)
         self.layer_child_page = LayerChildPage(self)
         self.layer_right_message_sidebar = LayerRightMessageSidebar(self)
+        self.layer_modal_dialog = LayerModalDialog(self)
 
     def layerMain(self):
         return self.layer_main
@@ -42,6 +43,9 @@ class SiliconApplication(QMainWindow):
     def layerChildPage(self):
         return self.layer_child_page
 
+    def layerModalDialog(self):
+        return self.layer_modal_dialog
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         size = event.size()
@@ -50,4 +54,4 @@ class SiliconApplication(QMainWindow):
         self.layer_main.resize(event.size())
         self.layer_child_page.resize(event.size())
         self.layer_right_message_sidebar.setGeometry(w - 400, 80, 400, self.layer_right_message_sidebar.height())
-
+        self.layer_modal_dialog.resize(event.size())

@@ -39,8 +39,8 @@ class LayerChildPage(SiLayer):
     def closeChildPage(self):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         self.child_page.moveTo((self.width() - self.childPage().width()) // 2, self.height())
-        delete_timer = QTimer()
-        delete_timer.singleShot(500, self.child_page.deleteLater)
+        self.child_page.delete_timer = QTimer()
+        self.child_page.delete_timer.singleShot(500, self.child_page.deleteLater)
         self.child_page = None
 
     def resizeEvent(self, event):

@@ -1,5 +1,4 @@
 import random
-import time
 
 import numpy
 from PyQt5.QtCore import Qt
@@ -31,9 +30,7 @@ from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
-from .option_card import OptionCardPlaneForWidgetDemos
-from .components.side_msg_box import send_simple_message, send_titled_message, send_custom_message
-from .components.child_page_example import ChildPageExample
+from ..option_card import OptionCardPlaneForWidgetDemos
 
 
 class ExampleWidgets(SiPage):
@@ -651,64 +648,6 @@ class ExampleWidgets(SiPage):
             self.menus.adjustSize()
 
             group.addWidget(self.menus)
-
-        # 侧边栏信息
-        with self.titled_widgets_group as group:
-            group.addTitle("侧边栏信息")
-
-            # 侧边栏信息
-            self.side_messages = OptionCardPlaneForWidgetDemos(self)
-            self.side_messages.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                "/widgets/progress_bar/progress_bar.py")
-            self.side_messages.setTitle("侧边栏信息")
-            self.side_messages.setFixedWidth(800)
-
-            self.demo_send_message_to_sidebar = SiPushButton(self)
-            self.demo_send_message_to_sidebar.resize(128, 32)
-            self.demo_send_message_to_sidebar.attachment().setText("发送测试信息")
-            self.demo_send_message_to_sidebar.clicked.connect(send_simple_message)
-
-            self.demo_send_message_to_sidebar_titled = SiPushButton(self)
-            self.demo_send_message_to_sidebar_titled.resize(128, 32)
-            self.demo_send_message_to_sidebar_titled.attachment().setText("具标题测试信息")
-            self.demo_send_message_to_sidebar_titled.clicked.connect(send_titled_message)
-
-            self.demo_send_message_to_sidebar_custom = SiPushButton(self)
-            self.demo_send_message_to_sidebar_custom.resize(128, 32)
-            self.demo_send_message_to_sidebar_custom.attachment().setText("发送自定义信息")
-            self.demo_send_message_to_sidebar_custom.clicked.connect(send_custom_message)
-
-            self.side_messages.body().addWidget(self.demo_send_message_to_sidebar)
-            self.side_messages.body().addWidget(self.demo_send_message_to_sidebar_titled)
-            self.side_messages.body().addWidget(self.demo_send_message_to_sidebar_custom)
-            self.side_messages.body().addPlaceholder(12)
-            self.side_messages.adjustSize()
-
-            group.addWidget(self.side_messages)
-
-        # 子页面
-        with self.titled_widgets_group as group:
-            group.addTitle("子页面")
-
-            # 子页面
-            self.child_pages = OptionCardPlaneForWidgetDemos(self)
-            self.child_pages.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                "/widgets/progress_bar/progress_bar.py")
-            self.child_pages.setTitle("子页面")
-            self.child_pages.setFixedWidth(800)
-
-            self.ctrl_show_child_pages_example = SiPushButton(self)
-            self.ctrl_show_child_pages_example.resize(128, 32)
-            self.ctrl_show_child_pages_example.attachment().setText("显示示例子页面")
-            self.ctrl_show_child_pages_example.clicked.connect(
-                lambda: SiGlobal.siui.windows["MAIN_WINDOW"].layerChildPage().setChildPage(ChildPageExample())
-            )
-
-            self.child_pages.body().addWidget(self.ctrl_show_child_pages_example)
-            self.child_pages.body().addPlaceholder(12)
-            self.child_pages.adjustSize()
-
-            group.addWidget(self.child_pages)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)

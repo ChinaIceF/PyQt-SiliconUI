@@ -22,30 +22,11 @@ class ExampleOptionCards(SiPage):
         # Set X Offset for better outfit.
         self.setPadding(64)
         self.setScrollMaximumWidth(950)
+        self.setTitle("选项卡")
 
         # Create a SiTitledWidgetGroup object
         self.titled_widget_group = SiTitledWidgetGroup(self)
         self.titled_widget_group.setSiliconWidgetFlag(Si.EnableAnimationSignals)
-
-        # create some widgets
-        self.welcome_text = SiLabel(self)
-        self.welcome_text.setFont(SiGlobal.siui.fonts["XL_BOLD"])
-        self.welcome_text.setAlignment(Qt.AlignCenter)
-        self.welcome_text.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.welcome_text.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
-        self.welcome_text.setText("让我们开始吧")
-
-        self.welcome_text_description = SiLabel(self)
-        self.welcome_text_description.setFont(SiGlobal.siui.fonts["M_NORMAL"])
-        self.welcome_text_description.setAlignment(Qt.AlignCenter)
-        self.welcome_text_description.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.welcome_text_description.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_C"]))
-        self.welcome_text_description.setText("从选项卡开始构建你自己的 Silicon 应用程序")
-
-        # <- ADD
-        self.titled_widget_group.addPlaceholder(48)
-        self.titled_widget_group.addWidget(self.welcome_text)
-        self.titled_widget_group.addWidget(self.welcome_text_description)
 
         # 线性选项卡
         self.option_card_linear_beginning = SiOptionCardLinear(self)

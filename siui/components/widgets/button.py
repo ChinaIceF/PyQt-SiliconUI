@@ -111,7 +111,7 @@ class SiLongPressButton(ABCPushButton):
     def _process_changed_handler(self, p):
         self.body_top.setStyleSheet(
             f"""
-            background-color: qlineargradient(x1:{p-0.01}, y1:0, x2:{p}, y2:0,
+            background-color: qlineargradient(x1:{p-0.001}, y1:0, x2:{p}, y2:0,
                 stop:0 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PROGRESS)},
                 stop:1 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PANEL)})
             """

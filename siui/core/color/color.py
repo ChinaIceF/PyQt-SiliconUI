@@ -108,7 +108,7 @@ class SiColor(Enum):
         return numpy.array([a, r, g, b], dtype=numpy.int16)
 
     @staticmethod
-    def toCode(value: Union[numpy.ndarray, list]):
+    def toCode(value: Union[numpy.ndarray, list], force_rgba=False):
         """
         transform `array(A, R, G, B, dtype=int16)` into `#AARRGGBB`
         """
@@ -120,8 +120,11 @@ class SiColor(Enum):
         else:
             raise ValueError(f"意外的输入值形状{value.shape}")
 
-        return f"#{int(a):02X}{int(r):02X}{int(g):02X}{int(b):02X}"
+        if (force_rgba is True) or (a != 255):
+            return f"#{int(a):02X}{int(r):02X}{int(g):02X}{int(b):02X}"
 
+        else:
+            return f"#{int(r):02X}{int(g):02X}{int(b):02X}"
     @classmethod
     def mix(cls,
             code_fore: str,
