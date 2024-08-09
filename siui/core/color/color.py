@@ -109,22 +109,21 @@ class SiColor(Enum):
 
     @staticmethod
     def toCode(value: Union[numpy.ndarray, list], force_rgba=False):
-        """
-        transform `array(A, R, G, B, dtype=int16)` into `#AARRGGBB`
-        """
+        """ transform `array(A, R, G, B, dtype=int16)` into `#AARRGGBB` """
         if len(value) == 3:
             r, g, b = value
             a = 255
         elif len(value) == 4:
             a, r, g, b = value
         else:
-            raise ValueError(f"意外的输入值形状{value.shape}")
+            raise ValueError(f"Unexpected shape of input: {value}, shape: {value.shape}")
 
         if (force_rgba is True) or (a != 255):
             return f"#{int(a):02X}{int(r):02X}{int(g):02X}{int(b):02X}"
 
         else:
             return f"#{int(r):02X}{int(g):02X}{int(b):02X}"
+
     @classmethod
     def mix(cls,
             code_fore: str,

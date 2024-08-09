@@ -9,6 +9,12 @@ class ModalDialogExample(SiModalDialog):
         super().__init__(*args, **kwargs)
 
         self.setFixedWidth(500)
+        self.icon().load(SiGlobal.siui.iconpack.get("ic_fluent_save_filled",
+                                                    color_code=SiColor.mix(
+                                                        self.colorGroup().fromToken(SiColor.SVG_NORMAL),
+                                                        self.colorGroup().fromToken(SiColor.INTERFACE_BG_B),
+                                                        0.05))
+                         )
 
         label = SiLabel(self)
         label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_E)}")

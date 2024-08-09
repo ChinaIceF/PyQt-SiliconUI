@@ -33,14 +33,11 @@ class SiModalDialog(SiWidget):
         self.button_container.setSpacing(8)
 
         self.icon_ = SiSvgLabel(self.content_container)
-        self.icon_.load(SiGlobal.siui.iconpack.get("ic_fluent_save_regular",
-                        color_code=SiColor.mix(self.colorGroup().fromToken(SiColor.SVG_NORMAL),
-                                               self.colorGroup().fromToken(SiColor.INTERFACE_BG_B),
-                                               0.05))
-                        )
         self.icon_.resize(64, 64)
         self.icon_.setSvgSize(64, 64)
-        self.icon_.raise_()
+
+    def icon(self):
+        return self.icon_
 
     def contentContainer(self):
         return self.content_container
