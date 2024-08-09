@@ -32,9 +32,8 @@ class PageButton(SiToggleButton):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        self.active_indicator.setStyleSheet("""
-            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {}, stop:1 {});
-            """.format(SiGlobal.siui.colors["THEME_TRANSITION_A"], SiGlobal.siui.colors["THEME_TRANSITION_B"])
+        self.active_indicator.setStyleSheet(
+            f"background-color: {self.colorGroup().fromToken(SiColor.THEME)}"
         )
 
     def setActive(self, state):
@@ -198,5 +197,5 @@ class PageView(SiDenseHContainer):
         size = event.size()
         w, h = size.width(), size.height()
 
-        self.page_navigator.resize(56, h)
+        self.page_navigator.resize(56, h - 8)
         self.stacked_container.setGeometry(56, 0, w-56, h)

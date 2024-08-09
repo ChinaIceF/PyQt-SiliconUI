@@ -75,12 +75,6 @@ class ToolTipWindow(SiWidget):
     def hide_(self):
         self.setOpacityTo(0)
 
-    def show_animation(self):       # TODO: 移除这个兼容旧接口的方法
-        self.show_()
-
-    def hide_animation(self):       # TODO: 移除这个兼容旧接口的方法
-        self.hide_()
-
     def _completely_hid_signal_handler(self, target):
         if target == 0:
             self.completely_hid = True

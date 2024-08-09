@@ -75,7 +75,7 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.TOOLTIP_BG, "#ef413a47")
 
         self.assign(SiColor.INTERFACE_BG_A, "#1C191F")
-        self.assign(SiColor.INTERFACE_BG_B, "#252229")
+        self.assign(SiColor.INTERFACE_BG_B, "#242128")
         self.assign(SiColor.INTERFACE_BG_C, "#2C2930")
         self.assign(SiColor.INTERFACE_BG_D, "#3b373f")
         self.assign(SiColor.INTERFACE_BG_E, "#49454D")

@@ -77,6 +77,7 @@ class SiPixLabel(SiLabel):
         super().resizeEvent(event)
         self.draw()
 
+
 class SiSvgLabel(SiLabel):
     """
     可以显示 Svg 图像的 SiLabel 标签

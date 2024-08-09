@@ -60,6 +60,10 @@ class SiliconUIGlobal:
 
     def reloadStyleSheetRecursively(self, widget):
         """ run reloadStyleSheet() for all children of this widget """
+        try:
+            widget.reloadStyleSheet()
+        except:
+            pass
         self._reloadWidgetStyleSheet(widget)
 
     def _reloadWidgetStyleSheet(self, widget):

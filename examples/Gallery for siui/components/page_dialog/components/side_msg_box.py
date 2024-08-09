@@ -5,23 +5,25 @@ from siui.gui import SiFont, GlobalFont
 from siui.templates.application.components.message.box import SiSideMessageBox
 
 
-def send_simple_message():
+def send_simple_message(type_):
     SiGlobal.siui.windows["MAIN_WINDOW"].LayerRightMessageSidebar().send(
         "这是一条测试消息\n"
-        "比具标题信息更加简洁方便"
+        "比具标题信息更加简洁方便",
+        msg_type=type_,
     )
 
 
-def send_titled_message():
+def send_titled_message(type_):
     SiGlobal.siui.windows["MAIN_WINDOW"].LayerRightMessageSidebar().send(
         title="Sent Successfully",
         text="A titled message has been successfully sent to the sidebar.\n" +
              "Click this message box for more information.",
+        msg_type=type_,
         slot=lambda: print("You clicked me")
     )
 
 
-def send_custom_message():
+def send_custom_message(type_):
     container = SiDenseHContainer()
     container.setAdjustWidgetsSize(True)
     container.setFixedHeight(80)
@@ -81,7 +83,7 @@ def send_custom_message():
     container.adjustSize()
 
     new_message_box = SiSideMessageBox()
-    new_message_box.setMessageType(2)
+    new_message_box.setMessageType(type_)
     new_message_box.content().container().setSpacing(0)
     new_message_box.content().container().addPlaceholder(16)
     new_message_box.content().container().addWidget(info_label)

@@ -15,6 +15,10 @@ class LayerChildPage(SiLayer):
         return self.child_page
 
     def setChildPage(self, page):
+        if self.childPage() is not None:
+            page.deleteLater()
+            return
+
         self.child_page = page
         self.child_page.animationGroup().fromToken("move").setFactor(1/4)
         self.child_page.animationGroup().fromToken("move").setBias(0.5)
@@ -39,8 +43,8 @@ class LayerChildPage(SiLayer):
     def closeChildPage(self):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         self.child_page.moveTo((self.width() - self.childPage().width()) // 2, self.height())
-        delete_timer = QTimer()
-        delete_timer.singleShot(500, self.child_page.deleteLater)
+        self.child_page.delete_timer = QTimer()
+        self.child_page.delete_timer.singleShot(500, self.child_page.deleteLater)
         self.child_page = None
 
     def resizeEvent(self, event):

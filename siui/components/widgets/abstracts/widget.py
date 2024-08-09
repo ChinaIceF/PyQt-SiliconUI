@@ -56,7 +56,7 @@ class SiWidget(QWidget):
         self.animation_color.ticked.connect(self._set_color_handler)
 
         self.animation_showing = SiExpAnimation(self)
-        self.animation_showing.setFactor(1/16)
+        self.animation_showing.setFactor(0)
         self.animation_showing.setBias(0.06)
         self.animation_showing.setCurrent(1)
         self.animation_showing.ticked.connect(self._on_showing_ani_ticked)
@@ -120,6 +120,10 @@ class SiWidget(QWidget):
 
     def setCenterWidget(self, widget):
         self.center_widget = widget
+        if widget is not None:
+            widget.setParent(self)
+            self.center_widget.move((self.width() - self.center_widget.width()) // 2,
+                                    (self.height() - self.center_widget.height()) // 2)
 
     def centerWidget(self):
         return self.center_widget
@@ -288,8 +292,11 @@ class SiWidget(QWidget):
             self.resized.emit([w, h])
 
         if self.center_widget is not None:
-            self.center_widget.move((self.width() - self.center_widget.width()) // 2,
-                                    (self.height() - self.center_widget.height()) // 2)
+            try:
+                self.center_widget.move((self.width() - self.center_widget.width()) // 2,
+                                        (self.height() - self.center_widget.height()) // 2)
+            except RuntimeError:
+                self.center_widget = None
 
     def showCenterWidgetFadeIn(self):
         self.animationGroup().fromToken("showing").setTarget(1)
@@ -302,6 +309,19 @@ class SiWidget(QWidget):
     def _on_showing_ani_ticked(self, progress):
         self.update()
 
+    def factor_func(self, progress):
+        if self.animationGroup().fromToken("showing").target() == 0:
+            a = 8.5
+            b = 0.4
+            scale_factor = min(((1 - pow(2, -a * progress)) * b + (1-b)) / ((1 - pow(2, -a * 1)) * b + (1-b)), 1)
+            opacity_factor = min((1 - pow(2, -a * progress)) / (1 - pow(2, -a * 1)), 1)
+        else:
+            b = 0.4
+            scale_factor = (-3 * progress ** 4 + 10 * progress ** 3 - 12 * progress ** 2 + 6 * progress) * b + (1-b)
+            opacity_factor = min(progress ** 0.3, 1)
+
+        return scale_factor, opacity_factor
+
     def paintEvent(self, event):
         if self.center_widget is None:
             return
@@ -312,10 +332,7 @@ class SiWidget(QWidget):
         progress = self.animationGroup().fromToken("showing").current()
         qt_scale_factor = float(os.environ["QT_SCALE_FACTOR"])
 
-        a = 8.5
-        b = 0.4
-        scale_factor = min(((1 - pow(2, -a * progress)) * b + (1-b)) / ((1 - pow(2, -a * 1)) * b + (1-b)), 1)
-        opacity_factor = min((1 - pow(2, -a * progress)) / (1 - pow(2, -a * 1)), 1)
+        scale_factor, opacity_factor = self.factor_func(progress)
 
         # create painter
         painter = QPainter(self)
@@ -344,8 +361,13 @@ class SiWidget(QWidget):
 
         if progress >= 1:
             self.center_widget.show()
-        else:
+        elif self.center_widget.isVisible():
             self.center_widget.hide()
+
+        if progress == 0:
+            if self.isSiliconWidgetFlagOn(Si.DeleteCenterWidgetOnCenterWidgetHidden):
+                self.centerWidget().deleteLater()
+                self.setCenterWidget(None)
 
     def setMoveAnchor(self, x, y):
         self.move_anchor = QPoint(x, y)
