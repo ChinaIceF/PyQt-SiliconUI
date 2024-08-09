@@ -38,12 +38,12 @@ class MySiliconApp(SiliconApplication):
         self.layerMain().addPage(ExampleIcons(self),
                                  icon=SiGlobal.siui.iconpack.get("ic_fluent_diversity_filled"),
                                  hint="图标包", side="top")
-        self.layerMain().addPage(ExampleOptionCards(self),
-                                 icon=SiGlobal.siui.iconpack.get("ic_fluent_list_bar_filled"),
-                                 hint="选项卡", side="top")
         self.layerMain().addPage(ExampleWidgets(self),
                                  icon=SiGlobal.siui.iconpack.get("ic_fluent_box_multiple_filled"),
                                  hint="控件", side="top")
+        self.layerMain().addPage(ExampleOptionCards(self),
+                                 icon=SiGlobal.siui.iconpack.get("ic_fluent_list_bar_filled"),
+                                 hint="选项卡", side="top")
         self.layerMain().addPage(ExampleDialogs(self),
                                  icon=SiGlobal.siui.iconpack.get("ic_fluent_panel_separate_window_filled"),
                                  hint="消息与二级界面", side="top")

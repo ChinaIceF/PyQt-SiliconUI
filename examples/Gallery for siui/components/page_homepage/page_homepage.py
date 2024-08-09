@@ -2,6 +2,7 @@ from PyQt5.Qt import QColor
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
+from siui.components import SiPixLabel
 from siui.components.option_card import SiOptionCardLinear, SiOptionCardPlane
 from siui.components.page import SiPage
 from siui.components.slider import SiSliderH
@@ -36,16 +37,10 @@ class ExampleHomepage(SiPage):
         self.head_area.setFixedHeight(450)
 
         # 创建背景底图和渐变
-        self.background_image = SiLabel(self.head_area)
-        self.background_image.setFixedHeight(300)
-        self.background_image.setObjectName("bg_image")
-        self.background_image.setStyleSheet(
-            """
-            #bg_image {
-                background-image: url('./img/homepage_background.png');
-                border-top-left-radius:6px
-            }"""
-        )
+        self.background_image = SiPixLabel(self.head_area)
+        self.background_image.setFixedSize(1366, 300)
+        self.background_image.setBorderRadius(6)
+        self.background_image.load("./img/homepage_background.png")
 
         self.background_fading_transition = SiLabel(self.head_area)
         self.background_fading_transition.setGeometry(0, 100, 0, 200)

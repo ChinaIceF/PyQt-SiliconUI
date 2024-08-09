@@ -95,6 +95,7 @@ class SiLongPressButton(ABCPushButton):
         self.hold_thread.ticked.connect(self._process_changed_handler)
         self.hold_thread.holdTimeout.connect(self._run_clicked_ani)
         self.hold_thread.holdTimeout.connect(self.longPressed.emit)
+        self.destroyed.connect(self.hold_thread.terminate, Qt.DirectConnection)
 
         # 实例化文本标签
         self.label = SiIconLabel(self)
@@ -112,8 +113,8 @@ class SiLongPressButton(ABCPushButton):
         self.body_top.setStyleSheet(
             f"""
             background-color: qlineargradient(x1:{p-0.001}, y1:0, x2:{p}, y2:0,
-                stop:0 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PROGRESS)},
-                stop:1 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PANEL)})
+                 stop:0 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PROGRESS)},
+                 stop:1 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PANEL)})
             """
         )
 

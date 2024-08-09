@@ -11,3 +11,4 @@ class Si(Enum):
     AdjustSizeOnTextChanged = auto()    # 是否在setText被调用时自动调整空间大小
     EnableAnimationSignals = auto()     # 是否启用moved，resized，opacityChanged信号
     DeleteOnHidden = auto()             # 下一次被隐藏时，运行 deleteLater()
+    DeleteCenterWidgetOnCenterWidgetHidden = auto()  # 中心控件下一次被隐藏时，运行 centerWidget().deleteLater()

@@ -15,6 +15,10 @@ class LayerChildPage(SiLayer):
         return self.child_page
 
     def setChildPage(self, page):
+        if self.childPage() is not None:
+            page.deleteLater()
+            return
+
         self.child_page = page
         self.child_page.animationGroup().fromToken("move").setFactor(1/4)
         self.child_page.animationGroup().fromToken("move").setBias(0.5)

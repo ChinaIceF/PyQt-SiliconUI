@@ -26,11 +26,13 @@ class ModalDialogExample(SiModalDialog):
         button1.setFixedHeight(32)
         button1.attachment().setText("继续编辑我的文档")
         button1.colorGroup().assign(SiColor.BUTTON_PANEL, self.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+        button1.clicked.connect(SiGlobal.siui.windows["MAIN_WINDOW"].layerModalDialog().closeLayer)
 
         button2 = SiPushButton(self)
         button2.setFixedHeight(32)
         button2.attachment().setText("保存并退出")
         button2.colorGroup().assign(SiColor.BUTTON_PANEL, self.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+        button2.clicked.connect(SiGlobal.siui.windows["MAIN_WINDOW"].layerModalDialog().closeLayer)
 
         button3 = SiLongPressButton(self)
         button3.setFixedHeight(32)

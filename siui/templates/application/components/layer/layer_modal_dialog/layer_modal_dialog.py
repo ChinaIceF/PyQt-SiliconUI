@@ -13,12 +13,16 @@ class LayerModalDialog(SiLayer):
         self.dialog_ = None
         self.dialog_frame = SiWidget(self)
         self.dialog_frame.hideCenterWidgetFadeOut()
+        self.dialog_frame.animationGroup().fromToken("showing").setBias(0.08)
         self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
 
     def dialog(self):
         return self.dialog_
 
     def setDialog(self, dialog):
+        if self.dialog() is not None:
+            return
+
         self.dialog_ = dialog
         self.dialog_.show()
         self.dialog_frame.setCenterWidget(self.dialog_)
@@ -34,13 +38,13 @@ class LayerModalDialog(SiLayer):
 
     def showDialog(self):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        self.dialog_frame.setSiliconWidgetFlag(Si.DeleteCenterWidgetOnCenterWidgetHidden, False)
         self.dialog_frame.showCenterWidgetFadeIn()
 
     def closeDialog(self):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         self.dialog_frame.hideCenterWidgetFadeOut()
-        self.dialog_frame.delete_timer = QTimer()
-        self.dialog_frame.delete_timer.singleShot(500, self.dialog_frame.centerWidget().deleteLater)
+        self.dialog_frame.setSiliconWidgetFlag(Si.DeleteCenterWidgetOnCenterWidgetHidden)
         self.dialog_ = None
 
     def resizeEvent(self, event):

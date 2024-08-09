@@ -11,7 +11,7 @@ class SiModalDialog(SiWidget):
         self.theme_padding_h = 26
         self.content_padding_v = 32
         self.button_padding_v = 24
-        self.theme_label_top_height = 4
+        self.theme_label_top_height = 2
         self.theme_label_bottom_height = 0
         self.setFixedWidth(460)
 

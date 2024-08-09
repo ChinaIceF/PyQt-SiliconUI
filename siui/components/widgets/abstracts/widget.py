@@ -361,8 +361,13 @@ class SiWidget(QWidget):
 
         if progress >= 1:
             self.center_widget.show()
-        else:
+        elif self.center_widget.isVisible():
             self.center_widget.hide()
+
+        if progress == 0:
+            if self.isSiliconWidgetFlagOn(Si.DeleteCenterWidgetOnCenterWidgetHidden):
+                self.centerWidget().deleteLater()
+                self.setCenterWidget(None)
 
     def setMoveAnchor(self, x, y):
         self.move_anchor = QPoint(x, y)
