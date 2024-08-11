@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QWidget
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QWidget, QGraphicsOpacityEffect
 from typing import Tuple, List, Union
 
 
@@ -19,3 +19,10 @@ class SiQuickEffect:
         shadow.setOffset(*offset)
         shadow.setBlurRadius(blur_radius)
         widget.setGraphicsEffect(shadow)
+
+    @staticmethod
+    def applyOpacityOn(widget: QWidget,
+                       opacity: float):
+        opacity_effect = QGraphicsOpacityEffect()
+        opacity_effect.setOpacity(opacity)
+        widget.setGraphicsEffect(opacity_effect)

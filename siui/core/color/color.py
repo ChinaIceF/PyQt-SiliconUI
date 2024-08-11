@@ -28,6 +28,7 @@ class SiColor(Enum):
     TEXT_C = auto()
     TEXT_D = auto()
     TEXT_E = auto()
+    TEXT_THEME = auto()
 
     TITLE_INDICATOR = auto()
     TITLE_HIGHLIGHT = auto()
@@ -58,6 +59,10 @@ class SiColor(Enum):
 
     BUTTON_ON = auto()
     BUTTON_OFF = auto()
+
+    BUTTON_TEXT_BUTTON_FLASH = auto()
+    BUTTON_TEXT_BUTTON_HOVER = auto()
+    BUTTON_TEXT_BUTTON_IDLE = auto()
 
     # LONG_PRESS_BUTTON
     BUTTON_LONG_PRESS_PANEL = auto()

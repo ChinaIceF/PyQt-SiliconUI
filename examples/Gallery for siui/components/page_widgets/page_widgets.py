@@ -4,7 +4,7 @@ import numpy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 
-from siui.components import SiTitledWidgetGroup, SiCircularProgressBar, SiWidget, SiOptionCardLinear
+from siui.components import SiCircularProgressBar, SiOptionCardLinear, SiTitledWidgetGroup, SiWidget
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
@@ -18,14 +18,15 @@ from siui.components.widgets import (
     SiIconLabel,
     SiLabel,
     SiLongPressButton,
+    SiMasonryContainer,
     SiPixLabel,
     SiPushButton,
     SiRadioButton,
     SiSimpleButton,
     SiSwitch,
     SiToggleButton,
-    SiMasonryContainer,
 )
+from siui.components.widgets.navigation_bar import SiNavigationBarH
 from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
@@ -648,6 +649,26 @@ class ExampleWidgets(SiPage):
             self.menus.adjustSize()
 
             group.addWidget(self.menus)
+
+        # 导航栏
+        with self.titled_widgets_group as group:
+            group.addTitle("导航栏")
+
+            # 侧边栏信息
+            self.navigation_bar_h = OptionCardPlaneForWidgetDemos(self)
+            self.navigation_bar_h.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.navigation_bar_h.setTitle("横向导航栏")
+            self.navigation_bar_h.setFixedWidth(800)
+
+            self.demo_navigation_bar_h = SiNavigationBarH(self)
+            self.demo_navigation_bar_h.setFixedSize(500, 32)
+
+            self.navigation_bar_h.body().addWidget(self.demo_navigation_bar_h)
+            self.navigation_bar_h.body().addPlaceholder(12)
+            self.navigation_bar_h.adjustSize()
+
+            group.addWidget(self.navigation_bar_h)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)

@@ -1,1 +1,1 @@
-from siui.gui.color_group.color_group import SiColorGroup, ColorsetDark, DarkColorGroup
+from siui.gui.color_group.color_group import SiColorGroup, DarkColorGroup

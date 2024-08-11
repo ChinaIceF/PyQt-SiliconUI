@@ -31,7 +31,7 @@ def send_custom_message(type_):
 
     info_label = SiLabel()
     info_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
-    info_label.setStyleSheet("color: {}; padding-left: 16px".format(info_label.colorGroup().fromToken(SiColor.TEXT_D)))
+    info_label.setStyleSheet(f"color: {info_label.colorGroup().fromToken(SiColor.TEXT_D)}; padding-left: 16px")
     info_label.setText("以下账号已成功登录")
     info_label.adjustSize()
 
@@ -52,7 +52,7 @@ def send_custom_message(type_):
 
     name_label = SiLabel()
     name_label.setFont(SiFont.fromToken(GlobalFont.M_BOLD))
-    name_label.setStyleSheet("color: {}; padding-left:8px".format(name_label.colorGroup().fromToken(SiColor.TEXT_B)))
+    name_label.setStyleSheet(f"color: {name_label.colorGroup().fromToken(SiColor.TEXT_B)}; padding-left:8px")
     name_label.setText("霏泠Ice")
     name_label.adjustSize()
 
