@@ -5,6 +5,7 @@ from components.page_homepage import ExampleHomepage
 from components.page_icons import ExampleIcons
 from components.page_option_cards import ExampleOptionCards
 from components.page_widgets import ExampleWidgets
+from components.page_container import ExampleContainer
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDesktopWidget
 
@@ -40,6 +41,9 @@ class MySiliconApp(SiliconApplication):
         self.layerMain().addPage(ExampleWidgets(self),
                                  icon=SiGlobal.siui.iconpack.get("ic_fluent_box_multiple_filled"),
                                  hint="控件", side="top")
+        self.layerMain().addPage(ExampleContainer(self),
+                                 icon=SiGlobal.siui.iconpack.get("ic_fluent_align_stretch_vertical_filled"),
+                                 hint="容器", side="top")
         self.layerMain().addPage(ExampleOptionCards(self),
                                  icon=SiGlobal.siui.iconpack.get("ic_fluent_list_bar_filled"),
                                  hint="选项卡", side="top")

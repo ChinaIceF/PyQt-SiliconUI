@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 
-from siui.components.widgets.label import SiLabel
 from siui.components.widgets.abstracts.widget import SiWidget
+from siui.components.widgets.label import SiLabel
 from siui.core.color import SiColor
 
 

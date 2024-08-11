@@ -3,10 +3,11 @@ import time
 from typing import Union
 
 from PyQt5.Qt import QColor
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components.widgets import SiLabel
+from siui.components.widgets.abstracts.container import ABCSiDividedContainer
 from siui.components.widgets.abstracts.widget import SiWidget
 
 
@@ -419,6 +420,70 @@ class SiDenseVContainer(ABCDenseContainer):
             preferred_h = max(preferred_h, self.height())
 
         self.resize(self.width(), preferred_h)
+
+
+class SiDividedHContainer(ABCSiDividedContainer):
+    def adjustSize(self):
+        total_section_width = sum([section.width() for section in self.sections()])
+        largest_height = max([widget.height() for widget in self.widgets()])
+        self.resize(total_section_width, largest_height)
+
+    def arrangeWidgets(self):
+        x_counter = 0
+        for section, widget in zip(self.sections(), self.widgets()):
+            alignment = section.alignment()
+            if (alignment & Qt.AlignLeft) == Qt.AlignLeft:
+                x = x_counter
+            elif (alignment & Qt.AlignHCenter) == Qt.AlignHCenter:
+                x = x_counter + (section.width() - widget.width()) // 2
+            elif (alignment & Qt.AlignRight) == Qt.AlignRight:
+                x = x_counter + (section.width() - widget.width())
+            else:
+                x = x_counter   # use Qt.AlignLeft if horizontal alignment arg is not assign
+
+            if (alignment & Qt.AlignTop) == Qt.AlignTop:
+                y = 0
+            elif (alignment & Qt.AlignVCenter) == Qt.AlignVCenter:
+                y = (self.height() - widget.height()) // 2
+            elif (alignment & Qt.AlignBottom) == Qt.AlignBottom:
+                y = self.height() - widget.height()
+            else:
+                y = 0   # use Qt.AlignTop if vertical alignment arg is not assign
+
+            widget.move(x, y)
+            x_counter += section.width()
+
+
+class SiDividedVContainer(ABCSiDividedContainer):
+    def adjustSize(self):
+        total_section_height = sum([section.height() for section in self.sections()])
+        largest_width = max([widget.width() for widget in self.widgets()])
+        self.resize(largest_width, total_section_height)
+
+    def arrangeWidgets(self):
+        y_counter = 0
+        for section, widget in zip(self.sections(), self.widgets()):
+            alignment = section.alignment()
+            if (alignment & Qt.AlignLeft) == Qt.AlignLeft:
+                x = 0
+            elif (alignment & Qt.AlignHCenter) == Qt.AlignHCenter:
+                x = (self.width() - widget.width()) // 2
+            elif (alignment & Qt.AlignRight) == Qt.AlignRight:
+                x = self.width() - widget.width()
+            else:
+                x = 0   # use Qt.AlignLeft if horizontal alignment arg is not assign
+
+            if (alignment & Qt.AlignTop) == Qt.AlignTop:
+                y = y_counter
+            elif (alignment & Qt.AlignVCenter) == Qt.AlignVCenter:
+                y = y_counter + (section.height() - widget.height()) // 2
+            elif (alignment & Qt.AlignBottom) == Qt.AlignBottom:
+                y = y_counter + (section.height() - widget.height())
+            else:   # use Qt.AlignTop if vertical alignment arg is not assign
+                y = y_counter
+
+            widget.move(x, y)
+            y_counter += section.height()
 
 
 class SiStackedContainer(SiLabel):

@@ -80,7 +80,7 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.INTERFACE_BG_D, "#3b373f")
         self.assign(SiColor.INTERFACE_BG_E, "#49454D")
 
-        self.assign(SiColor.TEXT_A, "#FFFFFF")
+        self.assign(SiColor.TEXT_A, "#E5E5E5")
         self.assign(SiColor.TEXT_B, "#DFDFDF")
         self.assign(SiColor.TEXT_C, "#C7C7C7")
         self.assign(SiColor.TEXT_D, "#AFAFAF")
