@@ -25,8 +25,7 @@ class SiLayer(SiWidget):
         self.close_on_dim_clicked = True
 
         self.dim_ = SiLabelHasClickedSignal(self)
-        self.dim_.setColor(self.colorGroup().fromToken(SiColor.LAYER_DIM))
-        self.dim_.setOpacity(0)
+        self.dim_.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.LAYER_DIM), 0.0))
         self.dim_.clicked.connect(self.on_dim_layer_clicked)
 
     def setCloseOnDimClicked(self, on):
@@ -47,15 +46,15 @@ class SiLayer(SiWidget):
 
     def showDimMask(self, ani=True):
         if ani is True:
-            self.dim_.setOpacityTo(1)
+            self.dim_.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.LAYER_DIM), 1.0))
         else:
-            self.dim_.setOpacity(1)
+            self.dim_.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.LAYER_DIM), 1.0))
 
     def hideDimMask(self, ani=True):
         if ani is True:
-            self.dim_.setOpacityTo(0)
+            self.dim_.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.LAYER_DIM), 0.0))
         else:
-            self.dim_.setOpacity(0)
+            self.dim_.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.LAYER_DIM), 0.0))
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
