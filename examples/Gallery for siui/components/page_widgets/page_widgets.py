@@ -4,7 +4,7 @@ import numpy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 
-from siui.components import SiTitledWidgetGroup, SiCircularProgressBar, SiWidget, SiOptionCardLinear
+from siui.components import SiCircularProgressBar, SiOptionCardLinear, SiTitledWidgetGroup, SiWidget
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
@@ -18,13 +18,13 @@ from siui.components.widgets import (
     SiIconLabel,
     SiLabel,
     SiLongPressButton,
+    SiMasonryContainer,
     SiPixLabel,
     SiPushButton,
     SiRadioButton,
     SiSimpleButton,
     SiSwitch,
     SiToggleButton,
-    SiMasonryContainer,
 )
 from siui.components.widgets.navigation_bar import SiNavigationBarH
 from siui.core.color import SiColor

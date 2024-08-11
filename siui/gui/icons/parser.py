@@ -1,7 +1,5 @@
 import os
 
-from siui.core.color import SiColor
-
 
 class SiGlobalIconPack:
     current_module_path = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +22,8 @@ class SiGlobalIconPack:
     def reload_internals(self):
         for package_filename in os.listdir(self.package_folder_path):
             full_path = os.path.join(self.package_folder_path, package_filename)
-            self.load_from_file(full_path)
+            if os.path.isfile(full_path):
+                self.load_from_file(full_path)
 
     def load_from_file(self, path):
         class_name = os.path.basename(path)
