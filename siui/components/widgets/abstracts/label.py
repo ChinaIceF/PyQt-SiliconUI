@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel
 
 from siui.core.animation import SiAnimationGroup, SiExpAnimation
 from siui.core.color import SiColor
+from siui.core.effect import SiQuickEffect
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 from siui.gui.color_group import SiColorGroup
@@ -195,10 +196,7 @@ class ABCAnimatedLabel(QLabel):
         :return:
         """
         self.animation_opacity.setCurrent(opacity)
-
-        self.opacity_effect = QGraphicsOpacityEffect()
-        self.opacity_effect.setOpacity(opacity)
-        self.setGraphicsEffect(self.opacity_effect)
+        SiQuickEffect.applyOpacityOn(self, opacity)
 
         if opacity == 0:
             self.hide()
