@@ -1,15 +1,15 @@
-import ctypes
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import QMainWindow
 
 from siui.components.tooltip import ToolTipWindow
 from siui.core.globals import SiGlobal
 from siui.templates.application.components.layer.layer_child_page.layer_child_page import LayerChildPage
 from siui.templates.application.components.layer.layer_main.layer_main import LayerMain
-from siui.templates.application.components.layer.layer_right_message_sidebar.layer_right_message_sidebar import \
-    LayerRightMessageSidebar
 from siui.templates.application.components.layer.layer_modal_dialog.layer_modal_dialog import LayerModalDialog
+from siui.templates.application.components.layer.layer_right_message_sidebar.layer_right_message_sidebar import (
+    LayerRightMessageSidebar,
+)
+
 
 class SiliconApplication(QMainWindow):
     """

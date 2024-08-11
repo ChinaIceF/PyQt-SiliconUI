@@ -52,12 +52,18 @@ class ABCAnimatedLabel(QLabel):
         self.animation_color.setBias(1)
         self.animation_color.ticked.connect(self._set_color_handler)
 
+        self.animation_text_color = SiExpAnimation(self)
+        self.animation_text_color.setFactor(1/4)
+        self.animation_text_color.setBias(1)
+        self.animation_text_color.ticked.connect(self._set_text_color_handler)
+
         # 创建动画组，以tokenize以上动画
         self.animation_group = SiAnimationGroup()
         self.animation_group.addMember(self.animation_move, token="move")
         self.animation_group.addMember(self.animation_resize, token="resize")
         self.animation_group.addMember(self.animation_opacity, token="opacity")
         self.animation_group.addMember(self.animation_color, token="color")
+        self.animation_group.addMember(self.animation_text_color, token="text_color")
 
     def setStyleSheet(self, stylesheet: str):
         if self.fixed_stylesheet == "":
@@ -129,6 +135,9 @@ class ABCAnimatedLabel(QLabel):
     def _set_color_handler(self, color_value):
         self.setStyleSheet(f"background-color: {SiColor.toCode(color_value)}")
 
+    def _set_text_color_handler(self, color_value):
+        self.setStyleSheet(f"color: {SiColor.toCode(color_value)}")
+
     def setMoveLimits(self,
                       x1: int,
                       y1: int,
@@ -158,23 +167,26 @@ class ABCAnimatedLabel(QLabel):
         return x, y
 
     def setColor(self, color_code):
-        """
-        设置颜色
-        :param color_code: 色号
-        :return:
-        """
+        """ 设置标签背景颜色 """
         color_value = SiColor.toArray(color_code)
         self.animation_color.setCurrent(color_value)
         self._set_color_handler(color_value)
 
     def setColorTo(self, color_code):
-        """
-        设置目标颜色，同时启动动画
-        :param color_code: 色号
-        :return:
-        """
+        """ 设置标签背景颜色（具动画） """
         self.animation_color.setTarget(SiColor.toArray(color_code))
         self.animation_color.try_to_start()
+
+    def setTextColor(self, color_code):
+        """ 设置标签文字颜色 """
+        color_value = SiColor.toArray(color_code)
+        self.animation_text_color.setCurrent(color_value)
+        self._set_text_color_handler(color_value)
+
+    def setTextColorTo(self, color_code):
+        """ 设置标签文字颜色（具动画） """
+        self.animation_text_color.setTarget(SiColor.toArray(color_code))
+        self.animation_text_color.try_to_start()
 
     def setOpacity(self, opacity: float):
         """

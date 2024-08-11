@@ -123,7 +123,6 @@ class ExampleDialogs(SiPage):
             group.addWidget(self.child_pages)
             group.addWidget(self.modal_dialog)
 
-
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)
 

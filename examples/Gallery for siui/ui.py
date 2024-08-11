@@ -1,13 +1,12 @@
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QDesktopWidget
-
 import icons
+from components.page_about import About
+from components.page_dialog import ExampleDialogs
 from components.page_homepage import ExampleHomepage
 from components.page_icons import ExampleIcons
 from components.page_option_cards import ExampleOptionCards
 from components.page_widgets import ExampleWidgets
-from components.page_dialog import ExampleDialogs
-from components.page_about import About
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QDesktopWidget
 
 import siui
 from siui.core.color import SiColor
