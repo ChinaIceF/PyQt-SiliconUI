@@ -662,7 +662,13 @@ class ExampleWidgets(SiPage):
             self.navigation_bar_h.setFixedWidth(800)
 
             self.demo_navigation_bar_h = SiNavigationBarH(self)
-            self.demo_navigation_bar_h.setFixedSize(500, 32)
+            self.demo_navigation_bar_h.addItem("基本信息")
+            self.demo_navigation_bar_h.addItem("排名")
+            self.demo_navigation_bar_h.addItem("最近通过谱面")
+            self.demo_navigation_bar_h.addItem("最佳表现")
+            self.demo_navigation_bar_h.addItem("创建的谱面")
+            self.demo_navigation_bar_h.setCurrentIndex(0)
+            self.demo_navigation_bar_h.adjustSize()
 
             self.navigation_bar_h.body().addWidget(self.demo_navigation_bar_h)
             self.navigation_bar_h.body().addPlaceholder(12)

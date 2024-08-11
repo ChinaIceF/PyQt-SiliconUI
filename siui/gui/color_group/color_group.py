@@ -125,8 +125,8 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.CHECKBOX_CHECKED, "#9c65ae")
 
         self.assign(SiColor.BUTTON_TEXT_BUTTON_IDLE, "#c58bc2")
-        self.assign(SiColor.BUTTON_TEXT_BUTTON_FLASH, "#FFFFFF")
-        self.assign(SiColor.BUTTON_TEXT_BUTTON_HOVER, "#DFDFDF")
+        self.assign(SiColor.BUTTON_TEXT_BUTTON_FLASH, "#c58bc2")
+        self.assign(SiColor.BUTTON_TEXT_BUTTON_HOVER, "#fabef8")
 
         # 长按按钮
         self.assign(SiColor.BUTTON_LONG_PRESS_PANEL, "#932a48")

@@ -17,6 +17,7 @@ class ABCSiAnimation(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.enabled = True
         self.target_ = numpy.array(0)         # 目标值
         self.current_ = numpy.array(0)        # 当前值
         self.counter = 0                     # 计数器
@@ -29,6 +30,14 @@ class ABCSiAnimation(QObject):
         # 构建行为计时器
         self.action_timer = QTimer()
         self.action_timer.setSingleShot(True)
+
+    def setEnable(self, on):
+        self.enabled = on
+        if on is False:
+            self.stop()
+
+    def isEnabled(self):
+        return self.enabled
 
     def setFPS(self, fps: int):
         """
@@ -108,6 +117,9 @@ class ABCSiAnimation(QObject):
         Start the animation
         :param delay: msec, time delay before this action works
         """
+        if self.isEnabled() is False:
+            return
+
         if delay is None:
             self.timer.start()
         else:

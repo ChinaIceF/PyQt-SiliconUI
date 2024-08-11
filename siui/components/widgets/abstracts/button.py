@@ -129,6 +129,10 @@ class ABCButton(QPushButton):
         """ get the label that preform flashing animations """
         return self.flash_label
 
+    def hoverLabel(self):
+        """ get the hover-highlight label """
+        return self.hover_highlight
+
     def setFlashOnClicked(self, b: bool):
         """
         设置是否启用点击动画
