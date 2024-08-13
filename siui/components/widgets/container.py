@@ -182,7 +182,7 @@ class SiDenseHContainer(ABCDenseContainer):
 
         return preferred_w, self.height()
 
-    def adjustWidgetsGeometry(self):
+    def arrangeWidget(self):
         """
         调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器s
         :return:
@@ -243,7 +243,7 @@ class SiDenseHContainer(ABCDenseContainer):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.adjustWidgetsGeometry()  # 每当自身尺寸改变时，重新设置控件的位置
+        self.arrangeWidget()  # 每当自身尺寸改变时，重新设置控件的位置
 
     def adjustSize(self):
         """
@@ -366,7 +366,7 @@ class SiDenseVContainer(ABCDenseContainer):
 
         raise ValueError(f"Widget provided ({widget}) is not in this container.")
 
-    def adjustWidgetsGeometry(self):
+    def arrangeWidget(self):  # noqa: C901
         """
         调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器
         :return:
@@ -427,7 +427,7 @@ class SiDenseVContainer(ABCDenseContainer):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.adjustWidgetsGeometry()  # 每当自身尺寸改变时，重新设置控件的位置
+        self.arrangeWidget()  # 每当自身尺寸改变时，重新设置控件的位置
 
     def adjustSize(self):
         """

@@ -139,7 +139,7 @@ class SiMenuOption(SiDenseHContainer):
             self.icon.resize(32, 32)
         else:
             self.icon.resize(0, 32)
-        self.adjustWidgetsGeometry()
+        self.arrangeWidget()
 
     def on_clicked(self):
         self.parentMenu().setIndex(self.parentMenu().options().index(self))

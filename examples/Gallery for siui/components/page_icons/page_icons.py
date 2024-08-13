@@ -220,7 +220,7 @@ class ExampleIcons(SiPage):
                                            self.title_height,
                                            self.icon_container.width(),
                                            event.size().height() - self.title_height - 64)
-        self.content_container.adjustWidgetsGeometry()
+        self.content_container.arrangeWidget()
         self.icon_scroll_area.resize(self.icon_scroll_area.width(), self.content_container.height() - 64 - 80)
 
     def showEvent(self, a0):
