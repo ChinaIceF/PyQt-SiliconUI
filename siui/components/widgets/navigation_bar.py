@@ -60,7 +60,7 @@ class SiNavigationBarH(ABCSiNavigationBar):
         button = self.item_dict[str(index)]
         button.attachment().setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
 
-        width = button.width() * (1-0.618)*2
+        width = int(button.width() * (1-0.618)*2)
         x = button.x() + (button.width() - width) // 2
 
         self.indicator.moveTo(x, self.indicator.y())

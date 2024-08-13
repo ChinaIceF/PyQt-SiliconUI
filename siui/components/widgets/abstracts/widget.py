@@ -353,8 +353,8 @@ class SiWidget(QWidget):
         # draw pixmap to the painter
         painter.scale(scale_factor, scale_factor)
         painter.setOpacity(opacity_factor)
-        painter.drawPixmap(QRect(-self.center_widget.width()/2,
-                                 -self.center_widget.height()/2,
+        painter.drawPixmap(QRect(-self.center_widget.width()//2,
+                                 -self.center_widget.height()//2,
                                  self.center_widget.width(),
                                  self.center_widget.height()),
                            pixmap)
