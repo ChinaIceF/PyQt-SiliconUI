@@ -80,7 +80,7 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.INTERFACE_BG_D, "#3b373f")
         self.assign(SiColor.INTERFACE_BG_E, "#49454D")
 
-        self.assign(SiColor.TEXT_A, "#FFFFFF")
+        self.assign(SiColor.TEXT_A, "#E5E5E5")
         self.assign(SiColor.TEXT_B, "#DFDFDF")
         self.assign(SiColor.TEXT_C, "#C7C7C7")
         self.assign(SiColor.TEXT_D, "#AFAFAF")
@@ -125,8 +125,8 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.CHECKBOX_CHECKED, "#9c65ae")
 
         self.assign(SiColor.BUTTON_TEXT_BUTTON_IDLE, "#c58bc2")
-        self.assign(SiColor.BUTTON_TEXT_BUTTON_FLASH, "#FFFFFF")
-        self.assign(SiColor.BUTTON_TEXT_BUTTON_HOVER, "#DFDFDF")
+        self.assign(SiColor.BUTTON_TEXT_BUTTON_FLASH, "#c58bc2")
+        self.assign(SiColor.BUTTON_TEXT_BUTTON_HOVER, "#fabef8")
 
         # 长按按钮
         self.assign(SiColor.BUTTON_LONG_PRESS_PANEL, "#932a48")

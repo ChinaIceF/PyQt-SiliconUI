@@ -72,20 +72,6 @@ class SiPushButton(ABCPushButton):
         self.use_transition = b
 
 
-class SiTextButton(ABCButton):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.label_ = SiLabel(self)
-
-    def reloadStyleSheet(self):
-        super().reloadStyleSheet()
-        self.label_.setTextColor(self.colorGroup().fromToken(SiColor.BUTTON_TEXT_BUTTON_IDLE))
-
-    def label(self):
-        return self.label_
-
-
 class SiLongPressButton(ABCPushButton):
     """
     需要持续长按一段时间才能触发点击事件的按钮，可以设置文字、图标或是兼有\n
