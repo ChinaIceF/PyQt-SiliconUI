@@ -19,10 +19,10 @@ class ABCDenseContainer(SiWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
 
-        self.align_center = False  # 是否将所有控件放置在中轴线上
         self.adjust_widgets_size = False  # 子控件适应高度
         self.shrinking = False  # 调整尺寸方法被调用时，允许尺寸变小
         self.use_moveto = False  # 使用 moveto 方法移动控件而非 move
+        self.alignment_ = 0
 
         self.spacing = 16  # 各个控件间的距离
 
@@ -55,7 +55,15 @@ class ABCDenseContainer(SiWidget):
         :param b: 是否放置在中轴线上
         :return:
         """
-        self.align_center = b
+        print("Warning: method `setAlignCenter` is deprecated, use setAlignment(Qt.AlignCenter) instead.")  # noqa: T201
+        if b is True:
+            self.setAlignment(self.alignment() | Qt.AlignCenter)
+
+    def setAlignment(self, alignment):
+        self.alignment_ = alignment
+
+    def alignment(self):
+        return self.alignment_
 
     def setSpacing(self, spacing: int):
         """
@@ -81,6 +89,7 @@ class SiDenseHContainer(ABCDenseContainer):
         super().__init__(*args, *kwargs)
         self.widgets_left = []
         self.widgets_right = []
+        self.alignment_ = Qt.AlignTop
 
     def addPlaceholder(self, length, side="left", index=10000):
         """
@@ -173,7 +182,7 @@ class SiDenseHContainer(ABCDenseContainer):
 
         return preferred_w, self.height()
 
-    def adjustWidgetsGeometry(self):
+    def arrangeWidget(self):
         """
         调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器s
         :return:
@@ -188,9 +197,13 @@ class SiDenseHContainer(ABCDenseContainer):
             if self.adjust_widgets_size is True:
                 obj.resize(obj.width(), self.height())
 
-            # 判断并设置是否进行中轴线对齐
-            if self.align_center is True:
+            # 判断并设置对齐方式
+            if (self.alignment_ & Qt.AlignLeft) == Qt.AlignLeft:
+                y = 0
+            elif (self.alignment_ & Qt.AlignVCenter) == Qt.AlignVCenter:
                 y = (self.height() - obj.height()) // 2
+            elif (self.alignment_ & Qt.AlignRight) == Qt.AlignRight:
+                y = self.height() - obj.height()
             else:
                 y = 0
 
@@ -209,9 +222,13 @@ class SiDenseHContainer(ABCDenseContainer):
             if self.adjust_widgets_size is True:
                 obj.resize(obj.width(), self.height())
 
-            # 判断并设置是否进行中轴线对齐
-            if self.align_center is True:
+            # 判断并设置对齐方式
+            if (self.alignment_ & Qt.AlignLeft) == Qt.AlignLeft:
+                y = 0
+            elif (self.alignment_ & Qt.AlignVCenter) == Qt.AlignVCenter:
                 y = (self.height() - obj.height()) // 2
+            elif (self.alignment_ & Qt.AlignRight) == Qt.AlignRight:
+                y = self.height() - obj.height()
             else:
                 y = 0
 
@@ -226,7 +243,7 @@ class SiDenseHContainer(ABCDenseContainer):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.adjustWidgetsGeometry()  # 每当自身尺寸改变时，重新设置控件的位置
+        self.arrangeWidget()  # 每当自身尺寸改变时，重新设置控件的位置
 
     def adjustSize(self):
         """
@@ -256,6 +273,7 @@ class SiDenseVContainer(ABCDenseContainer):
         super().__init__(*args, *kwargs)
         self.widgets_bottom = []
         self.widgets_top = []
+        self.alignment_ = Qt.AlignLeft
 
     def addPlaceholder(self, length, side="top", index=10000):
         """
@@ -348,7 +366,7 @@ class SiDenseVContainer(ABCDenseContainer):
 
         raise ValueError(f"Widget provided ({widget}) is not in this container.")
 
-    def adjustWidgetsGeometry(self):
+    def arrangeWidget(self):  # noqa: C901
         """
         调整子控件的几何信息。这包括排列子控件，置于中轴线上，以及适应容器
         :return:
@@ -363,9 +381,13 @@ class SiDenseVContainer(ABCDenseContainer):
             if self.adjust_widgets_size is True:
                 obj.resize(self.width(), obj.height())
 
-            # 判断并设置是否进行中轴线对齐
-            if self.align_center is True:
+            # 判断并设置对齐方式
+            if (self.alignment_ & Qt.AlignTop) == Qt.AlignTop:
+                x = 0
+            elif (self.alignment_ & Qt.AlignHCenter) == Qt.AlignHCenter:
                 x = (self.width() - obj.width()) // 2
+            elif (self.alignment_ & Qt.AlignBottom) == Qt.AlignBottom:
+                x = self.width() - obj.width()
             else:
                 x = 0
 
@@ -385,8 +407,12 @@ class SiDenseVContainer(ABCDenseContainer):
                 obj.resize(self.width(), obj.height())
 
             # 判断并设置是否进行中轴线对齐
-            if self.align_center is True:
+            if (self.alignment_ & Qt.AlignTop) == Qt.AlignTop:
+                x = 0
+            elif (self.alignment_ & Qt.AlignHCenter) == Qt.AlignHCenter:
                 x = (self.width() - obj.width()) // 2
+            elif (self.alignment_ & Qt.AlignBottom) == Qt.AlignBottom:
+                x = self.width() - obj.width()
             else:
                 x = 0
 
@@ -401,7 +427,7 @@ class SiDenseVContainer(ABCDenseContainer):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.adjustWidgetsGeometry()  # 每当自身尺寸改变时，重新设置控件的位置
+        self.arrangeWidget()  # 每当自身尺寸改变时，重新设置控件的位置
 
     def adjustSize(self):
         """

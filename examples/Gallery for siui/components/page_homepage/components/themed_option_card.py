@@ -33,7 +33,7 @@ class ThemedOptionCardPlane(SiOptionCardPlane):
         self.link_button.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_open_regular"))
 
         link_button_container = SiDenseVContainer(self)
-        link_button_container.setAlignCenter(True)
+        link_button_container.setAlignment(Qt.AlignCenter)
         link_button_container.setFixedHeight(48)
         link_button_container.addWidget(self.link_button)
         self.footer().setSiliconWidgetFlag(Si.EnableAnimationSignals)

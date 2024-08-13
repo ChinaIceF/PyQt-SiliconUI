@@ -56,12 +56,12 @@ class ExampleIcons(SiPage):
         self.setTitle("图标库")
 
         self.content_container = SiDenseVContainer(self)
-        self.content_container.setAlignCenter(True)
+        self.content_container.setAlignment(Qt.AlignCenter)
         self.content_container.setAdjustWidgetsSize(True)
 
         self.package_operation_container = SiDenseHContainer(self)
         self.package_operation_container.setFixedHeight(48)
-        self.package_operation_container.setAlignCenter(True)
+        self.package_operation_container.setAlignment(Qt.AlignCenter)
         SiQuickEffect.applyDropShadowOn(self.package_operation_container, (0, 0, 0, 80), blur_radius=32)
 
         self.package_selection_description = SiLabel(self)
@@ -105,11 +105,11 @@ class ExampleIcons(SiPage):
         self.icon_scroll_area.setAttachment(self.icon_container)
 
         self.operation_panel_container_v = SiDenseVContainer(self)
-        self.operation_panel_container_v.setAlignCenter(True)
+        self.operation_panel_container_v.setAlignment(Qt.AlignCenter)
 
         self.operation_panel_container_h = SiDenseHContainer(self)
         self.operation_panel_container_h.setFixedHeight(48)
-        self.operation_panel_container_h.setAlignCenter(True)
+        self.operation_panel_container_h.setAlignment(Qt.AlignCenter)
         SiQuickEffect.applyDropShadowOn(self.operation_panel_container_h,
                                         color=(0, 0, 0, 50),
                                         blur_radius=32)
@@ -220,7 +220,7 @@ class ExampleIcons(SiPage):
                                            self.title_height,
                                            self.icon_container.width(),
                                            event.size().height() - self.title_height - 64)
-        self.content_container.adjustWidgetsGeometry()
+        self.content_container.arrangeWidget()
         self.icon_scroll_area.resize(self.icon_scroll_area.width(), self.content_container.height() - 64 - 80)
 
     def showEvent(self, a0):

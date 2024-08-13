@@ -24,7 +24,7 @@ class LayerMain(SiLayer):
         # -> 标题栏处的水平容器，左侧是图标和标题，右侧是操作按钮
         self.container_title = SiDenseHContainer(self)
         self.container_title.setSpacing(0)
-        self.container_title.setAlignCenter(True)
+        self.container_title.setAlignment(Qt.AlignCenter)
         self.container_title.setFixedHeight(64)
 
         # 应用内图标

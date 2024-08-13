@@ -49,7 +49,7 @@ class SiMenuOption(SiDenseHContainer):
 
         self.setSpacing(0)
         self.setFixedHeight(32)
-        self.setAlignCenter(True)
+        self.setAlignment(Qt.AlignCenter)
 
         self.chosen_indicator = SiLabel(self)
         self.chosen_indicator.setFixedSize(4, 20)
@@ -139,7 +139,7 @@ class SiMenuOption(SiDenseHContainer):
             self.icon.resize(32, 32)
         else:
             self.icon.resize(0, 32)
-        self.adjustWidgetsGeometry()
+        self.arrangeWidget()
 
     def on_clicked(self):
         self.parentMenu().setIndex(self.parentMenu().options().index(self))

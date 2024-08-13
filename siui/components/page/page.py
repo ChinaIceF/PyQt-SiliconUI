@@ -72,7 +72,7 @@ class SiPage(SiDenseVContainer):
         self.title_container = SiDenseHContainer(self)
         self.title_container.setSpacing(0)
         self.title_container.setFixedHeight(32)
-        self.title_container.setAlignCenter(True)
+        self.title_container.setAlignment(Qt.AlignCenter)
 
         # 标题
         self.title = SiLabel(self)

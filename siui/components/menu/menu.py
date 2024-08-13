@@ -18,5 +18,5 @@ class SiMenu(ABCSiMenu):
 
         self.options_.append(new_option)
         self.body().addWidget(new_option)
-        self.body().adjustWidgetsGeometry()
+        self.body().arrangeWidget()
 
