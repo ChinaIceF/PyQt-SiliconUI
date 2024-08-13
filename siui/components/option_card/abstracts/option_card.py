@@ -21,7 +21,6 @@ class ABCSiOptionCardPlane(SiLabel):
         # 创建容器
         self.container = SiDenseVContainer(self)
         self.container.setSpacing(0)
-        self.container.setShrinking(True)
         self.container.setAdjustWidgetsSize(True)
 
         # 创建划分区域

@@ -146,8 +146,6 @@ class SingleTODOOption(SiDenseHContainer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.setShrinking(True)
-
         self.check_box = SiCheckBox(self)
         self.check_box.resize(12, 12)
         self.check_box.setText(" ")
@@ -288,7 +286,6 @@ class TODOListPanel(ThemedOptionCardPlane):
         self.no_todo_label.hide()
 
         self.body().setUseMoveTo(False)
-        self.body().setShrinking(True)
         self.body().setAdjustWidgetsSize(True)
 
         self.footer().setFixedHeight(64)
@@ -597,7 +594,6 @@ class TODOApplication(QMainWindow):
         self.container_v = SiDenseVContainer(self)
         self.container_v.setFixedWidth(500)
         self.container_v.setSpacing(0)
-        self.container_v.setShrinking(True)
         self.container_v.setAlignment(Qt.AlignCenter)
 
         # 构建界面

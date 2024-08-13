@@ -26,7 +26,7 @@ from siui.components.widgets import (
     SiSwitch,
     SiToggleButton,
 )
-from siui.components.widgets.navigation_bar import SiNavigationBarH
+from siui.components.widgets.navigation_bar import SiNavigationBarH, SiNavigationBarV
 from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
@@ -558,11 +558,11 @@ class ExampleWidgets(SiPage):
         with self.titled_widgets_group as group:
             group.addTitle("导航栏")
 
-            # 侧边栏信息
+            # 水平导航栏
             self.navigation_bar_h = OptionCardPlaneForWidgetDemos(self)
             self.navigation_bar_h.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                 "/widgets/progress_bar/progress_bar.py")
-            self.navigation_bar_h.setTitle("横向导航栏")
+            self.navigation_bar_h.setTitle("水平导航栏")
             self.navigation_bar_h.setFixedWidth(800)
 
             self.demo_navigation_bar_h = SiNavigationBarH(self)
@@ -578,7 +578,76 @@ class ExampleWidgets(SiPage):
             self.navigation_bar_h.body().addPlaceholder(12)
             self.navigation_bar_h.adjustSize()
 
+            # 垂直导航栏
+            self.navigation_bar_v = OptionCardPlaneForWidgetDemos(self)
+            self.navigation_bar_v.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.navigation_bar_v.setTitle("横向导航栏")
+            self.navigation_bar_v.setFixedWidth(800)
+
+            self.demo_navigation_bar_v = SiNavigationBarV(self)
+            self.demo_navigation_bar_v.addItem("基本信息")
+            self.demo_navigation_bar_v.addItem("排名")
+            self.demo_navigation_bar_v.addItem("最近通过谱面")
+            self.demo_navigation_bar_v.addItem("最佳表现")
+            self.demo_navigation_bar_v.addItem("创建的谱面")
+            self.demo_navigation_bar_v.setCurrentIndex(0)
+            self.demo_navigation_bar_v.adjustSize()
+
+            self.navigation_bar_v.body().addWidget(self.demo_navigation_bar_v)
+            self.navigation_bar_v.body().addPlaceholder(12)
+            self.navigation_bar_v.adjustSize()
+
             group.addWidget(self.navigation_bar_h)
+            group.addWidget(self.navigation_bar_v)
+
+        # 单项选择栏
+        with self.titled_widgets_group as group:
+            group.addTitle("单项选择栏")
+
+            # 水平单项选择栏
+            self.selection_bar_h = OptionCardPlaneForWidgetDemos(self)
+            self.selection_bar_h.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.selection_bar_h.setTitle("水平单项选择栏")
+            self.selection_bar_h.setFixedWidth(800)
+
+            self.demo_selection_bar_h = SiNavigationBarH(self)
+            self.demo_selection_bar_h.setNoIndicator(True)
+            self.demo_selection_bar_h.addItem("全部语言")
+            self.demo_selection_bar_h.addItem("汉语")
+            self.demo_selection_bar_h.addItem("英语")
+            self.demo_selection_bar_h.addItem("日语")
+            self.demo_selection_bar_h.addItem("纯音乐")
+            self.demo_selection_bar_h.setCurrentIndex(0)
+            self.demo_selection_bar_h.adjustSize()
+
+            self.selection_bar_h.body().addWidget(self.demo_selection_bar_h)
+            self.selection_bar_h.body().addPlaceholder(12)
+            self.selection_bar_h.adjustSize()
+
+            # 垂直单项选择栏
+            self.selection_bar_v = OptionCardPlaneForWidgetDemos(self)
+            self.selection_bar_v.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.selection_bar_v.setTitle("垂直单项选择栏")
+            self.selection_bar_v.setFixedWidth(800)
+
+            self.demo_selection_bar_v = SiNavigationBarV(self)
+            self.demo_selection_bar_v.setNoIndicator(True)
+            self.demo_selection_bar_v.addItem("唱歌")
+            self.demo_selection_bar_v.addItem("跳舞")
+            self.demo_selection_bar_v.addItem("说唱")
+            self.demo_selection_bar_v.addItem("篮球")
+            self.demo_selection_bar_v.setCurrentIndex(0)
+            self.demo_selection_bar_v.adjustSize()
+
+            self.selection_bar_v.body().addWidget(self.demo_selection_bar_v)
+            self.selection_bar_v.body().addPlaceholder(12)
+            self.selection_bar_v.adjustSize()
+
+            group.addWidget(self.selection_bar_h)
+            group.addWidget(self.selection_bar_v)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)

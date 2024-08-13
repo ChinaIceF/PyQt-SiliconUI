@@ -20,7 +20,7 @@ class ABCDenseContainer(SiWidget):
         super().__init__(*args, *kwargs)
 
         self.adjust_widgets_size = False  # 子控件适应高度
-        self.shrinking = False  # 调整尺寸方法被调用时，允许尺寸变小
+        self.shrinking = True  # 调整尺寸方法被调用时，允许尺寸变小
         self.use_moveto = False  # 使用 moveto 方法移动控件而非 move
         self.alignment_ = 0
 
@@ -180,7 +180,7 @@ class SiDenseHContainer(ABCDenseContainer):
         total_used += self.spacing if self.widgets_left + self.widgets_right == [] else 0  # 防止极端情况下两侧控件紧贴
         preferred_w = total_used
 
-        return preferred_w, self.height()
+        return preferred_w, max([widget.height() for widget in (self.widgets_left + self.widgets_right)])
 
     def arrangeWidget(self):
         """
@@ -198,11 +198,11 @@ class SiDenseHContainer(ABCDenseContainer):
                 obj.resize(obj.width(), self.height())
 
             # 判断并设置对齐方式
-            if (self.alignment_ & Qt.AlignLeft) == Qt.AlignLeft:
+            if (self.alignment_ & Qt.AlignTop) == Qt.AlignTop:
                 y = 0
             elif (self.alignment_ & Qt.AlignVCenter) == Qt.AlignVCenter:
                 y = (self.height() - obj.height()) // 2
-            elif (self.alignment_ & Qt.AlignRight) == Qt.AlignRight:
+            elif (self.alignment_ & Qt.AlignBottom) == Qt.AlignBottom:
                 y = self.height() - obj.height()
             else:
                 y = 0
@@ -223,11 +223,11 @@ class SiDenseHContainer(ABCDenseContainer):
                 obj.resize(obj.width(), self.height())
 
             # 判断并设置对齐方式
-            if (self.alignment_ & Qt.AlignLeft) == Qt.AlignLeft:
+            if (self.alignment_ & Qt.AlignTop) == Qt.AlignTop:
                 y = 0
             elif (self.alignment_ & Qt.AlignVCenter) == Qt.AlignVCenter:
                 y = (self.height() - obj.height()) // 2
-            elif (self.alignment_ & Qt.AlignRight) == Qt.AlignRight:
+            elif (self.alignment_ & Qt.AlignBottom) == Qt.AlignBottom:
                 y = self.height() - obj.height()
             else:
                 y = 0
@@ -251,17 +251,14 @@ class SiDenseHContainer(ABCDenseContainer):
         :return:
         """
         # 获取最佳尺寸
-        preferred_w, _ = self.getPreferredSize()
-
-        # 计算所有控件中高度最大的，以保证所有控件在容器中
-        # preferred_h = max([obj.height() for obj in self.widgets_left + self.widgets_right])
+        preferred_w, preferred_h = self.getPreferredSize()
 
         if self.shrinking is False:
             # 和原本自身的尺寸比价，取最大者
             preferred_w = max(preferred_w, self.width())
-            # preferred_h = max(preferred_h, self.height())
+            preferred_h = max(preferred_h, self.height())
 
-        self.resize(preferred_w, self.height())
+        self.resize(preferred_w, preferred_h)
 
 
 class SiDenseVContainer(ABCDenseContainer):
@@ -330,7 +327,7 @@ class SiDenseVContainer(ABCDenseContainer):
         total_used += self.spacing if (self.widgets_bottom != [] and self.widgets_top != []) else 0  # 防止两侧控件紧贴
         preferred_h = total_used
 
-        return self.width(), preferred_h
+        return max([widget.width() for widget in (self.widgets_top + self.widgets_bottom)]), preferred_h
 
     def getSpareSpace(self):
         """
@@ -382,11 +379,11 @@ class SiDenseVContainer(ABCDenseContainer):
                 obj.resize(self.width(), obj.height())
 
             # 判断并设置对齐方式
-            if (self.alignment_ & Qt.AlignTop) == Qt.AlignTop:
+            if (self.alignment_ & Qt.AlignLeft) == Qt.AlignLeft:
                 x = 0
             elif (self.alignment_ & Qt.AlignHCenter) == Qt.AlignHCenter:
                 x = (self.width() - obj.width()) // 2
-            elif (self.alignment_ & Qt.AlignBottom) == Qt.AlignBottom:
+            elif (self.alignment_ & Qt.AlignRight) == Qt.AlignRight:
                 x = self.width() - obj.width()
             else:
                 x = 0
@@ -406,12 +403,12 @@ class SiDenseVContainer(ABCDenseContainer):
             if self.adjust_widgets_size is True:
                 obj.resize(self.width(), obj.height())
 
-            # 判断并设置是否进行中轴线对齐
-            if (self.alignment_ & Qt.AlignTop) == Qt.AlignTop:
+            # 判断并设置对齐方式
+            if (self.alignment_ & Qt.AlignLeft) == Qt.AlignLeft:
                 x = 0
             elif (self.alignment_ & Qt.AlignHCenter) == Qt.AlignHCenter:
                 x = (self.width() - obj.width()) // 2
-            elif (self.alignment_ & Qt.AlignBottom) == Qt.AlignBottom:
+            elif (self.alignment_ & Qt.AlignRight) == Qt.AlignRight:
                 x = self.width() - obj.width()
             else:
                 x = 0
@@ -435,17 +432,14 @@ class SiDenseVContainer(ABCDenseContainer):
         :return:
         """
         # 获取最佳尺寸
-        _, preferred_h = self.getPreferredSize()
-
-        # 计算所有控件中宽度最大的，以保证所有控件在容器中
-        # preferred_w = max([obj.width() for obj in self.widgets_bottom + self.widgets_top])
+        preferred_w, preferred_h = self.getPreferredSize()
 
         if self.shrinking is False:
             # 和原本自身的尺寸比价，取最大者
-            # preferred_w = max(preferred_w, self.width())
+            preferred_w = max(preferred_w, self.width())
             preferred_h = max(preferred_h, self.height())
 
-        self.resize(self.width(), preferred_h)
+        self.resize(preferred_w, preferred_h)
 
 
 class SiDividedHContainer(ABCSiDividedContainer):
