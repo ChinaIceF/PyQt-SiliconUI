@@ -85,7 +85,7 @@ class ExampleOptionCards(SiPage):
         self.option_card_plane_beginning.body().addWidget(body_label, side="top")
         self.option_card_plane_beginning.footer().setFixedHeight(64)
         self.option_card_plane_beginning.footer().setSpacing(8)
-        self.option_card_plane_beginning.footer().setAlignCenter(True)
+        self.option_card_plane_beginning.footer().setAlignment(Qt.AlignCenter)
         self.option_card_plane_beginning.footer().addWidget(footer_button_a, side="left")
         self.option_card_plane_beginning.footer().addWidget(footer_button_b, side="left")
         self.option_card_plane_beginning.footer().addWidget(footer_button_c, side="left")

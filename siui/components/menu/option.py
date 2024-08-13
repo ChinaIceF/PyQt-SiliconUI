@@ -49,7 +49,7 @@ class SiMenuOption(SiDenseHContainer):
 
         self.setSpacing(0)
         self.setFixedHeight(32)
-        self.setAlignCenter(True)
+        self.setAlignment(Qt.AlignCenter)
 
         self.chosen_indicator = SiLabel(self)
         self.chosen_indicator.setFixedSize(4, 20)

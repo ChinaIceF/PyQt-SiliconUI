@@ -80,7 +80,7 @@ class WidgetsExampleDisplayer(QLabel):
         layout = SiLayoutH(self)
         layout.setInterval(4)
         layout.setFixedWidth(self.sticker_status.width() - 48)
-        layout.setAlignCenter(True)
+        layout.setAlignment(Qt.AlignCenter)
         layout.addItem(new_type)
         layout.addItem(new_status)
         layout.addItem(new_value, "right")
@@ -112,7 +112,7 @@ class WidgetsExampleDisplayer(QLabel):
             signal.connect(new_status.activate)
 
         layout = SiLayoutH(self)
-        layout.setAlignCenter(True)
+        layout.setAlignment(Qt.AlignCenter)
         layout.setInterval(4)
         layout.addItem(new_type)
         layout.addItem(new_status)

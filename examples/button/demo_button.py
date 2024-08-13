@@ -26,7 +26,7 @@ class ButtonExample(QWidget):
         # 创建垂直布局
         self.layout = SiLayoutV(self)
         self.layout.setFixedWidth(128)
-        self.layout.setAlignCenter(True)        # 设置元素居中
+        self.layout.setAlignment(Qt.AlignCenter)        # 设置元素居中
 
         # 创建三个按钮
         btn1 = SiButton(self.layout)

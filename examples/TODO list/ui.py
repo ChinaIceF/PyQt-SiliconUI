@@ -201,7 +201,7 @@ class AppHeaderPanel(SiLabel):
         self.background_label.setFixedStyleSheet("border-radius: 8px")
 
         self.container_h = SiDenseHContainer(self)
-        self.container_h.setAlignCenter(True)
+        self.container_h.setAlignment(Qt.AlignCenter)
         self.container_h.setFixedHeight(48)
         self.container_h.setSpacing(0)
 
@@ -293,7 +293,7 @@ class TODOListPanel(ThemedOptionCardPlane):
 
         self.footer().setFixedHeight(64)
         self.footer().setSpacing(8)
-        self.footer().setAlignCenter(True)
+        self.footer().setAlignment(Qt.AlignCenter)
 
         self.complete_all_button = SiSimpleButton(self)
         self.complete_all_button.resize(32, 32)
@@ -526,7 +526,7 @@ class SettingsPanel(ThemedOptionCardPlane):
 
         # SiliconUI
         self.silicon_ui = SiDenseVContainer(self)
-        self.silicon_ui.setAlignCenter(True)
+        self.silicon_ui.setAlignment(Qt.AlignCenter)
 
         self.button_silicon_ui = SiSimpleButton(self)
         self.button_silicon_ui.attachment().setFont(SiGlobal.siui.fonts["S_NORMAL"])
@@ -598,7 +598,7 @@ class TODOApplication(QMainWindow):
         self.container_v.setFixedWidth(500)
         self.container_v.setSpacing(0)
         self.container_v.setShrinking(True)
-        self.container_v.setAlignCenter(True)
+        self.container_v.setAlignment(Qt.AlignCenter)
 
         # 构建界面
         # 头

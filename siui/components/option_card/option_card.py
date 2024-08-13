@@ -22,7 +22,7 @@ class SiOptionCardLinear(SiLabel):
         # 创建整体容器
         self.container = SiDenseHContainer(self)
         self.container.setSpacing(0)
-        self.container.setAlignCenter(True)
+        self.container.setAlignment(Qt.AlignCenter)
         self.container.setAdjustWidgetsSize(True)
         self.container.setShrinking(True)
 
@@ -39,7 +39,7 @@ class SiOptionCardLinear(SiLabel):
 
         # 控件紧密排列容器
         self.widgets_container = SiDenseHContainer(self)
-        self.widgets_container.setAlignCenter(True)
+        self.widgets_container.setAlignment(Qt.AlignCenter)
         self.widgets_container.resize(0, 0)
 
         # 添加到整体容器中
@@ -123,7 +123,7 @@ class SiOptionCardPlane(ABCSiOptionCardPlane):
         self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.title.setFixedHeight(32)
 
-        self.header().setAlignCenter(True)
+        self.header().setAlignment(Qt.AlignCenter)
         self.header().setFixedHeight(64)
         self.header().addWidget(self.title, "left")
 

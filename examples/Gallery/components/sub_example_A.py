@@ -28,7 +28,7 @@ class Operation_A(SiliconUI.SiLayoutH):
         super().__init__(parent)
         self.parent =  parent
         
-        self.setAlignCenter(True)
+        self.setAlignment(Qt.AlignCenter)
 
         self.btn1 = SiliconUI.SiButton(self)
         self.btn1.resize(128, 32)

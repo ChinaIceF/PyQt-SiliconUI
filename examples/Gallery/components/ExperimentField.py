@@ -119,7 +119,7 @@ class ExperimentField(SiliconUI.SiScrollFrame):
 
         self.button_layout2 = SiliconUI.SiLayoutH(self)
         self.button_layout2.setFixedHeight(32)
-        self.button_layout2.setAlignCenter(True)
+        self.button_layout2.setAlignment(Qt.AlignCenter)
 
         self.test_new_button8 = SiCheckBox(self)
         self.test_new_button8.setText("鸡你太美")

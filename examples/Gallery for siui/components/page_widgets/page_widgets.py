@@ -86,7 +86,7 @@ class ExampleWidgets(SiPage):
             self.pix_label.setFixedWidth(800)
 
             container_pix_label = SiDenseHContainer(self)
-            container_pix_label.setAlignCenter(True)
+            container_pix_label.setAlignment(Qt.AlignCenter)
             container_pix_label.setFixedHeight(80 + 24)
 
             self.demo_pix_label_a = SiPixLabel(self)

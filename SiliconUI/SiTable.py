@@ -24,7 +24,7 @@ class ScrollContent(QLabel):
         self.backgrounds = []
 
         self.bg_placeholder = SiliconUI.SiLayoutV(self)
-        self.bg_placeholder.setAlignCenter(True)
+        self.bg_placeholder.setAlignment(Qt.AlignCenter)
         self.bg_placeholder.setInterval(0)
         self.bg_placeholder.addVacant(32)
 

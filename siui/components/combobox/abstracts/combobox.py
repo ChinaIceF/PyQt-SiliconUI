@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QPoint, pyqtSignal
+from PyQt5.QtCore import QPoint, pyqtSignal, Qt
 
 from siui.components.menu.menu import SiMenu
 from siui.components.widgets import SiDenseHContainer
@@ -24,7 +24,7 @@ class ABCSiComboBox(SiWidget):
         self.panel_label.setFixedStyleSheet("border-radius: 4px")
 
         self.container_ = SiDenseHContainer(self)
-        self.container_.setAlignCenter(True)
+        self.container_.setAlignment(Qt.AlignCenter)
         self.container_.setSpacing(0)
 
         self.unfold_menu_indicator = SiSvgLabel(self)

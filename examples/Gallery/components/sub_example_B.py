@@ -28,7 +28,7 @@ class Operation_B(SiliconUI.SiLayoutH):
         super().__init__(parent)
         self.parent =  parent
         
-        self.setAlignCenter(True)
+        self.setAlignment(Qt.AlignCenter)
 
         self.btn1 = SiliconUI.SiButton(self)
         self.btn1.resize(128, 32)
@@ -98,7 +98,7 @@ class Body_B(SiliconUI.SiTab):
         self.mode.setOption('源文件')
 
         self.info_layout_v = SiliconUI.SiLayoutV(self.stack_settings)
-        self.info_layout_v.setAlignCenter(True)
+        self.info_layout_v.setAlignment(Qt.AlignCenter)
 
         self.info_layout_h = SiliconUI.SiLayoutH(self.info_layout_v)
         self.info_layout_h.setAlignCenter(False)

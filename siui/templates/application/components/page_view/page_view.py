@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 
 from siui.core.globals import SiGlobal
 from siui.components.widgets import SiLabel, SiToggleButton
@@ -90,7 +90,7 @@ class PageNavigator(ABCSiNavigationBar):
         # 创建容器用于放置按钮
         self.container = SiDenseVContainer(self)
         self.container.setSpacing(8)
-        self.container.setAlignCenter(True)
+        self.container.setAlignment(Qt.AlignCenter)
 
         # 所有按钮
         self.buttons = []

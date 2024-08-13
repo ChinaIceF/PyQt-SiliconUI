@@ -1,3 +1,5 @@
+from PyQt5.QtCore import Qt
+
 from siui.components import SiWidget, SiDenseHContainer, SiLabel, SiTitledWidgetGroup
 from siui.components.page import SiPage
 from siui.core.color import SiColor
@@ -35,7 +37,7 @@ class SiChildPage(SiWidget):
         SiQuickEffect.applyDropShadowOn(self.background_panel, (0, 0, 0, 60), blur_radius=48)
 
         self.panel_ = SiDenseHContainer(self.view_)
-        self.panel_.setAlignCenter(True)
+        self.panel_.setAlignment(Qt.AlignCenter)
         self.panel_.setFixedHeight(80)
 
         # set self.view as center widget
