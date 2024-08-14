@@ -24,7 +24,6 @@ class SiOptionCardLinear(SiLabel):
         self.container.setSpacing(0)
         self.container.setAlignment(Qt.AlignCenter)
         self.container.setAdjustWidgetsSize(True)
-        self.container.setShrinking(True)
 
         # 开始从左到右构建所需控件
         # svg图标

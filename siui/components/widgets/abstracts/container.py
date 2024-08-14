@@ -4,7 +4,7 @@ from siui.components.widgets.abstracts.widget import SiWidget
 
 
 class SiSection:
-    def __init__(self, width=None, height=None, alignment=None):
+    def __init__(self, width=0, height=0, alignment=None):
         self.width_ = width
         self.height_ = height
         self.alignment_ = alignment
@@ -30,6 +30,10 @@ class SiSection:
     def alignment(self):
         return self.alignment_
 
+    def __str__(self):
+        text = f"<SiSection: width: {self.width()}, height: {self.height()}, alignment: {self.alignment()}>"
+        return text
+
 
 class SiSectionTemplate:
     def __init__(self):
@@ -38,7 +42,7 @@ class SiSectionTemplate:
     def sections(self):
         return self.sections_
 
-    def addSection(self, width=None, height=None, alignment=None):
+    def addSection(self, width=0, height=0, alignment=None):
         self.sections_.append(SiSection(width, height, alignment))
 
 
@@ -54,7 +58,7 @@ class ABCSiDividedContainer(SiWidget):
     def addSection(self, width=None, height=None, alignment=None):
         self.sections_and_widgets.append([SiSection(width, height, alignment), None])
 
-    def loadTemplate(self, template: SiSectionTemplate):
+    def setTemplate(self, template: SiSectionTemplate):
         for index, section in enumerate(template.sections()):
             if index < len(self.sections_and_widgets):
                 self.sections_and_widgets[index][0] = section
