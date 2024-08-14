@@ -55,3 +55,6 @@ class SiliconApplication(QMainWindow):
         self.layer_child_page.resize(event.size())
         self.layer_right_message_sidebar.setGeometry(w - 400, 80, 400, self.layer_right_message_sidebar.height())
         self.layer_modal_dialog.resize(event.size())
+
+        # Set the maximum height of the sidebar to prevent performance from dropping when too many message boxes exist.
+        self.layer_right_message_sidebar.setMaximumHeight(event.size().height())

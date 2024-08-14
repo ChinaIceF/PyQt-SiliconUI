@@ -17,7 +17,7 @@ class MessageSidebar(SiMasonryContainer):
         self.setColumnWidth(400)
         self.setSpacing(horizontal=None, vertical=16)
 
-        self.debug_label = SiLabel(self)
+        # self.debug_label = SiLabel(self)
         # self.debug_label.setColor("#20FF0000")
 
     def sendMessageBox(self, message_box):
@@ -104,4 +104,4 @@ class MessageSidebar(SiMasonryContainer):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.debug_label.resize(event.size())
+        # self.debug_label.resize(event.size())

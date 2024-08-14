@@ -54,7 +54,7 @@ class ABCSiDividedContainer(SiWidget):
     def addSection(self, width=None, height=None, alignment=None):
         self.sections_and_widgets.append([SiSection(width, height, alignment), None])
 
-    def loadTemplate(self, template: SiSectionTemplate):
+    def setTemplate(self, template: SiSectionTemplate):
         for index, section in enumerate(template.sections()):
             if index < len(self.sections_and_widgets):
                 self.sections_and_widgets[index][0] = section
