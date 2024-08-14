@@ -1,10 +1,11 @@
+from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiDraggableLabel, SiLabel
 from siui.core.animation import SiExpAnimation
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
 
-class SiScrollArea(SiLabel):
+class SiScrollArea(SiWidget):
     """
     滚动区域
     """

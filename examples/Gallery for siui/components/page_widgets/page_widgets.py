@@ -27,6 +27,7 @@ from siui.components.widgets import (
     SiToggleButton,
 )
 from siui.components.widgets.navigation_bar import SiNavigationBarH, SiNavigationBarV
+from siui.components.widgets.table import SiTableView
 from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
@@ -553,6 +554,41 @@ class ExampleWidgets(SiPage):
             self.menus.adjustSize()
 
             group.addWidget(self.menus)
+
+        # 表格
+        with self.titled_widgets_group as group:
+            group.addTitle("表格")
+
+            # 简单表格
+            self.table_simple = OptionCardPlaneForWidgetDemos(self)
+            self.table_simple.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.table_simple.setTitle("简单表格")
+            self.table_simple.setFixedWidth(800)
+
+            self.demo_table_simple = SiTableView(self)
+            self.demo_table_simple.resize(752, 360)
+            self.demo_table_simple.addColumn("排名", 64, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_simple.addColumn("评级", 96, 40, Qt.AlignHCenter | Qt.AlignVCenter)
+            self.demo_table_simple.addColumn("完成度", 128, 40, Qt.AlignRight | Qt.AlignVCenter)
+            self.demo_table_simple.addRow(data=["#1", "SS", "100.00%"])
+            self.demo_table_simple.addRow(data=["#2", "S", "99.56%"])
+            self.demo_table_simple.addRow(data=["#3", "S", "96.73%"])
+            self.demo_table_simple.addRow(data=["#4", "A", "92.35%"])
+            self.demo_table_simple.addRow(data=["#5", "A", "91.63%"])
+            self.demo_table_simple.addRow(data=["#6", "B", "88.73%"])
+            self.demo_table_simple.addRow(data=["#7", "SS", "100.00%"])
+            self.demo_table_simple.addRow(data=["#8", "S", "99.56%"])
+            self.demo_table_simple.addRow(data=["#9", "S", "96.73%"])
+            self.demo_table_simple.addRow(data=["#10", "A", "92.35%"])
+            self.demo_table_simple.addRow(data=["#11", "A", "91.63%"])
+            self.demo_table_simple.addRow(data=["#12", "B", "88.73%"])
+
+            self.table_simple.body().addWidget(self.demo_table_simple)
+            self.table_simple.body().addPlaceholder(12)
+            self.table_simple.adjustSize()
+
+            group.addWidget(self.table_simple)
 
         # 导航栏
         with self.titled_widgets_group as group:
