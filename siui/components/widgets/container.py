@@ -444,9 +444,10 @@ class SiDenseVContainer(ABCDenseContainer):
 
 class SiDividedHContainer(ABCSiDividedContainer):
     def adjustSize(self):
+        total_spacing = self.spacing() * max(0, (len(self.sections()) - 1))
         total_section_width = sum([section.width() for section in self.sections()])
         largest_height = max([section.height() for section in self.sections()])
-        self.resize(total_section_width, largest_height)
+        self.resize(total_section_width + total_spacing, largest_height)
 
     def arrangeWidgets(self):
         x_counter = 0
@@ -471,14 +472,15 @@ class SiDividedHContainer(ABCSiDividedContainer):
                 y = 0   # use Qt.AlignTop if vertical alignment arg is not assign
 
             widget.move(x, y)
-            x_counter += section.width()
+            x_counter += section.width() + self.spacing()
 
 
 class SiDividedVContainer(ABCSiDividedContainer):
     def adjustSize(self):
+        total_spacing = self.spacing() * max(0, (len(self.sections()) - 1))
         total_section_height = sum([section.height() for section in self.sections()])
         largest_width = max([section.width() for section in self.sections()])
-        self.resize(largest_width, total_section_height)
+        self.resize(largest_width, total_section_height + total_spacing)
 
     def arrangeWidgets(self):
         y_counter = 0
@@ -503,7 +505,7 @@ class SiDividedVContainer(ABCSiDividedContainer):
                 y = y_counter
 
             widget.move(x, y)
-            y_counter += section.height()
+            y_counter += section.height() + self.spacing()
 
 
 class SiStackedContainer(SiLabel):
@@ -700,6 +702,7 @@ class ABCSiFlowContainer(SiWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+        self.arrangeWidgets()
         for widget in self.widgets_:
             widget.setMoveLimits(0, 0, self.width(), self.height())
 
@@ -778,6 +781,10 @@ class SiMasonryContainer(ABCSiFlowContainer):
         self.columns = 2  # How many columns that this container has
         self.column_width = 160  # width of each column
         self.preferred_height = 0
+        self.auto_adjust_column_amount = False
+
+    def setAutoAdjustColumnAmount(self, state):
+        self.auto_adjust_column_amount = state
 
     def setColumns(self, n):
         self.columns = n
@@ -834,3 +841,8 @@ class SiMasonryContainer(ABCSiFlowContainer):
 
     def adjustSize(self):
         self.resize(self.width(), self.preferred_height)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self.auto_adjust_column_amount:
+            self.adjustColumnAmount()

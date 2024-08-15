@@ -18,6 +18,17 @@ class SiTableValueManagerLabels(ABCSiTabelManager):
         label.setFixedStyleSheet("color: #e5e5e5")
         return label
 
+    def on_header_created(self, header: SiRow):
+        for name in self.parent().column_names:
+            new_label = SiLabel(self.parent())
+            new_label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+            new_label.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_B))
+            new_label.setText(name)
+            new_label.adjustSize()
+            header.container().addWidget(new_label)
+
+        header.container().arrangeWidgets()
+
 
 class SiTableView(ABCSiTable):
     def __init__(self, *args, **kwargs):
@@ -31,8 +42,6 @@ class SiTableView(ABCSiTable):
         self.header_panel = SiLabel(self)
         self.header_panel.setFixedStyleSheet("border-top-left-radius: 8px; border-top-right-radius: 8px")
 
-        self.header_row = SiRow(self)
-
         self.container_ = SiMasonryContainer(self)
         self.container_.setSpacing(vertical=0)
         self.container_.setColumns(1)
@@ -41,6 +50,7 @@ class SiTableView(ABCSiTable):
         self.scroll_area.setAttachment(self.container_)
 
         self.setManager(SiTableValueManagerLabels(self))
+        self.header_row = SiRow(self)
 
         self.indicator_frame = SiWidget(self)
         self.indicator_frame.setFixedHeight(6)
@@ -76,16 +86,8 @@ class SiTableView(ABCSiTable):
         self.header_row.deleteLater()
         self.header_row = SiRow(self)
         self.header_row.container().setTemplate(self.sectionTemplate())
-        for name in self.column_names:
-            new_label = SiLabel(self)
-            new_label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
-            new_label.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
-            new_label.setText(name)
-            new_label.adjustSize()
-            self.header_row.container().addWidget(new_label)
-
-        self.header_row.container().arrangeWidgets()
         self.header_row.setGeometry(self.padding, 4, self.width() - self.padding * 2, 40)
+        self.manager().on_header_created(self.header_row)
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()

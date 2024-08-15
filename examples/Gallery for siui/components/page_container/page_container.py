@@ -36,14 +36,14 @@ class ExampleContainer(SiPage):
         self.message_type = 0
 
         self.setPadding(64)
-        self.setScrollMaximumWidth(950)
+        self.setScrollMaximumWidth(1000)
         self.setScrollAlignment(Qt.AlignLeft)
         self.setTitle("容器")
 
         # 创建控件组
         self.titled_widgets_group = SiTitledWidgetGroup(self)
         self.titled_widgets_group.setSpacing(32)
-        self.titled_widgets_group.setAdjustWidgetsSize(False)  # 禁用调整宽度
+        self.titled_widgets_group.setAdjustWidgetsSize(True)
 
         # 密堆积容器
         with self.titled_widgets_group as group:
@@ -54,7 +54,6 @@ class ExampleContainer(SiPage):
             self.dense_h_container.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                     "/widgets/progress_bar/progress_bar.py")
             self.dense_h_container.setTitle("水平密堆积容器")
-            self.dense_h_container.setFixedWidth(800)
 
             self.demo_dense_h_container = SiDenseHContainer(self)
             self.demo_dense_h_container.setFixedHeight(32)
@@ -77,7 +76,6 @@ class ExampleContainer(SiPage):
             self.dense_v_container.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                     "/widgets/progress_bar/progress_bar.py")
             self.dense_v_container.setTitle("竖直密堆积容器")
-            self.dense_v_container.setFixedWidth(800)
 
             self.demo_dense_v_container = SiDenseVContainer(self)
             self.demo_dense_v_container.setFixedHeight(300)
@@ -104,7 +102,6 @@ class ExampleContainer(SiPage):
             self.divided_h_container.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                     "/widgets/progress_bar/progress_bar.py")
             self.divided_h_container.setTitle("水平分割容器")
-            self.divided_h_container.setFixedWidth(800)
 
             self.indicator_container_divided_h_container = SiDenseHContainer(self)
             self.indicator_container_divided_h_container.setSpacing(0)
@@ -153,7 +150,6 @@ class ExampleContainer(SiPage):
             self.divided_v_container.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                     "/widgets/progress_bar/progress_bar.py")
             self.divided_v_container.setTitle("垂直分割容器")
-            self.divided_v_container.setFixedWidth(800)
 
             self.container_h_for_divided_v_container = SiDenseHContainer(self)
             self.container_h_for_divided_v_container.setFixedHeight(192)
@@ -215,10 +211,10 @@ class ExampleContainer(SiPage):
                                                  "/widgets/progress_bar/progress_bar.py")
             self.flow_container.setTitle("经典流式布局容器")
             self.flow_container.setAdditionalDescription("支持拖拽")
-            self.flow_container.setFixedWidth(800)
 
             self.demo_flow_container = SiFlowContainer(self)
-            self.demo_flow_container.setFixedWidth(700)
+            self.demo_flow_container.resize(1000, 32)
+            self.demo_flow_container.setSiliconWidgetFlag(Si.EnableAnimationSignals)
 
             for _ in range(15):
                 label = SiDraggableLabel(self)
@@ -265,6 +261,7 @@ class ExampleContainer(SiPage):
             container_flow_cont_buttons.addWidget(self.ctrl_flow_cont_shuffle)
             container_flow_cont_buttons.addWidget(self.ctrl_flow_cont_last_to_front)
 
+            self.flow_container.body().setAdjustWidgetsSize(True)
             self.flow_container.body().addWidget(self.demo_flow_container)
             self.flow_container.body().addWidget(container_flow_cont_buttons)
             self.flow_container.body().addPlaceholder(12)
@@ -276,10 +273,9 @@ class ExampleContainer(SiPage):
                                                     "/widgets/progress_bar/progress_bar.py")
             self.masonry_container.setTitle("瀑布流容器")
             self.masonry_container.setAdditionalDescription("支持拖拽")
-            self.masonry_container.setFixedWidth(800)
 
             self.demo_masonry_container = SiMasonryContainer(self)
-            self.demo_masonry_container.setFixedWidth(700)
+            self.demo_masonry_container.setAutoAdjustColumnAmount(True)
             self.demo_masonry_container.setColumns(4)
 
             for _ in range(16):
@@ -296,6 +292,7 @@ class ExampleContainer(SiPage):
                 self.demo_masonry_container.addWidget(label, ani=False)
                 self.demo_masonry_container.regDraggableWidget(label)
 
+            self.masonry_container.body().setAdjustWidgetsSize(True)
             self.masonry_container.body().addWidget(self.demo_masonry_container)
             self.masonry_container.body().addPlaceholder(12)
             self.masonry_container.adjustSize()

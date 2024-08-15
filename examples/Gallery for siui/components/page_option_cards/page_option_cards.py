@@ -21,7 +21,8 @@ class ExampleOptionCards(SiPage):
 
         # Set X Offset for better outfit.
         self.setPadding(64)
-        self.setScrollMaximumWidth(950)
+        self.setScrollMaximumWidth(1000)
+        self.setScrollAlignment(Qt.AlignLeft)
         self.setTitle("选项卡")
 
         # Create a SiTitledWidgetGroup object
