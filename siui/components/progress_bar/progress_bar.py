@@ -155,8 +155,8 @@ class WaveAnimation(ABCSiAnimation):
 
         self.t = 0
         self.step = 1/60 * numpy.pi * 2 * 2
-        self.omiga = 0.75
-        self.b = 1.4
+        self.omiga = 0.6
+        self.b = 0.95
         self.speed_factor = 0.1
         self.setCurrent(0)
 
@@ -170,7 +170,7 @@ class WaveAnimation(ABCSiAnimation):
         self.t += self.step
 
     def _step_length(self):
-        return (1 - numpy.sin(self.t * self.omiga)) / (2 * self.b) + 0.75
+        return (1 - numpy.sin(self.t * self.omiga)) / (2 * self.b) + 0.45
 
 
 class SiCircularProgressBar(SiLabel):

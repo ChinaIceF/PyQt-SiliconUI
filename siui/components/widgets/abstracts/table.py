@@ -60,7 +60,9 @@ class ABCSiTable(SiWidget):
         self.rows_ = []
         self.container_ = None
         self.manager_ = ABCSiTabelManager(self)
+
         self.section_template = SiSectionTemplate()
+        self.section_template.setSpacing(8)
 
     def container(self):
         return self.container_

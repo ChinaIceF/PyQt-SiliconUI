@@ -38,6 +38,7 @@ class SiSection:
 class SiSectionTemplate:
     def __init__(self):
         self.sections_ = []
+        self.spacing_ = 0
 
     def sections(self):
         return self.sections_
@@ -45,12 +46,25 @@ class SiSectionTemplate:
     def addSection(self, width=0, height=0, alignment=None):
         self.sections_.append(SiSection(width, height, alignment))
 
+    def spacing(self):
+        return self.spacing_
+
+    def setSpacing(self, spacing: int):
+        self.spacing_ = spacing
+
 
 class ABCSiDividedContainer(SiWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.sections_and_widgets = []
+        self.spacing_ = 0
+
+    def spacing(self):
+        return self.spacing_
+
+    def setSpacing(self, spacing: int):
+        self.spacing_ = spacing
 
     def sections(self):
         return [a[0] for a in self.sections_and_widgets]
@@ -59,6 +73,7 @@ class ABCSiDividedContainer(SiWidget):
         self.sections_and_widgets.append([SiSection(width, height, alignment), None])
 
     def setTemplate(self, template: SiSectionTemplate):
+        self.setSpacing(template.spacing())
         for index, section in enumerate(template.sections()):
             if index < len(self.sections_and_widgets):
                 self.sections_and_widgets[index][0] = section

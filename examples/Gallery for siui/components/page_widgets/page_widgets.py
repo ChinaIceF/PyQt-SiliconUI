@@ -14,11 +14,9 @@ from siui.components.widgets import (
     SiCheckBox,
     SiDenseHContainer,
     SiDraggableLabel,
-    SiFlowContainer,
     SiIconLabel,
     SiLabel,
     SiLongPressButton,
-    SiMasonryContainer,
     SiPixLabel,
     SiPushButton,
     SiRadioButton,
@@ -33,6 +31,7 @@ from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
 from ..option_card import OptionCardPlaneForWidgetDemos
+from .components.demo_tables import DemoOsuPlayerRankingTableManager
 
 
 class ExampleWidgets(SiPage):
@@ -40,7 +39,7 @@ class ExampleWidgets(SiPage):
         super().__init__(*args, **kwargs)
 
         self.setPadding(64)
-        self.setScrollMaximumWidth(950)
+        self.setScrollMaximumWidth(1000)
         self.setScrollAlignment(Qt.AlignLeft)
         self.setTitle("控件")
 
@@ -568,9 +567,9 @@ class ExampleWidgets(SiPage):
 
             self.demo_table_simple = SiTableView(self)
             self.demo_table_simple.resize(752, 360)
-            self.demo_table_simple.addColumn("歌曲名", 196, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_simple.addColumn("歌曲名", 190, 40, Qt.AlignLeft | Qt.AlignVCenter)
             self.demo_table_simple.addColumn("歌手", 160, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_simple.addColumn("专辑", 256, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_simple.addColumn("专辑", 240, 40, Qt.AlignLeft | Qt.AlignVCenter)
             self.demo_table_simple.addColumn("时长", 64, 40, Qt.AlignRight | Qt.AlignVCenter)
             self.demo_table_simple.addRow(data=["どうして", "高瀬統也", "どうして (feat. 野田愛実)", "03:01"])
             self.demo_table_simple.addRow(data=["風色Letter", "水瀬いのり", "glow", "04:38"])
@@ -589,7 +588,49 @@ class ExampleWidgets(SiPage):
             self.table_simple.body().addPlaceholder(12)
             self.table_simple.adjustSize()
 
+            # 使用模版的表格
+            self.table_templated = OptionCardPlaneForWidgetDemos(self)
+            self.table_templated.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.table_templated.setTitle("使用模版的表格")
+            self.table_templated.setFixedWidth(1000)
+
+            self.demo_table_templated = SiTableView(self)
+            self.demo_table_templated.resize(952, 250)
+            self.demo_table_templated.setManager(DemoOsuPlayerRankingTableManager(self.demo_table_templated))
+            self.demo_table_templated.addColumn("排名", 32, 40, Qt.AlignRight | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("", 80, 40, Qt.AlignHCenter | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("得分", 80, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("准确度", 80, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("", 33, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("玩家用户名", 244, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("GREAT", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("OK", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("MEM", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("MISS", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_templated.addColumn("PP", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_templated.addRow(
+                data=["#1", "S", "1,144,713", "99.36%", "China", "PrettyChicken", "514", "3", "0", "0", "114"]
+            )
+            self.demo_table_templated.addRow(
+                data=["#2", "SS", "1,122,268", "100.00%", "United State", "Rick_Astley_4123", "517", "0", "0", "0", "166"]
+            )
+            self.demo_table_templated.addRow(
+                data=["#3", "SS", "1,122,257", "100.00%", "Great Britain", "FishAndChips", "517", "0", "0", "0", "169"]
+            )
+            self.demo_table_templated.addRow(
+                data=["#4", "SS", "1,122,190", "100.00%", "China", "SunXiaoChuan", "517", "0", "0", "0", "157"]
+            )
+            self.demo_table_templated.addRow(
+                data=["#5", "S", "1,100,785", "99.12%", "China", "Sagiri_Chan", "514", "2", "1", "0", "143"]
+            )
+
+            self.table_templated.body().addWidget(self.demo_table_templated)
+            self.table_templated.body().addPlaceholder(12)
+            self.table_templated.adjustSize()
+
             group.addWidget(self.table_simple)
+            group.addWidget(self.table_templated)
 
         # 导航栏
         with self.titled_widgets_group as group:

@@ -22,7 +22,7 @@ class SiPixLabel(SiLabel):
 
         self.border_radius = 32
         self.blur_radius = 0
-        self.path = None
+        self.path_ = None
 
     def setBorderRadius(self, r: int):
         """
@@ -32,13 +32,16 @@ class SiPixLabel(SiLabel):
         """
         self.border_radius = r
 
+    def path(self):
+        return self.path_
+
     def load(self, path: str):
         """
         加载图片
         :param path: 图片路径
         :return:
         """
-        self.path = path
+        self.path_ = path
         self.draw()
 
     def draw(self):
@@ -46,7 +49,7 @@ class SiPixLabel(SiLabel):
         绘制图像，只有在调用 load 方法后才有效
         :return:
         """
-        if self.path is None:
+        if self.path_ is None:
             return
 
         w, h = self.width(), self.height()
@@ -54,7 +57,7 @@ class SiPixLabel(SiLabel):
         self.target = QPixmap(self.size())
         self.target.fill(Qt.transparent)
 
-        p = QPixmap(self.path).scaled(
+        p = QPixmap(self.path_).scaled(
             w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
 
         painter = QPainter(self.target)
