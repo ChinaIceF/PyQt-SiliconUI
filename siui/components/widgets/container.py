@@ -702,6 +702,7 @@ class ABCSiFlowContainer(SiWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+        self.arrangeWidgets()
         for widget in self.widgets_:
             widget.setMoveLimits(0, 0, self.width(), self.height())
 
@@ -780,6 +781,10 @@ class SiMasonryContainer(ABCSiFlowContainer):
         self.columns = 2  # How many columns that this container has
         self.column_width = 160  # width of each column
         self.preferred_height = 0
+        self.auto_adjust_column_amount = False
+
+    def setAutoAdjustColumnAmount(self, state):
+        self.auto_adjust_column_amount = state
 
     def setColumns(self, n):
         self.columns = n
@@ -836,3 +841,8 @@ class SiMasonryContainer(ABCSiFlowContainer):
 
     def adjustSize(self):
         self.resize(self.width(), self.preferred_height)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self.auto_adjust_column_amount:
+            self.adjustColumnAmount()

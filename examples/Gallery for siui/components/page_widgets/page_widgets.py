@@ -46,7 +46,7 @@ class ExampleWidgets(SiPage):
         # 创建控件组
         self.titled_widgets_group = SiTitledWidgetGroup(self)
         self.titled_widgets_group.setSpacing(32)
-        self.titled_widgets_group.setAdjustWidgetsSize(False)  # 禁用调整宽度
+        self.titled_widgets_group.setAdjustWidgetsSize(True)  # 禁用调整宽度
 
         # 标签
         with self.titled_widgets_group as group:
@@ -57,7 +57,6 @@ class ExampleWidgets(SiPage):
             self.label_for_text.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                  "/widgets/label.py")
             self.label_for_text.setTitle("文字标签")
-            self.label_for_text.setFixedWidth(800)
 
             self.demo_label = SiLabel(self)
             self.demo_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
@@ -83,7 +82,6 @@ class ExampleWidgets(SiPage):
             self.pix_label.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                             "/widgets/label.py")
             self.pix_label.setTitle("图片标签")
-            self.pix_label.setFixedWidth(800)
 
             container_pix_label = SiDenseHContainer(self)
             container_pix_label.setAlignment(Qt.AlignCenter)
@@ -116,7 +114,6 @@ class ExampleWidgets(SiPage):
                                             "/widgets/label.py")
             self.label_ani.setTitle("标签动画")
             self.label_ani.setAdditionalDescription("特性")
-            self.label_ani.setFixedWidth(800)
 
             self.demo_move_area = SiLabel(self)
             self.demo_move_area.setFixedSize(526, 80)
@@ -162,7 +159,6 @@ class ExampleWidgets(SiPage):
             self.draggable_label.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui"
                                                   "/components/widgets/label.py")
             self.draggable_label.setTitle("可拖动标签")
-            self.draggable_label.setFixedWidth(800)
 
             self.demo_drag_area = SiLabel(self)
             self.demo_drag_area.setFixedSize(526, 80)
@@ -183,7 +179,6 @@ class ExampleWidgets(SiPage):
             self.showup_effect.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui"
                                                   "/components/widgets/label.py")
             self.showup_effect.setTitle("控件显示效果")
-            self.showup_effect.setFixedWidth(800)
 
             self.demo_widget = SiWidget(self)
             self.demo_widget.resize(350, 96)
@@ -234,7 +229,6 @@ class ExampleWidgets(SiPage):
             self.push_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                "/widgets/button.py")
             self.push_buttons.setTitle("按压按钮")
-            self.push_buttons.setFixedWidth(800)
 
             container_push_buttons = SiDenseHContainer(self)
             container_push_buttons.setFixedHeight(32)
@@ -265,7 +259,6 @@ class ExampleWidgets(SiPage):
             self.flat_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                "/widgets/button.py")
             self.flat_buttons.setTitle("扁平类按钮")
-            self.flat_buttons.setFixedWidth(800)
 
             container_flat_buttons_a = SiDenseHContainer(self)
             container_flat_buttons_a.setFixedHeight(32)
@@ -317,7 +310,6 @@ class ExampleWidgets(SiPage):
             self.switches.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                            "/widgets/button.py")
             self.switches.setTitle("开关")
-            self.switches.setFixedWidth(800)
 
             self.demo_switch = SiSwitch(self)
 
@@ -330,7 +322,6 @@ class ExampleWidgets(SiPage):
             self.radio_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                 "/widgets/button.py")
             self.radio_buttons.setTitle("单选框")
-            self.radio_buttons.setFixedWidth(800)
 
             self.demo_radio_button_a = SiRadioButton(self)
             self.demo_radio_button_a.setText("西红柿炒鸡蛋")
@@ -352,7 +343,6 @@ class ExampleWidgets(SiPage):
             self.checkboxes.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                              "/widgets/button.py")
             self.checkboxes.setTitle("多选框")
-            self.checkboxes.setFixedWidth(800)
 
             self.demo_checkbox_a = SiCheckBox(self)
             self.demo_checkbox_a.setText("安装基本组件")
@@ -380,7 +370,6 @@ class ExampleWidgets(SiPage):
             self.sliders.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                           "/widgets/slider/slider.py")
             self.sliders.setTitle("滑条")
-            self.sliders.setFixedWidth(800)
 
             self.demo_slider = SiSliderH(self)
             self.demo_slider.resize(500, 32)
@@ -388,6 +377,7 @@ class ExampleWidgets(SiPage):
             self.demo_slider.setMaximum(20)
             self.demo_slider.setValue(0, move_to=False)
 
+            self.sliders.body().setAdjustWidgetsSize(True)
             self.sliders.body().addWidget(self.demo_slider)
             self.sliders.body().addPlaceholder(12)
             self.sliders.adjustSize()
@@ -403,14 +393,12 @@ class ExampleWidgets(SiPage):
             self.progress_bar_linear.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                           "/widgets/progress_bar/progress_bar.py")
             self.progress_bar_linear.setTitle("进度条")
-            self.progress_bar_linear.setFixedWidth(800)
 
             self.demo_progress_bar = SiProgressBar(self)
             self.demo_progress_bar.resize(700, 32)
 
             container_progress_bar_ctrl_buttons = SiDenseHContainer(self)
             container_progress_bar_ctrl_buttons.setFixedHeight(32)
-            container_progress_bar_ctrl_buttons.setFixedWidth(700)
 
             self.ctrl_progress_bar_random_value = SiPushButton(self)
             self.ctrl_progress_bar_random_value.resize(128, 32)
@@ -446,6 +434,7 @@ class ExampleWidgets(SiPage):
             container_progress_bar_ctrl_buttons.addWidget(self.ctrl_progress_bar_completing, side="right")
             container_progress_bar_ctrl_buttons.addWidget(self.ctrl_progress_bar_processing, side="right")
 
+            self.progress_bar_linear.body().setAdjustWidgetsSize(True)
             self.progress_bar_linear.body().addWidget(self.demo_progress_bar)
             self.progress_bar_linear.body().addWidget(container_progress_bar_ctrl_buttons)
             self.progress_bar_linear.body().addPlaceholder(12)
@@ -456,7 +445,6 @@ class ExampleWidgets(SiPage):
             self.progress_bar_circular.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui"
                                                         "/components/widgets/progress_bar/progress_bar.py")
             self.progress_bar_circular.setTitle("环形进度条")
-            self.progress_bar_circular.setFixedWidth(800)
 
             self.demo_progress_bar_circular = SiCircularProgressBar(self)
             self.demo_progress_bar_circular.resize(32, 32)
@@ -464,7 +452,6 @@ class ExampleWidgets(SiPage):
 
             container_progress_bar_circular_ctrl_buttons = SiDenseHContainer(self)
             container_progress_bar_circular_ctrl_buttons.setFixedHeight(32)
-            container_progress_bar_circular_ctrl_buttons.setFixedWidth(700)
 
             self.ctrl_progress_bar_circular_random_value = SiPushButton(self)
             self.ctrl_progress_bar_circular_random_value.resize(128, 32)
@@ -490,7 +477,6 @@ class ExampleWidgets(SiPage):
                                                                       "/blob/main/siui/components/widgets"
                                                                       "/progress_bar/progress_bar.py")
             self.progress_bar_circular_indeterminate.setTitle("环形不确定进度条")
-            self.progress_bar_circular_indeterminate.setFixedWidth(800)
 
             self.demo_progress_bar_circular_indeterminate = SiCircularProgressBar(self)
             self.demo_progress_bar_circular_indeterminate.resize(32, 32)
@@ -513,7 +499,6 @@ class ExampleWidgets(SiPage):
             self.menus.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                         "/widgets/progress_bar/progress_bar.py")
             self.menus.setTitle("菜单测试")
-            self.menus.setFixedWidth(800)
 
             menu_child_menu_test = SiMenu()
             menu_child_menu_test.setFixedWidth(180)
@@ -563,7 +548,6 @@ class ExampleWidgets(SiPage):
             self.table_simple.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                 "/widgets/progress_bar/progress_bar.py")
             self.table_simple.setTitle("简单表格")
-            self.table_simple.setFixedWidth(800)
 
             self.demo_table_simple = SiTableView(self)
             self.demo_table_simple.resize(752, 360)
@@ -584,6 +568,7 @@ class ExampleWidgets(SiPage):
             self.demo_table_simple.addRow(data=["展 / Re: Expansion", "RABPIT", "序章: 弥卢", "04:00"])
             self.demo_table_simple.addRow(data=["Never Gonna Give You Up", "Rick Astley", "Whenever You Need Somebody", "03:34"])
 
+            self.table_simple.body().setAdjustWidgetsSize(True)
             self.table_simple.body().addWidget(self.demo_table_simple)
             self.table_simple.body().addPlaceholder(12)
             self.table_simple.adjustSize()
@@ -593,7 +578,6 @@ class ExampleWidgets(SiPage):
             self.table_managed.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                 "/widgets/progress_bar/progress_bar.py")
             self.table_managed.setTitle("使用管理器的表格")
-            self.table_managed.setFixedWidth(1000)
 
             self.demo_table_managed = SiTableView(self)
             self.demo_table_managed.resize(952, 250)
@@ -625,6 +609,7 @@ class ExampleWidgets(SiPage):
                 data=["#5", "S", "1,100,785", "99.12%", "China", "Sagiri_Chan", "514", "2", "1", "0", "143"]
             )
 
+            self.table_managed.body().setAdjustWidgetsSize(True)
             self.table_managed.body().addWidget(self.demo_table_managed)
             self.table_managed.body().addPlaceholder(12)
             self.table_managed.adjustSize()
@@ -641,7 +626,6 @@ class ExampleWidgets(SiPage):
             self.navigation_bar_h.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                 "/widgets/progress_bar/progress_bar.py")
             self.navigation_bar_h.setTitle("水平导航栏")
-            self.navigation_bar_h.setFixedWidth(800)
 
             self.demo_navigation_bar_h = SiNavigationBarH(self)
             self.demo_navigation_bar_h.addItem("基本信息")
@@ -661,7 +645,6 @@ class ExampleWidgets(SiPage):
             self.navigation_bar_v.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                 "/widgets/progress_bar/progress_bar.py")
             self.navigation_bar_v.setTitle("横向导航栏")
-            self.navigation_bar_v.setFixedWidth(800)
 
             self.demo_navigation_bar_v = SiNavigationBarV(self)
             self.demo_navigation_bar_v.addItem("基本信息")
@@ -688,7 +671,6 @@ class ExampleWidgets(SiPage):
             self.selection_bar_h.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                 "/widgets/progress_bar/progress_bar.py")
             self.selection_bar_h.setTitle("水平单项选择栏")
-            self.selection_bar_h.setFixedWidth(800)
 
             self.demo_selection_bar_h = SiNavigationBarH(self)
             self.demo_selection_bar_h.setNoIndicator(True)
@@ -709,7 +691,6 @@ class ExampleWidgets(SiPage):
             self.selection_bar_v.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                 "/widgets/progress_bar/progress_bar.py")
             self.selection_bar_v.setTitle("垂直单项选择栏")
-            self.selection_bar_v.setFixedWidth(800)
 
             self.demo_selection_bar_v = SiNavigationBarV(self)
             self.demo_selection_bar_v.setNoIndicator(True)
