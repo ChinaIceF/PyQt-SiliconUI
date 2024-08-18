@@ -1,0 +1,1 @@
+from .page_functional import ExampleFunctional
