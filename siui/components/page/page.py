@@ -50,8 +50,6 @@ class SiPage(SiDenseVContainer):
         设置滚动区域的对齐方式
         :param a0: Qt 枚举值
         """
-        if a0 not in [Qt.AlignCenter, Qt.AlignLeft, Qt.AlignRight]:
-            raise ValueError(f"Invalid alignment value: {a0}")
         self.scroll_alignment = a0
         self.resize(self.size())
 
@@ -106,11 +104,11 @@ class SiPage(SiDenseVContainer):
         self.scroll_area.attachment().setFixedWidth(min(size.width() - self.padding * 2, self.scroll_maximum_width))
 
         # 处理对齐
-        if self.scroll_alignment == Qt.AlignCenter:
+        if (self.scroll_alignment & Qt.AlignHCenter) == Qt.AlignHCenter:
             scroll_widget_x = (size.width() - self.scroll_area.attachment().width())//2
-        elif self.scroll_alignment == Qt.AlignLeft:
+        elif (self.scroll_alignment & Qt.AlignLeft) == Qt.AlignLeft:
             scroll_widget_x = self.padding
-        elif self.scroll_alignment == Qt.AlignRight:
+        elif (self.scroll_alignment & Qt.AlignRight) == Qt.AlignRight:
             scroll_widget_x = size.width() - self.scroll_area.attachment().width() - self.padding
         else:
             raise ValueError(f"Invalid alignment value: {self.scroll_alignment}")

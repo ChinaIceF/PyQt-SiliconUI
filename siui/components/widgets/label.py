@@ -3,6 +3,7 @@ from PyQt5.QtGui import QPainter, QPainterPath, QPixmap
 from PyQt5.QtSvg import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
+from siui.core.alignment.manager import SiQuickAlignmentManager
 from siui.core.globals.globals import SiGlobal
 from siui.core.silicon import Si
 
@@ -14,53 +15,43 @@ class SiLabel(ABCAnimatedLabel):
 
 
 class SiPixLabel(SiLabel):
-    """
-    为显示图片提供支持的标签，支持图片的圆角处理
-    """
     def __init__(self, parent):
         super().__init__(parent)
 
         self.border_radius = 32
         self.blur_radius = 0
         self.path_ = None
+        self.offset = QPoint(0, 0)
+
+    def setOffset(self, x: int, y: int):
+        self.offset.setX(x)
+        self.offset.setY(y)
 
     def setBorderRadius(self, r: int):
-        """
-        设置图片圆角半径
-        :param r: 圆角半径
-        :return:
-        """
+        """ set the border radius of the shown image """
         self.border_radius = r
 
     def path(self):
         return self.path_
 
     def load(self, path: str):
-        """
-        加载图片
-        :param path: 图片路径
-        :return:
-        """
+        """ load the image, `draw()` will be Implicitly called. """
         self.path_ = path
         self.draw()
 
     def draw(self):
-        """
-        绘制图像，只有在调用 load 方法后才有效
-        :return:
-        """
+        """ Draw the image，you can only call it after run `load(path)` """
         if self.path_ is None:
             return
 
         w, h = self.width(), self.height()
 
-        self.target = QPixmap(self.size())
-        self.target.fill(Qt.transparent)
+        target = QPixmap(self.size())
+        target.fill(Qt.transparent)
 
-        p = QPixmap(self.path_).scaled(
-            w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        p = QPixmap(self.path_).scaled(w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
 
-        painter = QPainter(self.target)
+        painter = QPainter(target)
         painter.setRenderHint(QPainter.Antialiasing, True)
         painter.setRenderHint(QPainter.HighQualityAntialiasing, True)
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
@@ -71,10 +62,11 @@ class SiPixLabel(SiLabel):
                             self.border_radius, self.border_radius)
 
         painter.setClipPath(path)
-        painter.drawPixmap(0, 0, p)
+        pos = SiQuickAlignmentManager.toPos(self.size(), p.size(), self.alignment())
+        painter.drawPixmap(pos.x() + self.offset.x(), pos.y() + self.offset.y(), p)
         painter.end()
 
-        self.setPixmap(self.target)
+        self.setPixmap(target)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
