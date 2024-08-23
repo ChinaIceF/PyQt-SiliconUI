@@ -73,6 +73,9 @@ class ABCDenseContainer(SiWidget):
         """
         self.spacing = spacing
 
+    def widgets(self):
+        raise NotImplementedError()
+
     def __enter__(self):
         return self
 
@@ -124,22 +127,26 @@ class SiDenseHContainer(ABCDenseContainer):
 
         self.adjustSize()
 
+    def getUsedSpace(self, side):
+        if side not in ["left", "right"]:
+            raise ValueError(f"Unexpected side: {side}")
+        if side == "left":
+            return sum([obj.width() + self.spacing for obj in self.widgets_left])
+        if side == "right":
+            return sum([obj.width() + self.spacing for obj in self.widgets_right])
+
     def getSpareSpace(self):
-        """
-        获取当前布局条件下，容器剩余的长度或宽度
-        :return: 剩余长度或宽度
-        """
-        # 初始化已使用空间的计数器
-        left_used = 0
-        right_used = 0
+        return self.width() - self.getUsedSpace("left") - self.getUsedSpace("right")
 
-        # 左侧和右侧控件
-        for obj in self.widgets_left:
-            left_used += obj.width() + self.spacing
-        for obj in self.widgets_right:
-            right_used += obj.width() + self.spacing
-
-        return self.width() - left_used - right_used
+    def widgets(self, side=None):
+        if side is None:
+            return self.widgets_left + self.widgets_right
+        elif side == "left":
+            return self.widgets_left
+        elif side == "right":
+            return self.widgets_right
+        else:
+            raise ValueError(f"Unexpected side: {side}")
 
     def removeWidget(self, widget):
         """
@@ -329,22 +336,26 @@ class SiDenseVContainer(ABCDenseContainer):
 
         return max([widget.width() for widget in (self.widgets_top + self.widgets_bottom)]), preferred_h
 
+    def getUsedSpace(self, side):
+        if side not in ["top", "bottom"]:
+            raise ValueError(f"Unexpected side: {side}")
+        if side == "top":
+            return sum([obj.height() + self.spacing for obj in self.widgets_top])
+        if side == "bottom":
+            return sum([obj.height() + self.spacing for obj in self.widgets_bottom])
+
     def getSpareSpace(self):
-        """
-        获取当前布局条件下，容器剩余的长度或宽度
-        :return: 剩余长度或宽度
-        """
-        # 初始化已使用空间的计数器
-        top_used = 0
-        bottom_used = 0
+        return self.height() - self.getUsedSpace("top") - self.getUsedSpace("bottom")
 
-        # 左侧和右侧控件
-        for obj in self.widgets_top:
-            top_used += obj.height() + self.spacing
-        for obj in self.widgets_bottom:
-            bottom_used += obj.height() + self.spacing
-
-        return self.height() - top_used - bottom_used
+    def widgets(self, side=None):
+        if side is None:
+            return self.widgets_top + self.widgets_bottom
+        elif side == "top":
+            return self.widgets_top
+        elif side == "bottom":
+            return self.widgets_bottom
+        else:
+            raise ValueError(f"Unexpected side: {side}")
 
     def removeWidget(self, widget):
         """
