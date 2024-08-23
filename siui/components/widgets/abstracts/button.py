@@ -1,7 +1,7 @@
 import time
 
 import numpy
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QPushButton
 
 from siui.components.widgets.abstracts.widget import SiWidget
@@ -21,23 +21,13 @@ class ABCButton(QPushButton):
         super().__init__(*args, **kwargs)
         super().setStyleSheet("background-color: transparent")
 
-        # 工具提示内容
         self.hint = ""
-
-        # 颜色组
         self.color_group = SiColorGroup(reference=SiGlobal.siui.colors)
-
-        # 占位用的被绑定部件，显示在按钮正中央
-        self.attachment_ = SiWidget()
-
-        # 被绑定部件偏离中心的像素数
-        self.attachment_shifting = numpy.array([0, 0])
-
-        # 启用点击动画，通常在仅需要按下和抬起事件时禁用
         self.flash_on_clicked = True
+        self.enabled_repetitive_clicking = False
 
-        # 绑定点击事件到点击槽函数，这将触发点击动画
-        self.clicked.connect(self._on_self_clicked)
+        self.attachment_ = SiWidget()                       # 占位用的被绑定部件，显示在按钮正中央
+        self.attachment_shifting = numpy.array([0, 0])      # 被绑定部件偏离中心的像素数
 
         # 提供悬停时的颜色变化动画
         self.hover_highlight = SiLabel(self)
@@ -52,6 +42,17 @@ class ABCButton(QPushButton):
         self.flash_label.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.BUTTON_FLASH), 0.0))
         self.flash_label.animationGroup().fromToken("color").setBias(0.2)
         self.flash_label.animationGroup().fromToken("color").setFactor(1 / 8)
+
+        self.clicked.connect(self._on_self_clicked)
+
+        self.repeat_clicking_timer = QTimer(self)
+        self.repeat_clicking_timer.setInterval(50)
+        self.repeat_clicking_timer.timeout.connect(self.clicked.emit)
+
+        self.repeat_clicking_trigger_timer = QTimer(self)
+        self.repeat_clicking_trigger_timer.setSingleShot(True)
+        self.repeat_clicking_trigger_timer.timeout.connect(self.repeat_clicking_timer.start)
+        self.repeat_clicking_trigger_timer.setInterval(500)
 
     def setAttachmentShifting(self, x, y):
         """
@@ -95,6 +96,9 @@ class ABCButton(QPushButton):
         :return:
         """
         self.hint = text
+
+    def setRepetitiveClicking(self, state):
+        self.enabled_repetitive_clicking = state
 
     def setFixedStyleSheet(self, style_sheet):  # 劫持这个按钮的stylesheet，只能设置outfit的样式表
         """
@@ -169,6 +173,16 @@ class ABCButton(QPushButton):
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
             SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(None)
             SiGlobal.siui.windows["TOOL_TIP"].hide_()
+
+    def mousePressEvent(self, e):
+        super().mousePressEvent(e)
+        if self.enabled_repetitive_clicking:
+            self.repeat_clicking_trigger_timer.start()
+
+    def mouseReleaseEvent(self, e):
+        super().mouseReleaseEvent(e)
+        self.repeat_clicking_trigger_timer.stop()
+        self.repeat_clicking_timer.stop()
 
     def adjustSize(self):
         """

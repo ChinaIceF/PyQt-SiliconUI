@@ -6,7 +6,7 @@ from PyQt5.Qt import QColor
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
-from siui.components.widgets import SiLabel
+from siui.components.widgets.label import SiLabel
 from siui.components.widgets.abstracts.container import ABCSiDividedContainer
 from siui.components.widgets.abstracts.widget import SiWidget
 

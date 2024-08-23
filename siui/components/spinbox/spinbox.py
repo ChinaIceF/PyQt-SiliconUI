@@ -1,110 +1,128 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIntValidator, QDoubleValidator
 
-from ...core.color import SiColor
-from .. import SiLabel, SiSimpleButton, SiWidget
-from .abstract.spinbox import ABCSiSpinBox
-from ...core.globals import SiGlobal
+from siui.components.widgets.button import SiSimpleButton
+from siui.components.widgets.line_edit import SiLineEdit
+from siui.core.globals import SiGlobal
 
 
-class SiSpinBoxButton(SiSimpleButton):
+class ABCSiSpinBox(SiLineEdit):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.single_step_ = 1
+        self.value_ = 0
+        self.minimum_ = 0
+        self.maximum_ = 99
+
+        self.button_plus = SiSimpleButton(self)
+        self.button_plus.resize(24, 24)
+        self.button_plus.attachment().setSvgSize(12, 12)
+        self.button_plus.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_chevron_up_regular"))
+        self.button_plus.setRepetitiveClicking(True)
+        self.button_plus.clicked.connect(self.stepForth)
+
+        self.button_minus = SiSimpleButton(self)
+        self.button_minus.resize(24, 24)
+        self.button_minus.attachment().setSvgSize(12, 12)
+        self.button_minus.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_chevron_down_regular"))
+        self.button_minus.setRepetitiveClicking(True)
+        self.button_minus.clicked.connect(self.stepBack)
+
+        self.container().setSpacing(0)
+        self.container().addPlaceholder(8, "right")
+        self.container().addWidget(self.button_plus, "right")
+        self.container().addPlaceholder(4, "right")
+        self.container().addWidget(self.button_minus, "right")
+
+    def singleStep(self):
+        return self.single_step_
+
+    def setSingleStep(self, step):
+        self.single_step_ = step
+
+    def minimum(self):
+        return self.minimum_
+
+    def setMinimum(self, minimum):
+        self.minimum_ = minimum
+
+    def maximum(self):
+        return self.maximum_
+
+    def setMaximum(self, maximum):
+        self.maximum_ = maximum
+
+    def value(self):
+        return self.value_
+
+    def setValue(self, value):
+        self.value_ = min(self.maximum_, max(value, self.minimum_))
+
+    def stepForth(self):
+        self.setValue(self.value() + self.singleStep())
+
+    def stepBack(self):
+        self.setValue(self.value() - self.singleStep())
+
+    def stepBy(self, step):
+        self.setValue(self.value() + step)
+
+
+class SiIntSpinBox(ABCSiSpinBox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.direction_ = Qt.LeftButton
+        self.lineEdit().setValidator(QIntValidator())
+        self.lineEdit().setText(str(self.value()))
+        self.lineEdit().editingFinished.connect(self.on_editing_finished)
 
-        self.indicator_frame = SiWidget(self)
+    def on_editing_finished(self):
+        value = int(self.lineEdit().text())
+        self.setValue(value)
+        if value < self.minimum() or value > self.maximum():
+            try:
+                SiGlobal.siui.windows["MAIN_WINDOW"].LayerRightMessageSidebar().send(
+                    title="输入值超出范围",
+                    text=f"限制输入值为介于 {self.minimum()} 到 {self.maximum()} 的整数\n"
+                         "已修改为最接近的值",
+                    msg_type=3,
+                    icon=SiGlobal.siui.iconpack.get("ic_fluent_warning_regular"),
+                    fold_after=2500,
+                )
+            except ValueError:
+                pass
 
-        self.indicator_label = SiLabel(self.indicator_frame)
-        self.indicator_label.lower()
-
-        # 禁用悬停颜色变化
-        self.colorGroup().assign(SiColor.BUTTON_HOVER, "#00FFFFFF")
-
-        self.indicator_label.setOpacity(0)
-
-    def setThemeColor(self, color_code):
-        self.colorGroup().assign(SiColor.THEME, color_code)
-
-    def setDirection(self, direction):
-        self.direction_ = direction
-
-    def direction(self):
-        return self.direction_
-
-    def _get_border_radius_stylesheet(self):
-        if self.direction_ == Qt.LeftButton:
-            return "border-top-left-radius: 4px; border-bottom-left-radius: 4px;"
-        elif self.direction_ == Qt.RightButton:
-            return "border-top-right-radius: 4px; border-bottom-right-radius: 4px;"
-
-    def _get_indicator_stylesheet(self):
-        theme_color = self.colorGroup().fromToken(SiColor.THEME)
-        stylesheet = (f"border-bottom: 3px solid {theme_color};"
-                      f"background-color: {SiColor.trans(theme_color, 0.6)};"
-                      f"{self._get_border_radius_stylesheet()}")
-        return stylesheet
-
-    def _get_color_label_stylesheet(self):
-        panel_color = self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)
-        shadow_color = self.colorGroup().fromToken(SiColor.BUTTON_SHADOW)
-        stylesheet = (f"border-bottom: 3px solid {shadow_color};"
-                      f"background-color: {panel_color};"
-                      f"{self._get_border_radius_stylesheet()}")
-        return stylesheet
+    def setValue(self, value):
+        super().setValue(value)
+        self.lineEdit().setText(str(self.value()))
 
 
-    def reloadStyleSheet(self):
-        super().reloadStyleSheet()
-        self.hoverLabel().setFixedStyleSheet(self._get_border_radius_stylesheet())
-        self.colorLabel().setFixedStyleSheet(self._get_color_label_stylesheet())
-        self.indicator_label.setStyleSheet(self._get_indicator_stylesheet())
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.indicator_frame.resize(event.size())
-        self.indicator_label.resize(event.size())
-
-    def enterEvent(self, event):
-        super().enterEvent(event)
-        self.indicator_label.setOpacityTo(1)
-
-    def leaveEvent(self, event):
-        super().leaveEvent(event)
-        self.indicator_label.setOpacityTo(0)
-
-class SiSpinBox(ABCSiSpinBox):
+class SiDoubleSpinBox(ABCSiSpinBox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.button_width = 32
+        self.setSingleStep(0.1)
 
-        self.button_up = SiSpinBoxButton(self)
-        self.button_up.setDirection(Qt.RightButton)
-        self.button_up.setIdleColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
-        self.button_up.setThemeColor(self.colorGroup().fromToken(SiColor.SIDE_MSG_THEME_SUCCESS))
+        self.lineEdit().setValidator(QDoubleValidator())
+        self.lineEdit().setText(str(self.value()))
+        self.lineEdit().editingFinished.connect(self.on_editing_finished)
 
-        self.button_down = SiSpinBoxButton(self)
-        self.button_down.setDirection(Qt.LeftButton)
-        self.button_down.setIdleColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
-        self.button_down.setThemeColor(self.colorGroup().fromToken(SiColor.SIDE_MSG_THEME_ERROR))
+    def on_editing_finished(self):
+        value = float(self.lineEdit().text())
+        self.setValue(value)
+        if value < self.minimum() or value > self.maximum():
+            try:
+                SiGlobal.siui.windows["MAIN_WINDOW"].LayerRightMessageSidebar().send(
+                    title="输入值超出范围",
+                    text=f"限制输入值为介于 {self.minimum()} 到 {self.maximum()} 的浮点数\n"
+                         "已修改为最接近的值",
+                    msg_type=3,
+                    icon=SiGlobal.siui.iconpack.get("ic_fluent_warning_regular"),
+                    fold_after=2500,
+                )
+            except ValueError:
+                pass
 
-        self.body_ = SiLabel(self)
-        self.body_.setAlignment(Qt.AlignCenter)
-        self.body_.setText("123")
-
-    def reloadStyleSheet(self):
-        super().reloadStyleSheet()
-        SiGlobal.siui.reloadStyleSheetRecursively(self.button_up)
-        SiGlobal.siui.reloadStyleSheetRecursively(self.button_down)
-        self.body_.setStyleSheet(
-            f"color: {self.colorGroup().fromToken(SiColor.TEXT_B)};"
-            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_E)};"
-            f"border-bottom: 3px solid {self.colorGroup().fromToken(SiColor.BUTTON_SHADOW)}"
-        )
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-
-        self.button_down.setGeometry(0, 0, self.button_width, event.size().height())
-        self.button_up.setGeometry(event.size().width() - self.button_width, 0, self.button_width, event.size().height())
-        self.body_.setGeometry(self.button_width, 0, event.size().width() - 2 * self.button_width, event.size().height())
+    def setValue(self, value):
+        # 重写以解决浮点数有效位溢出问题
+        self.value_ = round(min(self.maximum_, max(value, self.minimum_)), 13)  # 舍掉一些精度以追求计算准确
+        self.lineEdit().setText(str(self.value()))
