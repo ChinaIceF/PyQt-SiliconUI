@@ -83,6 +83,10 @@ class ExampleIcons(SiPage):
             self.package_selection_combobox.addOption(package_name)
         self.package_selection_combobox.valueChanged.connect(self.on_package_changed)
         self.package_selection_combobox.menu().setShowIcon(False)
+        self.package_selection_combobox.colorGroup().assign(
+            SiColor.INTERFACE_BG_B, self.colorGroup().fromToken(SiColor.INTERFACE_BG_A))
+        self.package_selection_combobox.colorGroup().assign(
+            SiColor.INTERFACE_BG_D, self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
 
         self.search_description = SiLabel(self)
         self.search_description.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")
@@ -94,6 +98,10 @@ class ExampleIcons(SiPage):
         self.search_input_box.resize(256, 32)
         self.search_input_box.reloadStyleSheet()
         self.search_input_box.line_edit.textChanged.connect(self.on_search_text_changed)
+        self.search_input_box.colorGroup().assign(
+            SiColor.INTERFACE_BG_B, self.colorGroup().fromToken(SiColor.INTERFACE_BG_A))
+        self.search_input_box.colorGroup().assign(
+            SiColor.INTERFACE_BG_D, self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
 
         self.package_operation_container.addWidget(self.package_selection_description)
         self.package_operation_container.addWidget(self.package_selection_combobox)
@@ -115,9 +123,6 @@ class ExampleIcons(SiPage):
         self.operation_panel_container_h = SiDenseHContainer(self)
         self.operation_panel_container_h.setFixedHeight(48)
         self.operation_panel_container_h.setAlignment(Qt.AlignCenter)
-        SiQuickEffect.applyDropShadowOn(self.operation_panel_container_h,
-                                        color=(0, 0, 0, 50),
-                                        blur_radius=32)
 
         self.page_up_button = SiPushButton(self)
         self.page_up_button.attachment().setText("上一页")
