@@ -1,16 +1,22 @@
+import pyperclip
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QLabel
 
-from siui.components import SiDenseVContainer, SiFlowContainer, SiLabel, SiOptionCardPlane, SiSimpleButton, SiWidget, \
-    SiScrollArea, SiDenseHContainer, SiPushButton, SiLineEdit
+from siui.components import (
+    SiDenseHContainer,
+    SiDenseVContainer,
+    SiFlowContainer,
+    SiLabel,
+    SiLineEdit,
+    SiPushButton,
+    SiScrollArea,
+    SiSimpleButton,
+)
 from siui.components.combobox import SiComboBox
 from siui.components.page import SiPage
 from siui.core.color import SiColor
 from siui.core.effect import SiQuickEffect
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
-
-import pyperclip
 
 
 def get_on_button_clicked_func(button):
@@ -62,10 +68,10 @@ class ExampleIcons(SiPage):
         self.package_operation_container = SiDenseHContainer(self)
         self.package_operation_container.setFixedHeight(48)
         self.package_operation_container.setAlignment(Qt.AlignCenter)
-        SiQuickEffect.applyDropShadowOn(self.package_operation_container, (0, 0, 0, 80), blur_radius=32)
+        # SiQuickEffect.applyDropShadowOn(self.package_operation_container, (0, 0, 0, 80), blur_radius=32)
 
         self.package_selection_description = SiLabel(self)
-        self.package_selection_description.setStyleSheet("color: {}".format(self.colorGroup().fromToken(SiColor.TEXT_D)))
+        self.package_selection_description.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")
         self.package_selection_description.setAlignment(Qt.AlignVCenter)
         self.package_selection_description.setText("当前图标包")
         self.package_selection_description.adjustSize()
@@ -77,18 +83,25 @@ class ExampleIcons(SiPage):
             self.package_selection_combobox.addOption(package_name)
         self.package_selection_combobox.valueChanged.connect(self.on_package_changed)
         self.package_selection_combobox.menu().setShowIcon(False)
+        self.package_selection_combobox.colorGroup().assign(
+            SiColor.INTERFACE_BG_B, self.colorGroup().fromToken(SiColor.INTERFACE_BG_A))
+        self.package_selection_combobox.colorGroup().assign(
+            SiColor.INTERFACE_BG_D, self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
 
         self.search_description = SiLabel(self)
-        self.search_description.setStyleSheet("color: {}".format(self.colorGroup().fromToken(SiColor.TEXT_D)))
+        self.search_description.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")
         self.search_description.setAlignment(Qt.AlignVCenter)
         self.search_description.setText("搜索图标")
         self.search_description.adjustSize()
 
         self.search_input_box = SiLineEdit(self)
         self.search_input_box.resize(256, 32)
-        self.search_input_box.colorGroup().assign(SiColor.INTERFACE_BG_B, self.colorGroup().fromToken(SiColor.INTERFACE_BG_A))
         self.search_input_box.reloadStyleSheet()
         self.search_input_box.line_edit.textChanged.connect(self.on_search_text_changed)
+        self.search_input_box.colorGroup().assign(
+            SiColor.INTERFACE_BG_B, self.colorGroup().fromToken(SiColor.INTERFACE_BG_A))
+        self.search_input_box.colorGroup().assign(
+            SiColor.INTERFACE_BG_D, self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
 
         self.package_operation_container.addWidget(self.package_selection_description)
         self.package_operation_container.addWidget(self.package_selection_combobox)
@@ -110,9 +123,6 @@ class ExampleIcons(SiPage):
         self.operation_panel_container_h = SiDenseHContainer(self)
         self.operation_panel_container_h.setFixedHeight(48)
         self.operation_panel_container_h.setAlignment(Qt.AlignCenter)
-        SiQuickEffect.applyDropShadowOn(self.operation_panel_container_h,
-                                        color=(0, 0, 0, 50),
-                                        blur_radius=32)
 
         self.page_up_button = SiPushButton(self)
         self.page_up_button.attachment().setText("上一页")
@@ -123,7 +133,7 @@ class ExampleIcons(SiPage):
         self.page_index_label.setAlignment(Qt.AlignCenter)
         self.page_index_label.setFixedSize(128, 32)
         self.page_index_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.page_index_label.setStyleSheet("color: {}".format(self.colorGroup().fromToken(SiColor.TEXT_D)))
+        self.page_index_label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")
 
         self.page_down_button = SiPushButton(self)
         self.page_down_button.attachment().setText("下一页")
@@ -173,7 +183,7 @@ class ExampleIcons(SiPage):
             icon_list = sorted(icon_list, key=lambda s: levenshtein_distance(s[0], target))
 
         self.icon_page_index = page_index
-        self.page_index_label.setText("{}/{}".format(self.icon_page_index+1, len(icon_list) // page_capacity + 1))
+        self.page_index_label.setText(f"{self.icon_page_index+1}/{len(icon_list) // page_capacity + 1}")
         self.operation_panel_container_h.adjustSize()
 
         for index, widget in enumerate(list(self.icon_container.widgets())):

@@ -4,12 +4,14 @@ import numpy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 
-from siui.components import SiCircularProgressBar, SiOptionCardLinear, SiTitledWidgetGroup, SiWidget
+from siui.components import SiCircularProgressBar, SiLineEdit, SiOptionCardLinear, SiTitledWidgetGroup, SiWidget, \
+    SiLineEditWithDeletionButton
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
 from siui.components.progress_bar import SiProgressBar
 from siui.components.slider import SiSliderH
+from siui.components.spinbox.spinbox import SiIntSpinBox, SiDoubleSpinBox
 from siui.components.widgets import (
     SiCheckBox,
     SiDenseHContainer,
@@ -360,6 +362,69 @@ class ExampleWidgets(SiPage):
             group.addWidget(self.switches)
             group.addWidget(self.radio_buttons)
             group.addWidget(self.checkboxes)
+
+        # 输入组件
+        with self.titled_widgets_group as group:
+            group.addTitle("输入组件")
+
+            # 简单单行输入组件
+            self.line_edit = OptionCardPlaneForWidgetDemos(self)
+            self.line_edit.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                          "/widgets/slider/slider.py")
+            self.line_edit.setTitle("简单单行输入组件")
+
+            self.demo_line_edit = SiLineEdit(self)
+            self.demo_line_edit.resize(256, 32)
+            self.demo_line_edit.lineEdit().setText("你好世界")
+
+            self.line_edit.body().addWidget(self.demo_line_edit)
+            self.line_edit.body().addPlaceholder(12)
+            self.line_edit.adjustSize()
+
+            # 带删除单行输入组件
+            self.line_edit_with_del_button = OptionCardPlaneForWidgetDemos(self)
+            self.line_edit_with_del_button.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                          "/widgets/slider/slider.py")
+            self.line_edit_with_del_button.setTitle("带删除单行输入组件")
+
+            self.demo_line_edit_with_del_button = SiLineEditWithDeletionButton(self)
+            self.demo_line_edit_with_del_button.resize(256, 32)
+            self.demo_line_edit_with_del_button.lineEdit().setText("点击右侧按钮以删除文字")
+
+            self.line_edit_with_del_button.body().addWidget(self.demo_line_edit_with_del_button)
+            self.line_edit_with_del_button.body().addPlaceholder(12)
+            self.line_edit_with_del_button.adjustSize()
+
+            # 整数微调组件
+            self.int_spin_box = OptionCardPlaneForWidgetDemos(self)
+            self.int_spin_box.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                          "/widgets/slider/slider.py")
+            self.int_spin_box.setTitle("整数微调组件")
+
+            self.demo_int_spin_box = SiIntSpinBox(self)
+            self.demo_int_spin_box.resize(256, 32)
+
+            self.int_spin_box.body().addWidget(self.demo_int_spin_box)
+            self.int_spin_box.body().addPlaceholder(12)
+            self.int_spin_box.adjustSize()
+
+            # 浮点数微调组件
+            self.double_spin_box = OptionCardPlaneForWidgetDemos(self)
+            self.double_spin_box.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                          "/widgets/slider/slider.py")
+            self.double_spin_box.setTitle("浮点数微调组件")
+
+            self.demo_double_spin_box = SiDoubleSpinBox(self)
+            self.demo_double_spin_box.resize(256, 32)
+
+            self.double_spin_box.body().addWidget(self.demo_double_spin_box)
+            self.double_spin_box.body().addPlaceholder(12)
+            self.double_spin_box.adjustSize()
+
+            group.addWidget(self.line_edit)
+            group.addWidget(self.line_edit_with_del_button)
+            group.addWidget(self.int_spin_box)
+            group.addWidget(self.double_spin_box)
 
         # 滑条
         with self.titled_widgets_group as group:
