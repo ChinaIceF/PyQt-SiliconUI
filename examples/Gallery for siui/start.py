@@ -8,7 +8,7 @@ from ui import MySiliconApp
 import siui
 from siui.core.globals import SiGlobal
 
-# siui.gui.set_scale_factor(1)
+siui.gui.set_scale_factor(1)
 
 
 def show_version_message(window):

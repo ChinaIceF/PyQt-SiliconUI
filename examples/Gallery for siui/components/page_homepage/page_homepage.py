@@ -21,6 +21,7 @@ from siui.core.color import SiColor
 from siui.core.effect import SiQuickEffect
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
+from siui.gui import SiFont, GlobalFont
 
 from .components.themed_option_card import ThemedOptionCardPlane
 
@@ -64,7 +65,7 @@ class ExampleHomepage(SiPage):
         self.subtitle.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.subtitle.setText("A powerful and artistic UI library based on PyQt5")
         self.subtitle.setStyleSheet("color: {}".format(SiColor.trans(SiGlobal.siui.colors["TEXT_A"], 0.9)))
-        self.subtitle.setFont(SiGlobal.siui.fonts["S_BOLD"])
+        self.subtitle.setFont(SiFont.fromToken(GlobalFont.S_DEMI_BOLD))
 
         # 创建一个水平容器
         self.container_for_cards = SiDenseHContainer(self.head_area)

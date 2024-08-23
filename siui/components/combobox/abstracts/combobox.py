@@ -61,7 +61,10 @@ class ABCSiComboBox(SiWidget):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        self.panel_label.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_B))
+        self.panel_label.setStyleSheet(
+            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)};"
+            f"border: 1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)};"
+        )
 
         svg_data = ('<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" id="Outline" '
                     'viewBox="0 0 24 24" width="512" height="512"><path d="M18.71,8.21a1,1,0,0,0-1.42,0l-4.58,4.58a1,'

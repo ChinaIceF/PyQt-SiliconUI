@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QLineEdit
 
+from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
 
 
@@ -20,14 +21,13 @@ class ABCSiLineEdit(QLineEdit):
         """
         重载样式表
         """
-        self.setStyleSheet("""
-            QLineEdit {
-                selection-background-color: #493F4E;
-                background-color: transparent;
-                color: #ffffff;
-                border: 0px
-            }
-            """
+        self.setStyleSheet(
+            "QLineEdit {"
+            "    selection-background-color: #493F4E;"
+            "    background-color: transparent;"
+            f"    color: {self.parent().colorGroup().fromToken(SiColor.TEXT_C)};"
+            "    border: 0px"
+            "}"
         )
 
     def focusInEvent(self, event):

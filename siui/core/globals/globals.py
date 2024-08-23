@@ -1,7 +1,7 @@
 import time
 
 from siui.core.color import SiColor
-from siui.gui.color_group import DarkColorGroup
+from siui.gui.color_group import DarkColorGroup, BrightColorGroup
 from siui.gui.font import GlobalFontDict
 from siui.gui.icons.parser import SiGlobalIconPack
 

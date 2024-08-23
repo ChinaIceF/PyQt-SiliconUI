@@ -324,6 +324,9 @@ class ABCToggleButton(ABCButton):
         self.hover_highlight.raise_()
         self.flash_label.raise_()
 
+    def colorLabel(self):
+        return self.color_label
+
     def setBorderRadius(self, r: int):
         """
         设置边框圆角半径

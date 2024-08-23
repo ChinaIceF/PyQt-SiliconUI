@@ -2,7 +2,7 @@ import time
 
 from PyQt5.Qt import QColor
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QApplication
+from PyQt5.QtWidgets import QApplication, QGraphicsDropShadowEffect
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.container import SiDenseVContainer

@@ -1,12 +1,12 @@
 from PyQt5.QtCore import Qt
 
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
 from siui.components.widgets import SiLabel
 from siui.components.widgets.abstracts import ABCSiLineEdit
+from siui.components.widgets.abstracts.widget import SiWidget
+from siui.core.color import SiColor
 
 
-class SiLineEdit(SiLabel):
+class SiLineEdit(SiWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -21,8 +21,12 @@ class SiLineEdit(SiLabel):
         # 承载文字的部分
         self.outfit_label_top = SiLabel(self)
         self.outfit_label_top.lower()
-        self.outfit_label_top.setFixedStyleSheet("""border-top-left-radius:4px; border-top-right-radius:4px;
-            border-bottom-left-radius:2px; border-bottom-right-radius:2px """)
+        self.outfit_label_top.setFixedStyleSheet(
+            "border-top-left-radius:     4px;"
+            "border-top-right-radius:    4px;"
+            "border-bottom-left-radius:  2px;"
+            "border-bottom-right-radius: 2px"
+        )
 
         # 带主题色的地边条
         self.outfit_label_bottom = SiLabel(self)
@@ -30,16 +34,23 @@ class SiLineEdit(SiLabel):
         self.outfit_label_bottom.setFixedStyleSheet("border-radius: 4px")
 
     def reloadStyleSheet(self):
-        """
-        重载样式表
-        """
         super().reloadStyleSheet()
 
-        self.outfit_label_top.setStyleSheet("background-color: {}".format(self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)))
-        self.outfit_label_bottom.setStyleSheet("""
-            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {}, stop:1 {});
-            """.format(self.colorGroup().fromToken(SiColor.THEME_TRANSITION_A),
-                       self.colorGroup().fromToken(SiColor.THEME_TRANSITION_B)))
+        self.outfit_label_top.setStyleSheet(
+            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)};"
+            f"border-left:  1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)};"
+            f"border-right: 1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)};"
+            f"border-top:   1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)};"
+        )
+        self.outfit_label_bottom.setStyleSheet(
+            "background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
+            f"    stop:0 {self.colorGroup().fromToken(SiColor.THEME_TRANSITION_A)},"
+            f"    stop:1 {self.colorGroup().fromToken(SiColor.THEME_TRANSITION_B)}"
+            ")"
+        )
+
+    def lineEdit(self):
+        return self.line_edit
 
     def attachment(self):
         """

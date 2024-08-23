@@ -184,6 +184,10 @@ class SiSimpleButton(SiToggleButton):
         self.colorGroup().assign(SiColor.BUTTON_ON, "#00FFFFFF")
         self.colorGroup().assign(SiColor.BUTTON_OFF, "#00FFFFFF")
 
+    def setIdleColor(self, color_code):
+        self.colorGroup().assign(SiColor.BUTTON_ON, color_code)
+        self.colorGroup().assign(SiColor.BUTTON_OFF, color_code)
+
 
 class SiRadioButton(SiLabel):
     """
