@@ -1,12 +1,10 @@
 import numpy
 
-import siui.core.animation.abstract as abstract
+from .abstract import ABCSiAnimation, Curve
 
 
-class SiExpAnimation(abstract.ABCSiAnimation):
-    """
-    级数动画类，每次动画的进行步长都与当前进度有关
-    """
+class SiExpAnimation(ABCSiAnimation):
+    """ 级数动画类，每次动画的进行步长都与当前进度有关 """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -18,7 +16,6 @@ class SiExpAnimation(abstract.ABCSiAnimation):
         """
         Set the factor of the animation.
         :param factor: number between 0 and 1
-        :return:
         """
         self.factor = factor
 
@@ -26,7 +23,6 @@ class SiExpAnimation(abstract.ABCSiAnimation):
         """
         Set the factor of the animation.
         :param bias: positive float number
-        :return:
         """
         if bias <= 0:
             raise ValueError(f"Bias is expected to be positive but met {bias}")
@@ -44,10 +40,7 @@ class SiExpAnimation(abstract.ABCSiAnimation):
         return arr
 
     def isCompleted(self):
-        """
-        To check whether we meet the point that the animation should stop
-        :return: bool
-        """
+        """ To check whether we meet the point that the animation should stop """
         return (self._distance() == 0).all()
 
     def _process(self):
@@ -66,14 +59,90 @@ class SiExpAnimation(abstract.ABCSiAnimation):
         self.ticked.emit(self.current_)
 
 
-class SiCounterAnimation(abstract.ABCSiAnimation):
+class SiExpAccelerateAnimation(SiExpAnimation):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.accelerate_function = lambda x: x ** 1.6
+        self.step_length_bound = 0
+        self.frame_counter = 0
+
+    def setAccelerateFunction(self, function):
+        self.accelerate_function = function
+
+    def setStepLengthBound(self, bound):
+        self.step_length_bound = bound
+
+    def refreshStepLengthBound(self):
+        self.setStepLengthBound(min(self.accelerate_function(self.frame_counter), 10000))  # prevent getting too large
+
+    def _step_length(self):
+        dis = self._distance()
+        if (abs(dis) <= self.bias).all() is True:
+            return dis
+
+        cut = numpy.array(abs(dis) <= self.bias, dtype="int8")
+        arr = numpy.clip(abs(dis) * self.factor + self.bias, 0, self.step_length_bound)  # 基本指数动画运算
+        arr = arr * (numpy.array(dis > 0, dtype="int8") * 2 - 1)  # 确定动画方向
+        arr = arr * (1 - cut) + dis * cut  # 对于差距小于偏置的项，直接返回差距
+        return arr
+
+    def _process(self):
+        self.frame_counter += 1
+        self.refreshStepLengthBound()
+        super()._process()
+
+    def stop(self, delay=None):
+        super().stop(delay)
+        self.frame_counter = 0
+        self.refreshStepLengthBound()
+
+
+class SiSqrExpAnimation(ABCSiAnimation):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.mean_rate = 0.5
+        self.base = 1/2
+        self.peak = 10
+        self.bias = 1
+        raise NotImplementedError()
+
+    def setMeanRate(self, mean_rate):
+        self.mean_rate = mean_rate
+
+    def setBase(self, base):
+        self.base = base
+
+    def setPeak(self, peak):
+        self.peak = peak
+
+    def setBias(self, bias):
+        self.bias = bias
+
+    def _step_length(self):
+        dis = self._distance()
+        if (abs(dis) <= self.bias).all() is True:
+            return dis
+
+        cut = numpy.array(abs(dis) <= self.bias, dtype="int8")
+        arr = abs(dis) * self.factor + self.bias  # 基本指数动画运算
+        arr = arr * (numpy.array(dis > 0, dtype="int8") * 2 - 1)  # 确定动画方向
+        arr = arr * (1 - cut) + dis * cut  # 对于差距小于偏置的项，直接返回差距
+        return arr
+
+    def isCompleted(self):
+        return (self._distance() == 0).all()
+
+
+class SiCounterAnimation(ABCSiAnimation):
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.duration = 1000  # 动画总时长，单位毫秒
         self.reversed = False  # 是否倒序运行动画
         self.counter_addend = self._get_addend()
-        self.curve = abstract.Curve.LINEAR
+        self.curve = Curve.LINEAR
 
     def setReversed(self, reversed_):
         """

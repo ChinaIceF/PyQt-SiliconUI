@@ -14,7 +14,6 @@ from siui.components import (
 from siui.components.combobox import SiComboBox
 from siui.components.page import SiPage
 from siui.core.color import SiColor
-from siui.core.effect import SiQuickEffect
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
@@ -68,7 +67,6 @@ class ExampleIcons(SiPage):
         self.package_operation_container = SiDenseHContainer(self)
         self.package_operation_container.setFixedHeight(48)
         self.package_operation_container.setAlignment(Qt.AlignCenter)
-        # SiQuickEffect.applyDropShadowOn(self.package_operation_container, (0, 0, 0, 80), blur_radius=32)
 
         self.package_selection_description = SiLabel(self)
         self.package_selection_description.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")

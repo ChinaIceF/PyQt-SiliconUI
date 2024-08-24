@@ -1,5 +1,5 @@
 from siui.core.animation import abstract
-from siui.core.animation.animation import SiCounterAnimation, SiExpAnimation  # noqa: F401
+from siui.core.animation.animation import SiCounterAnimation, SiExpAccelerateAnimation, SiExpAnimation  # noqa: F401
 from siui.core.animation.group import SiAnimationGroup  # noqa: F401
 
 
