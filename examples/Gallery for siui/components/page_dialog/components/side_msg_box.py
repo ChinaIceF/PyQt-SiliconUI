@@ -1,29 +1,33 @@
-from siui.components import SiDenseHContainer, SiPixLabel, SiDenseVContainer, SiLabel, SiSimpleButton
+from siui.components import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel, SiSimpleButton
 from siui.core.color import SiColor
 from siui.core.globals import SiGlobal
-from siui.gui import SiFont, GlobalFont
+from siui.gui import GlobalFont, SiFont
 from siui.templates.application.components.message.box import SiSideMessageBox
 
 
-def send_simple_message(type_):
+def send_simple_message(type_, auto_close=False, auto_close_duration=1000):
+    fold_after = auto_close_duration if auto_close is True else None
     SiGlobal.siui.windows["MAIN_WINDOW"].LayerRightMessageSidebar().send(
         "这是一条测试消息\n"
         "比具标题信息更加简洁方便",
         msg_type=type_,
+        fold_after=fold_after,
     )
 
 
-def send_titled_message(type_):
+def send_titled_message(type_, auto_close=False, auto_close_duration=1000):
+    fold_after = auto_close_duration if auto_close is True else None
     SiGlobal.siui.windows["MAIN_WINDOW"].LayerRightMessageSidebar().send(
         title="Sent Successfully",
         text="A titled message has been successfully sent to the sidebar.\n" +
              "Click this message box for more information.",
         msg_type=type_,
-        slot=lambda: print("You clicked me")
+        fold_after=fold_after,
     )
 
 
-def send_custom_message(type_):
+def send_custom_message(type_, auto_close=False, auto_close_duration=1000):
+    fold_after = auto_close_duration if auto_close is True else None
     container = SiDenseHContainer()
     container.setAdjustWidgetsSize(True)
     container.setFixedHeight(80)
@@ -93,5 +97,8 @@ def send_custom_message(type_):
     new_message_box.content().container().addWidget(container)
     new_message_box.content().container().addPlaceholder(32)
     new_message_box.adjustSize()
+
+    if fold_after is not None:
+        new_message_box.setFoldAfter(fold_after)
 
     SiGlobal.siui.windows["MAIN_WINDOW"].LayerRightMessageSidebar().sendMessageBox(new_message_box)
