@@ -1,14 +1,17 @@
 import random
-import time
 from typing import Union
 
 from PyQt5.Qt import QColor
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QWidget
 
-from siui.components.widgets.label import SiLabel
 from siui.components.widgets.abstracts.container import ABCSiDividedContainer
 from siui.components.widgets.abstracts.widget import SiWidget
+from siui.components.widgets.label import SiLabel
+
+
+class PlaceHolderWidget(QWidget):
+    pass
 
 
 class ABCDenseContainer(SiWidget):
@@ -76,6 +79,14 @@ class ABCDenseContainer(SiWidget):
     def widgets(self):
         raise NotImplementedError()
 
+    @staticmethod
+    def get_widget_except_placeholders(widgets):
+        no_placeholders = []
+        for widget in widgets:
+            if isinstance(widget, PlaceHolderWidget) is False:
+                no_placeholders.append(widget)
+        return no_placeholders
+
     def __enter__(self):
         return self
 
@@ -102,7 +113,7 @@ class SiDenseHContainer(ABCDenseContainer):
         :param index: 插入位置
         :return:
         """
-        new_label = SiLabel(self)
+        new_label = PlaceHolderWidget(self)
         new_label.setVisible(False)
         new_label.resize(length, 0)
         self.addWidget(new_label, side=side, index=index)
@@ -140,13 +151,14 @@ class SiDenseHContainer(ABCDenseContainer):
 
     def widgets(self, side=None):
         if side is None:
-            return self.widgets_left + self.widgets_right
+            widgets = self.widgets_left + self.widgets_right
         elif side == "left":
-            return self.widgets_left
+            widgets = self.widgets_left
         elif side == "right":
-            return self.widgets_right
+            widgets = self.widgets_right
         else:
             raise ValueError(f"Unexpected side: {side}")
+        return self.get_widget_except_placeholders(widgets)
 
     def removeWidget(self, widget):
         """
@@ -287,7 +299,7 @@ class SiDenseVContainer(ABCDenseContainer):
         :param index: 插入位置
         :return:
         """
-        new_label = SiLabel(self)
+        new_label = PlaceHolderWidget(self)
         new_label.setVisible(False)
         new_label.resize(0, length)
         self.addWidget(new_label, side=side, index=index)
@@ -349,13 +361,14 @@ class SiDenseVContainer(ABCDenseContainer):
 
     def widgets(self, side=None):
         if side is None:
-            return self.widgets_top + self.widgets_bottom
+            widgets = self.widgets_top + self.widgets_bottom
         elif side == "top":
-            return self.widgets_top
+            widgets = self.widgets_top
         elif side == "bottom":
-            return self.widgets_bottom
+            widgets = self.widgets_bottom
         else:
             raise ValueError(f"Unexpected side: {side}")
+        return self.get_widget_except_placeholders(widgets)
 
     def removeWidget(self, widget):
         """

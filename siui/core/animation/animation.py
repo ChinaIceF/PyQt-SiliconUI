@@ -63,7 +63,7 @@ class SiExpAccelerateAnimation(SiExpAnimation):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.accelerate_function = lambda x: x ** 2
+        self.accelerate_function = lambda x: x ** 1.6
         self.step_length_bound = 0
         self.frame_counter = 0
 
