@@ -555,15 +555,15 @@ class ExampleWidgets(SiPage):
             group.addWidget(self.progress_bar_circular)
             group.addWidget(self.progress_bar_circular_indeterminate)
 
-        # 菜单测试
+        # 菜单
         with self.titled_widgets_group as group:
-            group.addTitle("菜单测试")
+            group.addTitle("菜单")
 
-            # 进度条
+            # 右键菜单
             self.menus = OptionCardPlaneForWidgetDemos(self)
             self.menus.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                         "/widgets/progress_bar/progress_bar.py")
-            self.menus.setTitle("菜单测试")
+            self.menus.setTitle("右键菜单")
 
             menu_child_menu_test = SiMenu()
             menu_child_menu_test.setFixedWidth(180)
@@ -583,8 +583,18 @@ class ExampleWidgets(SiPage):
 
             self.demo_show_menu_button = SiPushButton(self)
             self.demo_show_menu_button.resize(128, 32)
-            self.demo_show_menu_button.attachment().setText("显示菜单")
+            self.demo_show_menu_button.attachment().setText("点击显示菜单")
             self.demo_show_menu_button.clicked.connect(lambda: menu_test.unfold(QCursor.pos().x(), QCursor.pos().y()))
+
+            self.menus.body().addWidget(self.demo_show_menu_button)
+            self.menus.body().addPlaceholder(12)
+            self.menus.adjustSize()
+
+            # 下拉菜单
+            self.combobox = OptionCardPlaneForWidgetDemos(self)
+            self.combobox.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                        "/widgets/progress_bar/progress_bar.py")
+            self.combobox.setTitle("下拉菜单")
 
             self.demo_combobox = SiComboBox(self)
             self.demo_combobox.resize(256, 32)
@@ -597,12 +607,12 @@ class ExampleWidgets(SiPage):
             self.demo_combobox.menu().setShowIcon(False)
             self.demo_combobox.menu().setIndex(3)
 
-            self.menus.body().addWidget(self.demo_show_menu_button)
-            self.menus.body().addWidget(self.demo_combobox)
-            self.menus.body().addPlaceholder(12)
-            self.menus.adjustSize()
+            self.combobox.body().addWidget(self.demo_combobox)
+            self.combobox.body().addPlaceholder(12)
+            self.combobox.adjustSize()
 
             group.addWidget(self.menus)
+            group.addWidget(self.combobox)
 
         # 表格
         with self.titled_widgets_group as group:

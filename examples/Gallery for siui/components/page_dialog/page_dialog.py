@@ -1,22 +1,28 @@
 from PyQt5.QtCore import Qt
 
-from siui.components import SiTitledWidgetGroup, SiPushButton, SiLabel, SiLongPressButton, SiDenseHContainer
+from siui.components import (
+    SiDenseHContainer,
+    SiOptionCardLinear,
+    SiPushButton,
+    SiTitledWidgetGroup,
+)
 from siui.components.combobox import SiComboBox
 from siui.components.page import SiPage
-from siui.core.color import SiColor
+from siui.components.spinbox.spinbox import SiDoubleSpinBox
 from siui.core.globals import SiGlobal
-from siui.templates.application.components.dialog.modal import SiModalDialog
 
 from ..option_card import OptionCardPlaneForWidgetDemos
 from .components.child_page_example import ChildPageExample
-from .components.side_msg_box import send_simple_message, send_titled_message, send_custom_message
 from .components.modal_dialog_example import ModalDialogExample
+from .components.side_msg_box import send_custom_message, send_simple_message, send_titled_message
 
 
 class ExampleDialogs(SiPage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.message_auto_close_duration = None
+        self.message_auto_close = None
         self.message_type = 0
 
         self.setPadding(64)
@@ -46,35 +52,72 @@ class ExampleDialogs(SiPage):
             self.demo_send_message_to_sidebar = SiPushButton(self)
             self.demo_send_message_to_sidebar.resize(128, 32)
             self.demo_send_message_to_sidebar.attachment().setText("发送测试信息")
-            self.demo_send_message_to_sidebar.clicked.connect(lambda: send_simple_message(self.message_type))
+            self.demo_send_message_to_sidebar.clicked.connect(
+                lambda: send_simple_message(self.message_type, self.message_auto_close, self.message_auto_close_duration))
 
             self.demo_send_message_to_sidebar_titled = SiPushButton(self)
             self.demo_send_message_to_sidebar_titled.resize(128, 32)
             self.demo_send_message_to_sidebar_titled.attachment().setText("具标题测试信息")
-            self.demo_send_message_to_sidebar_titled.clicked.connect(lambda: send_titled_message(self.message_type))
+            self.demo_send_message_to_sidebar_titled.clicked.connect(
+                lambda: send_titled_message(self.message_type, self.message_auto_close, self.message_auto_close_duration))
 
             self.demo_send_message_to_sidebar_custom = SiPushButton(self)
             self.demo_send_message_to_sidebar_custom.resize(128, 32)
             self.demo_send_message_to_sidebar_custom.attachment().setText("发送自定义信息")
-            self.demo_send_message_to_sidebar_custom.clicked.connect(lambda: send_custom_message(self.message_type))
-
-            self.demo_type_combobox = SiComboBox(self)
-            self.demo_type_combobox.resize(80, 32)
-            self.demo_type_combobox.addOption("标准", value=0)
-            self.demo_type_combobox.addOption("成功", value=1)
-            self.demo_type_combobox.addOption("提示", value=2)
-            self.demo_type_combobox.addOption("警告", value=3)
-            self.demo_type_combobox.addOption("错误", value=4)
-            self.demo_type_combobox.menu().setShowIcon(False)
-            self.demo_type_combobox.menu().setIndex(0)
-            self.demo_type_combobox.valueChanged.connect(self.set_message_box_type)
+            self.demo_send_message_to_sidebar_custom.clicked.connect(
+                lambda: send_custom_message(self.message_type, self.message_auto_close, self.message_auto_close_duration))
 
             side_message_container.addWidget(self.demo_send_message_to_sidebar)
             side_message_container.addWidget(self.demo_send_message_to_sidebar_titled)
             side_message_container.addWidget(self.demo_send_message_to_sidebar_custom)
 
+            # -- 信息类型
+            self.ctrl_type_combobox = SiComboBox(self)
+            self.ctrl_type_combobox.resize(80, 32)
+            self.ctrl_type_combobox.addOption("标准", value=0)
+            self.ctrl_type_combobox.addOption("成功", value=1)
+            self.ctrl_type_combobox.addOption("提示", value=2)
+            self.ctrl_type_combobox.addOption("警告", value=3)
+            self.ctrl_type_combobox.addOption("错误", value=4)
+            self.ctrl_type_combobox.menu().setShowIcon(False)
+            self.ctrl_type_combobox.menu().setIndex(0)
+            self.ctrl_type_combobox.valueChanged.connect(self.set_message_box_type)
+
+            self.option_card_type = SiOptionCardLinear(self)
+            self.option_card_type.load(SiGlobal.siui.iconpack.get("ic_fluent_tag_multiple_regular"))
+            self.option_card_type.setTitle("信息类型", "使用不同的信息类型以提供更直观的提示")
+            self.option_card_type.addWidget(self.ctrl_type_combobox)
+
+            # -- 自动消失
+            self.ctrl_auto_close = SiComboBox(self)
+            self.ctrl_auto_close.resize(80, 32)
+            self.ctrl_auto_close.addOption("禁用", value=False)
+            self.ctrl_auto_close.addOption("启用", value=True)
+            self.ctrl_auto_close.menu().setShowIcon(False)
+            self.ctrl_auto_close.menu().setIndex(0)
+            self.ctrl_auto_close.valueChanged.connect(self.set_message_box_auto_close)
+
+            self.option_card_auto_close = SiOptionCardLinear(self)
+            self.option_card_auto_close.load(SiGlobal.siui.iconpack.get("ic_fluent_panel_right_contract_regular"))
+            self.option_card_auto_close.setTitle("自动隐藏", "以降低操作复杂性，或是保留重要信息")
+            self.option_card_auto_close.addWidget(self.ctrl_auto_close)
+
+            # -- 停留时长
+            self.ctrl_stay_duration = SiDoubleSpinBox(self)
+            self.ctrl_stay_duration.resize(128, 32)
+            self.ctrl_stay_duration.lineEdit().textChanged.connect(self.set_message_box_auto_close)
+            self.ctrl_stay_duration.setValue(1.0)
+
+            self.option_card_stay_duration = SiOptionCardLinear(self)
+            self.option_card_stay_duration.load(SiGlobal.siui.iconpack.get("ic_fluent_timer_regular"))
+            self.option_card_stay_duration.setTitle("停留时长", "如果自动隐藏被启用，提示消息将在设定的秒数后隐藏")
+            self.option_card_stay_duration.addWidget(self.ctrl_stay_duration)
+
+            self.side_messages.body().setAdjustWidgetsSize(True)
             self.side_messages.body().addWidget(side_message_container)
-            self.side_messages.body().addWidget(self.demo_type_combobox)
+            self.side_messages.body().addWidget(self.option_card_type)
+            self.side_messages.body().addWidget(self.option_card_auto_close)
+            self.side_messages.body().addWidget(self.option_card_stay_duration)
             self.side_messages.body().addPlaceholder(12)
             self.side_messages.adjustSize()
 
@@ -87,7 +130,7 @@ class ExampleDialogs(SiPage):
             # 子页面
             self.child_pages = OptionCardPlaneForWidgetDemos(self)
             self.child_pages.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                "/widgets/progress_bar/progress_bar.py")
+                                              "/widgets/progress_bar/progress_bar.py")
             self.child_pages.setTitle("子页面")
             self.child_pages.setFixedWidth(800)
 
@@ -105,7 +148,7 @@ class ExampleDialogs(SiPage):
             # 模态弹窗
             self.modal_dialog = OptionCardPlaneForWidgetDemos(self)
             self.modal_dialog.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                "/widgets/progress_bar/progress_bar.py")
+                                               "/widgets/progress_bar/progress_bar.py")
             self.modal_dialog.setTitle("模态弹窗")
             self.modal_dialog.setFixedWidth(800)
 
@@ -132,3 +175,8 @@ class ExampleDialogs(SiPage):
     def set_message_box_type(self, type_):
         self.message_type = type_
 
+    def set_message_box_auto_close(self, value):
+        if isinstance(value, bool):
+            self.message_auto_close = value
+        if isinstance(value, str):
+            self.message_auto_close_duration = int(float(value) * 1000)

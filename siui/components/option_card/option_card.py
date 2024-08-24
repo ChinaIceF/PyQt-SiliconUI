@@ -1,20 +1,19 @@
 from PyQt5.QtCore import Qt
 
 from siui.components.option_card.abstracts.option_card import ABCSiOptionCardPlane
+from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.container import SiDenseHContainer
 from siui.components.widgets.label import SiLabel, SiSvgLabel
 from siui.core.globals import SiGlobal
 from siui.core.silicon import Si
 
 
-class SiOptionCardLinear(SiLabel):
-    """
-    水平方向上的、线性放置控件的选项卡组件
-    """
+class SiOptionCardLinear(SiWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.setFixedStyleSheet("background-color:{}; border-radius:4px".format(SiGlobal.siui.colors["INTERFACE_BG_C"]))
+        self.panel = SiLabel(self)
+        self.panel.setFixedStyleSheet(f"background-color:{SiGlobal.siui.colors['INTERFACE_BG_C']}; border-radius:4px")
 
         # 设定最小高度
         self.setMinimumHeight(80)
@@ -98,6 +97,7 @@ class SiOptionCardLinear(SiLabel):
         super().resizeEvent(event)
         w, h = event.size().width(), event.size().height()
 
+        self.panel.resize(w, h)
         self.container.resize(w, h)
 
         # 让文字标签充满闲置区域
