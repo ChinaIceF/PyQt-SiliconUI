@@ -1,6 +1,7 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QPropertyAnimation, QEasingCurve, pyqtProperty
 from PyQt5.QtWidgets import QLabel
+from PyQt5.QtGui import QPainter
 
 from . import SiFont
 from .SiGlobal import *
@@ -17,7 +18,7 @@ class SiSwitch(QLabel):
         
         self.name = None
         self.status = False
-
+        
         self.target_position = 5
 
         self.status_width = 62
@@ -44,8 +45,15 @@ class SiSwitch(QLabel):
 
         self.timer.setInterval(int(1000 / self.fps))
         self.timer.timeout.connect(self.process)
-
         self.initialize_stylesheet()
+        
+        # 动画
+        self.animation = QPropertyAnimation(self, b"lever_position")
+        self.animation.setEasingCurve(QEasingCurve.OutBounce)   # 弹性缓动曲线
+        self.animation.setDuration(500) # 动画时长
+
+        
+        self.animation.finished.connect(self.enable_click)
 
     def stepLength(self, dis):
         return abs(dis) * 0.2 + 1
@@ -70,10 +78,8 @@ class SiSwitch(QLabel):
         if self.distance() == 0:
             self.timer.stop()
 
-
     def startAnimation(self):
         self.timer.start()
-
 
     def initialize_stylesheet(self):
         self.status_label.setStyleSheet('color: {}'.format(colorset.SWC_HEX[0]))
@@ -97,6 +103,16 @@ class SiSwitch(QLabel):
         if signal == True:
             self.clicked.emit()
             self.stateChanged.emit(self.status)
+            
+        # 启动动画并禁用点击事件
+        self.setEnabled(False)
+        self.animation.setStartValue(self.switch_lever.x())
+        self.animation.setEndValue(self.target_position)
+        self.animation.start()
+        
+    def enable_click(self):
+        # 动画结束后启用点击事件
+        self.setEnabled(True)
 
     def change_position(self, distance):
         g = self.switch_lever.geometry()
@@ -114,11 +130,26 @@ class SiSwitch(QLabel):
             self.switch_frame.setStyleSheet('border: 1px solid {}; border-radius: 10px'.format(colorset.SWC_HEX[0]))
             self.switch_lever.setStyleSheet('background-color:{}; border-radius: 7px'.format(colorset.SWC_HEX[0]))
 
-
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.LeftButton:
             # 被左键点击
-            if self.timer.isActive() == True:    # 如果线程运行中，忽略这一次点击
+            if self.timer.isActive():  # 如果线程运行中，忽略这一次点击
                 return
+            self.changeStatus(not self.status, signal=True)
+            
+    def get_lever_position(self):
+        return self.switch_lever.x()
 
-            self.changeStatus(not self.status, signal = True)
+    def set_lever_position(self, position):
+        self.switch_lever.move(position, self.switch_lever.y())
+        self.update()
+
+    lever_position = pyqtProperty(int, get_lever_position, set_lever_position)
+    
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.HighQualityAntialiasing)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        painter.setPen(QtCore.Qt.NoPen)
+        super().paintEvent(event)
