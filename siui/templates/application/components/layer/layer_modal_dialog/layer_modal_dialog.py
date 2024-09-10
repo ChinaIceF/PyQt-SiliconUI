@@ -1,8 +1,8 @@
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import Qt
 
 from siui.components import SiWidget
 from siui.core.silicon import Si
+
 from ..layer import SiLayer
 
 
