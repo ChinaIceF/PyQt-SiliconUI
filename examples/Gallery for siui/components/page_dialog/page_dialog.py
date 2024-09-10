@@ -123,6 +123,40 @@ class ExampleDialogs(SiPage):
 
             group.addWidget(self.side_messages)
 
+        # 全局侧边抽屉
+        with self.titled_widgets_group as group:
+            group.addTitle("全局侧边抽屉")
+
+            # 子页面
+            self.global_drawer_left = OptionCardPlaneForWidgetDemos(self)
+            self.global_drawer_left.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                              "/widgets/progress_bar/progress_bar.py")
+            self.global_drawer_left.setTitle("全局左侧抽屉")
+            self.global_drawer_left.setFixedWidth(800)
+
+            self.ctrl_show_global_drawer_left = SiPushButton(self)
+            self.ctrl_show_global_drawer_left.resize(128, 32)
+            self.ctrl_show_global_drawer_left.attachment().setText("打开")
+            self.ctrl_show_global_drawer_left.clicked.connect(
+                lambda: SiGlobal.siui.windows["MAIN_WINDOW"].layerLeftGlobalDrawer().showLayer()
+            )
+
+            self.ctrl_new_page = SiPushButton(self)
+            self.ctrl_new_page.resize(128, 32)
+            self.ctrl_new_page.attachment().setText("DEBUG: 新页面")
+            self.ctrl_new_page.clicked.connect(
+                lambda: SiGlobal.siui.windows["MAIN_WINDOW"].layerMain().addPage(ExampleDialogs(self),
+                                 icon=SiGlobal.siui.iconpack.get("ic_fluent_info_filled"),
+                                 hint="关于", side="top")
+            )
+
+            self.global_drawer_left.body().addWidget(self.ctrl_show_global_drawer_left)
+            self.global_drawer_left.body().addWidget(self.ctrl_new_page)
+            self.global_drawer_left.body().addPlaceholder(12)
+            self.global_drawer_left.adjustSize()
+
+            group.addWidget(self.global_drawer_left)
+
         # 二级界面
         with self.titled_widgets_group as group:
             group.addTitle("二级界面")

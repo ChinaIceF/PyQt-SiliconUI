@@ -2,8 +2,12 @@
 from PyQt5.QtWidgets import QMainWindow
 
 from siui.components.tooltip import ToolTipWindow
+from siui.components.widgets.abstracts import SiWidget
 from siui.core.globals import SiGlobal
 from siui.templates.application.components.layer.layer_child_page.layer_child_page import LayerChildPage
+from siui.templates.application.components.layer.layer_left_global_drawer.layer_left_global_drawer import (
+    LayerLeftGlobalDrawer,
+)
 from siui.templates.application.components.layer.layer_main.layer_main import LayerMain
 from siui.templates.application.components.layer.layer_modal_dialog.layer_modal_dialog import LayerModalDialog
 from siui.templates.application.components.layer.layer_right_message_sidebar.layer_right_message_sidebar import (
@@ -28,11 +32,22 @@ class SiliconApplication(QMainWindow):
         self.resize(1200, 700)
         self.setWindowTitle("Silicon Application Template")
 
+        # 层的组
+        self.group_main_interface = SiWidget(self)
+        self.groups_ = {
+            "MAIN_INTERFACE": self.group_main_interface
+        }
+
         # 构建界面
-        self.layer_main = LayerMain(self)
-        self.layer_child_page = LayerChildPage(self)
+        self.layer_main = LayerMain(self.group_main_interface)
+        self.layer_child_page = LayerChildPage(self.group_main_interface)
+
+        self.layer_left_global_drawer = LayerLeftGlobalDrawer(self)
         self.layer_right_message_sidebar = LayerRightMessageSidebar(self)
         self.layer_modal_dialog = LayerModalDialog(self)
+
+    def groups(self):
+        return self.groups_
 
     def layerMain(self):
         return self.layer_main
@@ -46,10 +61,15 @@ class SiliconApplication(QMainWindow):
     def layerModalDialog(self):
         return self.layer_modal_dialog
 
+    def layerLeftGlobalDrawer(self):
+        return self.layer_left_global_drawer
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         size = event.size()
         w, h = size.width(), size.height()
+
+        self.group_main_interface.resize(w, h)
 
         # Set the maximum height of the sidebar to prevent performance from dropping when too many message boxes exist.
         self.layer_right_message_sidebar.setMaximumHeight(event.size().height())
@@ -59,3 +79,4 @@ class SiliconApplication(QMainWindow):
         self.layer_child_page.resize(event.size())
         self.layer_right_message_sidebar.setGeometry(w - 400, 80, 400, self.layer_right_message_sidebar.height())
         self.layer_modal_dialog.resize(event.size())
+        self.layer_left_global_drawer.resize(event.size())

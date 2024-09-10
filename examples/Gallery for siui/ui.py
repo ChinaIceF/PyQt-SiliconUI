@@ -1,12 +1,13 @@
 import icons
 from components.page_about import About
+from components.page_container import ExampleContainer
 from components.page_dialog import ExampleDialogs
+from components.page_functional import ExampleFunctional
 from components.page_homepage import ExampleHomepage
 from components.page_icons import ExampleIcons
 from components.page_option_cards import ExampleOptionCards
+from components.page_page_control import ExamplePageControl
 from components.page_widgets import ExampleWidgets
-from components.page_container import ExampleContainer
-from components.page_functional import ExampleFunctional
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDesktopWidget
 
@@ -51,6 +52,9 @@ class MySiliconApp(SiliconApplication):
         self.layerMain().addPage(ExampleDialogs(self),
                                  icon=SiGlobal.siui.iconpack.get("ic_fluent_panel_separate_window_filled"),
                                  hint="消息与二级界面", side="top")
+        self.layerMain().addPage(ExamplePageControl(self),
+                                 icon=SiGlobal.siui.iconpack.get("ic_fluent_wrench_screwdriver_filled"),
+                                 hint="页面控制", side="top")
         self.layerMain().addPage(ExampleFunctional(self),
                                  icon=SiGlobal.siui.iconpack.get("ic_fluent_puzzle_piece_filled"),
                                  hint="功能组件", side="top")

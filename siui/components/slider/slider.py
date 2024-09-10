@@ -63,7 +63,7 @@ class SiSliderH(QAbstractSlider):
         """
         super().setValue(value)
         self.handle.setHint(str(self.value()))
-        self._move_handle_according_to_value(move_to=True)
+        self._move_handle_according_to_value(move_to=move_to)
 
     def _move_handle_according_to_value(self, move_to=False):
         """
