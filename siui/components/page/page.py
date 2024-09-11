@@ -76,11 +76,11 @@ class SiPage(SiDenseVContainer):
         self.title = SiLabel(self)
         self.title.setFont(SiGlobal.siui.fonts["L_BOLD"])
         self.title.setFixedHeight(32)
+        self.title.setContentsMargins(64, 0, 0, 0)
         self.title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
         # 添加到水平容器
-        self.title_container.addPlaceholder(64)
         self.title_container.addWidget(self.title)
 
         self.title.setText(title)

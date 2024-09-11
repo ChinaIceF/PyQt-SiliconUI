@@ -90,7 +90,8 @@ class PageNavigator(ABCSiNavigationBar):
         # 创建容器用于放置按钮
         self.container = SiDenseVContainer(self)
         self.container.setSpacing(8)
-        self.container.setAlignment(Qt.AlignCenter)
+        self.container.setShrinking(False)
+        self.container.setAlignment(Qt.AlignHCenter)
 
         # 所有按钮
         self.buttons = []
@@ -103,7 +104,7 @@ class PageNavigator(ABCSiNavigationBar):
         :param func_when_active: 当被激活时调用的函数
         :param side: 添加在哪一侧
         """
-        new_page_button = PageButton(self)
+        new_page_button = PageButton(self.container)
         new_page_button.setIndex(self.maximumIndex())
         new_page_button.setStyleSheet("background-color: #20FF0000")
         new_page_button.resize(40, 40)
@@ -111,12 +112,14 @@ class PageNavigator(ABCSiNavigationBar):
         new_page_button.attachment().setSvgSize(20, 20)
         new_page_button.attachment().load(svg_data)
         new_page_button.activated.connect(func_when_active)
+        new_page_button.show()
 
         # 绑定索引切换信号，当页面切换时，会使按钮切换为 checked 状态
         self.indexChanged.connect(new_page_button.on_index_changed)
 
         # 新按钮添加到容器中
         self.container.addWidget(new_page_button, side=side)
+        self.container.arrangeWidget()
         self.setMaximumIndex(self.maximumIndex() + 1)
 
         self.buttons.append(new_page_button)
