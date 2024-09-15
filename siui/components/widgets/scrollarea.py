@@ -75,8 +75,14 @@ class SiScrollArea(SiWidget):
         target = - int(progress * (self.attachment_.height() - self.height()))
 
         # 设置目标值并尝试启动
+        # 2024.8.24  直接使用 move，以提高拖动滚动条时的操作体验
+        self.widget_scroll_animation.stop()
+        self.widget_scroll_animation.setCurrent([self.attachment_.x(), target])
         self.widget_scroll_animation.setTarget([self.attachment_.x(), target])
-        self.widget_scroll_animation.try_to_start()
+        self.attachment_.move(self.attachment_.x(), target)
+
+        # self.widget_scroll_animation.setTarget([self.attachment_.x(), target])
+        # self.widget_scroll_animation.try_to_start()
 
     def _scroll_horizontal_handler(self, pos):
         # 计算目标横坐标
@@ -85,8 +91,14 @@ class SiScrollArea(SiWidget):
         target = - int(progress * (self.attachment_.width() - self.width()))
 
         # 设置目标值并尝试启动
+        # 2024.8.24  直接使用 move，以提高拖动滚动条时的操作体验
+        self.widget_scroll_animation.stop()
+        self.widget_scroll_animation.setCurrent([target, self.attachment_.y()])
         self.widget_scroll_animation.setTarget([target, self.attachment_.y()])
-        self.widget_scroll_animation.try_to_start()
+        self.attachment_.move(target, self.attachment_.y())
+
+        # self.widget_scroll_animation.setTarget([target, self.attachment_.y()])
+        # self.widget_scroll_animation.try_to_start()
 
     def resizeEvent(self, event):
         # 注意：滚动区域并不会改变子控件的大小，适应需要重写父级的resizeEvent
