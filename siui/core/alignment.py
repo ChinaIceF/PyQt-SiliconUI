@@ -26,4 +26,3 @@ class SiQuickAlignmentManager:
             y = 0
 
         return QPoint(x, y)
-

@@ -1,7 +1,7 @@
 import time
 
-from siui.core.color import SiColor
-from siui.gui.color_group import DarkColorGroup, BrightColorGroup
+from siui.core import SiColor
+from siui.gui.color_group import DarkColorGroup
 from siui.gui.font import GlobalFontDict
 from siui.gui.icons.parser import SiGlobalIconPack
 
@@ -54,7 +54,7 @@ class SiliconUIGlobal:
         for window in self.windows.values():
             try:
                 window.reloadStyleSheet()
-            except:
+            except NameError:
                 pass
             self._reloadWidgetStyleSheet(window)
 
@@ -62,7 +62,7 @@ class SiliconUIGlobal:
         """ run reloadStyleSheet() for all children of this widget """
         try:
             widget.reloadStyleSheet()
-        except:
+        except NameError:
             pass
         self._reloadWidgetStyleSheet(widget)
 
@@ -71,7 +71,7 @@ class SiliconUIGlobal:
             self._reloadWidgetStyleSheet(child)
             try:
                 child.reloadStyleSheet()
-            except:
+            except NameError:
                 pass
         return
 
@@ -89,4 +89,3 @@ class NewGlobal:
     新全局数据
     """
     create_time = time.time()
-

@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+
 class Si(Enum):
     # the namespace of SiliconUI
     # Flags for SiWidget
