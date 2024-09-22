@@ -1,7 +1,7 @@
 from siui.components import SiLabel, SiMasonryContainer, SiScrollArea, SiWidget
 from siui.components.widgets.abstracts.table import ABCSiTabelManager, ABCSiTable, SiRow
-from siui.core.color import SiColor
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import Si
 from siui.gui import GlobalFont, SiFont
 
 

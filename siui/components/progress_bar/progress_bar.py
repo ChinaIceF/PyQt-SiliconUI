@@ -3,10 +3,10 @@ from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QPainter, QPen, QColor
 
 from siui.components.widgets.abstracts.widget import SiWidget
-from siui.core.animation import SiExpAnimation
-from siui.core.animation.abstract import ABCSiAnimation
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
+from siui.core import SiExpAnimation
+from siui.core import ABCSiAnimation
+from siui.core import SiColor
+from siui.core import SiGlobal
 from siui.components.widgets import SiLabel
 
 

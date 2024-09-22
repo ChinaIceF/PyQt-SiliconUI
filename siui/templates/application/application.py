@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 from siui.components.tooltip import ToolTipWindow
 from siui.components.widgets.abstracts import SiWidget
-from siui.core.globals import SiGlobal
+from siui.core import SiGlobal
 from siui.templates.application.components.layer.layer_child_page.layer_child_page import LayerChildPage
 from siui.templates.application.components.layer.layer_left_global_drawer.layer_left_global_drawer import (
     LayerLeftGlobalDrawer,

@@ -4,7 +4,7 @@ from siui.components.menu.menu import SiMenu
 from siui.components.widgets import SiDenseHContainer
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel, SiSvgLabel
-from siui.core.color import SiColor
+from siui.core import SiColor
 
 
 class ABCSiComboBox(SiWidget):

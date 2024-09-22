@@ -3,9 +3,9 @@ from PyQt5.QtCore import Qt
 from siui.components import SiTitledWidgetGroup, SiLabel, SiDenseHContainer, SiDenseVContainer, SiDividedHContainer, \
     SiDividedVContainer, SiFlowContainer, SiDraggableLabel, SiSimpleButton, SiPushButton, SiMasonryContainer
 from siui.components.page import SiPage
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import SiGlobal
+from siui.core import Si
 from ..option_card import OptionCardPlaneForWidgetDemos
 
 import random

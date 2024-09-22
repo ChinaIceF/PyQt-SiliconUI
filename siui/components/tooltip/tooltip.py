@@ -8,9 +8,9 @@ from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel
-from siui.core.globals import SiGlobal
+from siui.core import SiGlobal
 from siui.gui.font import GlobalFont, SiFont
-from siui.core.silicon import Si
+from siui.core import Si
 
 
 class ToolTipWindow(SiWidget):

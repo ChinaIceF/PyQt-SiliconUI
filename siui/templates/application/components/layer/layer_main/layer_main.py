@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt
 
 from siui.components import SiLabel, SiDenseVContainer, SiDenseHContainer, SiPixLabel
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import SiGlobal
+from siui.core import Si
 from siui.templates.application.components.page_view import PageView
 from ..layer import SiLayer
 

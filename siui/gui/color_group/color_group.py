@@ -1,5 +1,5 @@
 
-from siui.core.color import SiColor
+from siui.core import SiColor
 
 
 class SiColorGroup:

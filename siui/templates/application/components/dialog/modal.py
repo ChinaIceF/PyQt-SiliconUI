@@ -1,6 +1,6 @@
 from siui.components import SiWidget, SiLabel, SiSvgLabel, SiDenseVContainer
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
+from siui.core import SiColor
+from siui.core import SiGlobal
 
 
 class SiModalDialog(SiWidget):

@@ -9,7 +9,7 @@ from siui.components import (
 from siui.components.combobox import SiComboBox
 from siui.components.page import SiPage
 from siui.components.spinbox.spinbox import SiDoubleSpinBox
-from siui.core.globals import SiGlobal
+from siui.core import SiGlobal
 
 from ..option_card import OptionCardPlaneForWidgetDemos
 from .components.child_page_example import ChildPageExample

@@ -13,9 +13,9 @@ from siui.components import (
 )
 from siui.components.combobox import SiComboBox
 from siui.components.page import SiPage
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import SiGlobal
+from siui.core import Si
 
 
 def get_on_button_clicked_func(button):

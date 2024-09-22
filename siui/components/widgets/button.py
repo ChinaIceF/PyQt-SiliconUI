@@ -3,10 +3,10 @@ from PyQt5.QtWidgets import QAbstractButton
 
 from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
 from siui.components.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
-from siui.core.animation import SiExpAnimation
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiExpAnimation
+from siui.core import SiColor
+from siui.core import SiGlobal
+from siui.core import Si
 from siui.gui.color_group import SiColorGroup
 from siui.gui.font import GlobalFont, SiFont
 

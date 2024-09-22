@@ -5,8 +5,8 @@ from siui.components.page import SiPage
 from siui.components.progress_bar import SiProgressBar
 from siui.components.titled_widget_group import SiTitledWidgetGroup
 from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPushButton, SiSimpleButton
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiGlobal
+from siui.core import Si
 
 
 class ExampleOptionCards(SiPage):

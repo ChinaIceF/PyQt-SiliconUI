@@ -1,6 +1,6 @@
 from siui.components import SiOptionCardLinear, SiPushButton, SiTitledWidgetGroup, SiCircularProgressBar
 from siui.components.page.child_page import SiChildPage
-from siui.core.globals import SiGlobal
+from siui.core import SiGlobal
 
 
 class ChildPageExample(SiChildPage):

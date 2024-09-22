@@ -3,8 +3,8 @@ from typing import Union
 
 from siui.components import SiLabel
 from siui.components.widgets.container import SiMasonryContainer
-from siui.core.color import SiColor
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import Si
 from siui.gui import SiFont, GlobalFont
 from siui.templates.application.components.message.box import SiSideMessageBox
 

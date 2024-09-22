@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 
 from siui.components.widgets.abstracts import ABCSiLineEdit, SiSimpleLineEdit
 from siui.components.widgets.button import SiSimpleButton
-from siui.core.globals import SiGlobal
+from siui.core import SiGlobal
 
 
 class SiLineEdit(ABCSiLineEdit):

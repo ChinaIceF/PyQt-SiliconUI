@@ -5,7 +5,7 @@ from siui.components import (
     SiTitledWidgetGroup,
 )
 from siui.components.page import SiPage
-from siui.core.globals import SiGlobal
+from siui.core import SiGlobal
 
 from ..option_card import OptionCardPlaneForWidgetDemos
 

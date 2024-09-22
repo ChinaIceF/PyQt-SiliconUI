@@ -2,11 +2,11 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
 from siui.components import SiDenseVContainer, SiLabel, SiPixLabel, SiSimpleButton, SiWidget
-from siui.core.animation import SiExpAnimation
-from siui.core.color import SiColor
-from siui.core.effect import SiQuickEffect
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiExpAnimation
+from siui.core import SiColor
+from siui.core import SiQuickEffect
+from siui.core import SiGlobal
+from siui.core import Si
 from siui.gui import SiFont, GlobalFont
 
 

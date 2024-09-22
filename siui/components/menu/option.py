@@ -3,8 +3,8 @@ from PyQt5.QtCore import QPoint, Qt, QTimer
 from siui.components.widgets.button import SiSimpleButton
 from siui.components.widgets.container import SiDenseHContainer
 from siui.components.widgets.label import SiLabel, SiSvgLabel
-from siui.core.color import SiColor
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import Si
 
 
 class OptionButton(SiSimpleButton):

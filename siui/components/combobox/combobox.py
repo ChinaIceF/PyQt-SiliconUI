@@ -6,8 +6,8 @@ from siui.components.menu.abstracts.ani_manager import AnimationManager
 from siui.components.menu.menu import SiMenu
 from siui.components.widgets.button import SiSimpleButton
 from siui.components.widgets.label import SiLabel
-from siui.core.color import SiColor
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import Si
 from siui.gui.font import GlobalFont, SiFont
 
 
