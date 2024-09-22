@@ -54,7 +54,7 @@ class SiliconUIGlobal:
         for window in self.windows.values():
             try:
                 window.reloadStyleSheet()
-            except NameError:
+            except AttributeError:
                 pass
             self._reloadWidgetStyleSheet(window)
 
@@ -62,7 +62,7 @@ class SiliconUIGlobal:
         """ run reloadStyleSheet() for all children of this widget """
         try:
             widget.reloadStyleSheet()
-        except NameError:
+        except AttributeError:
             pass
         self._reloadWidgetStyleSheet(widget)
 
@@ -71,7 +71,7 @@ class SiliconUIGlobal:
             self._reloadWidgetStyleSheet(child)
             try:
                 child.reloadStyleSheet()
-            except NameError:
+            except AttributeError:
                 pass
         return
 
