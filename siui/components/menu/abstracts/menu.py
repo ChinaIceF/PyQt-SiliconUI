@@ -7,9 +7,9 @@ from PyQt5.QtWidgets import QApplication, QGraphicsDropShadowEffect
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.container import SiDenseVContainer
 from siui.components.widgets.label import SiLabel
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import SiGlobal
+from siui.core import Si
 
 
 class ABCSiMenu(SiWidget):

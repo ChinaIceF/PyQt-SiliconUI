@@ -1,10 +1,10 @@
 from PyQt5.QtCore import pyqtSignal, Qt
 
-from siui.core.globals import SiGlobal
+from siui.core import SiGlobal
 from siui.components.widgets import SiLabel, SiToggleButton
 from siui.components.widgets.abstracts import ABCSiNavigationBar
 from siui.components.widgets import SiDenseHContainer, SiDenseVContainer, SiStackedContainer
-from siui.core.color import SiColor
+from siui.core import SiColor
 
 
 class PageButton(SiToggleButton):

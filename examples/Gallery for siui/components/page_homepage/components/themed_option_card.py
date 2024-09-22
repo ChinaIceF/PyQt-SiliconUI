@@ -4,8 +4,8 @@ from PyQt5.QtCore import Qt
 
 from siui.components.option_card import SiOptionCardPlane
 from siui.components.widgets import SiDenseVContainer, SiLabel, SiSimpleButton
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiGlobal
+from siui.core import Si
 
 
 class ThemedOptionCardPlane(SiOptionCardPlane):

@@ -28,9 +28,9 @@ from siui.components.widgets import (
 )
 from siui.components.widgets.navigation_bar import SiNavigationBarH, SiNavigationBarV
 from siui.components.widgets.table import SiTableView
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import SiGlobal
+from siui.core import Si
 
 from ..option_card import OptionCardPlaneForWidgetDemos
 from .components.demo_tables import DemoOsuPlayerRankingTableManager

@@ -1,9 +1,9 @@
 from typing import Union
 
 from siui.components import SiMasonryContainer, SiLabel
-from siui.core.color import SiColor
-from siui.core.effect import SiQuickEffect
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import SiQuickEffect
+from siui.core import Si
 from siui.gui import SiFont, GlobalFont
 from .messagebox import SiSideMessageBox
 from ..layer import SiLayer

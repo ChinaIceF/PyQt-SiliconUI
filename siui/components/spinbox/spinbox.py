@@ -2,7 +2,7 @@ from PyQt5.QtGui import QIntValidator, QDoubleValidator
 
 from siui.components.widgets.button import SiSimpleButton
 from siui.components.widgets.line_edit import SiLineEdit
-from siui.core.globals import SiGlobal
+from siui.core import SiGlobal
 
 
 class ABCSiSpinBox(SiLineEdit):

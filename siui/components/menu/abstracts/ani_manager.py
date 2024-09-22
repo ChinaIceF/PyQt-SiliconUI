@@ -4,7 +4,7 @@ from enum import Enum
 from PyQt5.QtWidgets import QApplication
 
 from siui.components.menu.abstracts.menu import ABCSiMenu
-from siui.core.color import SiColor
+from siui.core import SiColor
 
 
 class ABCAnimationManager:

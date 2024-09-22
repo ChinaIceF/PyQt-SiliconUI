@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 
 from siui.components import SiDenseHContainer, SiLabel, SiSimpleButton, SiWidget, SiDenseVContainer
 from siui.components.widgets.abstracts.navigation_bar import ABCSiNavigationBar
-from siui.core.color import SiColor
+from siui.core import SiColor
 
 
 class SiNavigationBarH(ABCSiNavigationBar):

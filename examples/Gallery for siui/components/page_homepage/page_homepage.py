@@ -17,10 +17,10 @@ from siui.components.widgets import (
     SiSimpleButton,
     SiSwitch,
 )
-from siui.core.color import SiColor
-from siui.core.effect import SiQuickEffect
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import SiQuickEffect
+from siui.core import SiGlobal
+from siui.core import Si
 from siui.gui import SiFont, GlobalFont
 
 from .components.themed_option_card import ThemedOptionCardPlane

@@ -5,10 +5,10 @@ from PyQt5.QtWidgets import QSizePolicy
 from siui.components import SiTitledWidgetGroup, SiOptionCardLinear, SiPushButton, SiSimpleButton, SiPixLabel, \
     SiDenseVContainer, SiLabel
 from siui.components.page import SiPage
-from siui.core.color import SiColor
-from siui.core.effect import SiQuickEffect
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import SiQuickEffect
+from siui.core import SiGlobal
+from siui.core import Si
 from siui.gui import GlobalFont
 
 

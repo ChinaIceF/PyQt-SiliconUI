@@ -1,6 +1,6 @@
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel, SiSimpleButton
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
+from siui.core import SiColor
+from siui.core import SiGlobal
 from siui.gui import GlobalFont, SiFont
 from siui.templates.application.components.message.box import SiSideMessageBox
 

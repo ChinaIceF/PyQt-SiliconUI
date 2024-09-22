@@ -1,8 +1,8 @@
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiDraggableLabel, SiLabel
-from siui.core.animation import SiExpAnimation, SiExpAccelerateAnimation
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import Si
+from siui.core import SiExpAccelerateAnimation
+from siui.core import SiGlobal
 
 
 class SiScrollArea(SiWidget):

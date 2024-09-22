@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import QPushButton
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel
-from siui.core.animation import SiExpAnimation
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
+from siui.core import SiExpAnimation
+from siui.core import SiColor
+from siui.core import SiGlobal
 from siui.gui.color_group import SiColorGroup
 
 

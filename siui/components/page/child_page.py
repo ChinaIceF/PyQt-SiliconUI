@@ -2,9 +2,9 @@ from PyQt5.QtCore import Qt
 
 from siui.components import SiWidget, SiDenseHContainer, SiLabel, SiTitledWidgetGroup
 from siui.components.page import SiPage
-from siui.core.color import SiColor
-from siui.core.effect import SiQuickEffect
-from siui.core.silicon import Si
+from siui.core import SiColor
+from siui.core import SiQuickEffect
+from siui.core import Si
 
 
 class SiChildPage(SiWidget):

@@ -1,1 +1,0 @@
-from siui.core.effect.effect import SiQuickEffect

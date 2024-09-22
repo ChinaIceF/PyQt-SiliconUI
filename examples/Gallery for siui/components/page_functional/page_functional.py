@@ -4,9 +4,9 @@ from siui.components import SiTitledWidgetGroup, SiPushButton, SiLabel, SiLongPr
     SiMasonryContainer
 from siui.components.combobox import SiComboBox
 from siui.components.page import SiPage
-from siui.core.color import SiColor
-from siui.core.effect import SiQuickEffect
-from siui.core.globals import SiGlobal
+from siui.core import SiColor
+from siui.core import SiQuickEffect
+from siui.core import SiGlobal
 from siui.templates.application.components.dialog.modal import SiModalDialog
 
 from ..option_card import OptionCardPlaneForWidgetDemos

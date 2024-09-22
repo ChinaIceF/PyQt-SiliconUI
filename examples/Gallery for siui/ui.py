@@ -12,8 +12,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDesktopWidget
 
 import siui
-from siui.core.color import SiColor
-from siui.core.globals import SiGlobal
+from siui.core import SiColor
+from siui.core import SiGlobal
 from siui.templates.application.application import SiliconApplication
 
 # 载入图标

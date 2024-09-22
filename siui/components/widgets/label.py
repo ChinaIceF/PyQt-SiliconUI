@@ -3,9 +3,9 @@ from PyQt5.QtGui import QPainter, QPainterPath, QPixmap
 from PyQt5.QtSvg import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
-from siui.core.alignment.manager import SiQuickAlignmentManager
-from siui.core.globals.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiQuickAlignmentManager
+from siui.core import SiGlobal
+from siui.core import Si
 
 
 class SiLabel(ABCAnimatedLabel):

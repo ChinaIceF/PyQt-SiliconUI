@@ -3,8 +3,8 @@ from PyQt5.QtCore import Qt
 from siui.components.widgets.container import SiDenseHContainer, SiDenseVContainer
 from siui.components.widgets.label import SiLabel
 from siui.components.widgets.scrollarea import SiScrollArea
-from siui.core.globals import SiGlobal
-from siui.core.silicon import Si
+from siui.core import SiGlobal
+from siui.core import Si
 
 
 class SiPage(SiDenseVContainer):
