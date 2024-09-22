@@ -42,9 +42,3 @@ Here are some project that created based on PyQt-SiliconUI:
 PyQt-SiliconUI is licensed under [GPLv3](LICENSE) 
 
 Copyright © 2024 by ChinaIceF.
-
-
-## References
-Here are the resources that were used in the development of this project:
-* [FlatIcon](https://flaticon.com/) - Some svg icons are used in `Gallery for siui`, **These icons are not a part of PyQt-SiliconUI**. However, you can download them from its website and use them in your project under the premise of complying with the terms and conditions.
-
