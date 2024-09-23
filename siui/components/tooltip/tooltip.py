@@ -125,7 +125,7 @@ class ToolTipWindow(SiWidget):
         :return:
         """
         # 刷新高亮层动画当前值和结束值，实现闪烁效果
-        self.highlight_mask.setColor("7FFFFFFF")
+        self.highlight_mask.setColor("#7FFFFFFF")
         self.highlight_mask.setColorTo("#00FFFFFF")
 
     def _refresh_position(self):
@@ -145,7 +145,8 @@ class ToolTipWindow(SiWidget):
         self.highlight_mask.resize(w, h)
 
         # 移动文本位置，阻止重设大小动画进行时奇怪的文字移动
-        self.text_label.move(0, h - self.text_label.height())
+        # self.text_label.move(0, h - self.text_label.height()) 2024.9.23 - 存在快速滑动鼠标时文字错位的情况
+        self.text_label.move(0, h - self.height() + 16)
 
     def enterEvent(self, event):
         super().enterEvent(event)
