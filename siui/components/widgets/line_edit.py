@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QLineEdit
 from siui.components.widgets import SiLabel, SiWidget
 from siui.components.widgets.abstracts import ABCSiLineEdit, SiSimpleLineEdit
 from siui.components.widgets.button import SiSimpleButton
-from siui.core import SiGlobal, SiColor
+from siui.core import SiGlobal, SiColor, SiExpAnimation
 
 
 class SiLineEdit(ABCSiLineEdit):
@@ -54,10 +54,12 @@ class SiLineEditWithItemName(SiWidget):
         self.name_spacing = 128
 
         self.base_panel = SiLabel(self)
-        self.base_panel.setFixedStyleSheet("border-radius: 16px")
+        self.base_panel.setFixedStyleSheet("border-radius: 6px")
+        self.base_panel.animation_color.setBias(1)
+        self.base_panel.animation_color.setFactor(1/32)
 
         self.edit_panel = SiLabel(self)
-        self.edit_panel.setFixedStyleSheet("border-radius: 16px")
+        self.edit_panel.setFixedStyleSheet("border-radius: 6px")
 
         self.name_label = SiLabel(self)
         self.name_label.setContentsMargins(16, 0, 16, 0)
@@ -66,14 +68,26 @@ class SiLineEditWithItemName(SiWidget):
         self.line_edit = SiSimpleLineEdit(self.edit_panel)
         self.line_edit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.line_edit.setTextMargins(16, 0, 16, 0)
+        self.line_edit.textEdited.connect(self.flash_on_edited)
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
         c = self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)
         b = self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)
-        self.base_panel.setColor(SiColor.mix(c, b, 0.5))
-        self.edit_panel.setColor(b)
-        self.name_label.setColor(self.colorGroup().fromToken(SiColor.TEXT_D))
+        a = self.colorGroup().fromToken(SiColor.INTERFACE_BG_A)
+
+        self.base_panel.setColor(SiColor.mix(c, b, 0.3))
+        self.edit_panel.setColor(SiColor.mix(b, a, 0.5))
+        self.name_label.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_D))
+
+    def flash_on_edited(self):
+        c = self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)
+        b = self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)
+        self.base_panel.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_E))
+        self.base_panel.setColorTo(SiColor.mix(c, b, 0.3))
+
+    def setName(self, name: str):
+        self.name_label.setText(name)
 
     def lineEdit(self):
         return self.line_edit
@@ -85,6 +99,7 @@ class SiLineEditWithItemName(SiWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.base_panel.resize(event.size())
-        self.edit_panel.setGeometry(self.name_spacing, 0, event.size().width() - self.name_spacing)
+        self.edit_panel.setGeometry(
+            self.name_spacing, 0, event.size().width() - self.name_spacing, event.size().height())
         self.name_label.resize(self.name_spacing, event.size().height())
         self.line_edit.resize(self.edit_panel.size())
