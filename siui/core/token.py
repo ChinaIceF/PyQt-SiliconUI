@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import Enum
 
 from PyQt5.QtGui import QFont
 
