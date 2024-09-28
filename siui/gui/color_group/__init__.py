@@ -1,3 +1,6 @@
+from .bright import BrightColorGroup
 from .color_group import SiColorGroup
 from .dark import DarkColorGroup
-from .bright import BrightColorGroup
+
+__all__ = ("BrightColorGroup", "SiColorGroup", "DarkColorGroup")
+

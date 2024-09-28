@@ -1,9 +1,9 @@
 import os
 
 
-class SiGlobalIconPack:
+class GlobalIconPack:
     current_module_path = os.path.dirname(os.path.abspath(__file__))
-    package_folder_path = os.path.join(current_module_path, 'packages')
+    package_folder_path = os.path.join(current_module_path, "packages")
 
     def __init__(self):
         self.default_color = None
@@ -41,7 +41,7 @@ class SiGlobalIconPack:
 
     def append_class(self, class_name, force=False):
         if class_name in self.icons_classified.keys() and (force is False):
-            raise ValueError("Class name {} is already exist.".format(class_name))
+            raise ValueError(f"Class name {class_name} is already exist.")
         self.icons_classified[class_name] = {}
 
     def append(self, name, data, class_name: str = "__unclassified__"):
