@@ -429,14 +429,17 @@ class ExampleWidgets(SiPage):
 
             self.demo_named_line_edit_1 = SiLineEditWithItemName(self)
             self.demo_named_line_edit_1.setName("项目名称")
+            self.demo_named_line_edit_1.lineEdit().setText("PyQt-SiliconUI")
             self.demo_named_line_edit_1.resize(512, 32)
 
             self.demo_named_line_edit_2 = SiLineEditWithItemName(self)
             self.demo_named_line_edit_2.setName("项目所有人")
+            self.demo_named_line_edit_2.lineEdit().setText("IceF")
             self.demo_named_line_edit_2.resize(512, 32)
 
             self.demo_named_line_edit_3 = SiLineEditWithItemName(self)
-            self.demo_named_line_edit_3.setName("创建者")
+            self.demo_named_line_edit_3.setName("贡献者")
+            self.demo_named_line_edit_3.lineEdit().setText("Every Contributor")
             self.demo_named_line_edit_3.resize(512, 32)
 
             self.named_line_edit.body().addWidget(self.demo_named_line_edit_1)

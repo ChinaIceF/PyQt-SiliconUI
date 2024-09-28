@@ -2,8 +2,9 @@ from PyQt5.QtCore import Qt
 
 from siui.components.widgets.container import SiDenseVContainer
 from siui.components.widgets.label import SiLabel
-from siui.core import SiGlobal
+from siui.core import SiGlobal, GlobalFont
 from siui.core import Si
+from siui.gui import SiFont
 
 
 class GroupTitle(SiLabel):
@@ -14,7 +15,7 @@ class GroupTitle(SiLabel):
 
         # 标题文字
         self.title_label = SiLabel(self)
-        self.title_label.setFont(SiGlobal.siui.fonts["M_BOLD"])
+        self.title_label.setFont(SiFont.tokenized(GlobalFont.M_BOLD))
         self.title_label.setFixedHeight(26)
         self.title_label.setAlignment(Qt.AlignBottom)
         self.title_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)

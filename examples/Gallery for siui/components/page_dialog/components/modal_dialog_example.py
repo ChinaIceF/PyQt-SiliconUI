@@ -1,6 +1,5 @@
-from siui.components import SiLongPressButton, SiPushButton, SiLabel
-from siui.core import SiColor
-from siui.core import SiGlobal
+from siui.components import SiLabel, SiLongPressButton, SiPushButton
+from siui.core import SiColor, SiGlobal
 from siui.templates.application.components.dialog.modal import SiModalDialog
 
 

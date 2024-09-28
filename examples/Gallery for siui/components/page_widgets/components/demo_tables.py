@@ -1,8 +1,7 @@
 from siui.components import SiLabel, SiPixLabel
 from siui.components.widgets.abstracts.table import ABCSiTabelManager, SiRow
-from siui.core import SiColor
-from siui.core import Si
-from siui.gui import GlobalFont, SiFont
+from siui.core import GlobalFont, Si, SiColor
+from siui.gui import SiFont
 
 
 class DemoOsuPlayerRankingTableManager(ABCSiTabelManager):
@@ -40,7 +39,7 @@ class DemoOsuPlayerRankingTableManager(ABCSiTabelManager):
     def _value_write_parser(self, row_index, col_index, value):
         widget = self.parent().getRowWidget(row_index)[col_index]
         if col_index == 0:
-            widget.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+            widget.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
             widget.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_B))
 
         if col_index == 1:
@@ -50,9 +49,9 @@ class DemoOsuPlayerRankingTableManager(ABCSiTabelManager):
         if col_index == 2:
             widget.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_B))
             if row_index == 0:
-                widget.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+                widget.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
             else:
-                widget.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+                widget.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
 
         if col_index == 3:
             if value == "100.00%":
@@ -96,7 +95,7 @@ class DemoOsuPlayerRankingTableManager(ABCSiTabelManager):
     def on_header_created(self, header: SiRow):
         for name in self.parent().column_names:
             new_label = SiLabel(self.parent())
-            new_label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+            new_label.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
             new_label.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_D))
             new_label.setText(name)
             new_label.adjustSize()

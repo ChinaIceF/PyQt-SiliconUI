@@ -3,12 +3,9 @@ from PyQt5.QtWidgets import QAbstractButton
 
 from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
 from siui.components.widgets.label import SiIconLabel, SiLabel, SiSvgLabel
-from siui.core import SiExpAnimation
-from siui.core import SiColor
-from siui.core import SiGlobal
-from siui.core import Si
+from siui.core import GlobalFont, Si, SiColor, SiExpAnimation, SiGlobal
+from siui.gui import SiFont
 from siui.gui.color_group import SiColorGroup
-from siui.gui.font import GlobalFont, SiFont
 
 
 class SiPushButton(ABCPushButton):
@@ -25,7 +22,7 @@ class SiPushButton(ABCPushButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+        self.label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
@@ -100,7 +97,7 @@ class SiLongPressButton(ABCPushButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+        self.label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
@@ -159,7 +156,7 @@ class SiToggleButton(ABCToggleButton):
         # 实例化文本标签
         self.label = SiIconLabel(self)
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+        self.label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
 
         # 绑定到主体
@@ -214,7 +211,7 @@ class SiRadioButton(SiLabel):
         # 创建选项文字
         self.text_label = SiLabel(self)
         self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-        self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+        self.text_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
     def reloadStyleSheet(self):
@@ -334,7 +331,7 @@ class SiCheckBox(SiLabel):
         # 创建选项文字
         self.text_label = SiLabel(self)
         self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-        self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+        self.text_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
     def reloadStyleSheet(self):

@@ -8,9 +8,8 @@ from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel
-from siui.core import SiGlobal
-from siui.gui.font import GlobalFont, SiFont
-from siui.core import Si
+from siui.core import GlobalFont, Si, SiGlobal
+from siui.gui import SiFont
 
 
 class ToolTipWindow(SiWidget):
@@ -54,7 +53,7 @@ class ToolTipWindow(SiWidget):
         self.text_label.setFixedStyleSheet("padding: 8px")
         self.text_label.setSiliconWidgetFlag(Si.InstantResize)
         self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.text_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+        self.text_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
 
         # 高光遮罩，当信息刷新时会闪烁一下
         self.highlight_mask = SiLabel(self)

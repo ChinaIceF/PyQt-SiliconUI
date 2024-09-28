@@ -4,8 +4,9 @@ from PyQt5.QtWidgets import QLineEdit
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.container import SiDenseHContainer
 from siui.components.widgets.label import SiLabel
-from siui.core import SiColor
+from siui.core import SiColor, GlobalFont
 from siui.core import SiGlobal
+from siui.gui import SiFont
 
 
 class SiSimpleLineEdit(QLineEdit):
@@ -15,7 +16,7 @@ class SiSimpleLineEdit(QLineEdit):
         super().__init__(*args, **kwargs)
 
         # 设置字体
-        self.setFont(SiGlobal.siui.fonts["S_NORMAL"])
+        self.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
 
     def reloadStyleSheet(self):
         self.setStyleSheet(

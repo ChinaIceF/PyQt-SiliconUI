@@ -12,7 +12,7 @@ from siui.components.spinbox.spinbox import SiDoubleSpinBox
 from siui.core import SiGlobal
 
 from ..option_card import OptionCardPlaneForWidgetDemos
-from .components.child_page_example import ChildPageExample
+from .components.child_page_example import ChildPageExample, ChildPageExample2
 from .components.modal_dialog_example import ModalDialogExample
 from .components.side_msg_box import send_custom_message, send_simple_message, send_titled_message
 
@@ -170,12 +170,20 @@ class ExampleDialogs(SiPage):
 
             self.ctrl_show_child_pages_example = SiPushButton(self)
             self.ctrl_show_child_pages_example.resize(128, 32)
-            self.ctrl_show_child_pages_example.attachment().setText("显示示例子页面")
+            self.ctrl_show_child_pages_example.attachment().setText("显示示例子页面A")
             self.ctrl_show_child_pages_example.clicked.connect(
                 lambda: SiGlobal.siui.windows["MAIN_WINDOW"].layerChildPage().setChildPage(ChildPageExample(self))
             )
 
+            self.ctrl_show_child_pages_example2 = SiPushButton(self)
+            self.ctrl_show_child_pages_example2.resize(128, 32)
+            self.ctrl_show_child_pages_example2.attachment().setText("显示示例子页面B")
+            self.ctrl_show_child_pages_example2.clicked.connect(
+                lambda: SiGlobal.siui.windows["MAIN_WINDOW"].layerChildPage().setChildPage(ChildPageExample2(self))
+            )
+
             self.child_pages.body().addWidget(self.ctrl_show_child_pages_example)
+            self.child_pages.body().addWidget(self.ctrl_show_child_pages_example2)
             self.child_pages.body().addPlaceholder(12)
             self.child_pages.adjustSize()
 

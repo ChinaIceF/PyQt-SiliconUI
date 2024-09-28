@@ -2,7 +2,6 @@ import time
 
 from siui.core import SiColor
 from siui.gui.color_group import DarkColorGroup
-from siui.gui.font import GlobalFontDict
 from siui.gui.icons.parser import SiGlobalIconPack
 
 
@@ -30,7 +29,6 @@ class SiliconUIGlobal:
 
     # 字体字典，储存所有字体
     # 值为 QFont 类型的字体
-    fonts = GlobalFontDict.fonts
 
     def loadWindows(self, dictionary):
         SiliconUIGlobal.windows.update(dictionary)

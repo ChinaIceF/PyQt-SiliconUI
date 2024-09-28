@@ -1,7 +1,58 @@
-from siui.components import SiOptionCardLinear, SiPushButton, SiTitledWidgetGroup, SiCircularProgressBar
+from siui.components import (
+    SiCircularProgressBar,
+    SiLineEditWithItemName,
+    SiOptionCardLinear,
+    SiOptionCardPlane,
+    SiPushButton,
+    SiTitledWidgetGroup,
+)
 from siui.components.page.child_page import SiChildPage
 from siui.core import SiGlobal
 
+
+class ChildPageExample2(SiChildPage):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, **kwargs)
+
+        self.view().setMinimumWidth(800)
+        self.content().setTitle("创建新待办")
+        self.content().setPadding(64)
+
+        # page content
+        self.titled_widget_group = SiTitledWidgetGroup(self)
+
+        with self.titled_widget_group as group:
+            self.option_card_general = SiOptionCardPlane(self)
+            self.option_card_general.setTitle("常规")
+
+            self.line_edit_title = SiLineEditWithItemName(self)
+            self.line_edit_title.setName("待办标题")
+            self.line_edit_title.setFixedHeight(32)
+
+            self.line_edit_description = SiLineEditWithItemName(self)
+            self.line_edit_description.setName("待办详情")
+            self.line_edit_description.setFixedHeight(32)
+
+            self.option_card_general.body().setAdjustWidgetsSize(True)
+            self.option_card_general.body().addWidget(self.line_edit_title)
+            self.option_card_general.body().addWidget(self.line_edit_description)
+            self.option_card_general.body().addPlaceholder(12)
+            self.option_card_general.adjustSize()
+
+            group.addWidget(self.option_card_general)
+
+        self.content().setAttachment(self.titled_widget_group)
+
+        # control panel
+        self.demo_button = SiPushButton(self)
+        self.demo_button.resize(128, 32)
+        self.demo_button.attachment().setText("应用")
+        self.demo_button.clicked.connect(self.closeParentLayer)
+
+        self.panel().addWidget(self.demo_button, "right")
+
+        # load style sheet
+        SiGlobal.siui.reloadStyleSheetRecursively(self)
 
 class ChildPageExample(SiChildPage):
     def __init__(self, *arg, **kwargs):
