@@ -1,8 +1,7 @@
 from siui.components import SiLabel, SiMasonryContainer, SiScrollArea, SiWidget
 from siui.components.widgets.abstracts.table import ABCSiTabelManager, ABCSiTable, SiRow
-from siui.core import SiColor
-from siui.core import Si
-from siui.gui import GlobalFont, SiFont
+from siui.core import GlobalFont, Si, SiColor
+from siui.gui import SiFont
 
 
 class SiTableValueManagerLabels(ABCSiTabelManager):
@@ -21,7 +20,7 @@ class SiTableValueManagerLabels(ABCSiTabelManager):
     def on_header_created(self, header: SiRow):
         for name in self.parent().column_names:
             new_label = SiLabel(self.parent())
-            new_label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+            new_label.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
             new_label.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_B))
             new_label.setText(name)
             new_label.adjustSize()

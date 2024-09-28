@@ -6,9 +6,8 @@ from siui.components.menu.abstracts.ani_manager import AnimationManager
 from siui.components.menu.menu import SiMenu
 from siui.components.widgets.button import SiSimpleButton
 from siui.components.widgets.label import SiLabel
-from siui.core import SiColor
-from siui.core import Si
-from siui.gui.font import GlobalFont, SiFont
+from siui.core import GlobalFont, Si, SiColor
+from siui.gui.font import SiFont
 
 
 class SiComboBox(ABCSiComboBox):
@@ -20,7 +19,7 @@ class SiComboBox(ABCSiComboBox):
         self.menu().setAnimationManager(AnimationManager.EXPAND)
 
         self.value_label = SiLabel(self)
-        self.value_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+        self.value_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.value_label.setAlignment(Qt.AlignVCenter)
         self.value_label.setFixedHeight(32)
         self.value_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)

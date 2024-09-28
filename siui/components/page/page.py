@@ -3,8 +3,9 @@ from PyQt5.QtCore import Qt
 from siui.components.widgets.container import SiDenseHContainer, SiDenseVContainer
 from siui.components.widgets.label import SiLabel
 from siui.components.widgets.scrollarea import SiScrollArea
-from siui.core import SiGlobal
+from siui.core import SiGlobal, GlobalFont
 from siui.core import Si
+from siui.gui import SiFont
 
 
 class SiPage(SiDenseVContainer):
@@ -74,7 +75,7 @@ class SiPage(SiDenseVContainer):
 
         # 标题
         self.title = SiLabel(self)
-        self.title.setFont(SiGlobal.siui.fonts["L_BOLD"])
+        self.title.setFont(SiFont.tokenized(GlobalFont.L_BOLD))
         self.title.setFixedHeight(32)
         self.title.setContentsMargins(64, 0, 0, 0)
         self.title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)

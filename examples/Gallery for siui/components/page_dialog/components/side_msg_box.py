@@ -1,7 +1,6 @@
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel, SiSimpleButton
-from siui.core import SiColor
-from siui.core import SiGlobal
-from siui.gui import GlobalFont, SiFont
+from siui.core import GlobalFont, SiColor, SiGlobal
+from siui.gui import SiFont
 from siui.templates.application.components.message.box import SiSideMessageBox
 
 
@@ -34,7 +33,7 @@ def send_custom_message(type_, auto_close=False, auto_close_duration=1000):
     container.setSpacing(0)
 
     info_label = SiLabel()
-    info_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+    info_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
     info_label.setStyleSheet(f"color: {info_label.colorGroup().fromToken(SiColor.TEXT_D)}; padding-left: 16px")
     info_label.setText("以下账号已成功登录")
     info_label.adjustSize()
@@ -55,7 +54,7 @@ def send_custom_message(type_, auto_close=False, auto_close_duration=1000):
     container_v.setSpacing(0)
 
     name_label = SiLabel()
-    name_label.setFont(SiFont.fromToken(GlobalFont.M_BOLD))
+    name_label.setFont(SiFont.tokenized(GlobalFont.M_BOLD))
     name_label.setStyleSheet(f"color: {name_label.colorGroup().fromToken(SiColor.TEXT_B)}; padding-left:8px")
     name_label.setText("霏泠Ice")
     name_label.adjustSize()

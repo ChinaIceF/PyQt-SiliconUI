@@ -1,6 +1,5 @@
-from PyQt5.Qt import QColor
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components import SiPixLabel
 from siui.components.option_card import SiOptionCardLinear, SiOptionCardPlane
@@ -17,11 +16,8 @@ from siui.components.widgets import (
     SiSimpleButton,
     SiSwitch,
 )
-from siui.core import SiColor
-from siui.core import SiQuickEffect
-from siui.core import SiGlobal
-from siui.core import Si
-from siui.gui import SiFont, GlobalFont
+from siui.core import GlobalFont, Si, SiColor, SiGlobal, SiQuickEffect
+from siui.gui import SiFont
 
 from .components.themed_option_card import ThemedOptionCardPlane
 
@@ -58,14 +54,14 @@ class ExampleHomepage(SiPage):
         self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.title.setText("Silicon UI")
         self.title.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
-        self.title.setFont(SiGlobal.siui.fonts["XL_NORMAL"])
+        self.title.setFont(SiFont.tokenized(GlobalFont.XL_NORMAL))
 
         self.subtitle = SiLabel(self.head_area)
         self.subtitle.setGeometry(64, 72, 500, 48)
         self.subtitle.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.subtitle.setText("A powerful and artistic UI library based on PyQt5")
         self.subtitle.setStyleSheet("color: {}".format(SiColor.trans(SiGlobal.siui.colors["TEXT_A"], 0.9)))
-        self.subtitle.setFont(SiFont.fromToken(GlobalFont.S_DEMI_BOLD))
+        self.subtitle.setFont(SiFont.tokenized(GlobalFont.S_DEMI_BOLD))
 
         # 创建一个水平容器
         self.container_for_cards = SiDenseHContainer(self.head_area)

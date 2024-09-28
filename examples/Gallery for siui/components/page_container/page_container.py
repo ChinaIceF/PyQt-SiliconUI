@@ -3,9 +3,10 @@ from PyQt5.QtCore import Qt
 from siui.components import SiTitledWidgetGroup, SiLabel, SiDenseHContainer, SiDenseVContainer, SiDividedHContainer, \
     SiDividedVContainer, SiFlowContainer, SiDraggableLabel, SiSimpleButton, SiPushButton, SiMasonryContainer
 from siui.components.page import SiPage
-from siui.core import SiColor
+from siui.core import SiColor, GlobalFont
 from siui.core import SiGlobal
 from siui.core import Si
+from siui.gui import SiFont
 from ..option_card import OptionCardPlaneForWidgetDemos
 
 import random
@@ -219,7 +220,7 @@ class ExampleContainer(SiPage):
             for _ in range(15):
                 label = SiDraggableLabel(self)
                 button = SiSimpleButton(label)
-                button.attachment().setFont(SiGlobal.siui.fonts["S_NORMAL"])
+                button.attachment().setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
                 button.attachment().setText(str(round(random.random(), int(6 * random.random() + 2))))
                 button.colorGroup().assign(SiColor.BUTTON_OFF, button.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
                 button.setFixedHeight(32)

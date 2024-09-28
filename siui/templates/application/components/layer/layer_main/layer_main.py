@@ -1,9 +1,10 @@
 from PyQt5.QtCore import Qt
 
 from siui.components import SiLabel, SiDenseVContainer, SiDenseHContainer, SiPixLabel
-from siui.core import SiColor
+from siui.core import SiColor, GlobalFont
 from siui.core import SiGlobal
 from siui.core import Si
+from siui.gui import SiFont
 from siui.templates.application.components.page_view import PageView
 from ..layer import SiLayer
 
@@ -35,7 +36,7 @@ class LayerMain(SiLayer):
         # 应用标题
         self.app_title = SiLabel(self)
         self.app_title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-        self.app_title.setFont(SiGlobal.siui.fonts["S_NORMAL"])
+        self.app_title.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.app_title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.app_title.setText("Silicon 应用模版")
 

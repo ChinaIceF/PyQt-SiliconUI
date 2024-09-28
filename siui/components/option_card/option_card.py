@@ -4,8 +4,8 @@ from siui.components.option_card.abstracts.option_card import ABCSiOptionCardPla
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.container import SiDenseHContainer
 from siui.components.widgets.label import SiLabel, SiSvgLabel
-from siui.core import SiGlobal
-from siui.core import Si
+from siui.core import GlobalFont, Si, SiGlobal
+from siui.gui import SiFont
 
 
 class SiOptionCardLinear(SiWidget):
@@ -118,7 +118,7 @@ class SiOptionCardPlane(ABCSiOptionCardPlane):
         # 在 header 创建标题
         self.title = SiLabel(self)
         self.title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.title.setFont(SiGlobal.siui.fonts["M_BOLD"])
+        self.title.setFont(SiFont.tokenized(GlobalFont.M_BOLD))
         self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.title.setFixedHeight(32)
 

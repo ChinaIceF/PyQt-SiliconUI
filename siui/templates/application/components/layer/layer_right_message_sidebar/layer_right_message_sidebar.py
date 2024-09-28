@@ -1,12 +1,10 @@
 from typing import Union
 
-from siui.components import SiMasonryContainer, SiLabel
-from siui.core import SiColor
-from siui.core import SiQuickEffect
-from siui.core import Si
-from siui.gui import SiFont, GlobalFont
+from siui.components import SiLabel, SiMasonryContainer
+from siui.core import GlobalFont, Si, SiColor, SiQuickEffect
+from siui.gui import SiFont
+
 from .messagebox import SiSideMessageBox
-from ..layer import SiLayer
 
 
 class MessageSidebar(SiMasonryContainer):
@@ -50,7 +48,7 @@ class MessageSidebar(SiMasonryContainer):
             label.setFixedWidth(380 - new_message_box.content().theme_wing_width - 32)
             label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
             label.setWordWrap(True)
-            label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+            label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
             label.setFixedStyleSheet(
                 "padding-top: 16px;"
                 "padding-bottom: 16px;"
@@ -66,7 +64,7 @@ class MessageSidebar(SiMasonryContainer):
             title_label.setFixedWidth(380 - new_message_box.content().theme_wing_width - 32)
             title_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
             title_label.setWordWrap(True)
-            title_label.setFont(SiFont.fromToken(GlobalFont.S_BOLD))
+            title_label.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
             title_label.setFixedStyleSheet(
                 "padding-top: 16px;"
                 "padding-bottom: 1px;"
@@ -80,7 +78,7 @@ class MessageSidebar(SiMasonryContainer):
             description_label.setFixedWidth(380 - new_message_box.content().theme_wing_width - 32)
             description_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
             description_label.setWordWrap(True)
-            description_label.setFont(SiFont.fromToken(GlobalFont.S_NORMAL))
+            description_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
             description_label.setFixedStyleSheet(
                 "padding-top: 1px;"
                 "padding-bottom: 16px;"
