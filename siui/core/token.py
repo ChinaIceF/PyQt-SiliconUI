@@ -16,6 +16,7 @@ class GlobalFontWeight(Enum):
     """Tokenized Global Font Weight"""
 
     NORMAL = QFont.Weight.Normal
+    MEDIUM = QFont.Weight.Medium
     DEMI_BOLD = QFont.Weight.DemiBold
     BOLD = QFont.Weight.Bold
 
@@ -40,6 +41,16 @@ class GlobalFont(Enum):
     M_NORMAL_ITALIC = (GlobalFontSize.M, GlobalFontWeight.NORMAL, FontStyle.ITALIC)
     L_NORMAL_ITALIC = (GlobalFontSize.L, GlobalFontWeight.NORMAL, FontStyle.ITALIC)
     XL_NORMAL_ITALIC = (GlobalFontSize.XL, GlobalFontWeight.NORMAL, FontStyle.ITALIC)
+
+    S_MEDIUM = (GlobalFontSize.S, GlobalFontWeight.MEDIUM, FontStyle.REGULAR)
+    M_MEDIUM = (GlobalFontSize.M, GlobalFontWeight.MEDIUM, FontStyle.REGULAR)
+    L_MEDIUM = (GlobalFontSize.L, GlobalFontWeight.MEDIUM, FontStyle.REGULAR)
+    XL_MEDIUM = (GlobalFontSize.XL, GlobalFontWeight.MEDIUM, FontStyle.REGULAR)
+
+    S_MEDIUM_ITALIC = (GlobalFontSize.S, GlobalFontWeight.MEDIUM, FontStyle.ITALIC)
+    M_MEDIUM_ITALIC = (GlobalFontSize.M, GlobalFontWeight.MEDIUM, FontStyle.ITALIC)
+    L_MEDIUM_ITALIC = (GlobalFontSize.L, GlobalFontWeight.MEDIUM, FontStyle.ITALIC)
+    XL_MEDIUM_ITALIC = (GlobalFontSize.XL, GlobalFontWeight.MEDIUM, FontStyle.ITALIC)
 
     S_DEMI_BOLD = (GlobalFontSize.S, GlobalFontWeight.DEMI_BOLD, FontStyle.REGULAR)
     M_DEMI_BOLD = (GlobalFontSize.M, GlobalFontWeight.DEMI_BOLD, FontStyle.REGULAR)

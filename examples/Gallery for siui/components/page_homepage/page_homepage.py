@@ -54,14 +54,14 @@ class ExampleHomepage(SiPage):
         self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.title.setText("Silicon UI")
         self.title.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
-        self.title.setFont(SiFont.tokenized(GlobalFont.XL_NORMAL))
+        self.title.setFont(SiFont.tokenized(GlobalFont.XL_DEMI_BOLD))
 
         self.subtitle = SiLabel(self.head_area)
         self.subtitle.setGeometry(64, 72, 500, 48)
         self.subtitle.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.subtitle.setText("A powerful and artistic UI library based on PyQt5")
         self.subtitle.setStyleSheet("color: {}".format(SiColor.trans(SiGlobal.siui.colors["TEXT_A"], 0.9)))
-        self.subtitle.setFont(SiFont.tokenized(GlobalFont.S_DEMI_BOLD))
+        self.subtitle.setFont(SiFont.tokenized(GlobalFont.S_MEDIUM))
 
         # 创建一个水平容器
         self.container_for_cards = SiDenseHContainer(self.head_area)
@@ -72,11 +72,11 @@ class ExampleHomepage(SiPage):
 
         # 添加卡片
         self.option_card_project = ThemedOptionCardPlane(self)
-        self.option_card_project.setTitle("Github Repo")
+        self.option_card_project.setTitle("GitHub Repo")
         self.option_card_project.setFixedSize(218, 270)
         self.option_card_project.setThemeColor("#855198")
         self.option_card_project.setDescription(
-            "check PyQt-SiliconUI Repository on Github to get the latest release, report errors, provide suggestions and more.")  # noqa: E501
+            "check PyQt-SiliconUI Repository on GitHub to get the latest release, report errors, provide suggestions and more.")  # noqa: E501
         self.option_card_project.setURL("https://github.com/ChinaIceF/PyQt-SiliconUI")
 
         self.option_card_example = ThemedOptionCardPlane(self)
