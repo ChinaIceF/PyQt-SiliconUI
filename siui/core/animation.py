@@ -1,5 +1,5 @@
 import numpy
-from PyQt5.QtCore import QObject, QTimer, pyqtSignal
+from PyQt5.QtCore import QObject, Qt, QTimer, pyqtSignal
 
 global_fps = 60
 
@@ -25,10 +25,13 @@ class ABCSiAnimation(QObject):
         self.timer = QTimer()
         self.timer.setInterval(int(1000/global_fps))
         self.timer.timeout.connect(self._process)  # 每经历 interval 时间，传入函数就被触发一次
+        # self.timer.setTimerType(Qt.PreciseTimer)
 
         # 构建行为计时器
         self.action_timer = QTimer()
         self.action_timer.setSingleShot(True)
+        # self.action_timer.setTimerType(Qt.PreciseTimer)
+
 
     def setEnable(self, on):
         self.enabled = on
