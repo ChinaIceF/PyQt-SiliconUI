@@ -1,15 +1,17 @@
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtGui import QDesktopServices
-from PyQt5.QtWidgets import QSizePolicy
 
-from siui.components import SiTitledWidgetGroup, SiOptionCardLinear, SiPushButton, SiSimpleButton, SiPixLabel, \
-    SiDenseVContainer, SiLabel
+from siui.components import (
+    SiDenseVContainer,
+    SiLabel,
+    SiOptionCardLinear,
+    SiPixLabel,
+    SiSimpleButton,
+    SiTitledWidgetGroup,
+)
 from siui.components.page import SiPage
-from siui.core import SiColor
-from siui.core import SiQuickEffect
-from siui.core import SiGlobal
-from siui.core import Si
-from siui.gui import GlobalFont
+from siui.core import GlobalFont, Si, SiColor, SiGlobal, SiQuickEffect
+from siui.gui import SiFont
 
 
 class About(SiPage):
@@ -35,7 +37,7 @@ class About(SiPage):
 
         self.version_label = SiLabel(self)
         self.version_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.version_label.setFont(GlobalFont.M_NORMAL.value)
+        self.version_label.setFont(SiFont.tokenized(GlobalFont.M_NORMAL))
         self.version_label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")
         self.version_label.setText("PyQt-SiliconUI")
 

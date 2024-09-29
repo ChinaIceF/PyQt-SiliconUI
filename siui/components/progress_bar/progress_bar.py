@@ -1,13 +1,9 @@
 import numpy
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QPainter, QPen, QColor
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QColor, QPainter, QPen
 
-from siui.components.widgets.abstracts.widget import SiWidget
-from siui.core import SiExpAnimation
-from siui.core import ABCSiAnimation
-from siui.core import SiColor
-from siui.core import SiGlobal
 from siui.components.widgets import SiLabel
+from siui.core import ABCSiAnimation, SiColor, SiExpAnimation
 
 
 class SiProgressBar(SiLabel):
