@@ -18,7 +18,7 @@ class SiFont:
         italic: bool = False,
     ) -> QFont:
         font = QFont()
-        font.defaultFamily()
+        font.setFamily(font.defaultFamily());
         font.setPixelSize(size)
         font.setWeight(weight)
         font.setItalic(italic)
