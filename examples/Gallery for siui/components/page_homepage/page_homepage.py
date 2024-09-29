@@ -95,7 +95,7 @@ class ExampleHomepage(SiPage):
         # 添加到滚动区域容器
         self.scroll_container.addWidget(self.head_area)
 
-        SiQuickEffect.applyDropShadowOn(self.container_for_cards, color=(0, 0, 0, 80), blur_radius=48)
+        # SiQuickEffect.applyDropShadowOn(self.container_for_cards, color=(0, 0, 0, 80), blur_radius=48)
 
         # 下方区域标签
         self.body_area = SiLabel(self)
