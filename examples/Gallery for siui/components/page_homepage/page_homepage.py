@@ -1,5 +1,6 @@
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 
 from siui.components import SiPixLabel
 from siui.components.option_card import SiOptionCardLinear, SiOptionCardPlane
@@ -16,7 +17,7 @@ from siui.components.widgets import (
     SiSimpleButton,
     SiSwitch,
 )
-from siui.core import GlobalFont, Si, SiColor, SiGlobal, SiQuickEffect
+from siui.core import GlobalFont, Si, SiColor, SiGlobal, SiQuickEffect, GlobalFontSize
 from siui.gui import SiFont
 
 from .components.themed_option_card import ThemedOptionCardPlane
@@ -54,7 +55,7 @@ class ExampleHomepage(SiPage):
         self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.title.setText("Silicon UI")
         self.title.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
-        self.title.setFont(SiFont.tokenized(GlobalFont.XL_NORMAL))
+        self.title.setFont(SiFont.getFont(size=GlobalFontSize.XL.value, weight=QFont.Weight.Medium))
 
         self.subtitle = SiLabel(self.head_area)
         self.subtitle.setGeometry(64, 72, 500, 48)

@@ -221,4 +221,7 @@ class ExampleDialogs(SiPage):
         if isinstance(value, bool):
             self.message_auto_close = value
         if isinstance(value, str):
-            self.message_auto_close_duration = int(float(value) * 1000)
+            try:
+                self.message_auto_close_duration = int(float(value) * 1000)
+            except ValueError:
+                self.message_auto_close_duration = 1
