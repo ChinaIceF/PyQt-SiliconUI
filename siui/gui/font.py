@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class SiFont:
     @staticmethod
     def getFont(
-        families: Sequence[str] = ["Segoe UI", "Microsoft YaHei", "PingFang SC"],
+        families: Sequence[str] = ["Segoe UI", "Microsoft YaHei", "San Francisco Fonts", "PingFang SC"],
         size: int = 14,
         weight: QFont.Weight = QFont.Weight.Normal,
         italic: bool = False,

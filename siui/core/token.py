@@ -15,7 +15,9 @@ class GlobalFontSize(Enum):
 class GlobalFontWeight(Enum):
     """Tokenized Global Font Weight"""
 
+    LIGHT = QFont.Weight.Light
     NORMAL = QFont.Weight.Normal
+    MEDIUM = QFont.Weight.Medium
     DEMI_BOLD = QFont.Weight.DemiBold
     BOLD = QFont.Weight.Bold
 
@@ -31,6 +33,16 @@ class FontStyle(Enum):
 class GlobalFont(Enum):
     """Tokenized Global Font"""
 
+    S_LIGHT = (GlobalFontSize.S, GlobalFontWeight.LIGHT, FontStyle.REGULAR)
+    M_LIGHT = (GlobalFontSize.M, GlobalFontWeight.LIGHT, FontStyle.REGULAR)
+    L_LIGHT = (GlobalFontSize.L, GlobalFontWeight.LIGHT, FontStyle.REGULAR)
+    XL_LIGHT = (GlobalFontSize.XL, GlobalFontWeight.LIGHT, FontStyle.REGULAR)
+
+    S_LIGHT_ITALIC = (GlobalFontSize.S, GlobalFontWeight.LIGHT, FontStyle.ITALIC)
+    M_LIGHT_ITALIC = (GlobalFontSize.M, GlobalFontWeight.LIGHT, FontStyle.ITALIC)
+    L_LIGHT_ITALIC = (GlobalFontSize.L, GlobalFontWeight.LIGHT, FontStyle.ITALIC)
+    XL_LIGHT_ITALIC = (GlobalFontSize.XL, GlobalFontWeight.LIGHT, FontStyle.ITALIC)
+
     S_NORMAL = (GlobalFontSize.S, GlobalFontWeight.NORMAL, FontStyle.REGULAR)
     M_NORMAL = (GlobalFontSize.M, GlobalFontWeight.NORMAL, FontStyle.REGULAR)
     L_NORMAL = (GlobalFontSize.L, GlobalFontWeight.NORMAL, FontStyle.REGULAR)
@@ -40,6 +52,16 @@ class GlobalFont(Enum):
     M_NORMAL_ITALIC = (GlobalFontSize.M, GlobalFontWeight.NORMAL, FontStyle.ITALIC)
     L_NORMAL_ITALIC = (GlobalFontSize.L, GlobalFontWeight.NORMAL, FontStyle.ITALIC)
     XL_NORMAL_ITALIC = (GlobalFontSize.XL, GlobalFontWeight.NORMAL, FontStyle.ITALIC)
+
+    S_MEDIUM = (GlobalFontSize.S, GlobalFontWeight.MEDIUM, FontStyle.REGULAR)
+    M_MEDIUM = (GlobalFontSize.M, GlobalFontWeight.MEDIUM, FontStyle.REGULAR)
+    L_MEDIUM = (GlobalFontSize.L, GlobalFontWeight.MEDIUM, FontStyle.REGULAR)
+    XL_MEDIUM = (GlobalFontSize.XL, GlobalFontWeight.MEDIUM, FontStyle.REGULAR)
+
+    S_MEDIUM_ITALIC = (GlobalFontSize.S, GlobalFontWeight.MEDIUM, FontStyle.ITALIC)
+    M_MEDIUM_ITALIC = (GlobalFontSize.M, GlobalFontWeight.MEDIUM, FontStyle.ITALIC)
+    L_MEDIUM_ITALIC = (GlobalFontSize.L, GlobalFontWeight.MEDIUM, FontStyle.ITALIC)
+    XL_MEDIUM_ITALIC = (GlobalFontSize.XL, GlobalFontWeight.MEDIUM, FontStyle.ITALIC)
 
     S_DEMI_BOLD = (GlobalFontSize.S, GlobalFontWeight.DEMI_BOLD, FontStyle.REGULAR)
     M_DEMI_BOLD = (GlobalFontSize.M, GlobalFontWeight.DEMI_BOLD, FontStyle.REGULAR)

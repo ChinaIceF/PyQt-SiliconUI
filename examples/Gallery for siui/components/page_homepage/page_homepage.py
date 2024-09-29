@@ -55,7 +55,7 @@ class ExampleHomepage(SiPage):
         self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.title.setText("Silicon UI")
         self.title.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
-        self.title.setFont(SiFont.getFont(size=GlobalFontSize.XL.value, weight=QFont.Weight.Medium))
+        self.title.setFont(SiFont.tokenized(GlobalFont.XL_MEDIUM))
 
         self.subtitle = SiLabel(self.head_area)
         self.subtitle.setGeometry(64, 72, 500, 48)
