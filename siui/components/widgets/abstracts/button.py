@@ -263,6 +263,7 @@ class LongPressThread(QThread):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent_ = parent
+        self.safe_to_stop = False
 
         # 创建一个动画，不激活动画，而是每次运行时调用一次_process方法
         self.animation = SiExpAnimation(self)
@@ -277,6 +278,8 @@ class LongPressThread(QThread):
 
     # 重写进程
     def run(self):
+        self.safe_to_stop = False
+
         # 初始化等待时间
         time_start_waiting = time.time()
 
@@ -287,6 +290,11 @@ class LongPressThread(QThread):
             while self.parent().isPressed() and self.animation.current() < 1:
                 # 重置等待时间
                 time_start_waiting = time.time()
+
+                if self.safe_to_stop:
+                    self.safe_to_stop = False
+                    print("直接返回1")
+                    return
 
                 # 更新进度并发射信号
                 self.animation._process()
@@ -307,6 +315,11 @@ class LongPressThread(QThread):
 
         # 如果前进的循环已经被跳出，并且此时动画进度不为0
         while self.animation.current() > 0:
+            if self.safe_to_stop:
+                self.safe_to_stop = False
+                print("直接返回2")
+                return
+
             # 减少动画进度，直至0，并不断发射值改变信号
             self.animation.setCurrent(max(0, self.animation.current() - 0.1))
             self.animation.ticked.emit(self.animation.current())
