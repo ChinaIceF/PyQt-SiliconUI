@@ -441,6 +441,9 @@ class SiSwitch(QAbstractButton):
         """
         self._lever_move_animation_handler(self.switch_lever.x())
 
+    def getColor(self, token):
+        return self.color_group.fromToken(token)
+
     def colorGroup(self):
         """
         Get the color group of this widget

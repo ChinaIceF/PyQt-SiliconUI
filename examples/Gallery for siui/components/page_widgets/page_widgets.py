@@ -4,14 +4,21 @@ import numpy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 
-from siui.components import SiCircularProgressBar, SiLineEdit, SiOptionCardLinear, SiTitledWidgetGroup, SiWidget, \
-    SiLineEditWithDeletionButton, SiLineEditWithItemName
+from siui.components import (
+    SiCircularProgressBar,
+    SiLineEdit,
+    SiLineEditWithDeletionButton,
+    SiLineEditWithItemName,
+    SiOptionCardLinear,
+    SiTitledWidgetGroup,
+    SiWidget,
+)
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
 from siui.components.progress_bar import SiProgressBar
 from siui.components.slider import SiSliderH
-from siui.components.spinbox.spinbox import SiIntSpinBox, SiDoubleSpinBox
+from siui.components.spinbox.spinbox import SiDoubleSpinBox, SiIntSpinBox
 from siui.components.widgets import (
     SiCheckBox,
     SiDenseHContainer,
@@ -28,9 +35,8 @@ from siui.components.widgets import (
 )
 from siui.components.widgets.navigation_bar import SiNavigationBarH, SiNavigationBarV
 from siui.components.widgets.table import SiTableView
-from siui.core import SiColor
-from siui.core import SiGlobal
-from siui.core import Si
+from siui.components.widgets.timeline import SiTimeLine
+from siui.core import Si, SiColor, SiGlobal
 
 from ..option_card import OptionCardPlaneForWidgetDemos
 from .components.demo_tables import DemoOsuPlayerRankingTableManager
@@ -179,7 +185,7 @@ class ExampleWidgets(SiPage):
             # 控件显示效果
             self.showup_effect = OptionCardPlaneForWidgetDemos(self)
             self.showup_effect.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui"
-                                                  "/components/widgets/label.py")
+                                                "/components/widgets/label.py")
             self.showup_effect.setTitle("控件显示效果")
 
             self.demo_widget = SiWidget(self)
@@ -370,7 +376,7 @@ class ExampleWidgets(SiPage):
             # 简单单行输入组件
             self.line_edit = OptionCardPlaneForWidgetDemos(self)
             self.line_edit.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                          "/widgets/slider/slider.py")
+                                            "/widgets/slider/slider.py")
             self.line_edit.setTitle("简单单行输入组件")
 
             self.demo_line_edit = SiLineEdit(self)
@@ -384,7 +390,7 @@ class ExampleWidgets(SiPage):
             # 带删除单行输入组件
             self.line_edit_with_del_button = OptionCardPlaneForWidgetDemos(self)
             self.line_edit_with_del_button.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                          "/widgets/slider/slider.py")
+                                                            "/widgets/slider/slider.py")
             self.line_edit_with_del_button.setTitle("带删除单行输入组件")
 
             self.demo_line_edit_with_del_button = SiLineEditWithDeletionButton(self)
@@ -398,7 +404,7 @@ class ExampleWidgets(SiPage):
             # 整数微调组件
             self.int_spin_box = OptionCardPlaneForWidgetDemos(self)
             self.int_spin_box.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                          "/widgets/slider/slider.py")
+                                               "/widgets/slider/slider.py")
             self.int_spin_box.setTitle("整数微调组件")
 
             self.demo_int_spin_box = SiIntSpinBox(self)
@@ -411,7 +417,7 @@ class ExampleWidgets(SiPage):
             # 浮点数微调组件
             self.double_spin_box = OptionCardPlaneForWidgetDemos(self)
             self.double_spin_box.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                          "/widgets/slider/slider.py")
+                                                  "/widgets/slider/slider.py")
             self.double_spin_box.setTitle("浮点数微调组件")
 
             self.demo_double_spin_box = SiDoubleSpinBox(self)
@@ -424,7 +430,7 @@ class ExampleWidgets(SiPage):
             # 具名输入框
             self.named_line_edit = OptionCardPlaneForWidgetDemos(self)
             self.named_line_edit.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                          "/widgets/slider/slider.py")
+                                                  "/widgets/slider/slider.py")
             self.named_line_edit.setTitle("具名输入框")
 
             self.demo_named_line_edit_1 = SiLineEditWithItemName(self)
@@ -484,7 +490,7 @@ class ExampleWidgets(SiPage):
             # 进度条
             self.progress_bar_linear = OptionCardPlaneForWidgetDemos(self)
             self.progress_bar_linear.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                          "/widgets/progress_bar/progress_bar.py")
+                                                      "/widgets/progress_bar/progress_bar.py")
             self.progress_bar_linear.setTitle("进度条")
 
             self.demo_progress_bar = SiProgressBar(self)
@@ -621,7 +627,7 @@ class ExampleWidgets(SiPage):
             # 下拉菜单
             self.combobox = OptionCardPlaneForWidgetDemos(self)
             self.combobox.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                        "/widgets/progress_bar/progress_bar.py")
+                                           "/widgets/progress_bar/progress_bar.py")
             self.combobox.setTitle("下拉菜单")
 
             self.demo_combobox = SiComboBox(self)
@@ -649,7 +655,7 @@ class ExampleWidgets(SiPage):
             # 简单表格
             self.table_simple = OptionCardPlaneForWidgetDemos(self)
             self.table_simple.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                "/widgets/progress_bar/progress_bar.py")
+                                               "/widgets/progress_bar/progress_bar.py")
             self.table_simple.setTitle("简单表格")
 
             self.demo_table_simple = SiTableView(self)
@@ -727,7 +733,7 @@ class ExampleWidgets(SiPage):
             # 水平导航栏
             self.navigation_bar_h = OptionCardPlaneForWidgetDemos(self)
             self.navigation_bar_h.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                "/widgets/progress_bar/progress_bar.py")
+                                                   "/widgets/progress_bar/progress_bar.py")
             self.navigation_bar_h.setTitle("水平导航栏")
 
             self.demo_navigation_bar_h = SiNavigationBarH(self)
@@ -746,7 +752,7 @@ class ExampleWidgets(SiPage):
             # 垂直导航栏
             self.navigation_bar_v = OptionCardPlaneForWidgetDemos(self)
             self.navigation_bar_v.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                "/widgets/progress_bar/progress_bar.py")
+                                                   "/widgets/progress_bar/progress_bar.py")
             self.navigation_bar_v.setTitle("横向导航栏")
 
             self.demo_navigation_bar_v = SiNavigationBarV(self)
@@ -772,7 +778,7 @@ class ExampleWidgets(SiPage):
             # 水平单项选择栏
             self.selection_bar_h = OptionCardPlaneForWidgetDemos(self)
             self.selection_bar_h.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                "/widgets/progress_bar/progress_bar.py")
+                                                  "/widgets/progress_bar/progress_bar.py")
             self.selection_bar_h.setTitle("水平单项选择栏")
 
             self.demo_selection_bar_h = SiNavigationBarH(self)
@@ -792,7 +798,7 @@ class ExampleWidgets(SiPage):
             # 垂直单项选择栏
             self.selection_bar_v = OptionCardPlaneForWidgetDemos(self)
             self.selection_bar_v.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
-                                                "/widgets/progress_bar/progress_bar.py")
+                                                  "/widgets/progress_bar/progress_bar.py")
             self.selection_bar_v.setTitle("垂直单项选择栏")
 
             self.demo_selection_bar_v = SiNavigationBarV(self)
@@ -810,6 +816,24 @@ class ExampleWidgets(SiPage):
 
             group.addWidget(self.selection_bar_h)
             group.addWidget(self.selection_bar_v)
+
+        with self.titled_widgets_group as group:
+            group.addTitle("时间线")
+
+            # 时间线
+            self.timeline = OptionCardPlaneForWidgetDemos(self)
+            self.timeline.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                           "/widgets/progress_bar/progress_bar.py")
+            self.timeline.setTitle("时间线")
+
+            self.demo_timeline = SiTimeLine(self)
+
+            self.timeline.body().addWidget(self.demo_timeline)
+            self.timeline.body().addPlaceholder(12)
+            self.timeline.adjustSize()
+
+            group.addWidget(self.timeline)
+
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)

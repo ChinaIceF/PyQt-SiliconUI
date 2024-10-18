@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter, QPainterPath, QPixmap
 from PyQt5.QtSvg import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
-from siui.core import GlobalFont, Si, SiGlobal, SiQuickAlignmentManager
+from siui.core import GlobalFont, Si, SiGlobal, SiQuickAlignmentManager, SiColor
 from siui.gui import SiFont
 
 

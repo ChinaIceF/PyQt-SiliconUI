@@ -99,6 +99,9 @@ class ABCAnimatedLabel(QLabel):
             return False
         return self.silicon_widget_flags[flag.name]
 
+    def getColor(self, token):
+        return self.color_group.fromToken(token)
+
     def colorGroup(self):
         """
         Get the color group of this widget

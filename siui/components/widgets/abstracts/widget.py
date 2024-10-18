@@ -111,6 +111,9 @@ class SiWidget(QWidget):
         """
         return self.animation_group
 
+    def getColor(self, token):
+        return self.color_group.fromToken(token)
+
     def colorGroup(self):
         """
         Get the color group of this widget
