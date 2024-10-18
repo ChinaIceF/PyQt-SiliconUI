@@ -260,20 +260,21 @@ class SiDenseHContainer(ABCDenseContainer):
         super().resizeEvent(event)
         self.arrangeWidget()  # 每当自身尺寸改变时，重新设置控件的位置
 
-    # def adjustSize(self):
-    #     """
-    #     根据自身具有的控件调整自身的大小
-    #     :return:
-    #     """
-    #     # 获取最佳尺寸
-    #     preferred_w, preferred_h = self.getPreferredSize()
-    #
-    #     if self.shrinking is False:
-    #         # 和原本自身的尺寸比价，取最大者
-    #         preferred_w = max(preferred_w, self.width())
-    #         preferred_h = max(preferred_h, self.height())
-    #
-    #     self.resize(preferred_w, preferred_h)
+    def adjustSize(self):
+        """
+        根据自身具有的控件调整自身的大小
+        :return:
+        """
+        # 获取最佳尺寸
+        size = self.sizeHint()
+        preferred_w, preferred_h = size.width(), size.height()
+
+        if self.shrinking is False:
+            # 和原本自身的尺寸比价，取最大者
+            preferred_w = max(preferred_w, self.width())
+            preferred_h = max(preferred_h, self.height())
+
+        self.resize(preferred_w, preferred_h)
 
 
 class SiDenseVContainer(ABCDenseContainer):
@@ -442,20 +443,21 @@ class SiDenseVContainer(ABCDenseContainer):
         super().resizeEvent(event)
         self.arrangeWidget()  # 每当自身尺寸改变时，重新设置控件的位置
 
-    # def adjustSize(self):
-    #     """
-    #     根据自身具有的控件调整自身的大小
-    #     :return:
-    #     """
-    #     # 获取最佳尺寸
-    #     preferred_w, preferred_h = self.getPreferredSize()
-    #
-    #     if self.shrinking is False:
-    #         # 和原本自身的尺寸比价，取最大者
-    #         preferred_w = max(preferred_w, self.width())
-    #         preferred_h = max(preferred_h, self.height())
-    #
-    #     self.resize(preferred_w, preferred_h)
+    def adjustSize(self):
+        """
+        根据自身具有的控件调整自身的大小
+        :return:
+        """
+        # 获取最佳尺寸
+        size = self.sizeHint()
+        preferred_w, preferred_h = size.width(), size.height()
+
+        if self.shrinking is False:
+            # 和原本自身的尺寸比价，取最大者
+            preferred_w = max(preferred_w, self.width())
+            preferred_h = max(preferred_h, self.height())
+
+        self.resize(preferred_w, preferred_h)
 
 
 class SiDividedHContainer(ABCSiDividedContainer):
