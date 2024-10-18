@@ -35,7 +35,7 @@ from siui.components.widgets import (
 )
 from siui.components.widgets.navigation_bar import SiNavigationBarH, SiNavigationBarV
 from siui.components.widgets.table import SiTableView
-from siui.components.widgets.timeline import SiTimeLine
+from siui.components.widgets.timeline import SiTimeLine, SiTimeLineItem
 from siui.core import Si, SiColor, SiGlobal
 
 from ..option_card import OptionCardPlaneForWidgetDemos
@@ -827,13 +827,35 @@ class ExampleWidgets(SiPage):
             self.timeline.setTitle("时间线")
 
             self.demo_timeline = SiTimeLine(self)
+            self.demo_timeline.setFixedWidth(600)
+
+            item1 = SiTimeLineItem(self)
+            item1.setContent("11:45:14", "田所浩二 访问了你的电脑")
+            item1.adjustSize()
+
+            item2 = SiTimeLineItem(self)
+            item2.setContent("19:19:10", "警告：接受的包过多，可能存在潜在攻击行为")
+            item2.setIcon(SiGlobal.siui.iconpack.get(
+                "ic_fluent_warning_shield_filled", color_code=self.getColor(SiColor.PROGRESS_BAR_COMPLETING)))
+            item2.setThemeColor(self.getColor(SiColor.PROGRESS_BAR_COMPLETING))
+            item2.adjustSize()
+
+            item3 = SiTimeLineItem(self)
+            item3.setContent("00:00:00", "问题已清除")
+            item3.setIcon(SiGlobal.siui.iconpack.get(
+                "ic_fluent_shield_checkmark_filled", color_code=self.getColor(SiColor.SIDE_MSG_THEME_SUCCESS)))
+            item3.setThemeColor(self.getColor(SiColor.SIDE_MSG_THEME_SUCCESS))
+            item3.adjustSize()
+
+            self.demo_timeline.addWidget(item1)
+            self.demo_timeline.addWidget(item2)
+            self.demo_timeline.addWidget(item3)
 
             self.timeline.body().addWidget(self.demo_timeline)
             self.timeline.body().addPlaceholder(12)
             self.timeline.adjustSize()
 
             group.addWidget(self.timeline)
-
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)
