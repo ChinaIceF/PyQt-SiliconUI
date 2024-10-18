@@ -35,6 +35,7 @@ from siui.components.widgets import (
 )
 from siui.components.widgets.navigation_bar import SiNavigationBarH, SiNavigationBarV
 from siui.components.widgets.table import SiTableView
+from siui.components.widgets.timedate import SiCalenderView
 from siui.components.widgets.timeline import SiTimeLine, SiTimeLineItem
 from siui.core import Si, SiColor, SiGlobal
 
@@ -855,7 +856,21 @@ class ExampleWidgets(SiPage):
             self.timeline.body().addPlaceholder(12)
             self.timeline.adjustSize()
 
+            # 日历视图
+            self.calender_view = OptionCardPlaneForWidgetDemos(self)
+            self.calender_view.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.calender_view.setTitle("日历视图")
+
+            self.demo_calender_view = SiCalenderView(self)
+            self.demo_calender_view.resize(32, 32)
+
+            self.calender_view.body().addWidget(self.demo_calender_view)
+            self.calender_view.body().addPlaceholder(12)
+            self.calender_view.adjustSize()
+
             group.addWidget(self.timeline)
+            group.addWidget(self.calender_view)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)

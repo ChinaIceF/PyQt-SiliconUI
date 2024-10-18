@@ -346,7 +346,7 @@ class SiDenseVContainer(ABCDenseContainer):
         total_used += self.spacing if (self.widgets_bottom != [] and self.widgets_top != []) else 0  # 防止两侧控件紧贴
         preferred_h = total_used
 
-        return max([widget.width() for widget in (self.widgets_top + self.widgets_bottom)]), preferred_h
+        return max([16] + [widget.width() for widget in (self.widgets_top + self.widgets_bottom)]), preferred_h
 
     def getUsedSpace(self, side):
         if side not in ["top", "bottom"]:
