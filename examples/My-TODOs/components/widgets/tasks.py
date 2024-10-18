@@ -17,7 +17,7 @@ class TaskCardLinear(SiWidget):
 
         self.original_panel = SiLabel(self)
         self.original_panel.setFixedStyleSheet("border-radius: 8px")
-        self.original_panel.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
+        self.original_panel.setColor(self.getColor(SiColor.INTERFACE_BG_C))
 
         self.panel = SiLabel(self)
         self.panel.setFixedStyleSheet("border-radius: 8px; border-top-left-radius: 6px; border-bottom-left-radius: 6px")
@@ -33,9 +33,9 @@ class TaskCardLinear(SiWidget):
     def loadTask(self, task: Task):
         self.task = task
         self.theme_color_indicator.setColor(task.color)
-        self.panel.setColor(SiColor.mix(self.colorGroup().fromToken(SiColor.INTERFACE_BG_C), task.color, weight=0.9))
-        self.title.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
-        self.description.setTextColor(SiColor.mix(self.colorGroup().fromToken(SiColor.TEXT_B), task.color))
+        self.panel.setColor(SiColor.mix(self.getColor(SiColor.INTERFACE_BG_C), task.color, weight=0.9))
+        self.title.setTextColor(self.getColor(SiColor.TEXT_B))
+        self.description.setTextColor(SiColor.mix(self.getColor(SiColor.TEXT_B), task.color))
 
         self.title.setText(task.name)
         self.description.setText(task.description)

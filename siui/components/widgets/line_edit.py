@@ -72,18 +72,18 @@ class SiLineEditWithItemName(SiWidget):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        c = self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)
-        b = self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)
-        a = self.colorGroup().fromToken(SiColor.INTERFACE_BG_A)
+        c = self.getColor(SiColor.INTERFACE_BG_C)
+        b = self.getColor(SiColor.INTERFACE_BG_B)
+        a = self.getColor(SiColor.INTERFACE_BG_A)
 
         self.base_panel.setColor(SiColor.mix(c, b, 0.3))
         self.edit_panel.setColor(SiColor.mix(b, a, 0.5))
-        self.name_label.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_D))
+        self.name_label.setTextColor(self.getColor(SiColor.TEXT_D))
 
     def flash_on_edited(self):
-        c = self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)
-        b = self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)
-        self.base_panel.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_E))
+        c = self.getColor(SiColor.INTERFACE_BG_C)
+        b = self.getColor(SiColor.INTERFACE_BG_B)
+        self.base_panel.setColor(self.getColor(SiColor.INTERFACE_BG_E))
         self.base_panel.setColorTo(SiColor.mix(c, b, 0.3))
 
     def setName(self, name: str):

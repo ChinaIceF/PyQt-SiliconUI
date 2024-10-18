@@ -57,10 +57,10 @@ class Homepage(SiPage):
         with self.titled_widget_group as group:
             group.addTitle("待办详情")
 
-            self.test_task_card = TaskCardLinear(Task("上床睡觉", "闭上眼睛直接睡觉就行", time.time(), self.colorGroup().fromToken(SiColor.PROGRESS_BAR_COMPLETING)), parent=self)
+            self.test_task_card = TaskCardLinear(Task("上床睡觉", "闭上眼睛直接睡觉就行", time.time(), self.getColor(SiColor.PROGRESS_BAR_COMPLETING)), parent=self)
             self.test_task_card.resize(0, 80)
 
-            self.test_task_card2 = TaskCardLinear(Task("写数学作业", "不写完作业该怎么交作业呢", time.time(), self.colorGroup().fromToken(SiColor.PROGRESS_BAR_PROCESSING)), parent=self)
+            self.test_task_card2 = TaskCardLinear(Task("写数学作业", "不写完作业该怎么交作业呢", time.time(), self.getColor(SiColor.PROGRESS_BAR_PROCESSING)), parent=self)
             self.test_task_card2.resize(0, 80)
 
             group.addPlaceholder(16)

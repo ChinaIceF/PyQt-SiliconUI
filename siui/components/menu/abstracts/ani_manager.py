@@ -30,8 +30,8 @@ class AnimationManagerPullDown(ABCAnimationManager):
         parent.resize(parent.width(), int(target_height * 0.6))
         parent.resizeTo(parent.width(), target_height)
 
-        parent.flash_layer.setColor(SiColor.trans(parent.colorGroup().fromToken(SiColor.BUTTON_FLASH), 1))
-        parent.flash_layer.setColorTo(SiColor.trans(parent.colorGroup().fromToken(SiColor.BUTTON_FLASH), 0))
+        parent.flash_layer.setColor(SiColor.trans(parent.getColor(SiColor.BUTTON_FLASH), 1))
+        parent.flash_layer.setColorTo(SiColor.trans(parent.getColor(SiColor.BUTTON_FLASH), 0))
 
     @staticmethod
     def on_parent_resized(parent, event):
@@ -67,8 +67,8 @@ class AnimationManagerExpand(ABCAnimationManager):
         parent.body().resize(parent.body().width(), 0)
         parent.show()
 
-        parent.flash_layer.setColor(SiColor.trans(parent.colorGroup().fromToken(SiColor.BUTTON_FLASH), 1))
-        parent.flash_layer.setColorTo(SiColor.trans(parent.colorGroup().fromToken(SiColor.BUTTON_FLASH), 0))
+        parent.flash_layer.setColor(SiColor.trans(parent.getColor(SiColor.BUTTON_FLASH), 1))
+        parent.flash_layer.setColorTo(SiColor.trans(parent.getColor(SiColor.BUTTON_FLASH), 0))
 
     @staticmethod
     def on_parent_resized(parent, event):

@@ -16,8 +16,8 @@ class SmallGroupTitle(SiWidget):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        self.title.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
-        self.title_indicator.setColor(self.colorGroup().fromToken(SiColor.TITLE_INDICATOR))
+        self.title.setTextColor(self.getColor(SiColor.TEXT_B))
+        self.title_indicator.setColor(self.getColor(SiColor.TITLE_INDICATOR))
 
     def setTitle(self, title):
         self.title.setText(title)

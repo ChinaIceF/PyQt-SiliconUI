@@ -40,14 +40,14 @@ class DemoOsuPlayerRankingTableManager(ABCSiTabelManager):
         widget = self.parent().getRowWidget(row_index)[col_index]
         if col_index == 0:
             widget.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
-            widget.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_B))
+            widget.setTextColor(self.parent().getColor(SiColor.TEXT_B))
 
         if col_index == 1:
             widget.load(self.rank_dict[value])
             widget.setHint(value)
 
         if col_index == 2:
-            widget.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_B))
+            widget.setTextColor(self.parent().getColor(SiColor.TEXT_B))
             if row_index == 0:
                 widget.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
             else:
@@ -57,21 +57,21 @@ class DemoOsuPlayerRankingTableManager(ABCSiTabelManager):
             if value == "100.00%":
                 widget.setTextColor("#B2D844")
             else:
-                widget.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_B))
+                widget.setTextColor(self.parent().getColor(SiColor.TEXT_B))
 
         if col_index == 4:
             widget.load(self.country_dict[value])
             widget.setHint(value)
 
         if col_index == 5:
-            widget.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_THEME))
+            widget.setTextColor(self.parent().getColor(SiColor.TEXT_THEME))
             widget.setHint("Click to view profile")
 
         if col_index in [6, 7, 8, 9, 10]:
             if value == "0":
-                widget.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_E))
+                widget.setTextColor(self.parent().getColor(SiColor.TEXT_E))
             else:
-                widget.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_B))
+                widget.setTextColor(self.parent().getColor(SiColor.TEXT_B))
 
         if col_index in [0, 2, 3, 5, 6, 7, 8, 9, 10]:
             widget.setText(value)
@@ -96,7 +96,7 @@ class DemoOsuPlayerRankingTableManager(ABCSiTabelManager):
         for name in self.parent().column_names:
             new_label = SiLabel(self.parent())
             new_label.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
-            new_label.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_D))
+            new_label.setTextColor(self.parent().getColor(SiColor.TEXT_D))
             new_label.setText(name)
             new_label.adjustSize()
             header.container().addWidget(new_label)

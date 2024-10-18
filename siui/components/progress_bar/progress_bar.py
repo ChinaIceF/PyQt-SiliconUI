@@ -108,14 +108,14 @@ class SiProgressBar(SiLabel):
         """
         刷新工具提示，重写该方法以自定义工具提示
         """
-        self.setHint(f"{round(self.value()*100, 2)}<span style='color: {self.colorGroup().fromToken(SiColor.TEXT_C)}'>%</span>")  # noqa: E501
+        self.setHint(f"{round(self.value()*100, 2)}<span style='color: {self.getColor(SiColor.TEXT_C)}'>%</span>")  # noqa: E501
 
     def _flash(self):
         """
         触发进度闪烁
         """
-        self.flash.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.PROGRESS_BAR_FLASHES), 0.8))
-        self.flash.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.PROGRESS_BAR_FLASHES), 0.0))
+        self.flash.setColor(SiColor.trans(self.getColor(SiColor.PROGRESS_BAR_FLASHES), 0.8))
+        self.flash.setColorTo(SiColor.trans(self.getColor(SiColor.PROGRESS_BAR_FLASHES), 0.0))
 
     def _resize_progress_according_to_value(self):
         """
@@ -130,8 +130,8 @@ class SiProgressBar(SiLabel):
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
 
-        self.track.setStyleSheet(f"background-color: {self.colorGroup().fromToken(SiColor.PROGRESS_BAR_TRACK)}")
-        self.progress.setColorTo(self.colorGroup().fromToken(self.state_colors[self.state()]))  # noqa: UP032
+        self.track.setStyleSheet(f"background-color: {self.getColor(SiColor.PROGRESS_BAR_TRACK)}")
+        self.progress.setColorTo(self.getColor(self.state_colors[self.state()]))  # noqa: UP032
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -233,7 +233,7 @@ class SiCircularProgressBar(SiLabel):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        color_array = SiColor.toArray(self.colorGroup().fromToken(SiColor.PROGRESS_BAR_PROCESSING))[1:4]
+        color_array = SiColor.toArray(self.getColor(SiColor.PROGRESS_BAR_PROCESSING))[1:4]
         pen = QPen(QColor(*color_array), self.bar_width)
         pen.setCapStyle(Qt.PenCapStyle.RoundCap)
         painter.setPen(pen)

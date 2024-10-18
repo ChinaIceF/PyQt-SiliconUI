@@ -23,7 +23,7 @@ def get_on_button_clicked_func(button):
         pyperclip.copy(button.objectName())
         SiGlobal.siui.windows["TOOL_TIP"].setText(
             f"{button.objectName()}<br>"
-            f'<span style="color: {button.colorGroup().fromToken(SiColor.TEXT_D)}">复制成功</span>',
+            f'<span style="color: {button.getColor(SiColor.TEXT_D)}">复制成功</span>',
         )
     return on_button_clicked
 
@@ -69,7 +69,7 @@ class ExampleIcons(SiPage):
         self.package_operation_container.setAlignment(Qt.AlignCenter)
 
         self.package_selection_description = SiLabel(self)
-        self.package_selection_description.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")
+        self.package_selection_description.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_D)}")
         self.package_selection_description.setAlignment(Qt.AlignVCenter)
         self.package_selection_description.setText("当前图标包")
         self.package_selection_description.adjustSize()
@@ -82,12 +82,12 @@ class ExampleIcons(SiPage):
         self.package_selection_combobox.valueChanged.connect(self.on_package_changed)
         self.package_selection_combobox.menu().setShowIcon(False)
         self.package_selection_combobox.colorGroup().assign(
-            SiColor.INTERFACE_BG_B, self.colorGroup().fromToken(SiColor.INTERFACE_BG_A))
+            SiColor.INTERFACE_BG_B, self.getColor(SiColor.INTERFACE_BG_A))
         self.package_selection_combobox.colorGroup().assign(
-            SiColor.INTERFACE_BG_D, self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
+            SiColor.INTERFACE_BG_D, self.getColor(SiColor.INTERFACE_BG_C))
 
         self.search_description = SiLabel(self)
-        self.search_description.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")
+        self.search_description.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_D)}")
         self.search_description.setAlignment(Qt.AlignVCenter)
         self.search_description.setText("搜索图标")
         self.search_description.adjustSize()
@@ -97,9 +97,9 @@ class ExampleIcons(SiPage):
         self.search_input_box.reloadStyleSheet()
         self.search_input_box.line_edit.textChanged.connect(self.on_search_text_changed)
         self.search_input_box.colorGroup().assign(
-            SiColor.INTERFACE_BG_B, self.colorGroup().fromToken(SiColor.INTERFACE_BG_A))
+            SiColor.INTERFACE_BG_B, self.getColor(SiColor.INTERFACE_BG_A))
         self.search_input_box.colorGroup().assign(
-            SiColor.INTERFACE_BG_D, self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
+            SiColor.INTERFACE_BG_D, self.getColor(SiColor.INTERFACE_BG_C))
 
         self.package_operation_container.addWidget(self.package_selection_description)
         self.package_operation_container.addWidget(self.package_selection_combobox)
@@ -131,7 +131,7 @@ class ExampleIcons(SiPage):
         self.page_index_label.setAlignment(Qt.AlignCenter)
         self.page_index_label.setFixedSize(128, 32)
         self.page_index_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.page_index_label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")
+        self.page_index_label.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_D)}")
 
         self.page_down_button = SiPushButton(self)
         self.page_down_button.attachment().setText("下一页")
@@ -198,13 +198,13 @@ class ExampleIcons(SiPage):
 
             svg_button = SiSimpleButton(widget)
             svg_button.colorGroup().assign(SiColor.BUTTON_OFF,
-                                           svg_button.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
+                                           svg_button.getColor(SiColor.INTERFACE_BG_C))
             svg_button.attachment().setSvgSize(32, 32)
-            svg_button.attachment().load(icon_pack.get_from_data(value, self.colorGroup().fromToken(SiColor.SVG_NORMAL)))
+            svg_button.attachment().load(icon_pack.get_from_data(value, self.getColor(SiColor.SVG_NORMAL)))
             svg_button.setFixedSize(96, 96)
             svg_button.setHint(
                 f"{key}<br>"
-                f'<span style="color: {self.colorGroup().fromToken(SiColor.TEXT_D)}">点击复制图标名称</span>'
+                f'<span style="color: {self.getColor(SiColor.TEXT_D)}">点击复制图标名称</span>'
             )
             svg_button.clicked.connect(get_on_button_clicked_func(widget))
             svg_button.reloadStyleSheet()

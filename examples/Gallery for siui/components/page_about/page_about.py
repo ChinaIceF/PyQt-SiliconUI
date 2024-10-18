@@ -40,7 +40,7 @@ class About(SiPage):
         self.version_label = SiLabel(self)
         self.version_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.version_label.setFont(SiFont.tokenized(GlobalFont.M_NORMAL))
-        self.version_label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_D)}")
+        self.version_label.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_D)}")
         self.version_label.setText("PyQt-SiliconUI")
 
         version_picture_container.addWidget(self.version_picture)
