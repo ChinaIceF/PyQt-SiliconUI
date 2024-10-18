@@ -17,7 +17,7 @@ class SiModalDialog(SiWidget):
 
         self.theme_label = SiLabel(self)
         self.theme_label.setFixedStyleSheet("border-radius: 8px")
-        self.theme_label.setColor(self.colorGroup().fromToken(SiColor.THEME))
+        self.theme_label.setColor(self.getColor(SiColor.THEME))
 
         self.body_content_label = SiLabel(self)
         self.body_content_label.setObjectName("body_content_label")
@@ -47,19 +47,19 @@ class SiModalDialog(SiWidget):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        self.theme_label.setColor(self.colorGroup().fromToken(SiColor.THEME))
+        self.theme_label.setColor(self.getColor(SiColor.THEME))
         self.body_content_label.setStyleSheet(
             "#body_content_label {"
             "     border-radius: 8px;"
-            f"    background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)};"
-            f"    border: 1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)};"
+            f"    background-color: {self.getColor(SiColor.INTERFACE_BG_B)};"
+            f"    border: 1px solid {self.getColor(SiColor.INTERFACE_BG_C)};"
             "}"
         )
         self.body_button_label.setStyleSheet(
             "#body_button_label {"
             "     border-radius: 8px;"
-            f"    background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)};"
-            f"    border: 1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)};"
+            f"    background-color: {self.getColor(SiColor.INTERFACE_BG_C)};"
+            f"    border: 1px solid {self.getColor(SiColor.INTERFACE_BG_C)};"
             "}"
 
         )

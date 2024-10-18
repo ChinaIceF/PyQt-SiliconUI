@@ -23,7 +23,7 @@ class SiSimpleLineEdit(QLineEdit):
             "QLineEdit {"
             "    selection-background-color: #493F4E;"
             "    background-color: transparent;"
-            f"    color: {self.parent().colorGroup().fromToken(SiColor.TEXT_C)};"
+            f"    color: {self.parent().getColor(SiColor.TEXT_C)};"
             "    border: 0px"
             "}"
         )
@@ -88,15 +88,15 @@ class ABCSiLineEdit(SiWidget):
         super().reloadStyleSheet()
 
         self.outfit_label_top.setStyleSheet(
-            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)};"
-            f"border-left:  1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)};"
-            f"border-right: 1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)};"
-            f"border-top:   1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)};"
+            f"background-color: {self.getColor(SiColor.INTERFACE_BG_B)};"
+            f"border-left:  1px solid {self.getColor(SiColor.INTERFACE_BG_D)};"
+            f"border-right: 1px solid {self.getColor(SiColor.INTERFACE_BG_D)};"
+            f"border-top:   1px solid {self.getColor(SiColor.INTERFACE_BG_D)};"
         )
         self.outfit_label_bottom.setStyleSheet(
             "background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
-            f"    stop:0 {self.colorGroup().fromToken(SiColor.THEME_TRANSITION_A)},"
-            f"    stop:1 {self.colorGroup().fromToken(SiColor.THEME_TRANSITION_B)}"
+            f"    stop:0 {self.getColor(SiColor.THEME_TRANSITION_A)},"
+            f"    stop:1 {self.getColor(SiColor.THEME_TRANSITION_B)}"
             ")"
         )
 

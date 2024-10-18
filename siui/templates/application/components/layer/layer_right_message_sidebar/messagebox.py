@@ -47,7 +47,7 @@ class SiSideMessageContent(SiWidget):
         self.flash_layer = SiLabel(self)
         self.flash_layer.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.flash_layer.setFixedStyleSheet("border-radius: 6px")
-        self.flash_layer.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH), 0))
+        self.flash_layer.setColor(SiColor.trans(self.getColor(SiColor.SIDE_MSG_FLASH), 0))
         self.flash_layer.animationGroup().fromToken("color").setFactor(1/8)
         self.flash_layer.animationGroup().fromToken("color").setBias(0.001)
 
@@ -55,13 +55,13 @@ class SiSideMessageContent(SiWidget):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        self.background.setColor(self.colorGroup().fromToken(SiColor.SIDE_MSG_THEME_WARNING))
-        self.panel.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
+        self.background.setColor(self.getColor(SiColor.SIDE_MSG_THEME_WARNING))
+        self.panel.setColor(self.getColor(SiColor.INTERFACE_BG_C))
         self.close_button.reloadStyleSheet()
 
     def setMessageType(self, index):
         self.msg_type = index
-        self.background.setColor(self.colorGroup().fromToken(self.msg_color_tokens[self.msg_type]))
+        self.background.setColor(self.getColor(self.msg_color_tokens[self.msg_type]))
 
     def container(self):
         return self.container_
@@ -70,8 +70,8 @@ class SiSideMessageContent(SiWidget):
         return self.theme_icon
 
     def flash(self):
-        self.flash_layer.setColor(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH))
-        self.flash_layer.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH), 0))
+        self.flash_layer.setColor(self.getColor(SiColor.SIDE_MSG_FLASH))
+        self.flash_layer.setColorTo(SiColor.trans(self.getColor(SiColor.SIDE_MSG_FLASH), 0))
 
     def adjustSize(self):
         self.container_.adjustSize()
@@ -101,12 +101,12 @@ class SiSideMessageContent(SiWidget):
 
     def enterEvent(self, a0):
         super().enterEvent(a0)
-        self.flash_layer.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH), 0.07))
+        self.flash_layer.setColorTo(SiColor.trans(self.getColor(SiColor.SIDE_MSG_FLASH), 0.07))
         self.parent().fold_timer.stop()
 
     def leaveEvent(self, a0):
         super().leaveEvent(a0)
-        self.flash_layer.setColorTo(SiColor.trans(self.colorGroup().fromToken(SiColor.SIDE_MSG_FLASH), 0))
+        self.flash_layer.setColorTo(SiColor.trans(self.getColor(SiColor.SIDE_MSG_FLASH), 0))
         self.parent().fold_timer.start()
 
     def mouseReleaseEvent(self, a0):

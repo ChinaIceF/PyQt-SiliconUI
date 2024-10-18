@@ -67,8 +67,8 @@ class ABCSiMenu(SiWidget):
         super().reloadStyleSheet()
         self.body_panel.setStyleSheet(
             f"""#menu_body_panel {{
-                    background-color: {self.colorGroup().fromToken(SiColor.MENU_BG)};
-                    border: 1px solid {SiColor.mix(self.colorGroup().fromToken(SiColor.MENU_BG), self.colorGroup().fromToken(SiColor.TEXT_E), 0.9)};
+                    background-color: {self.getColor(SiColor.MENU_BG)};
+                    border: 1px solid {SiColor.mix(self.getColor(SiColor.MENU_BG), self.getColor(SiColor.TEXT_E), 0.9)};
                     border-radius: 6px
             }}"""
         )

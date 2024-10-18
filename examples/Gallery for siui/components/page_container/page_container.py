@@ -26,8 +26,8 @@ class DemoLabel(SiLabel):
         self.resize(self.width() + 24, self.height())
 
     def reloadStyleSheet(self):
-        self.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_B)};"
-                           f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)}")
+        self.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_B)};"
+                           f"background-color: {self.getColor(SiColor.INTERFACE_BG_D)}")
 
 
 class ExampleContainer(SiPage):
@@ -112,19 +112,19 @@ class ExampleContainer(SiPage):
             self.indicator_h_80.resize(120, 4)
             self.indicator_h_80.setHint("该 Section 宽 120 像素")
             self.indicator_h_80.setFixedStyleSheet("border-radius: 2px")
-            self.indicator_h_80.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.THEME), 0.2))
+            self.indicator_h_80.setColor(SiColor.trans(self.getColor(SiColor.THEME), 0.2))
 
             self.indicator_h_120 = SiLabel(self)
             self.indicator_h_120.resize(180, 4)
             self.indicator_h_120.setHint("该 Section 宽 180 像素")
             self.indicator_h_120.setFixedStyleSheet("border-radius: 2px")
-            self.indicator_h_120.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.THEME), 0.5))
+            self.indicator_h_120.setColor(SiColor.trans(self.getColor(SiColor.THEME), 0.5))
 
             self.indicator_h_180 = SiLabel(self)
             self.indicator_h_180.resize(240, 4)
             self.indicator_h_180.setHint("该 Section 宽 240 像素")
             self.indicator_h_180.setFixedStyleSheet("border-radius: 2px")
-            self.indicator_h_180.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.THEME), 1.0))
+            self.indicator_h_180.setColor(SiColor.trans(self.getColor(SiColor.THEME), 1.0))
 
             self.indicator_container_divided_h_container.addWidget(self.indicator_h_80)
             self.indicator_container_divided_h_container.addWidget(self.indicator_h_120)
@@ -163,19 +163,19 @@ class ExampleContainer(SiPage):
             self.indicator_v_48.resize(4, 48)
             self.indicator_v_48.setHint("该 Section 高 48 像素")
             self.indicator_v_48.setFixedStyleSheet("border-radius: 2px")
-            self.indicator_v_48.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.THEME), 0.2))
+            self.indicator_v_48.setColor(SiColor.trans(self.getColor(SiColor.THEME), 0.2))
 
             self.indicator_v_64 = SiLabel(self)
             self.indicator_v_64.resize(4, 64)
             self.indicator_v_64.setHint("该 Section 高 64 像素")
             self.indicator_v_64.setFixedStyleSheet("border-radius: 2px")
-            self.indicator_v_64.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.THEME), 0.5))
+            self.indicator_v_64.setColor(SiColor.trans(self.getColor(SiColor.THEME), 0.5))
 
             self.indicator_v_80 = SiLabel(self)
             self.indicator_v_80.resize(4, 80)
             self.indicator_v_80.setHint("该 Section 高 80 像素")
             self.indicator_v_80.setFixedStyleSheet("border-radius: 2px")
-            self.indicator_v_80.setColor(SiColor.trans(self.colorGroup().fromToken(SiColor.THEME), 1.0))
+            self.indicator_v_80.setColor(SiColor.trans(self.getColor(SiColor.THEME), 1.0))
 
             self.indicator_container_divided_v_container.addWidget(self.indicator_v_48)
             self.indicator_container_divided_v_container.addWidget(self.indicator_v_64)
@@ -222,7 +222,7 @@ class ExampleContainer(SiPage):
                 button = SiSimpleButton(label)
                 button.attachment().setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
                 button.attachment().setText(str(round(random.random(), int(6 * random.random() + 2))))
-                button.colorGroup().assign(SiColor.BUTTON_OFF, button.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+                button.colorGroup().assign(SiColor.BUTTON_OFF, button.getColor(SiColor.INTERFACE_BG_D))
                 button.setFixedHeight(32)
                 button.adjustSize()
                 button.setAttribute(Qt.WA_TransparentForMouseEvents)
@@ -282,12 +282,12 @@ class ExampleContainer(SiPage):
             for _ in range(16):
                 label = SiDraggableLabel(self)
                 button = SiSimpleButton(label)
-                button.colorGroup().assign(SiColor.BUTTON_OFF, button.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+                button.colorGroup().assign(SiColor.BUTTON_OFF, button.getColor(SiColor.INTERFACE_BG_D))
                 button.resize(160, int(random.random() * 50 + 70))
                 button.setAttribute(Qt.WA_TransparentForMouseEvents)
                 label.button = button
                 label.setFixedStyleSheet("border-radius: 4px")
-                label.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+                label.setColor(self.getColor(SiColor.INTERFACE_BG_D))
                 label.resize(button.size())
 
                 self.demo_masonry_container.addWidget(label, ani=False)

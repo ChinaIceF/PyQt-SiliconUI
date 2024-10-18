@@ -33,7 +33,7 @@ class PageButton(SiToggleButton):
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
         self.active_indicator.setStyleSheet(
-            f"background-color: {self.colorGroup().fromToken(SiColor.THEME)}"
+            f"background-color: {self.getColor(SiColor.THEME)}"
         )
 
     def setActive(self, state):

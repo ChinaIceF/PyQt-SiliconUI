@@ -43,22 +43,22 @@ class SiPushButton(ABCPushButton):
             self.body_top.setStyleSheet(
                 f"""
                 background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 {self.colorGroup().fromToken(SiColor.BUTTON_THEMED_BG_A)},
-                    stop:1 {self.colorGroup().fromToken(SiColor.BUTTON_THEMED_BG_B)})
+                    stop:0 {self.getColor(SiColor.BUTTON_THEMED_BG_A)},
+                    stop:1 {self.getColor(SiColor.BUTTON_THEMED_BG_B)})
                 """
             )
             self.body_bottom.setStyleSheet(
                 f"""
                 background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 {self.colorGroup().fromToken(SiColor.BUTTON_THEMED_SHADOW_A)},
-                    stop:1 {self.colorGroup().fromToken(SiColor.BUTTON_THEMED_SHADOW_B)})
+                    stop:0 {self.getColor(SiColor.BUTTON_THEMED_SHADOW_A)},
+                    stop:1 {self.getColor(SiColor.BUTTON_THEMED_SHADOW_B)})
                 """
             )
 
         else:
             # 纯色
-            self.body_top.setStyleSheet(f"background-color: {self.colorGroup().fromToken(SiColor.BUTTON_PANEL)}")
-            self.body_bottom.setStyleSheet(f"background-color: {self.colorGroup().fromToken(SiColor.BUTTON_SHADOW)}")
+            self.body_top.setStyleSheet(f"background-color: {self.getColor(SiColor.BUTTON_PANEL)}")
+            self.body_bottom.setStyleSheet(f"background-color: {self.getColor(SiColor.BUTTON_SHADOW)}")
 
     def setUseTransition(self, b: bool):
         """
@@ -111,8 +111,8 @@ class SiLongPressButton(ABCPushButton):
         self.body_top.setStyleSheet(
             f"""
             background-color: qlineargradient(x1:{p-0.001}, y1:0, x2:{p}, y2:0,
-                 stop:0 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PROGRESS)},
-                 stop:1 {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PANEL)})
+                 stop:0 {self.getColor(SiColor.BUTTON_LONG_PRESS_PROGRESS)},
+                 stop:1 {self.getColor(SiColor.BUTTON_LONG_PRESS_PANEL)})
             """
         )
 
@@ -120,10 +120,10 @@ class SiLongPressButton(ABCPushButton):
         super().reloadStyleSheet()
 
         # 设置文字颜色
-        self.label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_B)}")
+        self.label.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_B)}")
 
-        self.body_top.setStyleSheet(f"background-color: {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_PANEL)}")
-        self.body_bottom.setStyleSheet(f"background-color: {self.colorGroup().fromToken(SiColor.BUTTON_LONG_PRESS_SHADOW)}")  # noqa: E501
+        self.body_top.setStyleSheet(f"background-color: {self.getColor(SiColor.BUTTON_LONG_PRESS_PANEL)}")
+        self.body_bottom.setStyleSheet(f"background-color: {self.getColor(SiColor.BUTTON_LONG_PRESS_SHADOW)}")  # noqa: E501
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
@@ -166,7 +166,7 @@ class SiToggleButton(ABCToggleButton):
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
 
-        self.label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_B)}")
+        self.label.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_B)}")
 
 
 class SiSimpleButton(SiToggleButton):
@@ -219,7 +219,7 @@ class SiRadioButton(SiLabel):
         super().reloadStyleSheet()
 
         # 设置文字颜色
-        self.text_label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_B)}")
+        self.text_label.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_B)}")
 
         # 设置选项按钮样式表，调用自己的事件处理器以刷新
         self._toggled_handler(self.isChecked())
@@ -266,11 +266,11 @@ class SiRadioButton(SiLabel):
 
             # 禁止其切换模式，防止被取消选择
             self.indicator.setCheckable(False)
-            self.indicator_label.setStyleSheet(f"border: 4px solid {self.colorGroup().fromToken(SiColor.RADIO_BUTTON_CHECKED)}")  # noqa: E501
+            self.indicator_label.setStyleSheet(f"border: 4px solid {self.getColor(SiColor.RADIO_BUTTON_CHECKED)}")  # noqa: E501
         else:
             # 如果被选中状态为假，就允许其切换模式
             self.indicator.setCheckable(True)
-            self.indicator_label.setStyleSheet(f"border: 3px solid {self.colorGroup().fromToken(SiColor.RADIO_BUTTON_UNCHECKED)}")  # noqa: E501
+            self.indicator_label.setStyleSheet(f"border: 3px solid {self.getColor(SiColor.RADIO_BUTTON_UNCHECKED)}")  # noqa: E501
 
     def _uncheck_all_in_same_parent(self):
         """
@@ -315,7 +315,7 @@ class SiCheckBox(SiLabel):
                     '0   c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,'
                     '32.752-12.492,45.248,0l0,0   c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,'
                     '431.214,178.271,436.94,163.865,436.934z" '
-                    f'fill="{self.colorGroup().fromToken(SiColor.CHECKBOX_SVG)}" /></g></svg>')
+                    f'fill="{self.getColor(SiColor.CHECKBOX_SVG)}" /></g></svg>')
         self.indicator_icon = SiSvgLabel(self)
         self.indicator_icon.resize(20, 20)
         self.indicator_icon.setSvgSize(12, 12)
@@ -339,7 +339,7 @@ class SiCheckBox(SiLabel):
         super().reloadStyleSheet()
 
         # 设置文字颜色
-        self.text_label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_B)}")
+        self.text_label.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_B)}")
 
         # 设置选项按钮样式表，调用自己的事件处理器以刷新
         self._toggled_handler(self.isChecked())
@@ -381,10 +381,10 @@ class SiCheckBox(SiLabel):
     def _toggled_handler(self, check: bool):
         if check is True:
             self.indicator_icon.setVisible(True)
-            self.indicator_label.setStyleSheet(f"background-color: {self.colorGroup().fromToken(SiColor.CHECKBOX_CHECKED)}")  # noqa: E501
+            self.indicator_label.setStyleSheet(f"background-color: {self.getColor(SiColor.CHECKBOX_CHECKED)}")  # noqa: E501
         else:
             self.indicator_icon.setVisible(False)
-            self.indicator_label.setStyleSheet(f"border: 1px solid {self.colorGroup().fromToken(SiColor.CHECKBOX_UNCHECKED)}")  # noqa: E501
+            self.indicator_label.setStyleSheet(f"border: 1px solid {self.getColor(SiColor.CHECKBOX_UNCHECKED)}")  # noqa: E501
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -459,15 +459,15 @@ class SiSwitch(QAbstractButton):
             self.switch_frame.setStyleSheet(
                 f"""
                 background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 {self.colorGroup().fromToken(SiColor.THEME_TRANSITION_A)},
-                stop:1 {self.colorGroup().fromToken(SiColor.THEME_TRANSITION_B)});
+                stop:0 {self.getColor(SiColor.THEME_TRANSITION_A)},
+                stop:1 {self.getColor(SiColor.THEME_TRANSITION_B)});
                 """
             )
-            self.switch_lever.setStyleSheet(f"background-color:{self.colorGroup().fromToken(SiColor.SWITCH_ACTIVATE)}")
+            self.switch_lever.setStyleSheet(f"background-color:{self.getColor(SiColor.SWITCH_ACTIVATE)}")
 
         else:
-            self.switch_frame.setStyleSheet(f"border: 1px solid {self.colorGroup().fromToken(SiColor.SWITCH_DEACTIVATE)}")  # noqa: E501
-            self.switch_lever.setStyleSheet(f"background-color:{self.colorGroup().fromToken(SiColor.SWITCH_DEACTIVATE)}")  # noqa: E501
+            self.switch_frame.setStyleSheet(f"border: 1px solid {self.getColor(SiColor.SWITCH_DEACTIVATE)}")  # noqa: E501
+            self.switch_lever.setStyleSheet(f"background-color:{self.getColor(SiColor.SWITCH_DEACTIVATE)}")  # noqa: E501
 
     def _set_animation_target(self, is_checked):
         if is_checked is True:

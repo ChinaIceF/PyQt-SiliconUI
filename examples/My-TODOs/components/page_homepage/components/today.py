@@ -22,7 +22,7 @@ class TaskIndicator(SiLabel):
         self.indicator = SiLabel(self)
         self.indicator.setFixedSize(8, 20)
         self.indicator.setFixedStyleSheet("border-radius: 4px")
-        self.indicator.setColor(self.colorGroup().fromToken(SiColor.PROGRESS_BAR_PROCESSING))
+        self.indicator.setColor(self.getColor(SiColor.PROGRESS_BAR_PROCESSING))
         self.indicator.move(0, 0)
 
     def setTimeStamp(self, time_stamp):
@@ -62,7 +62,7 @@ class TaskIndicatorContainer(SiWidget):
     def addTask(self, task: Task):
         d = datetime.datetime.fromtimestamp(task.due_time_stamp)
         r = d - datetime.datetime.fromtimestamp(time.time())
-        dim_color = SiColor.mix(self.colorGroup().fromToken(SiColor.TEXT_B), task.color)
+        dim_color = SiColor.mix(self.getColor(SiColor.TEXT_B), task.color)
 
         new_task = TaskIndicator(self)
         new_task.setFixedStyleSheet("border-radius: 4px")
@@ -111,8 +111,8 @@ class DateDisplay(SiWidget):
         self.month_label.setFont(SiFont.getFont(size=64, weight=QFont.Weight.Light, italic=True))
         self.date_label.setFont(SiFont.getFont(size=64, weight=QFont.Weight.Bold, italic=False))
 
-        self.month_label.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_D))
-        self.date_label.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
+        self.month_label.setTextColor(self.getColor(SiColor.TEXT_D))
+        self.date_label.setTextColor(self.getColor(SiColor.TEXT_B))
 
         self.month_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
         self.date_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
@@ -141,8 +141,8 @@ class TaskSelector(SiLabel):
         self.stick_up.setFixedStyleSheet("border-radius: 1px")
         self.stick_down.setFixedStyleSheet("border-radius: 1px")
 
-        self.stick_up.setColor(self.colorGroup().fromToken(SiColor.TEXT_B))
-        self.stick_down.setColor(self.colorGroup().fromToken(SiColor.TEXT_B))
+        self.stick_up.setColor(self.getColor(SiColor.TEXT_B))
+        self.stick_down.setColor(self.getColor(SiColor.TEXT_B))
 
         self.selector = SiLabel(self)
         self.selector.resize(20, 32)
@@ -155,7 +155,7 @@ class TaskSelector(SiLabel):
         super().reloadStyleSheet()
         self.selector.setStyleSheet(
             "border-radius: 8px;"
-            f"border: 3px solid {self.colorGroup().fromToken(SiColor.TEXT_B)}"
+            f"border: 3px solid {self.getColor(SiColor.TEXT_B)}"
         )
 
     def setPadding(self, padding):
@@ -192,7 +192,7 @@ class TaskDisplay(SiWidget):
 
         self.task_track = SiLabel(self)
         self.task_track.setFixedStyleSheet("border-radius: 2px")
-        self.task_track.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_E))
+        self.task_track.setColor(self.getColor(SiColor.INTERFACE_BG_E))
         self.task_track.setFixedHeight(4)
 
         self.task_selector = TaskSelector(self)
@@ -208,9 +208,9 @@ class TaskDisplay(SiWidget):
         self.task_indicator_container = TaskIndicatorContainer(self)
 
         new_task_data1 = Task("回家睡觉", "躺下来闭上眼，睡觉就行", time.time() + 10000,
-                              self.colorGroup().fromToken(SiColor.PROGRESS_BAR_COMPLETING))
+                              self.getColor(SiColor.PROGRESS_BAR_COMPLETING))
         new_task_data2 = Task("写作业", "不写作业怎么交作业呢", time.time() - 20000,
-                              self.colorGroup().fromToken(SiColor.PROGRESS_BAR_PROCESSING))
+                              self.getColor(SiColor.PROGRESS_BAR_PROCESSING))
         self.task_indicator_container.addTask(new_task_data1)
         self.task_indicator_container.addTask(new_task_data2)
 
@@ -278,13 +278,13 @@ class DataItem(SiDenseVContainer):
 
         self.title = SiLabel(self)
         self.title.setFont(SiFont.getFont(size=size_title, weight=QFont.Weight.Normal))
-        self.title.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_D))
+        self.title.setTextColor(self.getColor(SiColor.TEXT_D))
         self.title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.title.setText(str(title))
 
         self.data = SiLabel(self)
         self.data.setFont(SiFont.getFont(size=size_data, weight=QFont.Weight.Light))
-        self.data.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
+        self.data.setTextColor(self.getColor(SiColor.TEXT_B))
         self.data.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.data.setText(str(data))
 
@@ -414,7 +414,7 @@ class TodayMainWidget(SiWidget):
 
         # self.memos_container = SiLabel(self)
         # self.memos_container.setFixedStyleSheet("border-radius: 4px")
-        # self.memos_container.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
+        # self.memos_container.setColor(self.getColor(SiColor.INTERFACE_BG_C))
 
     def adjustSize(self):
         height = self.today_data_top.height() + 8 + self.today_tasks.height() + 8 + self.today_data_bottom.height()

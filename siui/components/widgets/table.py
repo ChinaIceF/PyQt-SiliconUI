@@ -21,7 +21,7 @@ class SiTableValueManagerLabels(ABCSiTabelManager):
         for name in self.parent().column_names:
             new_label = SiLabel(self.parent())
             new_label.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
-            new_label.setTextColor(self.parent().colorGroup().fromToken(SiColor.TEXT_B))
+            new_label.setTextColor(self.parent().getColor(SiColor.TEXT_B))
             new_label.setText(name)
             new_label.adjustSize()
             header.container().addWidget(new_label)
@@ -64,9 +64,9 @@ class SiTableView(ABCSiTable):
         super().addRow(widgets, data)
 
         if len(self.rows_) % 2 == 0:
-            color = self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)
+            color = self.getColor(SiColor.INTERFACE_BG_C)
         else:
-            color = self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)
+            color = self.getColor(SiColor.INTERFACE_BG_B)
 
         self.rows_[-1].setFixedStyleSheet("border-radius: 6px")
         self.rows_[-1].setColor(color)
@@ -92,16 +92,16 @@ class SiTableView(ABCSiTable):
         super().reloadStyleSheet()
 
         self.panel.setStyleSheet(
-            f"border: 1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)};"
-            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)};"
+            f"border: 1px solid {self.getColor(SiColor.INTERFACE_BG_D)};"
+            f"background-color: {self.getColor(SiColor.INTERFACE_BG_B)};"
         )
 
         self.header_panel.setStyleSheet(
-            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)};"
+            f"background-color: {self.getColor(SiColor.INTERFACE_BG_D)};"
         )
 
         self.indicator_track.setStyleSheet(
-            f"background-color: {self.colorGroup().fromToken(SiColor.THEME)}"
+            f"background-color: {self.getColor(SiColor.THEME)}"
         )
 
     def resizeEvent(self, event):

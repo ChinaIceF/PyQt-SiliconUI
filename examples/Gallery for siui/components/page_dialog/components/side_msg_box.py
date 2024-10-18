@@ -34,14 +34,14 @@ def send_custom_message(type_, auto_close=False, auto_close_duration=1000):
 
     info_label = SiLabel()
     info_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-    info_label.setStyleSheet(f"color: {info_label.colorGroup().fromToken(SiColor.TEXT_D)}; padding-left: 16px")
+    info_label.setStyleSheet(f"color: {info_label.getColor(SiColor.TEXT_D)}; padding-left: 16px")
     info_label.setText("以下账号已成功登录")
     info_label.adjustSize()
 
     split_line = SiLabel()
     split_line.resize(300, 1)
     split_line.setFixedStyleSheet("margin-left: 20px")
-    split_line.setColor(SiColor.trans(split_line.colorGroup().fromToken(SiColor.TEXT_D), 0.3))
+    split_line.setColor(SiColor.trans(split_line.getColor(SiColor.TEXT_D), 0.3))
 
     avatar = SiPixLabel(container)
     avatar.resize(80, 80)
@@ -55,21 +55,21 @@ def send_custom_message(type_, auto_close=False, auto_close_duration=1000):
 
     name_label = SiLabel()
     name_label.setFont(SiFont.tokenized(GlobalFont.M_BOLD))
-    name_label.setStyleSheet(f"color: {name_label.colorGroup().fromToken(SiColor.TEXT_B)}; padding-left:8px")
+    name_label.setStyleSheet(f"color: {name_label.getColor(SiColor.TEXT_B)}; padding-left:8px")
     name_label.setText("霏泠Ice")
     name_label.adjustSize()
 
     button_1 = SiSimpleButton()
     button_1.setFixedHeight(22)
     button_1.attachment().setText("打开我的主页")
-    button_1.colorGroup().assign(SiColor.TEXT_B, button_1.colorGroup().fromToken(SiColor.TITLE_INDICATOR))
+    button_1.colorGroup().assign(SiColor.TEXT_B, button_1.getColor(SiColor.TITLE_INDICATOR))
     button_1.adjustSize()
     button_1.reloadStyleSheet()
 
     button_2 = SiSimpleButton()
     button_2.setFixedHeight(22)
     button_2.attachment().setText("退出账号")
-    button_2.colorGroup().assign(SiColor.TEXT_B, button_2.colorGroup().fromToken(SiColor.TITLE_INDICATOR))
+    button_2.colorGroup().assign(SiColor.TEXT_B, button_2.getColor(SiColor.TITLE_INDICATOR))
     button_2.adjustSize()
     button_2.reloadStyleSheet()
 

@@ -25,7 +25,7 @@ class LayerLeftGlobalDrawer(SiLayerDrawer):
             group.addTitle("全局性")
 
             self.text_label = SiLabel(self)
-            self.text_label.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_D))
+            self.text_label.setTextColor(self.getColor(SiColor.TEXT_D))
             self.text_label.setWordWrap(True)
             self.text_label.setText("这里是全局抽屉，无论在何种情况下，该抽屉被打开时都会令界面发生侧移，保证抽屉正常展开\n\n"
                                     "不同于其他页面，全局抽屉推荐为唯一的，全局抽屉中的控件推荐为静态的")
@@ -37,7 +37,7 @@ class LayerLeftGlobalDrawer(SiLayerDrawer):
             group.addTitle("声音")
 
             self.label_output_device = SiLabel(self)
-            self.label_output_device.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_C))
+            self.label_output_device.setTextColor(self.getColor(SiColor.TEXT_C))
             self.label_output_device.setText("输出设备")
 
             self.demo_output_device = SiComboBox(self)
@@ -49,7 +49,7 @@ class LayerLeftGlobalDrawer(SiLayerDrawer):
             self.demo_output_device.menu().setIndex(0)
 
             self.label_slider_1 = SiLabel(self)
-            self.label_slider_1.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_C))
+            self.label_slider_1.setTextColor(self.getColor(SiColor.TEXT_C))
             self.label_slider_1.setText("总音量")
 
             self.demo_slider_1 = SiSliderH(self)
@@ -59,7 +59,7 @@ class LayerLeftGlobalDrawer(SiLayerDrawer):
             self.demo_slider_1.setValue(80, move_to=False)
 
             self.label_slider_2 = SiLabel(self)
-            self.label_slider_2.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_C))
+            self.label_slider_2.setTextColor(self.getColor(SiColor.TEXT_C))
             self.label_slider_2.setText("音乐音量")
 
             self.demo_slider_2 = SiSliderH(self)
@@ -69,7 +69,7 @@ class LayerLeftGlobalDrawer(SiLayerDrawer):
             self.demo_slider_2.setValue(100, move_to=False)
 
             self.label_slider_3 = SiLabel(self)
-            self.label_slider_3.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_C))
+            self.label_slider_3.setTextColor(self.getColor(SiColor.TEXT_C))
             self.label_slider_3.setText("音效音量")
 
             self.demo_slider_3 = SiSliderH(self)
@@ -104,8 +104,8 @@ class LayerLeftGlobalDrawer(SiLayerDrawer):
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
         self.drawer_panel.setStyleSheet(
-            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)};"
-            f"border-right: 1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_D)}"
+            f"background-color: {self.getColor(SiColor.INTERFACE_BG_C)};"
+            f"border-right: 1px solid {self.getColor(SiColor.INTERFACE_BG_D)}"
         )
 
     def showLayer(self):

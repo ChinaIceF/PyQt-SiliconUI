@@ -54,7 +54,7 @@ class MessageSidebar(SiMasonryContainer):
                 "padding-bottom: 16px;"
                 "padding-left: 12px;"
                 "padding-right: 12px;"
-                "color: {}".format(self.colorGroup().fromToken(SiColor.TEXT_D))
+                "color: {}".format(self.getColor(SiColor.TEXT_D))
             )
             label.setText(text)
             new_message_box.content().container().addWidget(label)
@@ -70,7 +70,7 @@ class MessageSidebar(SiMasonryContainer):
                 "padding-bottom: 1px;"
                 "padding-left: 12px;"
                 "padding-right: 12px;"
-                "color: {}".format(self.colorGroup().fromToken(SiColor.TEXT_B))
+                "color: {}".format(self.getColor(SiColor.TEXT_B))
             )
             title_label.setText(title)
 
@@ -84,7 +84,7 @@ class MessageSidebar(SiMasonryContainer):
                 "padding-bottom: 16px;"
                 "padding-left: 12px;"
                 "padding-right: 12px;"
-                "color: {}".format(self.colorGroup().fromToken(SiColor.TEXT_D))
+                "color: {}".format(self.getColor(SiColor.TEXT_D))
             )
             description_label.setText(text)
 

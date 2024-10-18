@@ -53,7 +53,7 @@ class SiNavigationBarH(ABCSiNavigationBar):
 
         button = SiSimpleButton(self)
         button.attachment().setText(name)
-        button.colorGroup().assign(SiColor.TEXT_B, self.colorGroup().fromToken(SiColor.BUTTON_TEXT_BUTTON_IDLE))
+        button.colorGroup().assign(SiColor.TEXT_B, self.getColor(SiColor.BUTTON_TEXT_BUTTON_IDLE))
         button.adjustSize()
         button.clicked.connect(on_clicked)
 
@@ -66,10 +66,10 @@ class SiNavigationBarH(ABCSiNavigationBar):
 
     def _on_index_changed(self, index):
         for btn in self.item_dict.values():
-            btn.attachment().setTextColor(self.colorGroup().fromToken(SiColor.BUTTON_TEXT_BUTTON_IDLE))
+            btn.attachment().setTextColor(self.getColor(SiColor.BUTTON_TEXT_BUTTON_IDLE))
 
         button = self.item_dict[str(index)]
-        button.attachment().setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
+        button.attachment().setTextColor(self.getColor(SiColor.TEXT_B))
 
         width = int(button.width() * (1-0.618)*2)
         x = button.x() + (button.width() - width) // 2
@@ -79,8 +79,8 @@ class SiNavigationBarH(ABCSiNavigationBar):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        self.indicator_track.setColor(self.colorGroup().fromToken(SiColor.THEME))
-        self.indicator.setColor(self.colorGroup().fromToken(SiColor.THEME))
+        self.indicator_track.setColor(self.getColor(SiColor.THEME))
+        self.indicator.setColor(self.getColor(SiColor.THEME))
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -91,7 +91,7 @@ class SiNavigationBarH(ABCSiNavigationBar):
     def showEvent(self, a0):
         super().showEvent(a0)
         button = self.item_dict[str(self.currentIndex())]
-        button.attachment().setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
+        button.attachment().setTextColor(self.getColor(SiColor.TEXT_B))
 
 
 class SiNavigationBarV(ABCSiNavigationBar):
@@ -143,7 +143,7 @@ class SiNavigationBarV(ABCSiNavigationBar):
 
         button = SiSimpleButton(self)
         button.attachment().setText(name)
-        button.colorGroup().assign(SiColor.TEXT_B, self.colorGroup().fromToken(SiColor.BUTTON_TEXT_BUTTON_IDLE))
+        button.colorGroup().assign(SiColor.TEXT_B, self.getColor(SiColor.BUTTON_TEXT_BUTTON_IDLE))
         button.adjustSize()
         button.clicked.connect(on_clicked)
 
@@ -156,10 +156,10 @@ class SiNavigationBarV(ABCSiNavigationBar):
 
     def _on_index_changed(self, index):
         for btn in self.item_dict.values():
-            btn.attachment().setTextColor(self.colorGroup().fromToken(SiColor.BUTTON_TEXT_BUTTON_IDLE))
+            btn.attachment().setTextColor(self.getColor(SiColor.BUTTON_TEXT_BUTTON_IDLE))
 
         button = self.item_dict[str(index)]
-        button.attachment().setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
+        button.attachment().setTextColor(self.getColor(SiColor.TEXT_B))
 
         height = int(button.height() * (1-0.618)*2)
         y = button.y() + (button.height() - height) // 2
@@ -169,8 +169,8 @@ class SiNavigationBarV(ABCSiNavigationBar):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        self.indicator_track.setColor(self.colorGroup().fromToken(SiColor.THEME))
-        self.indicator.setColor(self.colorGroup().fromToken(SiColor.THEME))
+        self.indicator_track.setColor(self.getColor(SiColor.THEME))
+        self.indicator.setColor(self.getColor(SiColor.THEME))
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -181,4 +181,4 @@ class SiNavigationBarV(ABCSiNavigationBar):
     def showEvent(self, a0):
         super().showEvent(a0)
         button = self.item_dict[str(self.currentIndex())]
-        button.attachment().setTextColor(self.colorGroup().fromToken(SiColor.TEXT_B))
+        button.attachment().setTextColor(self.getColor(SiColor.TEXT_B))

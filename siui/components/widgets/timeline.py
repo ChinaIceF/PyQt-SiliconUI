@@ -17,8 +17,8 @@ class SiTimeLineItem(SiWidget):
         self.anchor.setFixedSize(24, 24)
         self.anchor.setFixedStyleSheet("border-radius: 12px")
         self.anchor.setStyleSheet(
-            f"border: 4px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)};"
-            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_E)};"
+            f"border: 4px solid {self.getColor(SiColor.INTERFACE_BG_C)};"
+            f"background-color: {self.getColor(SiColor.INTERFACE_BG_E)};"
         )
         self.anchor.move(64 + 4, 20)
 
@@ -27,11 +27,11 @@ class SiTimeLineItem(SiWidget):
         self.anchor_dot.setFixedStyleSheet("border-radius: 4px")
         self.anchor_dot.move(8, 8)
         self.anchor_dot.setStyleSheet(
-            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)};"
+            f"background-color: {self.getColor(SiColor.INTERFACE_BG_C)};"
         )
 
         self.title = SiLabel(self)
-        # self.title.setTextColor(self.colorGroup().fromToken(SiColor))
+        # self.title.setTextColor(self.getColor(SiColor))
         self.title.setText("你好世界")
         self.title.move(0, 0)
         self.title.adjustSize()
@@ -58,7 +58,7 @@ class SiTimeLine(SiMasonryContainer):
 
         self.track = SiLabel(self)
         self.track.setFixedStyleSheet("border-radius: 2px")
-        self.track.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_E))
+        self.track.setColor(self.getColor(SiColor.INTERFACE_BG_E))
         self.track.setFixedWidth(4)
         self.track.resize(4, 100)
         self.track.move(14 + 64, 0)

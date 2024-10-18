@@ -20,8 +20,8 @@ class SiChildPage(SiWidget):
         self.background_content = SiLabel(self.view_)
         self.background_content.setStyleSheet(
             "border-radius: 8px;"
-            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_B)};"
-            f"border: 1px solid {self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)};"
+            f"background-color: {self.getColor(SiColor.INTERFACE_BG_B)};"
+            f"border: 1px solid {self.getColor(SiColor.INTERFACE_BG_C)};"
         )
 
 
@@ -32,7 +32,7 @@ class SiChildPage(SiWidget):
         self.background_panel.setStyleSheet(
             "border-top-left-radius: 8px;"
             "border-top-right-radius: 8px;"
-            f"background-color: {self.colorGroup().fromToken(SiColor.INTERFACE_BG_C)}"
+            f"background-color: {self.getColor(SiColor.INTERFACE_BG_C)}"
         )
         SiQuickEffect.applyDropShadowOn(self.background_panel, (0, 0, 0, 60), blur_radius=48)
 

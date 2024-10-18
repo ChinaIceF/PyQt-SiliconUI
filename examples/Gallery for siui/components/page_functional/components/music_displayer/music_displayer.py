@@ -65,14 +65,14 @@ class InfoPanel(SiWidget):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        self.title_label.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_A))
-        self.artist_label.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_A))
-        self.album_label.setTextColor(self.colorGroup().fromToken(SiColor.TEXT_D))
+        self.title_label.setTextColor(self.getColor(SiColor.TEXT_A))
+        self.artist_label.setTextColor(self.getColor(SiColor.TEXT_A))
+        self.album_label.setTextColor(self.getColor(SiColor.TEXT_D))
         self.transition_label.setStyleSheet(
             "background-color: qlineargradient("
             "    x1:0.1, y1:0, x2:1, y2:0,"
-            f"   stop:0 {SiColor.trans(self.colorGroup().fromToken(SiColor.INTERFACE_BG_D), 1.0)},"
-            f"   stop:1 {SiColor.trans(self.colorGroup().fromToken(SiColor.INTERFACE_BG_D), 0.7)}"
+            f"   stop:0 {SiColor.trans(self.getColor(SiColor.INTERFACE_BG_D), 1.0)},"
+            f"   stop:1 {SiColor.trans(self.getColor(SiColor.INTERFACE_BG_D), 0.7)}"
             ")"
         )
         self.achievement_label.setStyleSheet(
@@ -144,7 +144,7 @@ class SiMusicDisplayer(SiWidget):
         self.state_label = SiLabel(self)
         self.state_label.resize(64, 128)
         self.state_label.setFixedStyleSheet("border-radius: 12px")
-        self.state_label.setColor(self.colorGroup().fromToken(SiColor.INTERFACE_BG_C))
+        self.state_label.setColor(self.getColor(SiColor.INTERFACE_BG_C))
 
         self.folded_container = SiDenseVContainer(self.state_label)
         self.folded_container.setAlignment(Qt.AlignHCenter)

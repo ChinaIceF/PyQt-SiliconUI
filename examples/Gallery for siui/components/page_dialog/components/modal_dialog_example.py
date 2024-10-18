@@ -10,15 +10,15 @@ class ModalDialogExample(SiModalDialog):
         self.setFixedWidth(500)
         self.icon().load(SiGlobal.siui.iconpack.get("ic_fluent_save_filled",
                                                     color_code=SiColor.mix(
-                                                        self.colorGroup().fromToken(SiColor.SVG_NORMAL),
-                                                        self.colorGroup().fromToken(SiColor.INTERFACE_BG_B),
+                                                        self.getColor(SiColor.SVG_NORMAL),
+                                                        self.getColor(SiColor.INTERFACE_BG_B),
                                                         0.05))
                          )
 
         label = SiLabel(self)
-        label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_E)}")
+        label.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_E)}")
         label.setText(
-            f'<span style="color: {self.colorGroup().fromToken(SiColor.TEXT_B)}">是否保存刚刚编辑的文件？</span><br>'
+            f'<span style="color: {self.getColor(SiColor.TEXT_B)}">是否保存刚刚编辑的文件？</span><br>'
             "<br>"
             "- 田所浩二志.doc<br>"
             "- 八十天游览下北泽——从百草园到三味书屋.docx<br>"
@@ -30,13 +30,13 @@ class ModalDialogExample(SiModalDialog):
         button1 = SiPushButton(self)
         button1.setFixedHeight(32)
         button1.attachment().setText("继续编辑我的文档")
-        button1.colorGroup().assign(SiColor.BUTTON_PANEL, self.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+        button1.colorGroup().assign(SiColor.BUTTON_PANEL, self.getColor(SiColor.INTERFACE_BG_D))
         button1.clicked.connect(SiGlobal.siui.windows["MAIN_WINDOW"].layerModalDialog().closeLayer)
 
         button2 = SiPushButton(self)
         button2.setFixedHeight(32)
         button2.attachment().setText("保存并退出")
-        button2.colorGroup().assign(SiColor.BUTTON_PANEL, self.colorGroup().fromToken(SiColor.INTERFACE_BG_D))
+        button2.colorGroup().assign(SiColor.BUTTON_PANEL, self.getColor(SiColor.INTERFACE_BG_D))
         button2.clicked.connect(SiGlobal.siui.windows["MAIN_WINDOW"].layerModalDialog().closeLayer)
 
         self.button3 = SiLongPressButton(self)

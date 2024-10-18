@@ -48,7 +48,7 @@ class SiComboBox(ABCSiComboBox):
 
     def reloadStyleSheet(self):
         super().reloadStyleSheet()
-        self.value_label.setStyleSheet(f"color: {self.colorGroup().fromToken(SiColor.TEXT_B)}")
+        self.value_label.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_B)}")
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

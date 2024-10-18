@@ -57,10 +57,10 @@ class LayerMain(SiLayer):
 
     def reloadStyleSheet(self):
         self.background_label.setStyleSheet("background-color: {}; border: 1px solid {};".format(
-            self.colorGroup().fromToken(SiColor.INTERFACE_BG_A),
-            self.colorGroup().fromToken(SiColor.INTERFACE_BG_B))
+            self.getColor(SiColor.INTERFACE_BG_A),
+            self.getColor(SiColor.INTERFACE_BG_B))
         )
-        self.app_title.setStyleSheet("color: {}".format(self.colorGroup().fromToken(SiColor.TEXT_B)))
+        self.app_title.setStyleSheet("color: {}".format(self.getColor(SiColor.TEXT_B)))
 
     def setTitle(self, title):
         self.app_title.setText(title)
