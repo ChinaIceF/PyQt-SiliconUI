@@ -22,7 +22,7 @@ class AnimationManagerPullDown(ABCAnimationManager):
     def on_parent_unfolded(parent, x, y):
         parent.unfoldSignal.emit()
 
-        _, body_preferred_height = parent.body_.getPreferredSize()
+        body_preferred_height = parent.body_.sizeHint().height()
         parent.move(x, y)
         parent.show()
 
@@ -59,7 +59,7 @@ class AnimationManagerExpand(ABCAnimationManager):
 
         parent.setAnchorByIndex(parent.index())
         print(parent.move_anchor)
-        _, body_preferred_height = parent.body_.getPreferredSize()
+        body_preferred_height = parent.body_.sizeHint().height()
         target_height = body_preferred_height + parent.margin * 2 + parent.padding * 2
         parent.anchor_rate = (parent.moveAnchor().y() - parent.margin - parent.padding) / body_preferred_height
 
@@ -95,7 +95,7 @@ class AnimationManagerExpand(ABCAnimationManager):
         parent.move(parent.pos().x() + previous_anchor_x, parent.pos().y() + previous_anchor_y)
         QApplication.processEvents()
         parent.body_panel.setGeometry(0,
-                                      parent.moveAnchor().y() - shift - int(parent.body().getPreferredSize()[1] *
+                                      parent.moveAnchor().y() - shift - int(parent.body().sizeHint().height() *
                                                                             parent.anchor_rate),
                                       size.width() - parent.margin * 2,
                                       size.height() - parent.margin * 2)

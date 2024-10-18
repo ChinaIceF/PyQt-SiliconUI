@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QPoint
 
-from siui.components import SiSimpleButton, SiWidget, SiLabel
+from siui.components import SiLabel, SiSimpleButton, SiWidget
 from siui.components.menu.menu import SiInteractionMenu
 from siui.core import SiGlobal
 
