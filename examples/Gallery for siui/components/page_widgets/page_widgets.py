@@ -865,7 +865,7 @@ class ExampleWidgets(SiPage):
             self.calender_view.setTitle("日历视图")
 
             self.demo_calender_view = SiCalenderView(self)
-            self.demo_calender_view.resize(32, 32)
+            self.demo_calender_view.adjustSize()
 
             self.calender_view.body().addWidget(self.demo_calender_view)
             self.calender_view.body().addPlaceholder(12)
