@@ -51,6 +51,9 @@ class SiTimeLineItem(SiWidget):
         self.description.setText(description)
         self.description.adjustSize()
 
+    def setIconHint(self, text):
+        self.icon.setHint(text)
+
     def setThemeColor(self, code, background_color=None):
         background_color = self.getColor(SiColor.INTERFACE_BG_C) if background_color is None else background_color
         self.anchor.setStyleSheet(

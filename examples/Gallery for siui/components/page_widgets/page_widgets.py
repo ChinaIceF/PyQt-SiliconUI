@@ -838,6 +838,7 @@ class ExampleWidgets(SiPage):
             item2.setContent("19:19:10", "警告：接受的包过多，可能存在潜在攻击行为")
             item2.setIcon(SiGlobal.siui.iconpack.get(
                 "ic_fluent_warning_shield_filled", color_code=self.getColor(SiColor.PROGRESS_BAR_COMPLETING)))
+            item2.setIconHint("安全警告")
             item2.setThemeColor(self.getColor(SiColor.PROGRESS_BAR_COMPLETING))
             item2.adjustSize()
 
@@ -845,6 +846,7 @@ class ExampleWidgets(SiPage):
             item3.setContent("00:00:00", "问题已清除")
             item3.setIcon(SiGlobal.siui.iconpack.get(
                 "ic_fluent_shield_checkmark_filled", color_code=self.getColor(SiColor.SIDE_MSG_THEME_SUCCESS)))
+            item3.setIconHint("警报解除")
             item3.setThemeColor(self.getColor(SiColor.SIDE_MSG_THEME_SUCCESS))
             item3.adjustSize()
 

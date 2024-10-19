@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QSize
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
@@ -86,6 +86,7 @@ class SiInteractionMenu(SiWidget):
     def unfold(self, x, y):
         """ unfold the menu """
         self.animationManager().on_parent_unfolded(self, x, y)
+        SiGlobal.siui.windows["TOOL_TIP"].raise_()
 
     def setContentFixedWidth(self, w):
         self.setFixedWidth(w + self.padding*2 + self.margin*2)
@@ -98,3 +99,9 @@ class SiInteractionMenu(SiWidget):
     def resizeEvent(self, event):
         self.animationManager().on_parent_resized(self, event)
         super().resizeEvent(event)
+
+    def sizeHint(self):
+        w = self.body_.sizeHint().width() + 2 * self.padding + 2 * self.margin
+        h = self.body_.sizeHint().height() + 2 * self.padding + 2 * self.margin
+        return QSize(w, h)
+
