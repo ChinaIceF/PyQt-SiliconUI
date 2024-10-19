@@ -1,3 +1,4 @@
+import datetime
 import random
 
 import numpy
@@ -867,7 +868,13 @@ class ExampleWidgets(SiPage):
             self.demo_calender_view = SiCalenderView(self)
             self.demo_calender_view.adjustSize()
 
+            self.ctrl_set_today = SiPushButton(self)
+            self.ctrl_set_today.resize(128, 32)
+            self.ctrl_set_today.attachment().setText("设为今天")
+            self.ctrl_set_today.clicked.connect(lambda: self.demo_calender_view.setDate(datetime.date.today()))
+
             self.calender_view.body().addWidget(self.demo_calender_view)
+            self.calender_view.body().addWidget(self.ctrl_set_today)
             self.calender_view.body().addPlaceholder(12)
             self.calender_view.adjustSize()
 
