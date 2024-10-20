@@ -1,15 +1,11 @@
-import time
-
 from PyQt5.Qt import QColor
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QApplication, QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.container import SiDenseVContainer
 from siui.components.widgets.label import SiLabel
-from siui.core import SiColor
-from siui.core import SiGlobal
-from siui.core import Si
+from siui.core import SiColor, SiGlobal
 
 
 class ABCSiMenu(SiWidget):

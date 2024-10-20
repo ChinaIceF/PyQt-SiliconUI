@@ -2,7 +2,7 @@ import random
 from typing import Union
 
 from PyQt5.Qt import QColor
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, QSize
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QWidget
 
 from siui.components.widgets.abstracts.container import ABCSiDividedContainer
@@ -177,11 +177,7 @@ class SiDenseHContainer(ABCDenseContainer):
 
         raise ValueError(f"Widget provided ({widget}) is not in this container.")
 
-    def getPreferredSize(self):
-        """
-        Get preferred size of this container
-        :return: [width, height]
-        """
+    def sizeHint(self):
         # 创建计数器
         left_used = 0
         right_used = 0
@@ -199,7 +195,7 @@ class SiDenseHContainer(ABCDenseContainer):
         total_used += self.spacing if self.widgets_left + self.widgets_right == [] else 0  # 防止极端情况下两侧控件紧贴
         preferred_w = total_used
 
-        return preferred_w, max([widget.height() for widget in (self.widgets_left + self.widgets_right)])
+        return QSize(preferred_w, max([0] + [widget.height() for widget in (self.widgets_left + self.widgets_right)]))
 
     def arrangeWidget(self):
         """
@@ -270,7 +266,8 @@ class SiDenseHContainer(ABCDenseContainer):
         :return:
         """
         # 获取最佳尺寸
-        preferred_w, preferred_h = self.getPreferredSize()
+        size = self.sizeHint()
+        preferred_w, preferred_h = size.width(), size.height()
 
         if self.shrinking is False:
             # 和原本自身的尺寸比价，取最大者
@@ -324,11 +321,7 @@ class SiDenseVContainer(ABCDenseContainer):
 
         self.adjustSize()
 
-    def getPreferredSize(self):
-        """
-        Get preferred size of this container
-        :return: [width, height]
-        """
+    def sizeHint(self):
         # 创建计数器
         bottom_used = 0
         top_used = 0
@@ -346,7 +339,7 @@ class SiDenseVContainer(ABCDenseContainer):
         total_used += self.spacing if (self.widgets_bottom != [] and self.widgets_top != []) else 0  # 防止两侧控件紧贴
         preferred_h = total_used
 
-        return max([widget.width() for widget in (self.widgets_top + self.widgets_bottom)]), preferred_h
+        return QSize(max([0] + [widget.width() for widget in (self.widgets_top + self.widgets_bottom)]), preferred_h)
 
     def getUsedSpace(self, side):
         if side not in ["top", "bottom"]:
@@ -456,7 +449,8 @@ class SiDenseVContainer(ABCDenseContainer):
         :return:
         """
         # 获取最佳尺寸
-        preferred_w, preferred_h = self.getPreferredSize()
+        size = self.sizeHint()
+        preferred_w, preferred_h = size.width(), size.height()
 
         if self.shrinking is False:
             # 和原本自身的尺寸比价，取最大者
@@ -467,11 +461,11 @@ class SiDenseVContainer(ABCDenseContainer):
 
 
 class SiDividedHContainer(ABCSiDividedContainer):
-    def adjustSize(self):
+    def sizeHint(self):
         total_spacing = self.spacing() * max(0, (len(self.sections()) - 1))
         total_section_width = sum([section.width() for section in self.sections()])
         largest_height = max([section.height() for section in self.sections()])
-        self.resize(total_section_width + total_spacing, largest_height)
+        return QSize(total_section_width + total_spacing, largest_height)
 
     def arrangeWidgets(self):
         x_counter = 0
@@ -500,11 +494,11 @@ class SiDividedHContainer(ABCSiDividedContainer):
 
 
 class SiDividedVContainer(ABCSiDividedContainer):
-    def adjustSize(self):
+    def sizeHint(self):
         total_spacing = self.spacing() * max(0, (len(self.sections()) - 1))
         total_section_height = sum([section.height() for section in self.sections()])
         largest_width = max([section.width() for section in self.sections()])
-        self.resize(largest_width, total_section_height + total_spacing)
+        return QSize(largest_width, total_section_height + total_spacing)
 
     def arrangeWidgets(self):
         y_counter = 0

@@ -22,7 +22,7 @@ class DarkColorGroup(SiColorGroup):
         self.assign(SiColor.INTERFACE_BG_A, "#1C191F")
         self.assign(SiColor.INTERFACE_BG_B, "#25222A")
         self.assign(SiColor.INTERFACE_BG_C, "#332E38")
-        self.assign(SiColor.INTERFACE_BG_D, "#3F3946")
+        self.assign(SiColor.INTERFACE_BG_D, "#403a46")
         self.assign(SiColor.INTERFACE_BG_E, "#4C4554")
 
         self.assign(SiColor.TEXT_A, "#E5E5E5")

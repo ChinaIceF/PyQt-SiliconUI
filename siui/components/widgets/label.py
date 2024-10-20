@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter, QPainterPath, QPixmap
 from PyQt5.QtSvg import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
-from siui.core import GlobalFont, Si, SiGlobal, SiQuickAlignmentManager, SiColor
+from siui.core import GlobalFont, Si, SiColor, SiQuickAlignmentManager
 from siui.gui import SiFont
 
 
@@ -11,6 +11,26 @@ class SiLabel(ABCAnimatedLabel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         super().setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
+
+
+class SiFlashLabel(SiLabel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.flash_color = self.getColor(SiColor.BUTTON_FLASH)
+        self.flash_layer = SiLabel(self)
+        self.flash_layer.animationGroup().fromToken("color").setFactor(1/16)
+
+    def setFlashColor(self, code):
+        self.flash_color = code
+
+    def flash(self):
+        self.flash_layer.setColor(SiColor.trans(self.flash_color, 1.0))
+        self.flash_layer.setColorTo(SiColor.trans(self.flash_color, 0))
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.flash_layer.resize(event.size())
 
 
 class SiPixLabel(SiLabel):

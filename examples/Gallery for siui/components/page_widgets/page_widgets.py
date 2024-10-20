@@ -1,3 +1,4 @@
+import datetime
 import random
 
 import numpy
@@ -35,6 +36,7 @@ from siui.components.widgets import (
 )
 from siui.components.widgets.navigation_bar import SiNavigationBarH, SiNavigationBarV
 from siui.components.widgets.table import SiTableView
+from siui.components.widgets.timedate import SiCalenderView, SiTimePicker, SiTimeSpanPicker
 from siui.components.widgets.timeline import SiTimeLine, SiTimeLineItem
 from siui.core import Si, SiColor, SiGlobal
 
@@ -837,6 +839,7 @@ class ExampleWidgets(SiPage):
             item2.setContent("19:19:10", "警告：接受的包过多，可能存在潜在攻击行为")
             item2.setIcon(SiGlobal.siui.iconpack.get(
                 "ic_fluent_warning_shield_filled", color_code=self.getColor(SiColor.PROGRESS_BAR_COMPLETING)))
+            item2.setIconHint("安全警告")
             item2.setThemeColor(self.getColor(SiColor.PROGRESS_BAR_COMPLETING))
             item2.adjustSize()
 
@@ -844,6 +847,7 @@ class ExampleWidgets(SiPage):
             item3.setContent("00:00:00", "问题已清除")
             item3.setIcon(SiGlobal.siui.iconpack.get(
                 "ic_fluent_shield_checkmark_filled", color_code=self.getColor(SiColor.SIDE_MSG_THEME_SUCCESS)))
+            item3.setIconHint("警报解除")
             item3.setThemeColor(self.getColor(SiColor.SIDE_MSG_THEME_SUCCESS))
             item3.adjustSize()
 
@@ -855,7 +859,67 @@ class ExampleWidgets(SiPage):
             self.timeline.body().addPlaceholder(12)
             self.timeline.adjustSize()
 
+            # 日历视图
+            self.calender_view = OptionCardPlaneForWidgetDemos(self)
+            self.calender_view.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.calender_view.setTitle("日历视图")
+
+            self.demo_calender_view = SiCalenderView(self)
+            self.demo_calender_view.adjustSize()
+
+            self.ctrl_set_today = SiPushButton(self)
+            self.ctrl_set_today.resize(128, 32)
+            self.ctrl_set_today.attachment().setText("设为今天")
+            self.ctrl_set_today.clicked.connect(lambda: self.demo_calender_view.setDate(datetime.date.today()))
+
+            self.calender_view.body().addWidget(self.demo_calender_view)
+            self.calender_view.body().addWidget(self.ctrl_set_today)
+            self.calender_view.body().addPlaceholder(12)
+            self.calender_view.adjustSize()
+
+            # 时间选择器
+            self.time_picker = OptionCardPlaneForWidgetDemos(self)
+            self.time_picker.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.time_picker.setTitle("时间选择器")
+
+            self.demo_time_picker = SiTimePicker(self)
+            self.demo_time_picker.adjustSize()
+
+            self.ctrl_set_now = SiPushButton(self)
+            self.ctrl_set_now.resize(128, 32)
+            self.ctrl_set_now.attachment().setText("还原")
+            self.ctrl_set_now.clicked.connect(lambda: self.demo_time_picker.setTime(datetime.time(0, 0, 0)))
+
+            self.time_picker.body().addWidget(self.demo_time_picker)
+            self.time_picker.body().addWidget(self.ctrl_set_now)
+            self.time_picker.body().addPlaceholder(12)
+            self.time_picker.adjustSize()
+
+            # 时长选择器
+            self.time_span_picker = OptionCardPlaneForWidgetDemos(self)
+            self.time_span_picker.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                                "/widgets/progress_bar/progress_bar.py")
+            self.time_span_picker.setTitle("时长选择器")
+
+            self.demo_time_span_picker = SiTimeSpanPicker(self)
+            self.demo_time_span_picker.adjustSize()
+
+            self.ctrl_set_zero = SiPushButton(self)
+            self.ctrl_set_zero.resize(128, 32)
+            self.ctrl_set_zero.attachment().setText("还原")
+            self.ctrl_set_zero.clicked.connect(lambda: self.demo_time_span_picker.setTimeSpan(datetime.timedelta()))
+
+            self.time_span_picker.body().addWidget(self.demo_time_span_picker)
+            self.time_span_picker.body().addWidget(self.ctrl_set_zero)
+            self.time_span_picker.body().addPlaceholder(12)
+            self.time_span_picker.adjustSize()
+
             group.addWidget(self.timeline)
+            group.addWidget(self.calender_view)
+            group.addWidget(self.time_picker)
+            group.addWidget(self.time_span_picker)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)
