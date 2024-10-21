@@ -3,15 +3,19 @@ from PyQt5.QtWidgets import QAbstractSlider
 
 from siui.components.widgets import SiDraggableLabel, SiLabel
 from siui.core import Si, SiColor, SiGlobal
+from siui.gui import SiColorGroup
 
 
 class SiSliderH(QAbstractSlider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # 颜色组
+        self.color_group = SiColorGroup(reference=SiGlobal.siui.colors)
+
         # 设定值对应的颜色
-        self.color_low = SiGlobal.siui.colors["THEME_TRANSITION_A"]
-        self.color_high = SiGlobal.siui.colors["THEME_TRANSITION_B"]
+        self.color_low = self.color_group.fromToken(SiColor.THEME_TRANSITION_A)
+        self.color_high = self.color_group.fromToken(SiColor.THEME_TRANSITION_B)
 
         # 框架
         self.frame = SiLabel(self)
@@ -31,7 +35,7 @@ class SiSliderH(QAbstractSlider):
         self.handle = SiDraggableLabel(self.frame)
         self.handle.resize(32, 8)
         self.handle.setSiliconWidgetFlag(Si.EnableAnimationSignals)
-        self.handle.setTrack(False)  # 取消自动跟踪鼠标，为了实现换挡动画
+        self.handle.setTrack(False)  # 取消自动跟踪鼠标，为了实现换挡动画0
         self.handle.setFixedStyleSheet("border-radius: 4px")
         self.handle.dragged.connect(self._dragged_handler)
         self.handle.moved.connect(self._moved_handler)
@@ -40,17 +44,23 @@ class SiSliderH(QAbstractSlider):
         self.setMaximum(100)
         self.setMinimum(-100)
 
+    def getHintFromValue(self, value):
+        return str(value)
+
+    def setValueColor(self, low, high):
+        self.color_low = low
+        self.color_high = high
+        self.reloadStyleSheet()
+
     def reloadStyleSheet(self):
         # 滑条着色
         self._moved_handler(None)
-
         # 滑轨着色
-        self.track.setStyleSheet("""
-            background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 {}, stop:1 {});
-            """.format(self.color_low, self.color_high))  # noqa: UP032
-
+        self.track.setStyleSheet(
+            f"background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 {self.color_low}, stop:1 {self.color_high});"  # noqa: E501
+        )
         # 滑轨遮罩
-        self.mask.setStyleSheet("background-color: {}".format(SiGlobal.siui.colors["INTERFACE_BG_B"]))
+        self.mask.setStyleSheet(f"background-color: {self.color_group.fromToken(SiColor.INTERFACE_BG_B)}")
 
     def setValue(self,
                  value: int,
@@ -61,7 +71,7 @@ class SiSliderH(QAbstractSlider):
         :param move_to: Use moving animation
         """
         super().setValue(value)
-        self.handle.setHint(str(self.value()))
+        self.handle.setHint(self.getHintFromValue(self.value()))
         self._move_handle_according_to_value(move_to=move_to)
 
     def mousePressEvent(self, event):
