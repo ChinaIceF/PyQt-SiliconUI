@@ -329,7 +329,13 @@ class TimeNumberScroller(SiWidget):
     def wheelEvent(self, event):
         super().wheelEvent(event)
         delta = event.angleDelta().y()
-        self.addValue(int(delta/abs(delta)))
+        if delta > 0:
+            add = 1
+        elif delta < 0:
+            add = -1
+        else:
+            add = 0
+        self.addValue(add)
 
 
 class TimePickerWidget(SiDenseVContainer):

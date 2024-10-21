@@ -146,7 +146,8 @@ class SiSliderH(QAbstractSlider):
 
     def showEvent(self, a0):
         super().showEvent(a0)
-        self._move_handle_according_to_value(move_to=False)  # 刷新滑块位置，防止因初始化时长度未设置成功而导致设置的位置与实际位置不同  # noqa: E501
+        # 刷新滑块位置，防止因初始化时长度未设置成功而导致设置的位置与实际位置不同
+        self._move_handle_according_to_value(move_to=False)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
