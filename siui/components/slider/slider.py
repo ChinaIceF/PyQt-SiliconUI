@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QAbstractSlider
 
 from siui.components.widgets import SiDraggableLabel, SiLabel
@@ -62,6 +63,43 @@ class SiSliderH(QAbstractSlider):
         super().setValue(value)
         self.handle.setHint(str(self.value()))
         self._move_handle_according_to_value(move_to=move_to)
+
+    def mousePressEvent(self, event):
+        """
+        处理滑块的鼠标按下事件。
+
+        当鼠标按钮被按下时触发此方法。如果点击的是左键，
+        它会获取鼠标相对于滑块的位置，并计算出对应的
+        滑块值。然后更新滑块的值以反映该位置。
+        """
+        if event.button() == Qt.LeftButton:
+            # 获取鼠标在 slider 上的位置
+            mouse_pos = event.pos()
+            # 根据鼠标位置计算对应的 value
+            value = self._slider_position_from_mouse(mouse_pos)
+            self.setValue(value)
+        super().mousePressEvent(event)
+
+    def _slider_position_from_mouse(self, mouse_pos: QPoint) -> int:
+        """
+        根据鼠标位置计算滑块的值。
+
+        此方法将鼠标位置转换为滑块值，
+        通过确定鼠标在滑块长度内的相对位置。
+        它确保计算出的值保持在滑块的最小值和最大值之间。
+
+        参数:
+            mouse_pos (QPoint): 鼠标相对于滑块的当前位置。
+
+        返回:
+            int: 计算出的滑块值，范围在最小值和最大值之间。
+        """
+        # 将鼠标位置转换为 slider 的 value
+        length = self.width() - self.handle.width()
+        position = mouse_pos.x() - self.handle.width() // 2
+        value = int(position / length * (self.maximum() - self.minimum())) + self.minimum()
+
+        return max(self.minimum(), min(value, self.maximum()))
 
     def _move_handle_according_to_value(self, move_to=False):
         """
