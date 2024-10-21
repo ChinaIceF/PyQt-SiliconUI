@@ -34,6 +34,7 @@ from siui.components.widgets import (
     SiSwitch,
     SiToggleButton,
 )
+from siui.components.widgets.expands import SiHoverExpandWidget
 from siui.components.widgets.navigation_bar import SiNavigationBarH, SiNavigationBarV
 from siui.components.widgets.table import SiTableView
 from siui.components.widgets.timedate import SiCalenderView, SiTimePicker, SiTimeSpanPicker
@@ -223,12 +224,26 @@ class ExampleWidgets(SiPage):
             self.showup_effect.body().addPlaceholder(12)
             self.showup_effect.adjustSize()
 
+            # 扩展控件
+            self.expands = OptionCardPlaneForWidgetDemos(self)
+            self.expands.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                           "/widgets/button.py")
+            self.expands.setTitle("扩展控件")
+
+            self.demo_expands = SiHoverExpandWidget(self)
+            self.demo_expands.resize(300, 32)
+
+            self.expands.body().addWidget(self.demo_expands)
+            self.expands.body().addPlaceholder(12)
+            self.expands.adjustSize()
+
             # <- 添加到控件组
             group.addWidget(self.label_for_text)
             group.addWidget(self.pix_label)
             group.addWidget(self.label_ani)
             group.addWidget(self.draggable_label)
             group.addWidget(self.showup_effect)
+            group.addWidget(self.expands)
 
         # 按钮
         with self.titled_widgets_group as group:
