@@ -1,12 +1,8 @@
 
-from PyQt5.QtCore import QPoint, pyqtSignal, QSize
-from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel
+from PyQt5.QtCore import QPoint, pyqtSignal
+from PyQt5.QtWidgets import QLabel
 
-from siui.core import SiAnimationGroup, SiExpAnimation
-from siui.core import SiColor
-from siui.core import SiQuickEffect
-from siui.core import SiGlobal
-from siui.core import Si
+from siui.core import Si, SiAnimationGroup, SiColor, SiExpAnimation, SiGlobal, SiQuickEffect
 from siui.gui.color_group import SiColorGroup
 
 
