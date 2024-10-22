@@ -130,7 +130,6 @@ class ToolTipWindow(SiWidget):
     def _refresh_position(self):
         pos = QCursor.pos()
         x, y = pos.x(), pos.y()
-        # self.move(x, y)
         self.moveTo(x + 4, y - self.height())    # 动画跟踪，效果更佳，有了锚点直接输入鼠标坐标即可
 
     def resizeEvent(self, event):
@@ -146,9 +145,6 @@ class ToolTipWindow(SiWidget):
         # 移动文本位置，阻止重设大小动画进行时奇怪的文字移动
         # self.text_label.move(0, h - self.text_label.height()) 2024.9.23 - 存在快速滑动鼠标时文字错位的情况
         self.text_label.move(0, h - self.height() + 16)
-
-    def enterEvent(self, event):
-        super().enterEvent(event)
 
     def leaveEvent(self, event):
         super().leaveEvent(event)

@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget
 
-from siui.components import SiLabel, SiWidget, SiIconLabel, SiDenseHContainer, SiSvgLabel
+from siui.components import SiDenseHContainer, SiIconLabel, SiLabel, SiSvgLabel, SiWidget
 from siui.core import SiColor, SiExpAccelerateAnimation, SiGlobal
 
 
