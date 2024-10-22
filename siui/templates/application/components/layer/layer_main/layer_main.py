@@ -1,11 +1,10 @@
 from PyQt5.QtCore import Qt
 
-from siui.components import SiLabel, SiDenseVContainer, SiDenseHContainer, SiPixLabel
-from siui.core import SiColor, GlobalFont
-from siui.core import SiGlobal
-from siui.core import Si
+from siui.components import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel
+from siui.core import GlobalFont, Si, SiColor
 from siui.gui import SiFont
 from siui.templates.application.components.page_view import PageView
+
 from ..layer import SiLayer
 
 
@@ -56,11 +55,11 @@ class LayerMain(SiLayer):
         self.dim_.hide()
 
     def reloadStyleSheet(self):
-        self.background_label.setStyleSheet("background-color: {}; border: 1px solid {};".format(
-            self.getColor(SiColor.INTERFACE_BG_A),
-            self.getColor(SiColor.INTERFACE_BG_B))
+        self.background_label.setStyleSheet(
+            f"background-color: {self.getColor(SiColor.INTERFACE_BG_A)};"
+            f"border: 1px solid {self.getColor(SiColor.INTERFACE_BG_B)};"
         )
-        self.app_title.setStyleSheet("color: {}".format(self.getColor(SiColor.TEXT_B)))
+        self.app_title.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_B)}")
 
     def setTitle(self, title):
         self.app_title.setText(title)

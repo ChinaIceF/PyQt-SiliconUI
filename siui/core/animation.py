@@ -1,5 +1,5 @@
 import numpy
-from PyQt5.QtCore import QObject, Qt, QTimer, pyqtSignal
+from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
 global_fps = 60
 

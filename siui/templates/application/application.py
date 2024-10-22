@@ -10,6 +10,7 @@ from siui.templates.application.components.layer.layer_left_global_drawer.layer_
 )
 from siui.templates.application.components.layer.layer_main.layer_main import LayerMain
 from siui.templates.application.components.layer.layer_modal_dialog.layer_modal_dialog import LayerModalDialog
+from siui.templates.application.components.layer.layer_overlays.layer_overlays import LayerOverLays
 from siui.templates.application.components.layer.layer_right_message_sidebar.layer_right_message_sidebar import (
     LayerRightMessageSidebar,
 )
@@ -45,6 +46,7 @@ class SiliconApplication(QMainWindow):
         self.layer_left_global_drawer = LayerLeftGlobalDrawer(self)
         self.layer_right_message_sidebar = LayerRightMessageSidebar(self)
         self.layer_modal_dialog = LayerModalDialog(self)
+        self.layer_overlays = LayerOverLays(self)
 
     def groups(self):
         return self.groups_
@@ -80,3 +82,4 @@ class SiliconApplication(QMainWindow):
         self.layer_right_message_sidebar.setGeometry(w - 400, 80, 400, self.layer_right_message_sidebar.height())
         self.layer_modal_dialog.resize(event.size())
         self.layer_left_global_drawer.resize(event.size())
+        self.layer_overlays.resize(event.size())

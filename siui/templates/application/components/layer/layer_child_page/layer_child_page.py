@@ -1,6 +1,5 @@
 from PyQt5.QtCore import Qt, QTimer
 
-from siui.core import Si
 from ..layer import SiLayer
 
 
