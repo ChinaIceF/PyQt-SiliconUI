@@ -231,7 +231,7 @@ class ExampleWidgets(SiPage):
             self.expands.setTitle("扩展控件")
 
             self.demo_expands = SiHoverExpandWidget(self)
-            self.demo_expands.resize(300, 32)
+            self.demo_expands.resize(96, 32)
 
             self.expands.body().addWidget(self.demo_expands)
             self.expands.body().addPlaceholder(12)

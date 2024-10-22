@@ -5,7 +5,8 @@ global_fps = 60
 
 
 class Curve:
-    def LINEAR(self, x):
+    @staticmethod
+    def LINEAR(x):
         return x
 
 
@@ -31,7 +32,6 @@ class ABCSiAnimation(QObject):
         self.action_timer = QTimer()
         self.action_timer.setSingleShot(True)
         # self.action_timer.setTimerType(Qt.PreciseTimer)
-
 
     def setEnable(self, on):
         self.enabled = on
@@ -313,7 +313,7 @@ class SiCounterAnimation(ABCSiAnimation):
         :return:
         """
         duration = self.duration
-        interval = self.timer.spacing()  # 两个值全是 毫秒 ms
+        interval = self.timer.interval()  # 两个值全是 毫秒 ms
         return interval / duration
 
     def setCurve(self, curve_func):
