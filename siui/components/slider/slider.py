@@ -66,7 +66,7 @@ class SiSliderH(QAbstractSlider):
 
     def mousePressEvent(self, event):
         """
-        处理滑块的鼠标按下事件。
+        处理滑条的鼠标按下事件。
 
         当鼠标按钮被按下时触发此方法。如果点击的是左键，
         它会获取鼠标相对于滑块的位置，并计算出对应的
@@ -79,6 +79,22 @@ class SiSliderH(QAbstractSlider):
             value = self._slider_position_from_mouse(mouse_pos)
             self.setValue(value)
         super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        """
+        处理滑条的鼠标移动事件。
+
+        当鼠标左键按下并移动时触发此方法。它会检测鼠标在滑块上的移动，
+        并根据当前鼠标的位置计算滑块的值。然后更新滑块的值以反映该位置，
+        使滑块在拖动时能够实时调整。
+        """
+        if event.buttons() & Qt.LeftButton:  # 检查鼠标左键是否按下
+            # 获取鼠标在 slider 上的位置
+            mouse_pos = event.pos()
+            # 根据鼠标位置计算对应的 value
+            value = self._slider_position_from_mouse(mouse_pos)
+            self.setValue(value)
+        super().mouseMoveEvent(event)
 
     def _slider_position_from_mouse(self, mouse_pos: QPoint) -> int:
         """
