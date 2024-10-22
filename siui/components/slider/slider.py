@@ -88,6 +88,7 @@ class SiSliderH(QAbstractSlider):
             # 根据鼠标位置计算对应的 value
             value = self._slider_position_from_mouse(mouse_pos)
             self.setValue(value)
+            self.handle.enterEvent(event)  # 显示工具提示
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
@@ -105,6 +106,10 @@ class SiSliderH(QAbstractSlider):
             value = self._slider_position_from_mouse(mouse_pos)
             self.setValue(value)
         super().mouseMoveEvent(event)
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self.handle.leaveEvent(a0)  # 保证工具提示消失
 
     def _slider_position_from_mouse(self, mouse_pos: QPoint) -> int:
         """
