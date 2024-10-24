@@ -2,13 +2,31 @@
 # replace button once it's done. Now it's draft, code may be ugly and verbose temporarily.
 
 from PyQt5.QtCore import QRect, QRectF, Qt
-from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPaintEvent
+from PyQt5.QtGui import QColor, QIcon, QPainter, QPainterPath, QPaintEvent
 from PyQt5.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
 
 
 class SiPushButton(QPushButton):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
+
+    @classmethod
+    def withText(cls, text: str, parent: QWidget | None = None) -> "SiPushButton":
+        cls = cls(parent)
+        cls.setText(text)
+        return cls
+
+    @classmethod
+    def withIcon(cls, icon: QIcon, parent: QWidget | None = None) -> "SiPushButton":
+        cls = cls(parent)
+        cls.setIcon(icon)
+        return cls
+
+    def withTextAndIcon(cls, text: str, icon: str, parent: QWidget | None = None) -> "SiPushButton":
+        cls = cls(parent)
+        cls.setText(text)
+        cls.setIcon(icon)
+        return cls
 
     @property
     def bottomBorderHeight(self) -> int:
