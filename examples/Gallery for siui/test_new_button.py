@@ -121,9 +121,10 @@ class Window(QWidget):
         self.setStyleSheet("background-color: #332E38")
 
         self.btn = SiPushButton(self)
-        self.btn.setFixedSize(128, 64)
+        self.btn.setFixedSize(128, 32)
         self.btn.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-        self.btn.setText("你好")
+        self.btn.setText("我是按钮")
+        self.btn.clicked.connect(lambda: print("clicked!"))
 
         self.main_layout = QVBoxLayout(self)
         self.main_layout.addWidget(self.btn, alignment=Qt.AlignmentFlag.AlignCenter)

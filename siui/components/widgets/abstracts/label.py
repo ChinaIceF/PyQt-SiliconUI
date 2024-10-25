@@ -1,5 +1,5 @@
 
-from PyQt5.QtCore import QPoint, pyqtSignal
+from PyQt5.QtCore import QPoint, pyqtSignal, QEvent
 from PyQt5.QtWidgets import QLabel
 
 from siui.core import Si, SiAnimationGroup, SiColor, SiExpAnimation, SiGlobal, SiQuickEffect
@@ -299,6 +299,7 @@ class ABCAnimatedLabel(QLabel):
         :param text: tooltip content. Rich text is supported
         """
         self.hint = text
+        self.setToolTip(text)
 
         # 把新的工具提示推送给工具提示窗口
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
@@ -323,3 +324,8 @@ class ABCAnimatedLabel(QLabel):
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
             SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(None)
             SiGlobal.siui.windows["TOOL_TIP"].hide_()
+
+    def event(self, event):
+        if event.type() == QEvent.ToolTip:
+            return True  # 忽略工具提示事件
+        return super().event(event)

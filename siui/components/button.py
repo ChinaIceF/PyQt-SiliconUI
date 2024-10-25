@@ -2,21 +2,19 @@
 # replace button once it's done. Now it's draft, code may be ugly and verbose temporarily.
 from __future__ import annotations
 
-import os
-
-from PyQt5.QtCore import QRect, QRectF, Qt
+from PyQt5.QtCore import QEvent, QRect, QRectF, Qt
 from PyQt5.QtGui import QColor, QIcon, QPainter, QPainterPath, QPaintEvent
-from PyQt5.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QPushButton, QWidget
 
-from siui.core import GlobalFont, SiColor, SiExpAnimation
+from siui.core import GlobalFont, SiColor, SiExpAnimation, SiGlobal
 from siui.gui import SiFont
 
-os.environ["QT_SCALE_FACTOR"] = str(2)
 
-
-class SiPushButton(QPushButton):
+class SiPushButtonRefactor(QPushButton):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
+
+        self._initStyle()
 
         self.idle_color = SiColor.toArray("#00FFFFFF")
         self.hover_color = SiColor.toArray("#10FFFFFF")
@@ -43,11 +41,17 @@ class SiPushButton(QPushButton):
         cls.setIcon(icon)
         return cls
 
+    @classmethod
     def withTextAndIcon(cls, text: str, icon: str, parent: QWidget | None = None) -> "SiPushButton":
         cls = cls(parent)
         cls.setText(text)
         cls.setIcon(icon)
         return cls
+
+    def _initStyle(self):
+        self.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
+        self.setStyleSheet("color: #DFDFDF;")
+
 
     @property
     def bottomBorderHeight(self) -> int:
@@ -76,22 +80,53 @@ class SiPushButton(QPushButton):
         painter.setBrush(QColor(SiColor.toCode(self.animation.current_)))
         painter.drawPath(self._drawButtonPath(rect))
 
+    def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setPen(self.palette().text().color())
+        painter.setFont(self.font())
+        painter.drawText(rect, Qt.AlignCenter, self.text())
+
     def _onButtonClicked(self) -> None:
         self.animation.setCurrent(self.click_color)
         self.animation.start()
 
+    def _showToolTip(self) -> None:
+        if self.toolTip() != "" and "TOOL_TIP" in SiGlobal.siui.windows:
+            SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(self)
+            SiGlobal.siui.windows["TOOL_TIP"].show_()
+
+    def _hideToolTip(self) -> None:
+        if self.toolTip() != "" and "TOOL_TIP" in SiGlobal.siui.windows:
+            SiGlobal.siui.windows["TOOL_TIP"].setNowInsideOf(None)
+            SiGlobal.siui.windows["TOOL_TIP"].hide_()
+
+    def _updateToolTip(self) -> None:
+        if SiGlobal.siui.windows["TOOL_TIP"].nowInsideOf() == self:
+            SiGlobal.siui.windows["TOOL_TIP"].setText(self.toolTip())
+
     def animate(self, _) -> None:
         self.update()
+
+    def setToolTip(self, tooltip) -> None:
+        super().setToolTip(tooltip)
+        self._updateToolTip()
+
+    def event(self, event):
+        if event.type() == QEvent.ToolTip:
+            return True  # 忽略工具提示事件
+        return super().event(event)
 
     def enterEvent(self, event) -> None:
         super().enterEvent(event)
         self.animation.setTarget(self.hover_color)
         self.animation.start()
+        self._showToolTip()
+        self._updateToolTip()
 
     def leaveEvent(self, event) -> None:
         super().leaveEvent(event)
         self.animation.setTarget(self.idle_color)
         self.animation.start()
+        self._hideToolTip()
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
@@ -103,34 +138,8 @@ class SiPushButton(QPushButton):
 
         painter.setPen(Qt.PenStyle.NoPen)
         rect = self.rect()
+        text_rect = QRect(0, 0, self.width(), self.height() - 4)
         self._drawBackgroundRect(painter, rect)
         self._drawButtonRect(painter, rect)
         self._drawHighLightRect(painter, rect)
-
-        text_rect = QRect(0, 0, self.width(), self.height() - 4)
-        painter.setPen(QColor(239, 239, 239))  # 设置文本颜色
-        painter.setFont(self.font())  # 设置字体和大小
-        painter.drawText(text_rect, Qt.AlignCenter, self.text())  # 在按钮中心绘制文本
-        painter.end()
-
-
-class Window(QWidget):
-    def __init__(self) -> None:
-        super().__init__()
-        self.resize(600, 800)
-        self.setStyleSheet("background-color: #332E38")
-
-        self.btn = SiPushButton(self)
-        self.btn.setFixedSize(128, 64)
-        self.btn.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-        self.btn.setText("你好")
-
-        self.main_layout = QVBoxLayout(self)
-        self.main_layout.addWidget(self.btn, alignment=Qt.AlignmentFlag.AlignCenter)
-
-
-if __name__ == "__main__":
-    app = QApplication([])
-    window = Window()
-    window.show()
-    app.exec()
+        self._drawTextRect(painter, text_rect)
