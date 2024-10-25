@@ -14,6 +14,7 @@ from siui.components import (
     SiTitledWidgetGroup,
     SiWidget,
 )
+from siui.components.button import SiPushButtonRefactor
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
@@ -258,6 +259,11 @@ class ExampleWidgets(SiPage):
             container_push_buttons = SiDenseHContainer(self)
             container_push_buttons.setFixedHeight(32)
 
+            # self.debug_new_button = SiPushButtonRefactor(self)
+            # self.debug_new_button.resize(128, 32)
+            # self.debug_new_button.setText("新按钮")
+            # self.debug_new_button.setHint("我是工具提示")
+
             self.demo_push_button_normal = SiPushButton(self)
             self.demo_push_button_normal.resize(128, 32)
             self.demo_push_button_normal.attachment().setText("普通按钮")
@@ -271,6 +277,7 @@ class ExampleWidgets(SiPage):
             self.demo_push_button_long_press.resize(128, 32)
             self.demo_push_button_long_press.attachment().setText("长按按钮")
 
+            # container_push_buttons.addWidget(self.debug_new_button)
             container_push_buttons.addWidget(self.demo_push_button_normal)
             container_push_buttons.addWidget(self.demo_push_button_transition)
             container_push_buttons.addWidget(self.demo_push_button_long_press)
