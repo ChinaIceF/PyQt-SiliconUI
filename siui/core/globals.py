@@ -21,7 +21,7 @@ class SiliconUIGlobal:
     # 值为 SVG信息的 bytes
     icons = {}
     iconpack = GlobalIconPack()
-    iconpack.set_default_color(colors.fromToken(SiColor.SVG_NORMAL))
+    iconpack.setDefaultColor(colors.fromToken(SiColor.SVG_NORMAL))
 
     # 样式表字典，储存所有动态样式表
     # 值为字符串

@@ -77,7 +77,7 @@ class ExampleIcons(SiPage):
         self.package_selection_combobox = SiComboBox(self)
         self.package_selection_combobox.resize(256, 32)
         self.package_selection_combobox.addOption("所有图标包", (None,))
-        for package_name in SiGlobal.siui.iconpack.get_class_names():
+        for package_name in SiGlobal.siui.iconpack.getClassNames():
             self.package_selection_combobox.addOption(package_name)
         self.package_selection_combobox.valueChanged.connect(self.on_package_changed)
         self.package_selection_combobox.menu().setShowIcon(False)
@@ -156,7 +156,7 @@ class ExampleIcons(SiPage):
     def on_package_changed(self, package_name):
         if package_name == (None,):
             package_name = None
-        self.icon_dict = SiGlobal.siui.iconpack.get_dict(package_name)
+        self.icon_dict = SiGlobal.siui.iconpack.getDict(package_name)
         self.load_icon_page_to(0)
 
     def on_search_text_changed(self, text):
@@ -200,7 +200,7 @@ class ExampleIcons(SiPage):
             svg_button.colorGroup().assign(SiColor.BUTTON_OFF,
                                            svg_button.getColor(SiColor.INTERFACE_BG_C))
             svg_button.attachment().setSvgSize(32, 32)
-            svg_button.attachment().load(icon_pack.get_from_data(value, self.getColor(SiColor.SVG_NORMAL)))
+            svg_button.attachment().load(icon_pack.getFromData(value, self.getColor(SiColor.SVG_NORMAL)))
             svg_button.setFixedSize(96, 96)
             svg_button.setHint(
                 f"{key}<br>"

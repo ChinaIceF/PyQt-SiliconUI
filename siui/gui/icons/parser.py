@@ -1,5 +1,7 @@
 import os
 
+from PyQt5.QtCore import QByteArray
+
 
 class GlobalIconPack:
     current_module_path = os.path.dirname(os.path.abspath(__file__))
@@ -16,16 +18,20 @@ class GlobalIconPack:
         # load internal icon packages
         self.reload_internals()
 
-    def set_default_color(self, code):
+    def setDefaultColor(self, code) -> None:
         self.default_color = code
 
-    def reload_internals(self):
+    @property
+    def defaultColor(self) -> str:
+        return self.default_color
+
+    def reload_internals(self) -> None:
         for package_filename in os.listdir(self.package_folder_path):
             full_path = os.path.join(self.package_folder_path, package_filename)
             if os.path.isfile(full_path):
                 self.load_from_file(full_path)
 
-    def load_from_file(self, path):
+    def load_from_file(self, path) -> None:
         class_name = os.path.basename(path)
         self.append_class(class_name)
         with open(path, encoding="utf-8") as file:
@@ -39,24 +45,28 @@ class GlobalIconPack:
                 icon_name, icon_data = line.split("////")
                 self.append(icon_name, icon_data, class_name)
 
-    def append_class(self, class_name, force=False):
+    def append_class(self, class_name, force=False) -> None:
         if class_name in self.icons_classified.keys() and (force is False):
             raise ValueError(f"Class name {class_name} is already exist.")
         self.icons_classified[class_name] = {}
 
-    def append(self, name, data, class_name: str = "__unclassified__"):
+    def append(self, name, data, class_name: str = "__unclassified__") -> None:
         self.icons[name] = data
         self.icons_classified[class_name][name] = data
 
-    def get(self, name, color_code: str = None):
+    def get(self, name, color_code: str = None) -> bytes:
         color_code = self.default_color if color_code is None else color_code
         return self.icons[name].replace("<<<COLOR_CODE>>>", color_code).encode()
 
-    def get_from_data(self, data, color_code: str = None):
+    def getFromData(self, data, color_code: str = None) -> bytes:
         color_code = self.default_color if color_code is None else color_code
         return data.replace("<<<COLOR_CODE>>>", color_code).encode()
 
-    def get_dict(self, class_name=None):
+    def getByteArray(self, name, color_code: str = None) -> QByteArray:
+        svg_bytes = self.get(name, color_code)
+        return QByteArray(svg_bytes)
+
+    def getDict(self, class_name=None) -> dict:
         """
         Get dictionary of an icon package.
         If class name is assigned, returns the specific package dictionary.
@@ -67,5 +77,5 @@ class GlobalIconPack:
         else:
             return self.icons_classified[class_name]
 
-    def get_class_names(self):
+    def getClassNames(self) -> dict.keys:
         return self.icons_classified.keys()
