@@ -1,14 +1,10 @@
-"""
-tooltip 模块
-实现工具提示
-"""
+
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QColor, QCursor
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+from PyQt5.QtGui import QCursor
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel
-from siui.core import GlobalFont, Si, SiGlobal
+from siui.core import GlobalFont, Si, SiGlobal, SiQuickEffect
 from siui.gui import SiFont
 
 
@@ -16,53 +12,61 @@ class ToolTipWindow(SiWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.completely_hid = False
+        """ 是否已经完全隐藏（透明度是不是0） """
+        self.now_inside_of = None
+        """ 在哪个控件内部（最近一次被谁触发过显示事件） """
+        self.margin = 8
+        """ 周围给阴影预留的间隔空间 """
+        self.shadow_size = 8
+        """ 阴影大小 """
+
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowTransparentForInput)
         self.setAttribute(Qt.WA_TranslucentBackground)
+        SiQuickEffect.applyDropShadowOn(self, (0, 0, 0, 128), blur_radius=int(self.shadow_size*1.5))
 
-        self.completely_hid = False  # 是否已经完全隐藏（透明度是不是0）
-        self.animationGroup().fromToken("opacity").finished.connect(self._completely_hid_signal_handler)
+        self._initWidget()
+        self._initStyle()
+        self._initLayout()
+        self._initAnimation()
 
-        self.margin = 8  # 周围给阴影预留的间隔空间
-        self.shadow_size = 8  # 阴影
+        self.setText("", flash=False)  # 通过输入空文本初始化大小
 
-        self.now_inside_of = None  # 在哪个控件内部（最近一次被谁触发过显示事件）
-
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setColor(QColor(0, 0, 0, 128))
-        shadow.setOffset(0, 0)
-        shadow.setBlurRadius(int(self.shadow_size * 1.5))
-        self.setGraphicsEffect(shadow)
-
-        # 跟踪鼠标的计时器，总处于启动状态
-        self.tracker_timer = QTimer()
-        self.tracker_timer.setInterval(int(1000/60))
-        self.tracker_timer.timeout.connect(self._refresh_position)
-        self.tracker_timer.start()
-
-        # 背景颜色，可以用于呈现不同类型的信息
+    def _initWidget(self):
         self.bg_label = SiLabel(self)
-        self.bg_label.move(self.margin, self.margin)
-        self.bg_label.setFixedStyleSheet("border-radius: 6px")
+        """背景颜色，可以用于呈现不同类型的信息"""
 
-        # 文字标签的父对象，防止文字超出界限
         self.text_container = SiLabel(self)
-        self.text_container.move(self.margin, self.margin)
+        """文字标签的父对象，防止文字超出界限"""
 
-        # 文字标签，工具提示就在这里显示，
         self.text_label = SiLabel(self.text_container)
+        """文字标签，显示工具提示内容"""
+
+        self.highlight_mask = SiLabel(self)
+        """高光遮罩，当信息刷新时会闪烁一下"""
+
+    def _initStyle(self):
+        self.bg_label.setFixedStyleSheet("border-radius: 6px")
         self.text_label.setFixedStyleSheet("padding: 8px")
         self.text_label.setSiliconWidgetFlag(Si.InstantResize)
         self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.text_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-
-        # 高光遮罩，当信息刷新时会闪烁一下
-        self.highlight_mask = SiLabel(self)
-        self.highlight_mask.move(self.margin, self.margin)
         self.highlight_mask.setFixedStyleSheet("border-radius: 6px")
         self.highlight_mask.setColor("#00FFFFFF")
 
-        # 通过输入空文本初始化大小
-        self.setText("", flash=False)
+    def _initLayout(self):
+        self.bg_label.move(self.margin, self.margin)
+        self.text_container.move(self.margin, self.margin)
+        self.highlight_mask.move(self.margin, self.margin)
+
+    def _initAnimation(self):
+        self.tracker_timer = QTimer()  # 跟踪鼠标的计时器
+        self.tracker_timer.setInterval(int(1000/60))
+        self.tracker_timer.timeout.connect(self._refresh_position)
+        self.tracker_timer.start()
+
+        # 当透明度动画结束时处理隐藏与否
+        self.animationGroup().fromToken("opacity").finished.connect(self._completely_hid_signal_handler)
 
     def reloadStyleSheet(self):
         self.bg_label.setColor(SiGlobal.siui.colors["TOOLTIP_BG"])
@@ -109,21 +113,13 @@ class ToolTipWindow(SiWidget):
             self.flash()
 
     def _refresh_size(self):
-        """
-        用于设置大小动画结束值并启动动画
-        :return:
-        """
-        w, h = self.text_label.width(), self.text_label.height()
-
-        # 让自身大小变为文字标签的大小加上阴影间距
-        self.resizeTo(w + 2 * self.margin, h + 2 * self.margin)
+        """ 用于设置大小动画结束值并启动动画 """
+        w = self.text_label.width()
+        h = self.text_label.height()
+        self.resizeTo(w + 2 * self.margin, h + 2 * self.margin)  # 设为文字标签的大小加上阴影间距
 
     def flash(self):
-        """
-        激活高光层动画，使高光层闪烁
-        :return:
-        """
-        # 刷新高亮层动画当前值和结束值，实现闪烁效果
+        """ 激活高光层动画，使高光层闪烁 """
         self.highlight_mask.setColor("#7FFFFFFF")
         self.highlight_mask.setColorTo("#00FFFFFF")
 
