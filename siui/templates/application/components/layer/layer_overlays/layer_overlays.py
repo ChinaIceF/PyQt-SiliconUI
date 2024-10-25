@@ -17,7 +17,7 @@ class DenseVContainerBG(SiDenseVContainer):
         self.background = SiLabel(self)
         self.background.setFixedStyleSheet("border-radius: 12px")
         self.background.setColor(SiColor.trans(self.getColor(SiColor.INTERFACE_BG_A), 0.9))
-
+        
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.background.resize(event.size())
@@ -64,15 +64,14 @@ class StateChangeOverlay(SiVExpandWidget):
         self.container.addPlaceholder(16)
         self.container.addWidget(self.div)
         self.container.addPlaceholder(10)
-        self.container.addPlaceholder(16, side="bottom")
-        self.container.addWidget(self.tip, side="bottom")
+        self.container.addWidget(self.tip)
 
         self.setAttachment(self.container)
 
         self.fade_out_timer = QTimer(self)
         self.fade_out_timer.setSingleShot(True)
         self.fade_out_timer.setInterval(2000)
-        self.fade_out_timer.timeout.connect(lambda: self.expandTo(0.8))
+        self.fade_out_timer.timeout.connect(lambda: self.expandTo(0))
         self.fade_out_timer.timeout.connect(lambda: self.setOpacityTo(0))
 
         self.animationGroup().fromToken("expand").setAccelerateFunction(lambda x: (x / 10) ** 5)
