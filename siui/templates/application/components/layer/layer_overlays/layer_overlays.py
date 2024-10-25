@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QGraphicsOpacityEffect
 
 from siui.components import SiDenseVContainer, SiLabel
 from siui.components.widgets.expands import SiVExpandWidget
-from siui.core import Si, SiColor, SiExpAccelerateAnimation
+from siui.core import Si, SiColor, SiExpAccelerateAnimation, SiQuickEffect, SiGlobal
 from siui.gui import SiFont
 
 from ..layer import SiLayer
@@ -15,9 +15,9 @@ class DenseVContainerBG(SiDenseVContainer):
         super().__init__(*args, **kwargs)
 
         self.background = SiLabel(self)
-        self.background.setFixedStyleSheet("border-radius: 8px")
-        self.background.setColor("#E0202020")
-
+        self.background.setFixedStyleSheet("border-radius: 12px")
+        self.background.setColor(SiColor.trans(self.getColor(SiColor.INTERFACE_BG_A), 0.9))
+        
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.background.resize(event.size())
@@ -37,8 +37,8 @@ class StateChangeOverlay(SiVExpandWidget):
         self.title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
         self.subtitle = SiLabel(self)
-        self.subtitle.setFont(SiFont.getFont(size=16, weight=QFont.Weight.Normal))
-        self.subtitle.setTextColor(self.getColor(SiColor.TEXT_D))
+        self.subtitle.setFont(SiFont.getFont(size=15, weight=QFont.Weight.DemiBold))
+        self.subtitle.setTextColor(self.getColor(SiColor.TEXT_THEME))
         self.subtitle.setAlignment(Qt.AlignCenter)
         self.subtitle.setFixedHeight(16)
         self.subtitle.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
@@ -50,7 +50,7 @@ class StateChangeOverlay(SiVExpandWidget):
 
         self.tip = SiLabel(self)
         self.tip.setFont(SiFont.getFont(size=12, weight=QFont.Weight.Normal))
-        self.tip.setTextColor(self.getColor(SiColor.TEXT_D))
+        self.tip.setTextColor(self.getColor(SiColor.TEXT_C))
         self.tip.setAlignment(Qt.AlignCenter)
         self.tip.setFixedHeight(16)
         self.tip.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
@@ -89,16 +89,21 @@ class StateChangeOverlay(SiVExpandWidget):
         effect.setOpacity(opacity)
         self.setGraphicsEffect(effect)
 
-    def fadeIn(self):
+    def emerge(self):
         self.expandTo(1)
         self.setOpacityTo(1)
         self.animation_opacity.start()
-
-    def fadeOut(self):
         self.fade_out_timer.start()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+
+    def setContent(self, title, subtitle, tip, emerge=True):
+        self.title.setText(title)
+        self.subtitle.setText(subtitle)
+        self.tip.setText(tip)
+        if emerge:
+            self.emerge()
 
 
 class LayerOverLays(SiLayer):
@@ -112,9 +117,10 @@ class LayerOverLays(SiLayer):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.state_change_overlay.move((self.width() - self.state_change_overlay.width()) // 2, int((self.height() - self.state_change_overlay.height()) * 0.785))
-        self.state_change_overlay.fadeIn()
-        self.state_change_overlay.fadeOut()
-        self.state_change_overlay.title.setText("设置窗口大小")
-        self.state_change_overlay.tip.setText("无快捷键")
-        self.state_change_overlay.subtitle.setText(f"{self.width()}x{self.height()}")
+        self.state_change_overlay.move((self.width() - self.state_change_overlay.width()) // 2,
+                                       int((self.height() - self.state_change_overlay.height()) * 0.785))
+
+        self.state_change_overlay.setContent(
+            "设置窗口大小", f"{self.width()}×{self.height()}", "无快捷键"
+        )
+
