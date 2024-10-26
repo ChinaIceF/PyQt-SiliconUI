@@ -103,14 +103,24 @@ class SiColor(Enum):
 
     @classmethod
     def toArray(cls,
-                code: str):
+                code: str,
+                c_format: str = "argb"):
         """
         transform `#AARRGGBB` or `#RRGGBB` into `array(A, R, G, B, dtype=int16)`
         """
         code = cls.RGB_to_RGBA(code)
         code = code.lstrip("#")
         a, r, g, b = int(code[0:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)
-        return numpy.array([a, r, g, b], dtype=numpy.int16)
+
+        c_format = c_format.lower()
+        if c_format not in ["rgba", "argb", "rgb"]:
+            raise ValueError(f"{c_format} is not a valid format (rgba, argb, rgb)")
+        if c_format == "rgba":
+            return numpy.array([r, g, b, a], dtype=numpy.int16)
+        if c_format == "argb":
+            return numpy.array([a, r, g, b], dtype=numpy.int16)
+        if c_format == "rgb":
+            return numpy.array([r, g, b], dtype=numpy.int16)
 
     @staticmethod
     def toCode(value: Union[numpy.ndarray, list], force_rgba=False):
@@ -125,7 +135,6 @@ class SiColor(Enum):
 
         if (force_rgba is True) or (a != 255):
             return f"#{int(a):02X}{int(r):02X}{int(g):02X}{int(b):02X}"
-
         else:
             return f"#{int(r):02X}{int(g):02X}{int(b):02X}"
 
