@@ -130,9 +130,23 @@ class SiPushButtonRefactor(QPushButton):
 
     def setButtonColor(self, code: str) -> None:
         self.style_data.button_color = SiColor.toArray(code, "rgba")
+        self.update()
 
     def setBackgroundColor(self, code: str) -> None:
         self.style_data.background_color = SiColor.toArray(code, "rgba")
+        self.update()
+
+    def setBorderRadius(self, r: int) -> None:
+        self.style_data.border_radius = r
+        self.update()
+
+    def setBorderInnerRadius(self, r: int) -> None:
+        self.style_data.border_inner_radius = r
+        self.update()
+
+    def setBorderHeight(self, h: int) -> None:
+        self.style_data.border_height = h
+        self.update()
 
     def event(self, event):
         if event.type() == QEvent.ToolTip:
