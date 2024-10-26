@@ -181,3 +181,4 @@ class SiPushButtonRefactor(QPushButton):
         self._drawButtonRect(painter, rect)
         self._drawHighLightRect(painter, rect)
         self._drawTextRect(painter, text_rect)
+
