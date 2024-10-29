@@ -109,9 +109,9 @@ class SiPushButtonRefactor(QPushButton):
     def textRectAndIconRect(self) -> (QRectF, QRect):
         font_metrics = QFontMetrics(self.font())
         text_width = font_metrics.width(self.text())
-        icon_width = self.iconSize().width()
-        icon_height = self.iconSize().height()
-        gap = self.style_data.icon_text_gap if text_width > 0 else 0
+        icon_width = self.iconSize().width() if not self.icon().isNull() else 0
+        icon_height = self.iconSize().height() if not self.icon().isNull() else 0
+        gap = self.style_data.icon_text_gap if text_width > 0 and icon_width > 0 else 0
 
         text_rect = QRectF((self.width() - icon_width - text_width - gap) / 2 + icon_width + gap,
                            0,
@@ -191,9 +191,9 @@ class SiPushButtonRefactor(QPushButton):
         font_metrics = QFontMetrics(self.font())
         text_width = font_metrics.width(self.text())
         text_height = font_metrics.height()
-        icon_width = self.iconSize().width()
-        icon_height = self.iconSize().height()
-        gap = self.style_data.icon_text_gap if text_width > 0 else 0
+        icon_width = self.iconSize().width() if not self.icon().isNull() else 0
+        icon_height = self.iconSize().height() if not self.icon().isNull() else 0
+        gap = self.style_data.icon_text_gap if text_width > 0 and icon_width > 0 else 0
 
         preferred_width = text_width + icon_width + gap + 24
         preferred_height = max(32, text_height, icon_height)
