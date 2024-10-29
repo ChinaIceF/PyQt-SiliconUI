@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QRect, QRectF, Qt
-from PyQt5.QtGui import QColor, QIcon, QPainter, QPainterPath, QPaintEvent
+from PyQt5.QtCore import QEvent, QRect, QRectF, QSize, Qt
+from PyQt5.QtGui import QColor, QFontMetrics, QIcon, QPainter, QPainterPath, QPaintEvent, QPixmap
+from PyQt5.QtSvg import QSvgRenderer
 from PyQt5.QtWidgets import QPushButton, QWidget
 
 from siui.core import GlobalFont, SiColor, SiExpAnimation, SiGlobal
@@ -22,6 +23,7 @@ class PushButtonStyleData:
     border_radius: int = 4
     border_inner_radius: int = 3
     border_height: int = 3
+    icon_text_gap: int = 4
 
 
 class SiPushButtonRefactor(QPushButton):
@@ -32,7 +34,7 @@ class SiPushButtonRefactor(QPushButton):
         self._initStyle()
 
         self.animation = SiExpAnimation(self)
-        self.animation.setFactor(1/8)
+        self.animation.setFactor(1 / 8)
         self.animation.setBias(0.2)
         self.animation.setTarget(self.style_data.idle_color)
         self.animation.setCurrent(self.style_data.idle_color)
@@ -43,6 +45,7 @@ class SiPushButtonRefactor(QPushButton):
     def _initStyle(self):
         self.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.setStyleSheet("color: #DFDFDF;")
+        self.setIconSize(QSize(20, 20))
 
     @classmethod
     def withText(cls, text: str, parent: QWidget | None = None) -> "SiPushButton":
@@ -100,6 +103,27 @@ class SiPushButtonRefactor(QPushButton):
         painter.setFont(self.font())
         painter.drawText(rect, Qt.AlignCenter, self.text())
 
+    def _drawPixmapRect(self, painter: QPainter, rect: QRectF) -> None:
+        painter.drawPixmap(rect, self.icon().pixmap(64, 64))
+
+    def textRectAndIconRect(self) -> (QRectF, QRect):
+        font_metrics = QFontMetrics(self.font())
+        text_width = font_metrics.width(self.text())
+        icon_width = self.iconSize().width()
+        icon_height = self.iconSize().height()
+        gap = self.style_data.icon_text_gap if text_width > 0 else 0
+
+        text_rect = QRectF((self.width() - icon_width - text_width - gap) / 2 + icon_width + gap,
+                           0,
+                           text_width,
+                           self.height() - self.style_data.border_height - 1)
+        pixmap_rect = QRect((self.width() - icon_width - text_width - gap) // 2,
+                            ((self.height() - self.style_data.border_height - 1) - icon_height) // 2,
+                            icon_width,
+                            icon_height)
+
+        return text_rect, pixmap_rect
+
     def _onButtonClicked(self) -> None:
         self.animation.setCurrent(self.style_data.click_color)
         self.animation.start()
@@ -124,7 +148,7 @@ class SiPushButtonRefactor(QPushButton):
     def animate(self, _) -> None:
         self.update()
 
-    def setToolTip(self, tooltip) -> None:
+    def setToolTip(self, tooltip: str) -> None:
         super().setToolTip(tooltip)
         self._updateToolTip()
 
@@ -148,6 +172,33 @@ class SiPushButtonRefactor(QPushButton):
         self.style_data.border_height = h
         self.update()
 
+    def setIconTextGap(self, gap: int) -> None:
+        self.style_data.icon_text_gap = gap
+        self.update()
+
+    def setSvgIcon(self, svg_data: bytes) -> None:
+        pixmap = QPixmap(64, 64)
+        pixmap.fill(Qt.transparent)
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        svg_renderer = QSvgRenderer(svg_data)
+        svg_renderer.render(painter)
+        painter.end()
+        self.setIcon(QIcon(pixmap))
+        self.update()
+
+    def sizeHint(self):
+        font_metrics = QFontMetrics(self.font())
+        text_width = font_metrics.width(self.text())
+        text_height = font_metrics.height()
+        icon_width = self.iconSize().width()
+        icon_height = self.iconSize().height()
+        gap = self.style_data.icon_text_gap if text_width > 0 else 0
+
+        preferred_width = text_width + icon_width + gap + 24
+        preferred_height = max(32, text_height, icon_height)
+        return QSize(preferred_width, preferred_height)
+
     def event(self, event):
         if event.type() == QEvent.ToolTip:
             return True  # 忽略工具提示事件
@@ -166,19 +217,17 @@ class SiPushButtonRefactor(QPushButton):
         self.animation.start()
         self._hideToolTip()
 
-    def resizeEvent(self, event) -> None:
-        super().resizeEvent(event)
-
     def paintEvent(self, event: QPaintEvent) -> None:
         painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setRenderHint(QPainter.TextAntialiasing)
-
         painter.setPen(Qt.PenStyle.NoPen)
+
         rect = self.rect()
-        text_rect = QRect(0, 0, self.width(), self.height() - self.style_data.border_height - 1)
+        text_rect, icon_rect = self.textRectAndIconRect()
         self._drawBackgroundRect(painter, rect)
         self._drawButtonRect(painter, rect)
         self._drawHighLightRect(painter, rect)
         self._drawTextRect(painter, text_rect)
-
+        self._drawPixmapRect(painter, icon_rect)
