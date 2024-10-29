@@ -118,7 +118,7 @@ class SiPushButtonRefactor(QPushButton):
                            text_width,
                            self.height() - self.style_data.border_height - 1)
         pixmap_rect = QRect((self.width() - icon_width - text_width - gap) // 2,
-                            ((self.height() - self.style_data.border_height - 1) - icon_height) // 2,
+                            ((self.height() - self.style_data.border_height) - icon_height) // 2,
                             icon_width,
                             icon_height)
 
