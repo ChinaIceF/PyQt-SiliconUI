@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import QPoint, Qt, pyqtSignal
 from PyQt5.QtWidgets import QAbstractButton
 
 from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
@@ -406,16 +406,15 @@ class SiSwitch(QAbstractButton):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setCheckable(True)
+
+        # 自定义状态属性，初始值为 False
+        self._checked = False
 
         # 颜色组
         self.color_group = SiColorGroup(reference=SiGlobal.siui.colors)
 
         # 设置自身固定大小
         self.setFixedSize(40, 20)
-
-        # 绑定切换事件
-        self.toggled.connect(self._toggle_handler)
 
         # 开关框架
         self.switch_frame = SiLabel(self)
@@ -433,6 +432,10 @@ class SiSwitch(QAbstractButton):
         self.toggle_animation.setBias(1)
         self.toggle_animation.setCurrent(3)
         self.toggle_animation.ticked.connect(self._lever_move_animation_handler)
+
+        # 记录拉杆与鼠标偏移量
+        self._initial_pos: QPoint = QPoint(0, 0)
+        self._drag_offset = 0
 
     def reloadStyleSheet(self):
         """
@@ -455,7 +458,7 @@ class SiSwitch(QAbstractButton):
         self.switch_lever.move(int(x), self.switch_lever.y())
 
         # 检测拉杆的位置，如果过了半程，则改变边框样式
-        if (x - 3) / 20 >= 0.5:
+        if self._process_lever_position():
             self.switch_frame.setStyleSheet(
                 f"""
                 background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1,
@@ -470,13 +473,69 @@ class SiSwitch(QAbstractButton):
             self.switch_lever.setStyleSheet(f"background-color:{self.getColor(SiColor.SWITCH_DEACTIVATE)}")  # noqa: E501
 
     def _set_animation_target(self, is_checked):
-        if is_checked is True:
-            self.toggle_animation.setTarget(23)
-        else:
-            self.toggle_animation.setTarget(3)
+        self.toggle_animation.setCurrent(self.switch_lever.x())
+        self.toggle_animation.setTarget(23 if is_checked else 3)
+
+    def _process_lever_position(self) -> bool:
+        """
+        根据滑杆位置决定开关的选中状态。
+        """
+        lever_position = self.switch_lever.x()
+        return (lever_position - 3) / 20 >= 0.5
 
     def paintEvent(self, e):
         pass
+
+    def isChecked(self):
+        return self._checked  # 返回自定义状态
+
+    def setChecked(self, checked):
+        if self._checked != checked:
+            self._checked = checked
+            self.toggled.emit(self._checked)  # 发射信号
+            self._toggle_handler(self._checked)  # 更新动画
+
+    def mousePressEvent(self, event):
+        """
+        处理鼠标按下事件，记录鼠标点击位置与滑杆的相对位置。
+        """
+        if event.button() == Qt.LeftButton:
+            self._drag_offset = event.pos().x() - self.switch_lever.x()  # 记录偏移量
+            self._initial_pos = event.pos()  # 记录初始点击位置
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        """
+        处理滑条的鼠标移动事件，拖动时移动滑杆。
+        """
+        if event.buttons() & Qt.LeftButton:  # 检查鼠标左键是否按下
+            # 获取鼠标在 slider 上的位置，并使用之前记录的偏移量来移动滑杆
+            mouse_pos = event.pos()
+            target_pos = mouse_pos.x() - self._drag_offset  # 保持相对位置
+            self._lever_move_animation_handler(min(max(target_pos, 3), 23))
+        super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        """
+        处理鼠标松开事件，区分点击和拖动操作。
+        """
+        if event.button() == Qt.LeftButton:
+            release_pos = event.pos()
+            drag_distance = abs(release_pos.x() - self._initial_pos.x())
+
+            if drag_distance < 3:  # 点击操作
+                self._checked = not self._checked  # 切换状态
+                self.toggled.emit(self._checked)  # 手动发射toggled信号
+            else:  # 拖动操作
+                new_checked_state = self._process_lever_position()
+                if self._checked != new_checked_state:
+                    self._checked = new_checked_state
+                    self.toggled.emit(self._checked)  # 手动发射toggled信号
+
+            # 更新动画
+            self._toggle_handler(self._checked)
+
+        super().mouseReleaseEvent(event)
 
     def _toggle_handler(self, is_checked):
         self._set_animation_target(is_checked)
