@@ -1,3 +1,5 @@
+from typing import Any
+
 import numpy
 from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
@@ -153,6 +155,13 @@ class SiExpAnimation(ABCSiAnimation):
 
         self.factor = 1/2
         self.bias = 1
+
+    def init(self, factor: float, bias: float, current: Any, target: Any, fps: int = 60):
+        self.setFactor(factor)
+        self.setBias(bias)
+        self.setCurrent(current)
+        self.setTarget(target)
+        self.setFPS(fps)
 
     def setFactor(self, factor: float):
         """
