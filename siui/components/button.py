@@ -354,6 +354,7 @@ class SiFlatButton(ABCButton):
 @dataclass
 class ProgressPushButtonStyleData(PushButtonStyleData):
     progress_color = SiColor.toArray("#806799", "rgba")
+    complete_color = SiColor.toArray("#519868", "rgba")
 
 
 class SiProgressPushButton(SiPushButtonRefactor):
@@ -364,31 +365,53 @@ class SiProgressPushButton(SiPushButtonRefactor):
         self.progress_ = 0
 
         self.progress_ani = SiExpAnimation(self)
-        self.progress_ani.setFactor(1/6)
-        self.progress_ani.setBias(0.005)
-        self.progress_ani.setTarget(0)
-        self.progress_ani.setCurrent(0)
+        self.progress_ani.init(1/6, 0.005, 0, 0)
         self.progress_ani.ticked.connect(lambda _: self.update())
+
+        self.progress_color_ani = SiExpAnimation(self)
+        self.progress_color_ani.init(1/8, 0.01, self.style_data.progress_color, self.style_data.progress_color)
+        self.progress_color_ani.ticked.connect(lambda _: self.update())
+        #
+        # self.test_timer = QTimer(self)
+        # self.test_timer.setInterval(500)
+        # self.test_timer.timeout.connect(lambda: self.setProgress(random.random() * 3))
+        # self.test_timer.start()
 
     @property
     def progress(self):
         return self.progress_
 
     def setProgress(self, p: float, ani: bool = True) -> None:
-        p = max(0.0, min(p, 1.0))
-        self.progress_ = p
+        self.progress_ = max(0.0, min(p, 1.0))
+        self._updateProgress(ani)
+        self._updateCompleteState()
+        self.update()
+
+    def _updateProgress(self, ani: bool):
         if ani is True:
-            self.progress_ani.setTarget(p)
+            self.progress_ani.setTarget(self.progress_)
             self.progress_ani.start()
         else:
-            self.progress_ani.setTarget(p)
-            self.progress_ani.setCurrent(p)
+            self.progress_ani.setTarget(self.progress_)
+            self.progress_ani.setCurrent(self.progress_)
             self.progress_ani.stop()
-            self.update()
+
+    def _updateCompleteState(self):
+        if self.progress_ == 1.0:
+            self.progress_color_ani.setTarget(self.style_data.complete_color)
+            self.progress_color_ani.start()
+        else:
+            self.progress_color_ani.setTarget(self.style_data.progress_color)
+            self.progress_color_ani.start()
+
+    def setProgressColor(self, code: str) -> None:
+        self.style_data.progress_color = SiColor.toArray(code, "rgba")
+        self.update()
 
     def _drawButtonRect(self, painter: QPainter, rect: QRect) -> None:
+        p = min(self.progress_ani.current_, 1)  # prevent progress exceeding caused by using animation.
         gradient = QLinearGradient(rect.left(), rect.top(), rect.right(), rect.top())
-        gradient.setColorAt(self.progress_ani.current_ - 0.001, QColor(*self.style_data.progress_color))
-        gradient.setColorAt(self.progress_ani.current_,         QColor(*self.style_data.button_color))
+        gradient.setColorAt(p - 0.0001, QColor(*self.progress_color_ani.current_))
+        gradient.setColorAt(p,          QColor(*self.style_data.button_color))
         painter.setBrush(gradient)
         painter.drawPath(self._drawButtonPath(rect))
