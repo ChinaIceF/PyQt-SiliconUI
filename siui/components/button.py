@@ -379,14 +379,9 @@ class SiProgressPushButton(SiPushButtonRefactor):
         self.progress_color_ani = SiExpAnimation(self)
         self.progress_color_ani.init(1/8, 0.01, self.style_data.progress_color, self.style_data.progress_color)
         self.progress_color_ani.ticked.connect(lambda _: self.update())
-        #
-        # self.test_timer = QTimer(self)
-        # self.test_timer.setInterval(500)
-        # self.test_timer.timeout.connect(lambda: self.setProgress(random.random() * 3))
-        # self.test_timer.start()
 
     @property
-    def progress(self):
+    def progress(self) -> float:
         return self.progress_
 
     def setProgress(self, p: float, ani: bool = True) -> None:
@@ -395,7 +390,7 @@ class SiProgressPushButton(SiPushButtonRefactor):
         self._updateCompleteState()
         self.update()
 
-    def _updateProgress(self, ani: bool):
+    def _updateProgress(self, ani: bool) -> None:
         if ani is True:
             self.progress_ani.setTarget(self.progress_)
             self.progress_ani.start()
@@ -404,7 +399,7 @@ class SiProgressPushButton(SiPushButtonRefactor):
             self.progress_ani.setCurrent(self.progress_)
             self.progress_ani.stop()
 
-    def _updateCompleteState(self):
+    def _updateCompleteState(self) -> None:
         if self.progress_ == 1.0:
             self.progress_color_ani.setTarget(self.style_data.complete_color)
             self.progress_color_ani.start()
@@ -435,9 +430,9 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
         self.progress_ = 0
 
         self.progress_ani = SiExpAnimation(self)
-        self.progress_ani.init(0, 0.1, 0, 0)
+        self.progress_ani.init(-1/16, 0.12, 0, 0)
         self.progress_ani.ticked.connect(lambda _: self.update())
-        self.progress_ani.ticked.connect(print)
+        # self.progress_ani.ticked.connect(print)
 
         self.go_backwards_timer = QTimer(self)
         self.go_backwards_timer.setSingleShot(True)
@@ -449,7 +444,7 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
         self.mouse_pressed_timer.timeout.connect(self._onMousePressed)
 
     @property
-    def progress(self):
+    def progress(self) -> float:
         return self.progress_
 
     def setProgress(self, p: float, ani: bool = True) -> None:
@@ -460,15 +455,13 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
     def _stepLength(self) -> float:
         return (1 - self.progress_) / 16 + 0.001
 
-    def _onMousePressed(self):
+    def _onMousePressed(self) -> None:
         self.setProgress(self.progress_ + self._stepLength(), ani=False)
 
-    def _goBackwards(self, delay: int = 0):
-        self.progress_ = 0
-        self.progress_ani.setTarget(0)
-        self.progress_ani.start(delay)
+    def _onButtonClicked(self) -> None:
+        pass  # disable flashes on mouse click
 
-    def _updateProgress(self, ani: bool):
+    def _updateProgress(self, ani: bool) -> None:
         if ani is True:
             self.progress_ani.setTarget(self.progress_)
             self.progress_ani.start()
@@ -484,6 +477,15 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
             self._onLongPressed()
             self._goBackwards(200)
 
+    def _onLongPressed(self) -> None:
+        self.highlight_ani.setCurrent(self.style_data.click_color)
+        self.highlight_ani.start()
+
+    def _goBackwards(self, delay: int = 0) -> None:
+        self.progress_ = 0
+        self.progress_ani.setTarget(0)
+        self.progress_ani.start(delay)
+
     def _drawButtonRect(self, painter: QPainter, rect: QRect) -> None:
         p = min(self.progress_ani.current_, 1)  # prevent progress exceeding caused by using animation.
         gradient = QLinearGradient(rect.left(), rect.top(), rect.right(), rect.top())
@@ -492,20 +494,13 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
         painter.setBrush(gradient)
         painter.drawPath(self._drawButtonPath(rect))
 
-    def _onButtonClicked(self) -> None:
-        pass
-
-    def _onLongPressed(self) -> None:
-        self.highlight_ani.setCurrent(self.style_data.click_color)
-        self.highlight_ani.start()
-
-    def mousePressEvent(self, e):
+    def mousePressEvent(self, e) -> None:
         super().mousePressEvent(e)
         if self.progress_ani.isActive() is False and self.mouse_pressed_timer.isActive() is False:
             self.mouse_pressed_timer.start()
             self.go_backwards_timer.stop()
 
-    def mouseReleaseEvent(self, e):
+    def mouseReleaseEvent(self, e) -> None:
         super().mouseReleaseEvent(e)
         self.mouse_pressed_timer.stop()
         self.go_backwards_timer.start()
