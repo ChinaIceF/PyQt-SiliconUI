@@ -5,7 +5,7 @@ from __future__ import annotations
 import random
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QRect, QRectF, QSize, Qt, QTimer
+from PyQt5.QtCore import QEvent, QRect, QRectF, QSize, Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QColor, QFontMetrics, QIcon, QLinearGradient, QPainter, QPainterPath, QPaintEvent, QPixmap
 from PyQt5.QtSvg import QSvgRenderer
 from PyQt5.QtWidgets import QPushButton, QWidget
@@ -22,6 +22,32 @@ class ButtonStyleData:
     button_color = SiColor.toArray("#4C4554", "rgba")
     border_radius: int = 7
     icon_text_gap: int = 4
+
+
+@dataclass
+class FlatButtonStyleData(ButtonStyleData):
+    pass
+
+
+@dataclass
+class PushButtonStyleData(ButtonStyleData):
+    background_color = SiColor.toArray("#2d2932", "rgba")
+    border_inner_radius: int = 4
+    border_height: int = 3
+
+
+@dataclass
+class ProgressPushButtonStyleData(PushButtonStyleData):
+    progress_color = SiColor.toArray("#806799", "rgba")
+    complete_color = SiColor.toArray("#519868", "rgba")
+
+
+@dataclass
+class LongPressButtonStyleData(PushButtonStyleData):
+    progress_color = SiColor.toArray("#DA3462", "rgba")
+    button_color = SiColor.toArray("#932a48", "rgba")
+    background_color = SiColor.toArray("#642d41", "rgba")
+    click_color = SiColor.toArray("#40FFFFFF")
 
 
 class ABCButton(QPushButton):
@@ -117,13 +143,6 @@ class ABCButton(QPushButton):
     def leaveEvent(self, a0):
         super().leaveEvent(a0)
         self._hideToolTip()
-
-
-@dataclass
-class PushButtonStyleData(ButtonStyleData):
-    background_color = SiColor.toArray("#2d2932", "rgba")
-    border_inner_radius: int = 4
-    border_height: int = 3
 
 
 class SiPushButtonRefactor(ABCButton):
@@ -259,11 +278,6 @@ class SiPushButtonRefactor(ABCButton):
         self._drawPixmapRect(painter, icon_rect)
 
 
-@dataclass
-class FlatButtonStyleData(ButtonStyleData):
-    pass
-
-
 class SiFlatButton(ABCButton):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -351,12 +365,6 @@ class SiFlatButton(ABCButton):
         self._hideToolTip()
 
 
-@dataclass
-class ProgressPushButtonStyleData(PushButtonStyleData):
-    progress_color = SiColor.toArray("#806799", "rgba")
-    complete_color = SiColor.toArray("#519868", "rgba")
-
-
 class SiProgressPushButton(SiPushButtonRefactor):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -415,3 +423,89 @@ class SiProgressPushButton(SiPushButtonRefactor):
         gradient.setColorAt(p,          QColor(*self.style_data.button_color))
         painter.setBrush(gradient)
         painter.drawPath(self._drawButtonPath(rect))
+
+
+class SiLongPressButtonRefactor(SiPushButtonRefactor):
+    longPressed = pyqtSignal()
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+
+        self.style_data = LongPressButtonStyleData()
+        self.progress_ = 0
+
+        self.progress_ani = SiExpAnimation(self)
+        self.progress_ani.init(0, 0.1, 0, 0)
+        self.progress_ani.ticked.connect(lambda _: self.update())
+        self.progress_ani.ticked.connect(print)
+
+        self.go_backwards_timer = QTimer(self)
+        self.go_backwards_timer.setSingleShot(True)
+        self.go_backwards_timer.setInterval(500)
+        self.go_backwards_timer.timeout.connect(self._goBackwards)
+
+        self.mouse_pressed_timer = QTimer(self)
+        self.mouse_pressed_timer.setInterval(1000//60)
+        self.mouse_pressed_timer.timeout.connect(self._onMousePressed)
+
+    @property
+    def progress(self):
+        return self.progress_
+
+    def setProgress(self, p: float, ani: bool = True) -> None:
+        self.progress_ = max(0.0, min(p, 1.0))
+        self._updateProgress(ani)
+        self.update()
+
+    def _stepLength(self) -> float:
+        return (1 - self.progress_) / 16 + 0.001
+
+    def _onMousePressed(self):
+        self.setProgress(self.progress_ + self._stepLength(), ani=False)
+
+    def _goBackwards(self, delay: int = 0):
+        self.progress_ = 0
+        self.progress_ani.setTarget(0)
+        self.progress_ani.start(delay)
+
+    def _updateProgress(self, ani: bool):
+        if ani is True:
+            self.progress_ani.setTarget(self.progress_)
+            self.progress_ani.start()
+        else:
+            self.progress_ani.setTarget(self.progress_)
+            self.progress_ani.setCurrent(self.progress_)
+            self.progress_ani.stop()
+
+        if self.progress_ == 1.0:
+            self.mouse_pressed_timer.stop()
+            self.go_backwards_timer.stop()
+            self.longPressed.emit()
+            self._onLongPressed()
+            self._goBackwards(200)
+
+    def _drawButtonRect(self, painter: QPainter, rect: QRect) -> None:
+        p = min(self.progress_ani.current_, 1)  # prevent progress exceeding caused by using animation.
+        gradient = QLinearGradient(rect.left(), rect.top(), rect.right(), rect.top())
+        gradient.setColorAt(p - 0.0001, QColor(*self.style_data.progress_color))
+        gradient.setColorAt(p,          QColor(*self.style_data.button_color))
+        painter.setBrush(gradient)
+        painter.drawPath(self._drawButtonPath(rect))
+
+    def _onButtonClicked(self) -> None:
+        pass
+
+    def _onLongPressed(self) -> None:
+        self.highlight_ani.setCurrent(self.style_data.click_color)
+        self.highlight_ani.start()
+
+    def mousePressEvent(self, e):
+        super().mousePressEvent(e)
+        if self.progress_ani.isActive() is False and self.mouse_pressed_timer.isActive() is False:
+            self.mouse_pressed_timer.start()
+            self.go_backwards_timer.stop()
+
+    def mouseReleaseEvent(self, e):
+        super().mouseReleaseEvent(e)
+        self.mouse_pressed_timer.stop()
+        self.go_backwards_timer.start()
