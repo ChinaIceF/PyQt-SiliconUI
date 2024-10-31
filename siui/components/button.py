@@ -50,6 +50,12 @@ class LongPressButtonStyleData(PushButtonStyleData):
     click_color = SiColor.toArray("#40FFFFFF")
 
 
+@dataclass
+class ToggleButtonStyleData(ButtonStyleData):
+    toggled_text_color = SiColor.toArray("#DFDFDF", "rgba")
+    toggled_button_color = SiColor.toArray("#519868", "rgba")
+
+
 class ABCButton(QPushButton):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -63,6 +69,10 @@ class ABCButton(QPushButton):
         self.highlight_ani.setCurrent(SiColor.toArray("#00FFFFFF"))
         self.highlight_ani.ticked.connect(self._onAnimationTicked)
         self.clicked.connect(self._onButtonClicked)
+
+    def flash(self) -> None:
+        self.highlight_ani.setCurrent(self.style_data.click_color)
+        self.highlight_ani.try_to_start()
 
     def setToolTip(self, tooltip: str) -> None:
         super().setToolTip(tooltip)
@@ -91,7 +101,7 @@ class ABCButton(QPushButton):
         self.setIcon(QIcon(pixmap))
         self.update()
 
-    def sizeHint(self):
+    def sizeHint(self) -> QSize:
         font_metrics = QFontMetrics(self.font())
         text_width = font_metrics.width(self.text())
         text_height = font_metrics.height()
@@ -127,7 +137,7 @@ class ABCButton(QPushButton):
     def _onAnimationTicked(self, _) -> None:
         raise NotImplementedError()
 
-    def _onButtonClicked(self):
+    def _onButtonClicked(self) -> None:
         raise NotImplementedError()
 
     def event(self, event):
@@ -228,8 +238,7 @@ class SiPushButtonRefactor(ABCButton):
         self.update()
 
     def _onButtonClicked(self) -> None:
-        self.highlight_ani.setCurrent(self.style_data.click_color)
-        self.highlight_ani.start()
+        self.flash()
 
     def textRectAndIconRect(self) -> (QRectF, QRect):
         font_metrics = QFontMetrics(self.font())
@@ -276,93 +285,6 @@ class SiPushButtonRefactor(ABCButton):
         self._drawHighLightRect(painter, rect)
         self._drawTextRect(painter, text_rect)
         self._drawPixmapRect(painter, icon_rect)
-
-
-class SiFlatButton(ABCButton):
-    def __init__(self, parent: QWidget | None = None) -> None:
-        super().__init__(parent)
-
-        self.style_data = FlatButtonStyleData()
-        self._initStyle()
-
-    def _initStyle(self):
-        self.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-        self.setStyleSheet("color: #DFDFDF;")
-        self.setIconSize(QSize(20, 20))
-
-    def _drawButtonPath(self, rect: QRect) -> QPainterPath:
-        radius = self.style_data.border_radius
-        path = QPainterPath()
-        path.addRoundedRect(QRectF(0, 0, rect.width(), rect.height()), radius, radius)
-        return path
-
-    def _drawButtonRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setBrush(QColor(*self.style_data.button_color))
-        painter.drawPath(self._drawButtonPath(rect))
-
-    def _drawHighLightRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setBrush(QColor(SiColor.toCode(self.highlight_ani.current_)))
-        painter.drawPath(self._drawButtonPath(rect))
-
-    def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setPen(self.palette().text().color())
-        painter.setFont(self.font())
-        painter.drawText(rect, Qt.AlignCenter, self.text())
-
-    def _drawPixmapRect(self, painter: QPainter, rect: QRectF) -> None:
-        painter.drawPixmap(rect, self.icon().pixmap(64, 64))
-
-    def textRectAndIconRect(self) -> (QRectF, QRect):
-        font_metrics = QFontMetrics(self.font())
-        text_width = font_metrics.width(self.text())
-        icon_width = self.iconSize().width() if not self.icon().isNull() else 0
-        icon_height = self.iconSize().height() if not self.icon().isNull() else 0
-        gap = self.style_data.icon_text_gap if text_width > 0 and icon_width > 0 else 0
-
-        text_rect = QRectF((self.width() - icon_width - text_width - gap) / 2 + icon_width + gap,
-                           0,
-                           text_width,
-                           self.height())
-        pixmap_rect = QRect((self.width() - icon_width - text_width - gap) // 2,
-                            (self.height() - icon_height) // 2,
-                            icon_width,
-                            icon_height)
-
-        return text_rect, pixmap_rect
-
-    def _onAnimationTicked(self, _) -> None:
-        self.update()
-
-    def _onButtonClicked(self) -> None:
-        self.highlight_ani.setCurrent(self.style_data.click_color)
-        self.highlight_ani.start()
-
-    def paintEvent(self, event: QPaintEvent) -> None:
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setPen(Qt.PenStyle.NoPen)
-
-        rect = self.rect()
-        text_rect, icon_rect = self.textRectAndIconRect()
-        self._drawButtonRect(painter, rect)
-        self._drawHighLightRect(painter, rect)
-        self._drawTextRect(painter, text_rect)
-        self._drawPixmapRect(painter, icon_rect)
-
-    def enterEvent(self, event) -> None:
-        super().enterEvent(event)
-        self.highlight_ani.setTarget(self.style_data.hover_color)
-        self.highlight_ani.start()
-        self._showToolTip()
-        self._updateToolTip()
-
-    def leaveEvent(self, event) -> None:
-        super().leaveEvent(event)
-        self.highlight_ani.setTarget(self.style_data.idle_color)
-        self.highlight_ani.start()
-        self._hideToolTip()
 
 
 class SiProgressPushButton(SiPushButtonRefactor):
@@ -504,3 +426,137 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
         super().mouseReleaseEvent(e)
         self.mouse_pressed_timer.stop()
         self.go_backwards_timer.start()
+
+
+class SiFlatButton(ABCButton):
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+
+        self.style_data = FlatButtonStyleData()
+        self._initStyle()
+
+    def _initStyle(self):
+        self.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
+        self.setStyleSheet("color: #DFDFDF;")
+        self.setIconSize(QSize(20, 20))
+
+    def _drawButtonPath(self, rect: QRect) -> QPainterPath:
+        radius = self.style_data.border_radius
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(0, 0, rect.width(), rect.height()), radius, radius)
+        return path
+
+    def _drawButtonRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setBrush(QColor(*self.style_data.button_color))
+        painter.drawPath(self._drawButtonPath(rect))
+
+    def _drawHighLightRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setBrush(QColor(SiColor.toCode(self.highlight_ani.current_)))
+        painter.drawPath(self._drawButtonPath(rect))
+
+    def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setPen(self.palette().text().color())
+        painter.setFont(self.font())
+        painter.drawText(rect, Qt.AlignCenter, self.text())
+
+    def _drawPixmapRect(self, painter: QPainter, rect: QRectF) -> None:
+        painter.drawPixmap(rect, self.icon().pixmap(64, 64))
+
+    def textRectAndIconRect(self) -> (QRectF, QRect):
+        font_metrics = QFontMetrics(self.font())
+        text_width = font_metrics.width(self.text())
+        icon_width = self.iconSize().width() if not self.icon().isNull() else 0
+        icon_height = self.iconSize().height() if not self.icon().isNull() else 0
+        gap = self.style_data.icon_text_gap if text_width > 0 and icon_width > 0 else 0
+
+        text_rect = QRectF((self.width() - icon_width - text_width - gap) / 2 + icon_width + gap,
+                           0,
+                           text_width,
+                           self.height())
+        pixmap_rect = QRect((self.width() - icon_width - text_width - gap) // 2,
+                            (self.height() - icon_height) // 2,
+                            icon_width,
+                            icon_height)
+
+        return text_rect, pixmap_rect
+
+    def _onAnimationTicked(self, _) -> None:
+        self.update()
+
+    def _onButtonClicked(self) -> None:
+        self.highlight_ani.setCurrent(self.style_data.click_color)
+        self.highlight_ani.start()
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setPen(Qt.PenStyle.NoPen)
+
+        rect = self.rect()
+        text_rect, icon_rect = self.textRectAndIconRect()
+        self._drawButtonRect(painter, rect)
+        self._drawHighLightRect(painter, rect)
+        self._drawTextRect(painter, text_rect)
+        self._drawPixmapRect(painter, icon_rect)
+
+    def enterEvent(self, event) -> None:
+        super().enterEvent(event)
+        self.highlight_ani.setTarget(self.style_data.hover_color)
+        self.highlight_ani.start()
+        self._showToolTip()
+        self._updateToolTip()
+
+    def leaveEvent(self, event) -> None:
+        super().leaveEvent(event)
+        self.highlight_ani.setTarget(self.style_data.idle_color)
+        self.highlight_ani.start()
+        self._hideToolTip()
+
+
+class SiToggleButtonRefactor(SiFlatButton):
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+
+        self.setCheckable(True)
+        self.style_data = ToggleButtonStyleData()
+
+        self.toggle_btn_color_ani = SiExpAnimation(self)
+        self.toggle_btn_color_ani.init(1/8, 0.01, self.style_data.button_color, self.style_data.button_color)
+        self.toggle_btn_color_ani.ticked.connect(lambda _: self.update())
+
+        self.toggle_text_color_ani = SiExpAnimation(self)
+        self.toggle_text_color_ani.init(1/8, 0.01, (223, 223, 223, 255), (223, 223, 223, 255))
+        self.toggle_text_color_ani.ticked.connect(lambda _: self.update())
+
+        self.toggled.connect(self._onButtonToggled)
+
+    def setToggledButtonColor(self, code: str) -> None:
+        self.style_data.toggled_button_color = SiColor.toArray(code, "rgba")
+        self.update()
+
+    def setToggledTextColor(self, code: str) -> None:
+        self.style_data.toggled_text_color = SiColor.toArray(code, "rgba")
+        self.update()
+
+    def _onButtonToggled(self, state: bool) -> None:
+        if state:
+            self.toggle_btn_color_ani.setTarget(self.style_data.toggled_button_color)
+            self.toggle_text_color_ani.setTarget(self.style_data.toggled_text_color)
+            self.toggle_btn_color_ani.try_to_start()
+            self.toggle_text_color_ani.try_to_start()
+        else:
+            self.toggle_btn_color_ani.setTarget(self.style_data.button_color)
+            self.toggle_text_color_ani.setTarget(self.palette().text().color().getRgb())
+            self.toggle_btn_color_ani.try_to_start()
+            self.toggle_text_color_ani.try_to_start()
+
+    def _drawButtonRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setBrush(QColor(*self.toggle_btn_color_ani.current_))
+        painter.drawPath(self._drawButtonPath(rect))
+
+    def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setPen(QColor(*self.toggle_text_color_ani.current_))
+        painter.setFont(self.font())
+        painter.drawText(rect, Qt.AlignCenter, self.text())
