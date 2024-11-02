@@ -1,7 +1,8 @@
 from typing import Any
 
 import numpy
-from PyQt5.QtCore import QObject, QTimer, pyqtSignal
+from PyQt5.QtCore import QAbstractAnimation, QObject, QPoint, QPointF, QRect, QRectF, QSize, QSizeF, QTimer, pyqtSignal
+from PyQt5.QtGui import QColor
 
 global_fps = 60
 
@@ -377,3 +378,127 @@ class SiAnimationGroup:
             if token == aim_token:
                 return ani
         raise ValueError(f"未在代号组中找到传入的代号：{aim_token}")
+
+
+class TypeConversionFuncs:
+    functions = {
+        QPoint.__name__: [
+            lambda x: numpy.array((x.x(), x.y())),
+            lambda x: QPoint(int(x[0]), int(x[1]))
+        ],
+        QPointF.__name__: [
+            lambda x: numpy.array((x.x(), x.y())),
+            lambda x: QPointF(float(x[0]), float(x[1])),
+        ],
+        QSize.__name__: [
+            lambda x: numpy.array((x.width(), x.height())),
+            lambda x: QSize(int(x[0]), int(x[1])),
+        ],
+        QSizeF.__name__: [
+            lambda x: numpy.array((x.width(), x.height())),
+            lambda x: QSizeF(float(x[0]), float(x[1])),
+        ],
+        QRect.__name__: [
+            lambda x: numpy.array((x.x(), x.y(), x.width(), x.height())),
+            lambda x: QRect(int(x[0]), int(x[1]), int(x[2]), int(x[3]))
+        ],
+        QRectF.__name__: [
+            lambda x: numpy.array((x.x(), x.y(), x.width(), x.height())),
+            lambda x: QRect(float(x[0]), float(x[1]), float(x[2]), float(x[3]))
+        ],
+        QColor.__name__: [
+            lambda x: numpy.array(x.getRgb()),
+            lambda x: QColor(int(x[0]), int(x[1]), int(x[2]), int(x[3]))
+        ]
+    }
+
+
+class SiExpAnimationRefactor(QAbstractAnimation):
+    valueChanged = pyqtSignal(object)
+
+    def __init__(self, target: QObject, property_name=None, parent=None):
+        super().__init__(parent)
+        self._target = target
+        self._property_name = None
+        self._property_type = None
+        self._in_func = None
+        self._out_func = None
+        self._end_value = None
+        self._current_value = None
+        self.factor = 1/4
+        self.bias = 0.5
+
+        if property_name is not None:
+            self.setPropertyName(property_name)
+
+    def init(self, factor: float, bias: float) -> None:
+        self.factor = factor
+        self.bias = bias
+
+    def target(self) -> QObject:
+        return self._target
+
+    def propertyName(self) -> str:
+        return self._property_name
+
+    def endValue(self) -> Any:
+        return self._end_value
+
+    def currentValue(self) -> Any:
+        return self._target.property(self._property_name)
+
+    def distance(self) -> numpy.array:
+        return self._end_value - self._current_value
+
+    def duration(self) -> int:
+        return -1
+
+    def setPropertyName(self, name: str) -> None:
+        self._property_name = name
+        self._property_type = type(self._target.property(name))
+        self._loadConversionFuncs()
+        self._end_value = self._in_func(self._target.property(name))
+        self._current_value = self._in_func(self._target.property(name))
+
+    def setEndValue(self, value: Any):
+        if isinstance(value, self._property_type):
+            self._end_value = self._in_func(value)
+        else:
+            self._end_value = numpy.array(value)
+
+    def setCurrentValue(self, value: Any):
+        if isinstance(value, self._property_type):
+            self._current_value = self._in_func(value)
+        else:
+            self._current_value = numpy.array(value)
+
+    def updateCurrentTime(self, _):
+        # print(self.distance())
+        if (self.distance() == 0).all():
+            self.stop()
+            return
+
+        distance = self._end_value - self._current_value
+        flag = numpy.array(abs(distance) <= self.bias, dtype="int8")
+        step = abs(distance) * self.factor + self.bias                   # 基本指数动画运算
+        step = step * (numpy.array(distance > 0, dtype="int8") * 2 - 1)  # 确定动画方向
+        step = step * (1 - flag) + distance * flag                       # 差距小于偏置的项，返回差距
+
+        self._current_value = self._current_value + step
+        self._target.setProperty(self._property_name, self._out_func(self._current_value))
+
+    def _loadConversionFuncs(self) -> None:
+        if self._property_type.__name__ in TypeConversionFuncs.functions.keys():
+            self._in_func = TypeConversionFuncs.functions.get(self._property_type.__name__)[0]
+            self._out_func = TypeConversionFuncs.functions.get(self._property_type.__name__)[1]
+        else:
+            self._in_func = lambda x: numpy.array(x)
+            self._out_func = lambda x: self._property_type(int(x))
+
+
+
+
+    #
+    # def setProperty(self, name, value):
+    #     pass
+    # property.
