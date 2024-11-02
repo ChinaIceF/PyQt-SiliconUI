@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import qApp
 
 from siui.core.token import FontStyle, GlobalFont, GlobalFontSize, GlobalFontWeight
 
@@ -13,7 +14,8 @@ if TYPE_CHECKING:
 class SiFont:
     @staticmethod
     def getFont(
-        families: Sequence[str] = ["Segoe UI", "Microsoft YaHei", "San Francisco Fonts", "PingFang SC"],
+        families: Sequence[str] = qApp.font().families()
+        or ["Segoe UI", "Microsoft YaHei", "San Francisco Fonts", "PingFang SC"],
         size: int = 14,
         weight: QFont.Weight = QFont.Weight.Normal,
         italic: bool = False,
