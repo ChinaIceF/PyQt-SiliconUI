@@ -12,6 +12,12 @@ if TYPE_CHECKING:
 
 
 class SiFont:
+    """SiUI Font Class
+
+    You can use low-level API to customize fonts details,
+    or use tokenized global fonts to quickly create fonts.
+    """
+
     @staticmethod
     def getFont(
         families: Sequence[str] = qApp.font().families()
@@ -20,6 +26,21 @@ class SiFont:
         weight: QFont.Weight = QFont.Weight.Normal,
         italic: bool = False,
     ) -> QFont:
+        """Low-level API for creating font instance
+
+        Application-level configuration takes the highest priority,
+        and it is recommended to use the tokenized Hier-level API.
+
+        Args:
+            - families: 字体族列表，如果指定了应用程序级别的全局配置，则会覆盖默认字体家族
+            - size: 字体大小
+            - weight: 字体粗细
+            - italic: 是否斜体
+
+        Returns:
+            - QFont: 字体实例
+
+        """
         font = QFont()
         font.setFamilies(families)
         font.setPixelSize(size)
