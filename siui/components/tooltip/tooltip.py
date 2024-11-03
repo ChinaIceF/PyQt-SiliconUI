@@ -81,7 +81,7 @@ class ToolTipWindow(SiWidget):
     def _completely_hid_signal_handler(self, target):
         if target == 0:
             self.completely_hid = True
-            self.resize(2 * self.margin, 36 + 2 * self.margin)  # 变单行内容的高度，宽度不足以显示任何内容
+            self.resize(0, 36 + 2 * self.margin)  # 变单行内容的高度，宽度不足以显示任何内容 # 2024.11.1 宽度设0解决幽灵窗口
             self.text_label.setText("")   # 清空文本内容
 
     def setNowInsideOf(self, widget):
