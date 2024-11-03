@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 from enum import Enum, auto
 from typing import Union
@@ -103,11 +104,17 @@ class SiColor(Enum):
 
     @classmethod
     def toArray(cls,
-                code: str,
+                code: str | tuple,
                 c_format: str = "argb"):
         """
         transform `#AARRGGBB` or `#RRGGBB` into `array(A, R, G, B, dtype=int16)`
+        if code is already be a list / tuple / ndarray, the method returns ndarray.
         """
+        if isinstance(code, numpy.ndarray):
+            return code
+        if isinstance(code, (list, tuple)):
+            return numpy.array(code)
+
         code = cls.RGB_to_RGBA(code)
         code = code.lstrip("#")
         a, r, g, b = int(code[0:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)

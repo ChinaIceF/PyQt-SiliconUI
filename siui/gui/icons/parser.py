@@ -1,6 +1,8 @@
 import os
 
-from PyQt5.QtCore import QByteArray
+from PyQt5.QtCore import QByteArray, QSize, Qt
+from PyQt5.QtGui import QPainter, QPixmap
+from PyQt5.QtSvg import QSvgRenderer
 
 
 class GlobalIconPack:
@@ -79,3 +81,14 @@ class GlobalIconPack:
 
     def getClassNames(self) -> dict.keys:
         return self.icons_classified.keys()
+
+    def toPixmap(self, name: str, size: QSize = QSize(64, 64), color_code: str = None):
+        svg_bytes = self.get(name, color_code)
+        pixmap = QPixmap(size)
+        pixmap.fill(Qt.transparent)
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        svg_renderer = QSvgRenderer(svg_bytes)
+        svg_renderer.render(painter)
+        painter.end()
+        return pixmap

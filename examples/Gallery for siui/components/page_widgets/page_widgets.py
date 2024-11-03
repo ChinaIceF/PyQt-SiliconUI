@@ -3,7 +3,7 @@ import random
 
 import numpy
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import QCursor, QIcon
 
 from siui.components import (
     SiCircularProgressBar,
@@ -14,7 +14,12 @@ from siui.components import (
     SiTitledWidgetGroup,
     SiWidget,
 )
-from siui.components.button import SiPushButtonRefactor
+from siui.components.button_flattened import (
+    SiLongPressButtonRefactor,
+    SiProgressPushButton,
+    SiPushButtonRefactor,
+    SiToggleButtonRefactor, SiFlatButton,
+)
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
@@ -251,6 +256,50 @@ class ExampleWidgets(SiPage):
             group.addTitle("按钮")
 
             # 按钮
+            self.refactor_buttons = OptionCardPlaneForWidgetDemos(self)
+            self.refactor_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                               "/widgets/button.py")
+            self.refactor_buttons.setTitle("重构的按钮")
+
+            self.refactor_pushbutton = SiPushButtonRefactor(self)
+            self.refactor_pushbutton.setText("Confirm")
+            self.refactor_pushbutton.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_mail_checkmark_filled"))
+            self.refactor_pushbutton.adjustSize()
+
+            self.refactor_progress_button = SiProgressPushButton(self)
+            self.refactor_progress_button.setText("Downloading")
+            self.refactor_progress_button.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_arrow_download_filled"))
+            self.refactor_progress_button.setToolTip("Click me to set a random progress value.")
+            self.refactor_progress_button.clicked.connect(lambda: self.refactor_progress_button.setProgress(random.random() * 1.3))
+            self.refactor_progress_button.adjustSize()
+
+            self.refactor_long_press_button = SiLongPressButtonRefactor(self)
+            self.refactor_long_press_button.setText("Delete Files")
+            self.refactor_long_press_button.setToolTip("Hold me to confirm.<br><strong>Your files will be lost forever!</strong>")
+            self.refactor_long_press_button.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_delete_filled"))
+            self.refactor_long_press_button.longPressed.connect(lambda: self.refactor_long_press_button.setToolTip("Deleted!"))
+            self.refactor_long_press_button.adjustSize()
+
+            self.refactor_flat_button = SiFlatButton(self)
+            self.refactor_flat_button.setText("Flat Button")
+            self.refactor_flat_button.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_wrench_settings_filled"))
+            self.refactor_flat_button.setButtonColor("#00FFFFFF")
+            self.refactor_flat_button.adjustSize()
+
+            self.refactor_toggle_button = SiToggleButtonRefactor(self)
+            self.refactor_toggle_button.setText("Auto Save")
+            self.refactor_toggle_button.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_save_filled"))
+            self.refactor_toggle_button.adjustSize()
+
+            self.refactor_buttons.body().addWidget(self.refactor_pushbutton)
+            self.refactor_buttons.body().addWidget(self.refactor_progress_button)
+            self.refactor_buttons.body().addWidget(self.refactor_long_press_button)
+            self.refactor_buttons.body().addWidget(self.refactor_flat_button)
+            self.refactor_buttons.body().addWidget(self.refactor_toggle_button)
+            self.refactor_buttons.body().addPlaceholder(12)
+            self.refactor_buttons.adjustSize()
+
+            # 按钮
             self.push_buttons = OptionCardPlaneForWidgetDemos(self)
             self.push_buttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
                                                "/widgets/button.py")
@@ -258,11 +307,6 @@ class ExampleWidgets(SiPage):
 
             container_push_buttons = SiDenseHContainer(self)
             container_push_buttons.setFixedHeight(32)
-
-            self.debug_new_button = SiPushButtonRefactor(self)
-            self.debug_new_button.resize(128, 32)
-            self.debug_new_button.setText("新按钮")
-            self.debug_new_button.setToolTip("我是工具提示")
 
             self.demo_push_button_normal = SiPushButton(self)
             self.demo_push_button_normal.resize(128, 32)
@@ -277,7 +321,6 @@ class ExampleWidgets(SiPage):
             self.demo_push_button_long_press.resize(128, 32)
             self.demo_push_button_long_press.attachment().setText("长按按钮")
 
-            container_push_buttons.addWidget(self.debug_new_button)
             container_push_buttons.addWidget(self.demo_push_button_normal)
             container_push_buttons.addWidget(self.demo_push_button_transition)
             container_push_buttons.addWidget(self.demo_push_button_long_press)
@@ -387,6 +430,7 @@ class ExampleWidgets(SiPage):
             self.checkboxes.body().addPlaceholder(12)
             self.checkboxes.adjustSize()
 
+            group.addWidget(self.refactor_buttons)
             group.addWidget(self.push_buttons)
             group.addWidget(self.flat_buttons)
             group.addWidget(self.switches)
