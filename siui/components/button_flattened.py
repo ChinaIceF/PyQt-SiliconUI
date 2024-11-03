@@ -5,12 +5,13 @@ from __future__ import annotations
 import random
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QRect, QRectF, QSize, Qt, QTimer, pyqtSignal
+from PyQt5.QtCore import QEvent, QRect, QRectF, QSize, Qt, QTimer, pyqtSignal, pyqtProperty, QObject
 from PyQt5.QtGui import QColor, QFontMetrics, QIcon, QLinearGradient, QPainter, QPainterPath, QPaintEvent, QPixmap
 from PyQt5.QtSvg import QSvgRenderer
 from PyQt5.QtWidgets import QPushButton, QWidget
 
 from siui.core import GlobalFont, SiColor, SiExpAnimation, SiGlobal
+from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
 
 
@@ -153,22 +154,42 @@ class ABCButton(QPushButton):
         self._hideToolTip()
 
 
-class SiPushButtonRefactor(QPushButton):
+class SiButtonStyleBase(QObject):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
 
-        self.style_data = PushButtonStyleData()
+        print(123)
 
-        self.highlight_ani = SiExpAnimation(self)
-        self.highlight_ani.init(1/8, 0.2, SiColor.toArray("#00FFFFFF"), SiColor.toArray("#00FFFFFF"))
-        self.highlight_ani.ticked.connect(self._onAnimationTicked)
+
+class SiPushButtonRefactor(QPushButton, SiButtonStyleBase):
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+
+        self._my_color = QColor(255, 255, 255, 0)
+
+        self.style_data = PushButtonStyleData()
+        self.style_data.idle_color = SiColor.toArray("#00baadc7", "rgba")
+        self.style_data.hover_color = SiColor.toArray("#1abaadc7", "rgba")
+        self.style_data.click_color = SiColor.toArray("#50baadc7", "rgba")
+
+        self.highlight_ani = SiExpAnimationRefactor(self, "my_color")
+        self.highlight_ani.init(1/8, 0.2, SiColor.toArray("#FFFFFF00"), SiColor.toArray("#FFFFFF00"))
 
         self._initStyle()
         self.clicked.connect(self._onButtonClicked)
 
+    @pyqtProperty(QColor)
+    def my_color(self):
+        return self._my_color
+
+    @my_color.setter
+    def my_color(self, value: QColor):
+        self._my_color = value
+        self._onAnimationTicked(value)
+
     def flash(self) -> None:
-        self.highlight_ani.setCurrent(self.style_data.click_color)
-        self.highlight_ani.try_to_start()
+        self.highlight_ani.setCurrentValue(self.style_data.click_color)
+        self.highlight_ani.start()
 
     def setToolTip(self, tooltip: str) -> None:
         super().setToolTip(tooltip)
@@ -296,7 +317,7 @@ class SiPushButtonRefactor(QPushButton):
         painter.drawPath(self._drawButtonPath(rect))
 
     def _drawHighLightRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setBrush(QColor(SiColor.toCode(self.highlight_ani.current_)))
+        painter.setBrush(self.property("my_color"))
         painter.drawPath(self._drawButtonPath(rect))
 
     def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
@@ -333,14 +354,14 @@ class SiPushButtonRefactor(QPushButton):
 
     def enterEvent(self, event) -> None:
         super().enterEvent(event)
-        self.highlight_ani.setTarget(self.style_data.hover_color)
+        self.highlight_ani.setEndValue(self.style_data.hover_color)
         self.highlight_ani.start()
         self._showToolTip()
         self._updateToolTip()
 
     def leaveEvent(self, event) -> None:
         super().leaveEvent(event)
-        self.highlight_ani.setTarget(self.style_data.idle_color)
+        self.highlight_ani.setEndValue(self.style_data.idle_color)
         self.highlight_ani.start()
         self._hideToolTip()
 
