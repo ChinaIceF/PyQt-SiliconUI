@@ -418,6 +418,8 @@ class SiExpAnimationRefactor(QAbstractAnimation):
 
     def __init__(self, target: QObject, property_name=None, parent=None) -> None:
         super().__init__(parent)
+        self.start_after_timer = QTimer(self)
+
         self._target = target
         self._property_name = None
         self._property_type = None
@@ -443,8 +445,11 @@ class SiExpAnimationRefactor(QAbstractAnimation):
     def propertyName(self) -> str:
         return self._property_name
 
-    def endValue(self) -> Any:
-        return self._end_value
+    def endValue(self, raw=False) -> Any:
+        if raw is True:
+            return self._end_value
+        else:
+            return self._out_func(self._end_value)
 
     def currentValue(self, raw=False) -> Any:
         if raw is True:
@@ -457,6 +462,20 @@ class SiExpAnimationRefactor(QAbstractAnimation):
 
     def duration(self) -> int:
         return -1
+
+    def start(self, *args, **kwargs):
+        if self.state() != QAbstractAnimation.State.Running:
+            super().start(*args, **kwargs)
+
+    def startAfter(self, msec: int):
+        self.start_after_timer.singleShot(msec, self.start)
+
+    def update(self):
+        self.setCurrentValue(self._target.property(self._property_name))
+
+    def updateAndStart(self):
+        self.update()
+        self.start()
 
     def setPropertyName(self, name: str) -> None:
         self._property_name = name
@@ -476,6 +495,7 @@ class SiExpAnimationRefactor(QAbstractAnimation):
             self._current_value = self._in_func(value)
         else:
             self._current_value = numpy.array(value)
+        self.valueChanged.emit(self._current_value)
 
     def updateCurrentTime(self, _) -> None:
         # print(self.distance())
@@ -499,4 +519,4 @@ class SiExpAnimationRefactor(QAbstractAnimation):
             self._out_func = TypeConversionFuncs.functions.get(self._property_type.__name__)[1]
         else:
             self._in_func = lambda x: numpy.array(x)
-            self._out_func = lambda x: self._property_type(numpy.array(x, dtype="int32"))
+            self._out_func = lambda x: self._property_type(numpy.array(x, dtype="float32"))

@@ -105,7 +105,7 @@ class SiColor(Enum):
     @classmethod
     def toArray(cls,
                 code: str | tuple,
-                c_format: str = "argb"):
+                to_format: str = "argb"):
         """
         transform `#AARRGGBB` or `#RRGGBB` into `array(A, R, G, B, dtype=int16)`
         if code is already be a list / tuple / ndarray, the method returns ndarray.
@@ -119,14 +119,14 @@ class SiColor(Enum):
         code = code.lstrip("#")
         a, r, g, b = int(code[0:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)
 
-        c_format = c_format.lower()
-        if c_format not in ["rgba", "argb", "rgb"]:
-            raise ValueError(f"{c_format} is not a valid format (rgba, argb, rgb)")
-        if c_format == "rgba":
+        to_format = to_format.lower()
+        if to_format not in ["rgba", "argb", "rgb"]:
+            raise ValueError(f"{to_format} is not a valid format (rgba, argb, rgb)")
+        if to_format == "rgba":
             return numpy.array([r, g, b, a], dtype=numpy.int16)
-        if c_format == "argb":
+        if to_format == "argb":
             return numpy.array([a, r, g, b], dtype=numpy.int16)
-        if c_format == "rgb":
+        if to_format == "rgb":
             return numpy.array([r, g, b], dtype=numpy.int16)
 
     @staticmethod

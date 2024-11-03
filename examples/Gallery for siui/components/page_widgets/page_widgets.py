@@ -14,11 +14,12 @@ from siui.components import (
     SiTitledWidgetGroup,
     SiWidget,
 )
-from siui.components.button_flattened import (
+from siui.components.button import (
+    SiFlatButton,
     SiLongPressButtonRefactor,
     SiProgressPushButton,
     SiPushButtonRefactor,
-    SiToggleButtonRefactor, SiFlatButton,
+    SiToggleButtonRefactor,
 )
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
