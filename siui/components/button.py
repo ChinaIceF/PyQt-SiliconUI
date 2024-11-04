@@ -2,27 +2,41 @@
 # replace button once it's done. Now it's draft, code may be ugly and verbose temporarily.
 from __future__ import annotations
 
-import random
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
+from PyQt5.QtCore import QEvent, QObject, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
 from PyQt5.QtGui import QColor, QFontMetrics, QIcon, QLinearGradient, QPainter, QPainterPath, QPaintEvent, QPixmap
 from PyQt5.QtSvg import QSvgRenderer
 from PyQt5.QtWidgets import QPushButton, QWidget
 
-from siui.core import GlobalFont, SiColor, SiExpAnimation, SiGlobal
+from siui.core import GlobalFont, SiColor, SiGlobal
 from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
 
 
 @dataclass
-class ButtonStyleData:
+class ButtonStyleData(QObject):
+    font = SiFont.tokenized(GlobalFont.S_NORMAL)
+
+    text_color = QColor("#DFDFDF")
     idle_color = QColor("#00baadc7")
     hover_color = QColor("#1abaadc7")
     click_color = QColor("#50baadc7")
     button_color = QColor("#4C4554")
+    progress_color = QColor("#806799")
+    complete_color = QColor("#519868")
+    background_color = QColor("#2d2932")
+    toggled_text_color = QColor("#DFDFDF")
+    toggled_button_color = QColor("#519868")
+
+    border_inner_radius: int = 4
     border_radius: int = 7
+    border_height: int = 3
     icon_text_gap: int = 4
+
+    def __init__(self, parent: QWidget, name: str):
+        super().__init__(parent)
+        self.setObjectName(name)
 
 
 @dataclass
@@ -58,17 +72,26 @@ class ToggleButtonStyleData(ButtonStyleData):
 
 
 class ABCButton(QPushButton):
+    class Property:
+        textColor = "textColor"
+        buttonRectColor = "buttonRectColor"
+        progressRectColor = "progressRectColor"
+        highlightRectColor = "highlightRectColor"
+        backgroundRectColor = "backgroundRectColor"
+        progress = "progress"
+
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
 
         self.style_data = None
-        self._highlight_rect_color = QColor("#00FFFFFF")
         self._progress = 0
+        self._highlight_rect_color = QColor("#00FFFFFF")
         self._progress_rect_color = None
+        self._background_rect_color = None
         self._button_rect_color = None
         self._text_color = None
 
-        self.highlight_ani = SiExpAnimationRefactor(self, "highlightRectColor")
+        self.highlight_ani = SiExpAnimationRefactor(self, self.Property.highlightRectColor)
         self.highlight_ani.init(1/8, 0.2, self._highlight_rect_color, self._highlight_rect_color)
 
         self.clicked.connect(self._onButtonClicked)
@@ -89,6 +112,15 @@ class ABCButton(QPushButton):
     @buttonRectColor.setter
     def buttonRectColor(self, color: QColor):
         self._button_rect_color = color
+        self.update()
+
+    @pyqtProperty(QColor)
+    def backgroundRectColor(self):
+        return self._background_rect_color
+
+    @backgroundRectColor.setter
+    def backgroundRectColor(self, color: QColor):
+        self._background_rect_color = color
         self.update()
 
     @pyqtProperty(QColor)
@@ -117,6 +149,9 @@ class ABCButton(QPushButton):
     def progressRectColor(self, value: QColor):
         self._progress_rect_color = value
         self.update()
+
+    def reloadStyle(self):
+        raise NotImplementedError()
 
     def flash(self) -> None:
         self.highlight_ani.setCurrentValue(self.style_data.click_color)
@@ -211,8 +246,7 @@ class SiPushButtonRefactor(ABCButton):
         self._initStyle()
 
     def _initStyle(self):
-        self.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-        self.setStyleSheet("color: #DFDFDF;")
+        self.setFont(self.style_data.font)
         self.setIconSize(QSize(20, 20))
 
     @classmethod
@@ -271,11 +305,11 @@ class SiPushButtonRefactor(ABCButton):
         painter.drawPath(self._drawButtonPath(rect))
 
     def _drawHighLightRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setBrush(self._highlight_rect_color)
+        painter.setBrush(self._highlight_rect_color)  # use property variable
         painter.drawPath(self._drawButtonPath(rect))
 
     def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setPen(self.palette().text().color())
+        painter.setPen(self.style_data.text_color)
         painter.setFont(self.font())
         painter.drawText(rect, Qt.AlignCenter, self.text())
 
@@ -340,10 +374,10 @@ class SiProgressPushButton(SiPushButtonRefactor):
         self._progress_rect_color = self.style_data.progress_color
         self._progress = 0
 
-        self.progress_ani = SiExpAnimationRefactor(self, "progress")
+        self.progress_ani = SiExpAnimationRefactor(self, self.Property.progress)
         self.progress_ani.init(1/6, 0.005, 0, 0)
 
-        self.progress_color_ani = SiExpAnimationRefactor(self, "progressRectColor")
+        self.progress_color_ani = SiExpAnimationRefactor(self, self.Property.progressRectColor)
         self.progress_color_ani.init(1/8, 0.01, self._progress_rect_color, self._progress_rect_color)
 
     def setProgress(self, p: float, ani: bool = True) -> None:
@@ -377,7 +411,7 @@ class SiProgressPushButton(SiPushButtonRefactor):
     def _drawButtonRect(self, painter: QPainter, rect: QRect) -> None:
         p = min(self._progress, 1)  # prevent progress exceeding caused by using animation.
         gradient = QLinearGradient(rect.left(), rect.top(), rect.right(), rect.top())
-        gradient.setColorAt(p - 0.0001, self._progress_rect_color)
+        gradient.setColorAt(p - 0.0001, self._progress_rect_color)  # use property variable
         gradient.setColorAt(p,          self.style_data.button_color)
         painter.setBrush(gradient)
         painter.drawPath(self._drawButtonPath(rect))
@@ -392,9 +426,9 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
         self.style_data = LongPressButtonStyleData()
         self._progress = 0
 
-        self.progress_ani = SiExpAnimationRefactor(self, "progress")
+        self.progress_ani = SiExpAnimationRefactor(self, self.Property.progress)
         self.progress_ani.init(-1/16, 0.12, 0, 0)
-        self.progress_ani.valueChanged.connect(print)
+        # self.progress_ani.valueChanged.connect(print)
 
         self.go_backwards_timer = QTimer(self)
         self.go_backwards_timer.setSingleShot(True)
@@ -472,8 +506,7 @@ class SiFlatButton(ABCButton):
         self._initStyle()
 
     def _initStyle(self):
-        self.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-        self.setStyleSheet("color: #DFDFDF;")
+        self.setFont(self.style_data.font)
         self.setIconSize(QSize(20, 20))
 
     def _drawButtonPath(self, rect: QRect) -> QPainterPath:
@@ -487,11 +520,11 @@ class SiFlatButton(ABCButton):
         painter.drawPath(self._drawButtonPath(rect))
 
     def _drawHighLightRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setBrush(self._highlight_rect_color)
+        painter.setBrush(self._highlight_rect_color)  # use property variable
         painter.drawPath(self._drawButtonPath(rect))
 
     def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setPen(self.palette().text().color())
+        painter.setPen(self.style_data.text_color)
         painter.setFont(self.font())
         painter.drawText(rect, Qt.AlignCenter, self.text())
 
@@ -558,12 +591,12 @@ class SiToggleButtonRefactor(SiFlatButton):
 
         self.style_data = ToggleButtonStyleData()
         self._button_rect_color = self.style_data.button_color
-        self._text_color = self.style_data.toggled_text_color
+        self._text_color = self.style_data.text_color
 
-        self.toggle_btn_color_ani = SiExpAnimationRefactor(self, "buttonRectColor")
+        self.toggle_btn_color_ani = SiExpAnimationRefactor(self, self.Property.buttonRectColor)
         self.toggle_btn_color_ani.init(1/8, 0.01, self._button_rect_color, self._button_rect_color)
 
-        self.toggle_text_color_ani = SiExpAnimationRefactor(self, "textColor")
+        self.toggle_text_color_ani = SiExpAnimationRefactor(self, self.Property.textColor)
         self.toggle_text_color_ani.init(1/8, 0.01, self._text_color, self._text_color)
 
         self.toggled.connect(self._onButtonToggled)
@@ -584,15 +617,15 @@ class SiToggleButtonRefactor(SiFlatButton):
             self.toggle_text_color_ani.start()
         else:
             self.toggle_btn_color_ani.setEndValue(self.style_data.button_color)
-            self.toggle_text_color_ani.setEndValue(self.palette().text().color())
+            self.toggle_text_color_ani.setEndValue(self.style_data.text_color)
             self.toggle_btn_color_ani.start()
             self.toggle_text_color_ani.start()
 
     def _drawButtonRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setBrush(self.property("buttonRectColor"))
+        painter.setBrush(self._button_rect_color)  # use property variable
         painter.drawPath(self._drawButtonPath(rect))
 
     def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setPen(self.property("textColor"))
+        painter.setPen(self._text_color)  # use property variable
         painter.setFont(self.font())
         painter.drawText(rect, Qt.AlignCenter, self.text())
