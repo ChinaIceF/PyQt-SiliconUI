@@ -2,73 +2,163 @@
 # replace button once it's done. Now it's draft, code may be ugly and verbose temporarily.
 from __future__ import annotations
 
-from dataclasses import dataclass
+import dataclasses
+from dataclasses import dataclass, fields
 
 from PyQt5.QtCore import QEvent, QObject, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
-from PyQt5.QtGui import QColor, QFontMetrics, QIcon, QLinearGradient, QPainter, QPainterPath, QPaintEvent, QPixmap
+from PyQt5.QtGui import (
+    QColor,
+    QFont,
+    QFontMetrics,
+    QIcon,
+    QLinearGradient,
+    QPainter,
+    QPainterPath,
+    QPaintEvent,
+    QPixmap,
+)
 from PyQt5.QtSvg import QSvgRenderer
 from PyQt5.QtWidgets import QPushButton, QWidget
 
-from siui.core import GlobalFont, SiColor, SiGlobal
+from siui.core import GlobalFont, SiGlobal
 from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
 
 
+class SiStyleAttr:
+    Font = "font"
+    TextColor = "text_color"
+    IdleColor = "idle_color"
+    HoverColor = "hover_color"
+    ClickColor = "click_color"
+    ButtonColor = "button_color"
+    ProgressColor = "progress_color"
+    CompleteColor = "complete_color"
+    BackgroundColor = "background_color"
+    ToggledTextColor = "toggled_text_color"
+    ToggledButtonColor = "toggled_button_color"
+    BorderInnerRadius = "border_inner_radius"
+    BorderRadius = "border_radius"
+    BorderHeight = "border_height"
+    IconTextGap = "icon_text_gap"
+
+
+SA = SiStyleAttr
+
+
+class GlobalStyleManager:
+    class Theme:
+        Bright = 0
+        Dark = 1
+
+    style_dark = {
+        "Button": {
+            "default": {
+                SA.Font:                        SiFont.tokenized(GlobalFont.S_NORMAL),
+                SA.TextColor:                   QColor("#DFDFDF"),
+                SA.IdleColor:                   QColor("#00baadc7"),
+                SA.HoverColor:                  QColor("#1abaadc7"),
+                SA.ClickColor:                  QColor("#50baadc7"),
+                SA.ButtonColor:                 QColor("#4C4554"),
+                SA.ProgressColor:               QColor("#806799"),
+                SA.CompleteColor:               QColor("#519868"),
+                SA.BackgroundColor:             QColor("#2d2932"),
+                SA.ToggledTextColor:            QColor("#DFDFDF"),
+                SA.ToggledButtonColor:          QColor("#519868"),
+                SA.BorderInnerRadius:           4,
+                SA.BorderRadius:                7,
+                SA.BorderHeight:                3,
+                SA.IconTextGap:                 4,
+            },
+            "FlatButtonStyleData": {
+                SA.ButtonColor:                 QColor("#004C4554")
+            },
+            "LongPressButtonStyleData": {
+                SA.ProgressColor:               QColor("#DA3462"),
+                SA.ButtonColor:                 QColor("#932a48"),
+                SA.BackgroundColor:             QColor("#642d41"),
+                SA.ClickColor:                  QColor("#40FFFFFF"),
+            },
+            "ToggleButtonStyleData": {},
+            "PushButtonStyleData": {},
+            "ProgressPushButtonStyleData": {},
+        }
+    }
+
+    def updateWidgetStyleData(self, widget: QObject) -> None:
+        try:
+            instance = widget.style_data
+        except NameError:
+            return
+        self.updateStyleData(instance)
+
+    def updateStyleData(self, instance: QObject) -> None:
+        style_dict = self.style_dark
+        instance_class_name = instance.__class__.__name__
+        for type_name, type_dict in zip(style_dict.keys(), style_dict.values()):
+            if type_name not in instance.STYLE_TYPES:
+                continue
+
+            for class_name, class_dict in zip(type_dict.keys(), type_dict.values()):
+                if instance_class_name == class_name or class_name == "default":
+                    self._setAttribute(instance, class_dict)
+
+    @staticmethod
+    def _setAttribute(instance, class_dict: dict) -> None:
+        for attr_name, value in zip(class_dict.keys(), class_dict.values()):
+            setattr(instance, attr_name, value)
+
+
 @dataclass
 class ButtonStyleData(QObject):
-    font = SiFont.tokenized(GlobalFont.S_NORMAL)
+    STYLE_TYPES = ["Button"]
 
-    text_color = QColor("#DFDFDF")
-    idle_color = QColor("#00baadc7")
-    hover_color = QColor("#1abaadc7")
-    click_color = QColor("#50baadc7")
-    button_color = QColor("#4C4554")
-    progress_color = QColor("#806799")
-    complete_color = QColor("#519868")
-    background_color = QColor("#2d2932")
-    toggled_text_color = QColor("#DFDFDF")
-    toggled_button_color = QColor("#519868")
+    font: QFont
 
-    border_inner_radius: int = 4
-    border_radius: int = 7
-    border_height: int = 3
-    icon_text_gap: int = 4
+    text_color: QColor
+    idle_color: QColor
+    hover_color: QColor
+    click_color: QColor
+    button_color: QColor
+    progress_color: QColor
+    complete_color: QColor
+    background_color: QColor
+    toggled_text_color: QColor
+    toggled_button_color: QColor
 
-    def __init__(self, parent: QWidget, name: str):
-        super().__init__(parent)
-        self.setObjectName(name)
+    border_inner_radius: int
+    border_radius: int
+    border_height: int
+    icon_text_gap: int
+
+    def __init__(self):
+        super().__init__()
+        GlobalStyleManager().updateStyleData(self)
 
 
-@dataclass
+@dataclass(init=False)
 class FlatButtonStyleData(ButtonStyleData):
     pass
 
 
-@dataclass
+@dataclass(init=False)
 class PushButtonStyleData(ButtonStyleData):
-    background_color = QColor("#2d2932")
-    border_inner_radius: int = 4
-    border_height: int = 3
+    pass
 
 
-@dataclass
+@dataclass(init=False)
 class ProgressPushButtonStyleData(PushButtonStyleData):
-    progress_color = QColor("#806799")
-    complete_color = QColor("#519868")
+    pass
 
 
-@dataclass
+@dataclass(init=False)
 class LongPressButtonStyleData(PushButtonStyleData):
-    progress_color = QColor("#DA3462")
-    button_color = QColor("#932a48")
-    background_color = QColor("#642d41")
-    click_color = QColor("#40FFFFFF")
+    pass
 
 
-@dataclass
+@dataclass(init=False)
 class ToggleButtonStyleData(ButtonStyleData):
-    toggled_text_color = QColor("#DFDFDF")
-    toggled_button_color = QColor("#519868")
+    pass
 
 
 class ABCButton(QPushButton):
@@ -92,11 +182,9 @@ class ABCButton(QPushButton):
         self._text_color = None
 
         self.highlight_ani = SiExpAnimationRefactor(self, self.Property.HighlightRectColor)
-        self.highlight_ani.init(1/8, 0.2, self._highlight_rect_color, self._highlight_rect_color)
+        self.highlight_ani.init(1 / 8, 0.2, self._highlight_rect_color, self._highlight_rect_color)
 
         self.clicked.connect(self._onButtonClicked)
-        self.clicked.connect(lambda: print("Ni好"))
-        self.clicked.disconnect()
 
     @pyqtProperty(QColor)
     def highlightRectColor(self):
@@ -165,14 +253,6 @@ class ABCButton(QPushButton):
 
     def setIconTextGap(self, gap: int) -> None:
         self.style_data.icon_text_gap = gap
-        self.update()
-
-    def setBorderRadius(self, r: int) -> None:
-        self.style_data.border_radius = r
-        self.update()
-
-    def setButtonColor(self, color: QColor | str) -> None:
-        self.style_data.button_color = QColor(color)
         self.update()
 
     def setSvgIcon(self, svg_data: bytes) -> None:
@@ -278,18 +358,6 @@ class SiPushButtonRefactor(ABCButton):
         self.setFont(self.style_data.font)
         self.update()
 
-    def setBackgroundColor(self, code: str) -> None:
-        self.style_data.background_color = SiColor.toArray(code, "rgba")
-        self.update()
-
-    def setBorderInnerRadius(self, r: int) -> None:
-        self.style_data.border_inner_radius = r
-        self.update()
-
-    def setBorderHeight(self, h: int) -> None:
-        self.style_data.border_height = h
-        self.update()
-
     def _drawBackgroundPath(self, rect: QRect) -> QPainterPath:
         radius = self.style_data.border_radius
         path = QPainterPath()
@@ -381,16 +449,15 @@ class SiProgressPushButton(SiPushButtonRefactor):
         self._progress = 0
 
         self.progress_ani = SiExpAnimationRefactor(self, self.Property.Progress)
-        self.progress_ani.init(1/6, 0.005, 0, 0)
+        self.progress_ani.init(1 / 6, 0.005, 0, 0)
 
         self.progress_color_ani = SiExpAnimationRefactor(self, self.Property.ProgressRectColor)
-        self.progress_color_ani.init(1/8, 0.01, self._progress_rect_color, self._progress_rect_color)
+        self.progress_color_ani.init(1 / 8, 0.01, self._progress_rect_color, self._progress_rect_color)
 
     def setProgress(self, p: float, ani: bool = True) -> None:
         self._progress = max(0.0, min(p, 1.0))
         self._updateProgress(ani)
         self._updateCompleteState()
-        # self.update()
 
     def reloadStyleData(self) -> None:
         self.setFont(self.style_data.font)
@@ -414,16 +481,11 @@ class SiProgressPushButton(SiPushButtonRefactor):
             self.progress_color_ani.setEndValue(self.style_data.progress_color)
             self.progress_color_ani.start()
 
-    def setProgressColor(self, color: QColor | str) -> None:
-        self.style_data.progress_color = QColor(color)
-        self._updateCompleteState()
-        self.update()
-
     def _drawButtonRect(self, painter: QPainter, rect: QRect) -> None:
         p = min(self._progress, 1)  # prevent progress exceeding caused by using animation.
         gradient = QLinearGradient(rect.left(), rect.top(), rect.right(), rect.top())
         gradient.setColorAt(p - 0.0001, self._progress_rect_color)  # use property variable
-        gradient.setColorAt(p,          self.style_data.button_color)
+        gradient.setColorAt(p, self.style_data.button_color)
         painter.setBrush(gradient)
         painter.drawPath(self._drawButtonPath(rect))
 
@@ -438,7 +500,7 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
         self._progress = 0
 
         self.progress_ani = SiExpAnimationRefactor(self, self.Property.Progress)
-        self.progress_ani.init(-1/16, 0.12, 0, 0)
+        self.progress_ani.init(-1 / 16, 0.12, 0, 0)
         # self.progress_ani.valueChanged.connect(print)
 
         self.go_backwards_timer = QTimer(self)
@@ -447,7 +509,7 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
         self.go_backwards_timer.timeout.connect(self._goBackwards)
 
         self.mouse_pressed_timer = QTimer(self)
-        self.mouse_pressed_timer.setInterval(1000//60)
+        self.mouse_pressed_timer.setInterval(1000 // 60)
         self.mouse_pressed_timer.timeout.connect(self._onMousePressed)
 
     def setProgress(self, p: float, ani: bool = True) -> None:
@@ -497,7 +559,7 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
         p = min(self._progress, 1)  # prevent progress exceeding caused by using animation.
         gradient = QLinearGradient(rect.left(), rect.top(), rect.right(), rect.top())
         gradient.setColorAt(p - 0.0001, self.style_data.progress_color)
-        gradient.setColorAt(p,          self.style_data.button_color)
+        gradient.setColorAt(p, self.style_data.button_color)
         painter.setBrush(gradient)
         painter.drawPath(self._drawButtonPath(rect))
 
@@ -613,24 +675,16 @@ class SiToggleButtonRefactor(SiFlatButton):
         self._text_color = self.style_data.text_color
 
         self.toggle_btn_color_ani = SiExpAnimationRefactor(self, self.Property.ButtonRectColor)
-        self.toggle_btn_color_ani.init(1/8, 0.01, self._button_rect_color, self._button_rect_color)
+        self.toggle_btn_color_ani.init(1 / 8, 0.01, self._button_rect_color, self._button_rect_color)
 
         self.toggle_text_color_ani = SiExpAnimationRefactor(self, self.Property.TextColor)
-        self.toggle_text_color_ani.init(1/8, 0.01, self._text_color, self._text_color)
+        self.toggle_text_color_ani.init(1 / 8, 0.01, self._text_color, self._text_color)
 
         self.toggled.connect(self._onButtonToggled)
 
     def reloadStyleData(self) -> None:
         self.setFont(self.style_data.font)
         self._onButtonToggled(self.isChecked())
-        self.update()
-
-    def setToggledButtonColor(self, color: QColor | str) -> None:
-        self.style_data.toggled_button_color = QColor(color)
-        self.update()
-
-    def setToggledTextColor(self, color: QColor | str) -> None:
-        self.style_data.toggled_text_color = QColor(color)
         self.update()
 
     def _onButtonToggled(self, state: bool) -> None:

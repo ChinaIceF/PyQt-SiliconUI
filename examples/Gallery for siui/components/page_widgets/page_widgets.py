@@ -284,7 +284,6 @@ class ExampleWidgets(SiPage):
             self.refactor_flat_button = SiFlatButton(self)
             self.refactor_flat_button.setText("Flat Button")
             self.refactor_flat_button.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_wrench_settings_filled"))
-            self.refactor_flat_button.setButtonColor("#00FFFFFF")
             self.refactor_flat_button.adjustSize()
 
             self.refactor_toggle_button = SiToggleButtonRefactor(self)
