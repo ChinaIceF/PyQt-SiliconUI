@@ -63,12 +63,23 @@ class SiPixLabel(SiLabel):
         if self.path_ is None:
             return
 
-        w, h = self.width(), self.height()
+        dpi = self.devicePixelRatio()
 
-        target = QPixmap(self.size())
+        w = int(self.width() * dpi)
+        h = int(self.height() * dpi)
+
+        target = QPixmap(w, h)
+        target.setDevicePixelRatio(dpi)
         target.fill(Qt.transparent)
 
-        p = QPixmap(self.path_).scaled(w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        original = QPixmap(self.path_)
+        p = original.scaled(
+            w, h,
+            Qt.KeepAspectRatioByExpanding,
+            Qt.SmoothTransformation
+        )
+
+        p.setDevicePixelRatio(dpi)
 
         painter = QPainter(target)
         painter.setRenderHint(QPainter.Antialiasing, True)
@@ -76,17 +87,31 @@ class SiPixLabel(SiLabel):
         painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
 
         path = QPainterPath()
-        path.addRoundedRect(0,                  0,
-                            self.width(),       self.height(),
-                            self.border_radius, self.border_radius)
+        path.addRoundedRect(
+            0, 0,
+            w, h,
+            self.border_radius * dpi,
+            self.border_radius * dpi
+        )
 
         painter.setClipPath(path)
-        pos = SiQuickAlignmentManager.toPos(self.size(), p.size(), self.alignment())
-        painter.drawPixmap(pos.x() + self.offset.x(), pos.y() + self.offset.y(), p)
+
+        pos = SiQuickAlignmentManager.toPos(
+            QSize(w, h),
+            p.size(),
+            self.alignment()
+        )
+
+        painter.drawPixmap(
+            pos.x() + int(self.offset.x() * dpi),
+            pos.y() + int(self.offset.y() * dpi),
+            p
+        )
         painter.end()
 
         self.setPixmap(target)
 
+    
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.draw()
