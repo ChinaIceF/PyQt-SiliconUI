@@ -1,7 +1,18 @@
 from typing import Any
 
 import numpy
-from PyQt5.QtCore import QAbstractAnimation, QObject, QPoint, QPointF, QRect, QRectF, QSize, QSizeF, QTimer, pyqtSignal
+from PyQt5.QtCore import (
+    QAbstractAnimation,
+    QObject,
+    QPoint,
+    QPointF,
+    QRect,
+    QRectF,
+    QSize,
+    QSizeF,
+    QTimer,
+    pyqtSignal,
+)
 from PyQt5.QtGui import QColor
 
 global_fps = 60
@@ -439,6 +450,12 @@ class SiExpAnimationRefactor(QAbstractAnimation):
         self.setCurrentValue(current_value)
         self.setEndValue(end_value)
 
+    def setFactor(self, factor: float):
+        self.factor = factor
+
+    def setBias(self, bias: float):
+        self.bias = bias
+
     def target(self) -> QObject:
         return self._target
 
@@ -510,8 +527,11 @@ class SiExpAnimationRefactor(QAbstractAnimation):
         step = step * (1 - flag) + distance * flag                       # 差距小于偏置的项，返回差距
 
         self._current_value = self._current_value + step
-        self._target.setProperty(self._property_name, self._out_func(self._current_value))
         self.valueChanged.emit(self._current_value)
+        try:
+            self._target.setProperty(self._property_name, self._out_func(self._current_value))
+        except RuntimeError:
+            pass
 
     def _loadConversionFuncs(self) -> None:
         if self._property_type.__name__ in TypeConversionFuncs.functions.keys():

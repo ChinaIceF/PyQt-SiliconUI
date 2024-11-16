@@ -2,10 +2,20 @@
 # replace button once it's done. Now it's draft, code may be ugly and verbose temporarily.
 from __future__ import annotations
 
-import dataclasses
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QObject, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
+from PyQt5.QtCore import (
+    QEvent,
+    QObject,
+    QPointF,
+    QRect,
+    QRectF,
+    QSize,
+    Qt,
+    QTimer,
+    pyqtProperty,
+    pyqtSignal,
+)
 from PyQt5.QtGui import (
     QColor,
     QFont,
@@ -70,16 +80,18 @@ class GlobalStyleManager:
                 SA.BorderHeight:                3,
                 SA.IconTextGap:                 4,
             },
-            "FlatButtonStyleData": {
-                SA.ButtonColor:                 QColor("#004C4554")
-            },
             "LongPressButtonStyleData": {
                 SA.ProgressColor:               QColor("#DA3462"),
                 SA.ButtonColor:                 QColor("#932a48"),
                 SA.BackgroundColor:             QColor("#642d41"),
                 SA.ClickColor:                  QColor("#40FFFFFF"),
             },
-            "ToggleButtonStyleData": {},
+            "FlatButtonStyleData": {
+                SA.ButtonColor:                 QColor("#004C4554")
+            },
+            "ToggleButtonStyleData": {
+                SA.ButtonColor:                 QColor("#004C4554"),
+            },
             "PushButtonStyleData": {},
             "ProgressPushButtonStyleData": {},
         }
@@ -163,6 +175,7 @@ class ToggleButtonStyleData(ButtonStyleData):
 
 class ABCButton(QPushButton):
     class Property:
+        ScaleFactor = "scaleFactor"
         TextColor = "textColor"
         ButtonRectColor = "buttonRectColor"
         ProgressRectColor = "progressRectColor"
@@ -175,6 +188,7 @@ class ABCButton(QPushButton):
 
         self.style_data = None
         self._progress = 0
+        self._scale_factor = 1
         self._highlight_rect_color = QColor("#00FFFFFF")
         self._progress_rect_color = None
         self._background_rect_color = None
@@ -185,6 +199,15 @@ class ABCButton(QPushButton):
         self.highlight_ani.init(1 / 8, 0.2, self._highlight_rect_color, self._highlight_rect_color)
 
         self.clicked.connect(self._onButtonClicked)
+
+    @pyqtProperty(float)
+    def scaleFactor(self):
+        return self._scale_factor
+
+    @scaleFactor.setter
+    def scaleFactor(self, value: float):
+        self._scale_factor = value
+        self.update()
 
     @pyqtProperty(QColor)
     def highlightRectColor(self):
@@ -299,9 +322,6 @@ class ABCButton(QPushButton):
         if tool_tip_window is not None and tool_tip_window.nowInsideOf() == self:
             tool_tip_window.setText(self.toolTip())
 
-    def _onAnimationTicked(self, _) -> None:
-        raise NotImplementedError()
-
     def _onButtonClicked(self) -> None:
         raise NotImplementedError()
 
@@ -326,10 +346,28 @@ class SiPushButtonRefactor(ABCButton):
 
         self.style_data = PushButtonStyleData()
         self._initStyle()
+        self._scale_factor = 1
+
+        self.scale_factor_ani = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
+        self.scale_factor_ani.init(1/16, 0, 1, 1)
 
     def _initStyle(self):
         self.setFont(self.style_data.font)
         self.setIconSize(QSize(20, 20))
+
+    def mousePressEvent(self, e):
+        super().mousePressEvent(e)
+        self.scale_factor_ani.setFactor(1/16)
+        self.scale_factor_ani.setBias(0)
+        self.scale_factor_ani.setEndValue(0.9)
+        self.scale_factor_ani.start()
+
+    def mouseReleaseEvent(self, e):
+        super().mouseReleaseEvent(e)
+        self.scale_factor_ani.setFactor(1/4)
+        self.scale_factor_ani.setBias(0.001)
+        self.scale_factor_ani.setEndValue(1)
+        self.scale_factor_ani.start()
 
     @classmethod
     def withText(cls, text: str, parent: QWidget | None = None):
@@ -425,19 +463,35 @@ class SiPushButtonRefactor(ABCButton):
         self._hideToolTip()
 
     def paintEvent(self, event: QPaintEvent) -> None:
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setPen(Qt.PenStyle.NoPen)
-
         rect = self.rect()
         text_rect, icon_rect = self.textRectAndIconRect()
-        self._drawBackgroundRect(painter, rect)
-        self._drawButtonRect(painter, rect)
-        self._drawHighLightRect(painter, rect)
-        self._drawTextRect(painter, text_rect)
-        self._drawPixmapRect(painter, icon_rect)
+        device_pixel_ratio = self.devicePixelRatioF()
+
+        buffer = QPixmap(rect.size() * device_pixel_ratio)
+        buffer.setDevicePixelRatio(device_pixel_ratio)
+        buffer.fill(Qt.transparent)
+
+        buffer_painter = QPainter(buffer)
+        buffer_painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        buffer_painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+        buffer_painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        buffer_painter.setPen(Qt.PenStyle.NoPen)
+
+        self._drawBackgroundRect(buffer_painter, rect)
+        self._drawButtonRect(buffer_painter, rect)
+        self._drawHighLightRect(buffer_painter, rect)
+        self._drawPixmapRect(buffer_painter, icon_rect)
+        self._drawTextRect(buffer_painter, text_rect)
+        buffer_painter.end()
+
+        a = self._scale_factor
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.translate(QPointF(rect.width() * (1-a) / 2, rect.height() * (1-a) / 2))
+        painter.scale(a, a)
+
+        painter.drawPixmap(0, 0, buffer)
 
 
 class SiProgressPushButton(SiPushButtonRefactor):
@@ -501,7 +555,6 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
 
         self.progress_ani = SiExpAnimationRefactor(self, self.Property.Progress)
         self.progress_ani.init(-1 / 16, 0.12, 0, 0)
-        # self.progress_ani.valueChanged.connect(print)
 
         self.go_backwards_timer = QTimer(self)
         self.go_backwards_timer.setSingleShot(True)
@@ -581,6 +634,10 @@ class SiFlatButton(ABCButton):
 
         self.style_data = FlatButtonStyleData()
         self._initStyle()
+        self._scale_factor = 1
+
+        self.scale_factor_ani = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
+        self.scale_factor_ani.init(1/16, 0, 1, 1)
 
     def _initStyle(self):
         self.setFont(self.style_data.font)
@@ -630,26 +687,39 @@ class SiFlatButton(ABCButton):
 
         return text_rect, pixmap_rect
 
-    def _onAnimationTicked(self, _) -> None:
-        self.update()
-
     def _onButtonClicked(self) -> None:
         self.highlight_ani.setCurrentValue(self.style_data.click_color)
         self.highlight_ani.start()
 
     def paintEvent(self, event: QPaintEvent) -> None:
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setPen(Qt.PenStyle.NoPen)
-
         rect = self.rect()
         text_rect, icon_rect = self.textRectAndIconRect()
-        self._drawButtonRect(painter, rect)
-        self._drawHighLightRect(painter, rect)
-        self._drawTextRect(painter, text_rect)
-        self._drawPixmapRect(painter, icon_rect)
+        device_pixel_ratio = self.devicePixelRatioF()
+
+        buffer = QPixmap(rect.size() * device_pixel_ratio)
+        buffer.setDevicePixelRatio(device_pixel_ratio)
+        buffer.fill(Qt.transparent)
+
+        buffer_painter = QPainter(buffer)
+        buffer_painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        buffer_painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+        buffer_painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        buffer_painter.setPen(Qt.PenStyle.NoPen)
+
+        self._drawButtonRect(buffer_painter, rect)
+        self._drawHighLightRect(buffer_painter, rect)
+        self._drawPixmapRect(buffer_painter, icon_rect)
+        self._drawTextRect(buffer_painter, text_rect)
+        buffer_painter.end()
+
+        a = self._scale_factor
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.translate(QPointF(rect.width() * (1-a) / 2, rect.height() * (1-a) / 2))
+        painter.scale(a, a)
+
+        painter.drawPixmap(0, 0, buffer)
 
     def enterEvent(self, event) -> None:
         super().enterEvent(event)
@@ -663,6 +733,22 @@ class SiFlatButton(ABCButton):
         self.highlight_ani.setEndValue(self.style_data.idle_color)
         self.highlight_ani.start()
         self._hideToolTip()
+
+    def mousePressEvent(self, e):
+        super().mousePressEvent(e)
+        self.scale_factor_ani.setFactor(1/16)
+        self.scale_factor_ani.setBias(0)
+        self.scale_factor_ani.setEndValue(0.9)
+        self.scale_factor_ani.start()
+
+    def mouseReleaseEvent(self, e):
+        super().mouseReleaseEvent(e)
+        self.scale_factor_ani.setFactor(1/4)
+        self.scale_factor_ani.setBias(0.001)
+        self.scale_factor_ani.setEndValue(1)
+        self.scale_factor_ani.start()
+
+
 
 
 class SiToggleButtonRefactor(SiFlatButton):
