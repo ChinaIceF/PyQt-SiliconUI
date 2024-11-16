@@ -263,7 +263,13 @@ class ABCButton(QPushButton):
         self._progress_rect_color = value
         self.update()
 
+    def styleData(self) -> PushButtonStyleData:
+        return self.style_data
+
     def reloadStyleData(self):
+        raise NotImplementedError()
+
+    def _onButtonClicked(self) -> None:
         raise NotImplementedError()
 
     def flash(self) -> None:
@@ -301,10 +307,6 @@ class ABCButton(QPushButton):
         preferred_height = max(32, text_height, icon_height)
         return QSize(preferred_width, preferred_height)
 
-    @property
-    def styleData(self) -> PushButtonStyleData:
-        return self.style_data
-
     def _showToolTip(self) -> None:
         tool_tip_window = SiGlobal.siui.windows.get("TOOL_TIP")
         if tool_tip_window is not None and self.toolTip() != "":
@@ -321,9 +323,6 @@ class ABCButton(QPushButton):
         tool_tip_window = SiGlobal.siui.windows.get("TOOL_TIP")
         if tool_tip_window is not None and tool_tip_window.nowInsideOf() == self:
             tool_tip_window.setText(self.toolTip())
-
-    def _onButtonClicked(self) -> None:
-        raise NotImplementedError()
 
     def event(self, event):
         if event.type() == QEvent.ToolTip:
@@ -393,7 +392,6 @@ class SiPushButtonRefactor(ABCButton):
         return self.style_data.border_height
 
     def reloadStyleData(self) -> None:
-        self.setFont(self.style_data.font)
         self.update()
 
     def _drawBackgroundPath(self, rect: QRect) -> QPainterPath:
@@ -514,7 +512,6 @@ class SiProgressPushButton(SiPushButtonRefactor):
         self._updateCompleteState()
 
     def reloadStyleData(self) -> None:
-        self.setFont(self.style_data.font)
         self._updateCompleteState()
         self.update()
 
@@ -572,7 +569,6 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
         self.update()
 
     def reloadStyleData(self) -> None:
-        self.setFont(self.style_data.font)
         self.update()
 
     def _stepLength(self) -> float:
@@ -644,7 +640,6 @@ class SiFlatButton(ABCButton):
         self.setIconSize(QSize(20, 20))
 
     def reloadStyleData(self) -> None:
-        self.setFont(self.style_data.font)
         self.update()
 
     def _drawButtonPath(self, rect: QRect) -> QPainterPath:
@@ -769,7 +764,6 @@ class SiToggleButtonRefactor(SiFlatButton):
         self.toggled.connect(self._onButtonToggled)
 
     def reloadStyleData(self) -> None:
-        self.setFont(self.style_data.font)
         self._onButtonToggled(self.isChecked())
         self.update()
 
