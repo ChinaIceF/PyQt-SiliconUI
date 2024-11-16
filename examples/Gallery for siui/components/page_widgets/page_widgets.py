@@ -19,7 +19,7 @@ from siui.components.button import (
     SiLongPressButtonRefactor,
     SiProgressPushButton,
     SiPushButtonRefactor,
-    SiToggleButtonRefactor,
+    SiToggleButtonRefactor, SiSwitchRefactor,
 )
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
@@ -291,11 +291,14 @@ class ExampleWidgets(SiPage):
             self.refactor_toggle_button.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_save_filled"))
             self.refactor_toggle_button.adjustSize()
 
+            self.refactor_switch = SiSwitchRefactor(self)
+
             self.refactor_buttons.body().addWidget(self.refactor_pushbutton)
             self.refactor_buttons.body().addWidget(self.refactor_progress_button)
             self.refactor_buttons.body().addWidget(self.refactor_long_press_button)
             self.refactor_buttons.body().addWidget(self.refactor_flat_button)
             self.refactor_buttons.body().addWidget(self.refactor_toggle_button)
+            self.refactor_buttons.body().addWidget(self.refactor_switch)
             self.refactor_buttons.body().addPlaceholder(12)
             self.refactor_buttons.adjustSize()
 

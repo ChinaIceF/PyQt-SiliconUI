@@ -25,7 +25,7 @@ from PyQt5.QtGui import (
     QPainter,
     QPainterPath,
     QPaintEvent,
-    QPixmap,
+    QPixmap, QPen,
 )
 from PyQt5.QtSvg import QSvgRenderer
 from PyQt5.QtWidgets import QPushButton, QWidget
@@ -744,8 +744,6 @@ class SiFlatButton(ABCButton):
         self.scale_factor_ani.start()
 
 
-
-
 class SiToggleButtonRefactor(SiFlatButton):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -787,3 +785,156 @@ class SiToggleButtonRefactor(SiFlatButton):
         painter.setPen(self._text_color)  # use property variable
         painter.setFont(self.font())
         painter.drawText(rect, Qt.AlignCenter, self.text())
+
+
+@dataclass
+class SwitchStyleData(QObject):
+    STYLE_TYPES = ["Switch"]
+
+    background_color_starting: QColor = QColor("#52389a")
+    background_color_ending: QColor = QColor("#9c4e8b")
+    frame_color: QColor = QColor("#D2D2D2")
+    thumb_color_checked: QColor = QColor("#100912")
+    thumb_color_unchecked: QColor = QColor("#D2D2D2")
+
+
+class SiSwitchRefactor(QPushButton):
+    class Property:
+        Progress = "progress"
+        ScaleFactor = "scaleFactor"
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.setCheckable(True)
+
+        self.style_data = SwitchStyleData()
+        self._progress = 0
+        self._scale_factor = 1
+
+        self._initStyle()
+
+        self.scale_factor_ani = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
+        self.scale_factor_ani.init(1/16, 0, 1, 1)
+
+        self.progress_ani = SiExpAnimationRefactor(self, self.Property.Progress)
+        self.progress_ani.init(1/4, 0.01, 0, 0)
+
+        self.clicked.connect(self._onClicked)
+
+    def _initStyle(self) -> None:
+        self.setFixedSize(40, 20)
+
+    @pyqtProperty(float)
+    def scaleFactor(self):
+        return self._scale_factor
+
+    @scaleFactor.setter
+    def scaleFactor(self, value: float):
+        self._scale_factor = value
+        self.update()
+
+    @pyqtProperty(float)
+    def progress(self) -> float:
+        return self._progress
+
+    @progress.setter
+    def progress(self, value: float) -> None:
+        self._progress = value
+        self.update()
+
+    def _onClicked(self):
+        if self.isChecked():
+            self.progress_ani.setEndValue(1)
+            self.progress_ani.start()
+        else:
+            self.progress_ani.setEndValue(0)
+            self.progress_ani.start()
+
+    def _drawBackgroundPath(self, rect: QRect) -> QPainterPath:
+        radius = rect.height() / 2
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(0, 0, rect.width(), rect.height()), radius, radius)
+        return path
+
+    def _drawFramePath(self, rect: QRect) -> QPainterPath:
+        width = 0.5
+        radius = rect.height() / 2
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(width, width, rect.width() - 2 * width, rect.height() - 2 * width), radius, radius)
+        return path
+
+    def _drawThumbPath(self, rect: QRect) -> QPainterPath:
+        p = self._progress
+        radius = rect.height() / 2 - 3
+        width = radius * 2 + (p * (1-p)) ** 1 * 16
+        height = radius * 2
+        track_length = rect.width() - width - 6
+        x = 3 + track_length * p
+        y = 3
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(x, y, width, height), radius, radius)
+        return path
+
+    def _drawBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
+        if self._progress > 0.5:
+            gradient = QLinearGradient(0, 0, rect.width(), rect.height())
+            gradient.setColorAt(0, self.style_data.background_color_starting)
+            gradient.setColorAt(1, self.style_data.background_color_ending)
+
+            painter.setBrush(gradient)
+            painter.drawPath(self._drawBackgroundPath(rect))
+
+    def _drawFrameRect(self, painter: QPainter, rect: QRect) -> None:
+        if self._progress <= 0.5:
+            pen = QPen(self.style_data.frame_color)
+            pen.setWidth(1)
+            painter.setPen(pen)
+            painter.drawPath(self._drawFramePath(rect))
+            painter.setPen(Qt.NoPen)
+
+    def _drawThumbRect(self, painter: QPainter, rect: QRect) -> None:
+        color = self.style_data.thumb_color_checked if self._progress > 0.5 else self.style_data.thumb_color_unchecked
+        painter.setBrush(color)
+        painter.drawPath(self._drawThumbPath(rect))
+
+    def paintEvent(self, a0) -> None:
+        rect = self.rect()
+        device_pixel_ratio = self.devicePixelRatioF()
+
+        buffer = QPixmap(rect.size() * device_pixel_ratio)
+        buffer.setDevicePixelRatio(device_pixel_ratio)
+        buffer.fill(Qt.transparent)
+
+        buffer_painter = QPainter(buffer)
+        buffer_painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        buffer_painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+        buffer_painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        buffer_painter.setPen(Qt.PenStyle.NoPen)
+
+        self._drawBackgroundRect(buffer_painter, rect)
+        self._drawFrameRect(buffer_painter, rect)
+        self._drawThumbRect(buffer_painter, rect)
+        buffer_painter.end()
+
+        a = self._scale_factor
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.translate(QPointF(rect.width() * (1-a) / 2, rect.height() * (1-a) / 2))
+        painter.scale(a, a)
+
+        painter.drawPixmap(0, 0, buffer)
+
+    def mousePressEvent(self, e):
+        super().mousePressEvent(e)
+        self.scale_factor_ani.setFactor(1/16)
+        self.scale_factor_ani.setBias(0)
+        self.scale_factor_ani.setEndValue(0.9)
+        self.scale_factor_ani.start()
+
+    def mouseReleaseEvent(self, e):
+        super().mouseReleaseEvent(e)
+        self.scale_factor_ani.setFactor(1/4)
+        self.scale_factor_ani.setBias(0.001)
+        self.scale_factor_ani.setEndValue(1)
+        self.scale_factor_ani.start()
