@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import (
     QEvent,
@@ -25,14 +26,19 @@ from PyQt5.QtGui import (
     QPainter,
     QPainterPath,
     QPaintEvent,
-    QPixmap, QPen,
+    QPen,
+    QPixmap,
 )
 from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QPushButton, QWidget
+from PyQt5.QtWidgets import QPushButton
+from typing_extensions import Self
 
-from siui.core import GlobalFont, SiGlobal
+from siui.core import GlobalFont, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
+
+if TYPE_CHECKING:
+    from siui.typing import T_WidgetParent
 
 
 class SiStyleAttr:
@@ -64,33 +70,31 @@ class GlobalStyleManager:
     style_dark = {
         "Button": {
             "default": {
-                SA.Font:                        SiFont.tokenized(GlobalFont.S_NORMAL),
-                SA.TextColor:                   QColor("#DFDFDF"),
-                SA.IdleColor:                   QColor("#00baadc7"),
-                SA.HoverColor:                  QColor("#1abaadc7"),
-                SA.ClickColor:                  QColor("#50baadc7"),
-                SA.ButtonColor:                 QColor("#4C4554"),
-                SA.ProgressColor:               QColor("#806799"),
-                SA.CompleteColor:               QColor("#519868"),
-                SA.BackgroundColor:             QColor("#2d2932"),
-                SA.ToggledTextColor:            QColor("#DFDFDF"),
-                SA.ToggledButtonColor:          QColor("#519868"),
-                SA.BorderInnerRadius:           4,
-                SA.BorderRadius:                7,
-                SA.BorderHeight:                3,
-                SA.IconTextGap:                 4,
+                SA.Font: SiFont.tokenized(GlobalFont.S_NORMAL),
+                SA.TextColor: QColor("#DFDFDF"),
+                SA.IdleColor: QColor("#00baadc7"),
+                SA.HoverColor: QColor("#1abaadc7"),
+                SA.ClickColor: QColor("#50baadc7"),
+                SA.ButtonColor: QColor("#4C4554"),
+                SA.ProgressColor: QColor("#806799"),
+                SA.CompleteColor: QColor("#519868"),
+                SA.BackgroundColor: QColor("#2d2932"),
+                SA.ToggledTextColor: QColor("#DFDFDF"),
+                SA.ToggledButtonColor: QColor("#519868"),
+                SA.BorderInnerRadius: 4,
+                SA.BorderRadius: 7,
+                SA.BorderHeight: 3,
+                SA.IconTextGap: 4,
             },
             "LongPressButtonStyleData": {
-                SA.ProgressColor:               QColor("#DA3462"),
-                SA.ButtonColor:                 QColor("#932a48"),
-                SA.BackgroundColor:             QColor("#642d41"),
-                SA.ClickColor:                  QColor("#40FFFFFF"),
+                SA.ProgressColor: QColor("#DA3462"),
+                SA.ButtonColor: QColor("#932a48"),
+                SA.BackgroundColor: QColor("#642d41"),
+                SA.ClickColor: QColor("#40FFFFFF"),
             },
-            "FlatButtonStyleData": {
-                SA.ButtonColor:                 QColor("#004C4554")
-            },
+            "FlatButtonStyleData": {SA.ButtonColor: QColor("#004C4554")},
             "ToggleButtonStyleData": {
-                SA.ButtonColor:                 QColor("#004C4554"),
+                SA.ButtonColor: QColor("#004C4554"),
             },
             "PushButtonStyleData": {},
             "ProgressPushButtonStyleData": {},
@@ -183,7 +187,7 @@ class ABCButton(QPushButton):
         BackgroundRectColor = "backgroundRectColor"
         Progress = "progress"
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
         self.style_data = None
@@ -340,7 +344,7 @@ class ABCButton(QPushButton):
 
 
 class SiPushButtonRefactor(ABCButton):
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
         self.style_data = PushButtonStyleData()
@@ -348,44 +352,30 @@ class SiPushButtonRefactor(ABCButton):
         self._scale_factor = 1
 
         self.scale_factor_ani = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
-        self.scale_factor_ani.init(1/16, 0, 1, 1)
-
-    def _initStyle(self):
-        self.setFont(self.style_data.font)
-        self.setIconSize(QSize(20, 20))
-
-    def mousePressEvent(self, e):
-        super().mousePressEvent(e)
-        self.scale_factor_ani.setFactor(1/16)
-        self.scale_factor_ani.setBias(0)
-        self.scale_factor_ani.setEndValue(0.9)
-        self.scale_factor_ani.start()
-
-    def mouseReleaseEvent(self, e):
-        super().mouseReleaseEvent(e)
-        self.scale_factor_ani.setFactor(1/4)
-        self.scale_factor_ani.setBias(0.001)
-        self.scale_factor_ani.setEndValue(1)
-        self.scale_factor_ani.start()
+        self.scale_factor_ani.init(1 / 16, 0, 1, 1)
 
     @classmethod
-    def withText(cls, text: str, parent: QWidget | None = None):
+    def withText(cls, text: str, parent: T_WidgetParent = None) -> Self:
         obj = cls(parent)
         obj.setText(text)
         return obj
 
     @classmethod
-    def withIcon(cls, icon: QIcon, parent: QWidget | None = None):
+    def withIcon(cls, icon: QIcon, parent: T_WidgetParent = None) -> Self:
         obj = cls(parent)
         obj.setIcon(icon)
         return obj
 
     @classmethod
-    def withTextAndIcon(cls, text: str, icon: str, parent: QWidget | None = None):
+    def withTextAndIcon(cls, text: str, icon: str, parent: T_WidgetParent = None) -> Self:
         obj = cls(parent)
         obj.setText(text)
         obj.setIcon(QIcon(icon))
         return obj
+
+    def _initStyle(self):
+        self.setFont(self.style_data.font)
+        self.setIconSize(QSize(20, 20))
 
     @property
     def bottomBorderHeight(self) -> int:
@@ -436,16 +426,34 @@ class SiPushButtonRefactor(ABCButton):
         icon_height = self.iconSize().height() if not self.icon().isNull() else 0
         gap = self.style_data.icon_text_gap if text_width > 0 and icon_width > 0 else 0
 
-        text_rect = QRectF((self.width() - icon_width - text_width - gap) / 2 + icon_width + gap,
-                           0,
-                           text_width,
-                           self.height() - self.style_data.border_height - 1)
-        pixmap_rect = QRect((self.width() - icon_width - text_width - gap) // 2,
-                            ((self.height() - self.style_data.border_height) - icon_height) // 2,
-                            icon_width,
-                            icon_height)
+        text_rect = QRectF(
+            (self.width() - icon_width - text_width - gap) / 2 + icon_width + gap,
+            0,
+            text_width,
+            self.height() - self.style_data.border_height - 1,
+        )
+        pixmap_rect = QRect(
+            (self.width() - icon_width - text_width - gap) // 2,
+            ((self.height() - self.style_data.border_height) - icon_height) // 2,
+            icon_width,
+            icon_height,
+        )
 
         return text_rect, pixmap_rect
+
+    def mousePressEvent(self, e) -> None:
+        super().mousePressEvent(e)
+        self.scale_factor_ani.setFactor(1 / 16)
+        self.scale_factor_ani.setBias(0)
+        self.scale_factor_ani.setEndValue(0.9)
+        self.scale_factor_ani.start()
+
+    def mouseReleaseEvent(self, e) -> None:
+        super().mouseReleaseEvent(e)
+        self.scale_factor_ani.setFactor(1 / 4)
+        self.scale_factor_ani.setBias(0.001)
+        self.scale_factor_ani.setEndValue(1)
+        self.scale_factor_ani.start()
 
     def enterEvent(self, event) -> None:
         super().enterEvent(event)
@@ -464,36 +472,34 @@ class SiPushButtonRefactor(ABCButton):
         rect = self.rect()
         text_rect, icon_rect = self.textRectAndIconRect()
         device_pixel_ratio = self.devicePixelRatioF()
+        renderHints = (
+            QPainter.RenderHint.SmoothPixmapTransform
+            | QPainter.RenderHint.TextAntialiasing
+            | QPainter.RenderHint.Antialiasing
+        )
+        with createPainter(self, renderHints) as bufferPainter:
+            self._drawBackgroundRect(bufferPainter, rect)
+            self._drawButtonRect(bufferPainter, rect)
+            self._drawHighLightRect(bufferPainter, rect)
+            self._drawPixmapRect(bufferPainter, icon_rect)
+            self._drawTextRect(bufferPainter, text_rect)
 
         buffer = QPixmap(rect.size() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
         buffer.fill(Qt.transparent)
 
-        buffer_painter = QPainter(buffer)
-        buffer_painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        buffer_painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
-        buffer_painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        buffer_painter.setPen(Qt.PenStyle.NoPen)
-
-        self._drawBackgroundRect(buffer_painter, rect)
-        self._drawButtonRect(buffer_painter, rect)
-        self._drawHighLightRect(buffer_painter, rect)
-        self._drawPixmapRect(buffer_painter, icon_rect)
-        self._drawTextRect(buffer_painter, text_rect)
-        buffer_painter.end()
-
         a = self._scale_factor
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.translate(QPointF(rect.width() * (1-a) / 2, rect.height() * (1-a) / 2))
+        painter.translate(QPointF(rect.width() * (1 - a) / 2, rect.height() * (1 - a) / 2))
         painter.scale(a, a)
 
         painter.drawPixmap(0, 0, buffer)
 
 
 class SiProgressPushButton(SiPushButtonRefactor):
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
         self.style_data = ProgressPushButtonStyleData()
@@ -544,7 +550,7 @@ class SiProgressPushButton(SiPushButtonRefactor):
 class SiLongPressButtonRefactor(SiPushButtonRefactor):
     longPressed = pyqtSignal()
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
         self.style_data = LongPressButtonStyleData()
@@ -625,7 +631,7 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
 
 
 class SiFlatButton(ABCButton):
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
         self.style_data = FlatButtonStyleData()
@@ -633,7 +639,7 @@ class SiFlatButton(ABCButton):
         self._scale_factor = 1
 
         self.scale_factor_ani = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
-        self.scale_factor_ani.init(1/16, 0, 1, 1)
+        self.scale_factor_ani.init(1 / 16, 0, 1, 1)
 
     def _initStyle(self):
         self.setFont(self.style_data.font)
@@ -671,14 +677,15 @@ class SiFlatButton(ABCButton):
         icon_height = self.iconSize().height() if not self.icon().isNull() else 0
         gap = self.style_data.icon_text_gap if text_width > 0 and icon_width > 0 else 0
 
-        text_rect = QRectF((self.width() - icon_width - text_width - gap) / 2 + icon_width + gap,
-                           0,
-                           text_width,
-                           self.height())
-        pixmap_rect = QRect((self.width() - icon_width - text_width - gap) // 2,
-                            (self.height() - icon_height) // 2,
-                            icon_width,
-                            icon_height)
+        text_rect = QRectF(
+            (self.width() - icon_width - text_width - gap) / 2 + icon_width + gap, 0, text_width, self.height()
+        )
+        pixmap_rect = QRect(
+            (self.width() - icon_width - text_width - gap) // 2,
+            (self.height() - icon_height) // 2,
+            icon_width,
+            icon_height,
+        )
 
         return text_rect, pixmap_rect
 
@@ -711,7 +718,7 @@ class SiFlatButton(ABCButton):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.translate(QPointF(rect.width() * (1-a) / 2, rect.height() * (1-a) / 2))
+        painter.translate(QPointF(rect.width() * (1 - a) / 2, rect.height() * (1 - a) / 2))
         painter.scale(a, a)
 
         painter.drawPixmap(0, 0, buffer)
@@ -731,21 +738,21 @@ class SiFlatButton(ABCButton):
 
     def mousePressEvent(self, e):
         super().mousePressEvent(e)
-        self.scale_factor_ani.setFactor(1/16)
+        self.scale_factor_ani.setFactor(1 / 16)
         self.scale_factor_ani.setBias(0)
         self.scale_factor_ani.setEndValue(0.9)
         self.scale_factor_ani.start()
 
     def mouseReleaseEvent(self, e):
         super().mouseReleaseEvent(e)
-        self.scale_factor_ani.setFactor(1/4)
+        self.scale_factor_ani.setFactor(1 / 4)
         self.scale_factor_ani.setBias(0.001)
         self.scale_factor_ani.setEndValue(1)
         self.scale_factor_ani.start()
 
 
 class SiToggleButtonRefactor(SiFlatButton):
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
         self.setCheckable(True)
 
@@ -803,7 +810,7 @@ class SiSwitchRefactor(QPushButton):
         Progress = "progress"
         ScaleFactor = "scaleFactor"
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
         self.setCheckable(True)
 
@@ -814,10 +821,10 @@ class SiSwitchRefactor(QPushButton):
         self._initStyle()
 
         self.scale_factor_ani = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
-        self.scale_factor_ani.init(1/16, 0, 1, 1)
+        self.scale_factor_ani.init(1 / 16, 0, 1, 1)
 
         self.progress_ani = SiExpAnimationRefactor(self, self.Property.Progress)
-        self.progress_ani.init(1/4, 0.01, 0, 0)
+        self.progress_ani.init(1 / 4, 0.01, 0, 0)
 
         self.clicked.connect(self._onClicked)
 
@@ -866,7 +873,7 @@ class SiSwitchRefactor(QPushButton):
     def _drawThumbPath(self, rect: QRect) -> QPainterPath:
         p = self._progress
         radius = rect.height() / 2 - 3
-        width = radius * 2 + (p * (1-p)) ** 1 * 16
+        width = radius * 2 + (p * (1 - p)) ** 1 * 16
         height = radius * 2
         track_length = rect.width() - width - 6
         x = 3 + track_length * p
@@ -920,21 +927,21 @@ class SiSwitchRefactor(QPushButton):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.translate(QPointF(rect.width() * (1-a) / 2, rect.height() * (1-a) / 2))
+        painter.translate(QPointF(rect.width() * (1 - a) / 2, rect.height() * (1 - a) / 2))
         painter.scale(a, a)
 
         painter.drawPixmap(0, 0, buffer)
 
     def mousePressEvent(self, e):
         super().mousePressEvent(e)
-        self.scale_factor_ani.setFactor(1/16)
+        self.scale_factor_ani.setFactor(1 / 16)
         self.scale_factor_ani.setBias(0)
         self.scale_factor_ani.setEndValue(0.9)
         self.scale_factor_ani.start()
 
     def mouseReleaseEvent(self, e):
         super().mouseReleaseEvent(e)
-        self.scale_factor_ani.setFactor(1/4)
+        self.scale_factor_ani.setFactor(1 / 4)
         self.scale_factor_ani.setBias(0.001)
         self.scale_factor_ani.setEndValue(1)
         self.scale_factor_ani.start()
