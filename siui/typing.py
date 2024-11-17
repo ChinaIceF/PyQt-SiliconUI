@@ -7,9 +7,10 @@ Use Python's Type Hint syntax, reference:
 - [`PEP 526`](https://www.python.org/dev/peps/pep-0526/)
 """
 
-from typing import Optional
+from typing import Optional, Union
 
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QObject, Qt
+from PyQt5.QtGui import QColor, QGradient, QPen
 from PyQt5.QtWidgets import QWidget
 from typing_extensions import TypeAlias
 
@@ -18,3 +19,9 @@ T_WidgetParent: TypeAlias = Optional[QWidget]
 
 T_ObjectParent: TypeAlias = Optional[QObject]
 """Type of object parent"""
+
+T_PenStyle: TypeAlias = Union[QPen, Qt.PenStyle, QColor, Qt.GlobalColor]
+"""Type of QPen style"""
+
+T_Brush: TypeAlias = Optional[Union[QGradient, QColor, Qt.GlobalColor]]
+"""Type of QBrush"""
