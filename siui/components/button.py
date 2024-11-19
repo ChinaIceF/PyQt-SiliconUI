@@ -30,7 +30,7 @@ from PyQt5.QtGui import (
     QPixmap,
 )
 from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QPushButton, QRadioButton
 from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
@@ -477,16 +477,17 @@ class SiPushButtonRefactor(ABCButton):
             | QPainter.RenderHint.TextAntialiasing
             | QPainter.RenderHint.Antialiasing
         )
-        with createPainter(self, renderHints) as bufferPainter:
+
+        buffer = QPixmap(rect.size() * device_pixel_ratio)
+        buffer.setDevicePixelRatio(device_pixel_ratio)
+        buffer.fill(Qt.transparent)
+
+        with createPainter(buffer, renderHints) as bufferPainter:
             self._drawBackgroundRect(bufferPainter, rect)
             self._drawButtonRect(bufferPainter, rect)
             self._drawHighLightRect(bufferPainter, rect)
             self._drawPixmapRect(bufferPainter, icon_rect)
             self._drawTextRect(bufferPainter, text_rect)
-
-        buffer = QPixmap(rect.size() * device_pixel_ratio)
-        buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
 
         a = self._scale_factor
         painter = QPainter(self)
@@ -945,3 +946,165 @@ class SiSwitchRefactor(QPushButton):
         self.scale_factor_ani.setBias(0.001)
         self.scale_factor_ani.setEndValue(1)
         self.scale_factor_ani.start()
+
+
+@dataclass
+class RadioButtonStyleData(QObject):
+    STYLE_TYPES = ["Button"]
+
+    text_color = QColor("#D1CBD4")
+
+    indicator_border_radius: float = 9.5
+    indicator_allocated_width: int = 60
+    indicator_hover_additional_width: int = 4
+    indicator_height: int = 19
+
+    unchecked_indicator_color: QColor = QColor("#25222A")
+    unchecked_indicator_width: float = 33
+
+    checked_indicator_color: QColor = QColor("#9F89AA")
+    checked_indicator_width: float = 51
+
+
+class SiRadioButtonRefactor(QRadioButton):
+    class Property:
+        indicatorWidthProg = "indicatorWidthProg"
+        indicatorHoverWidth = "indicatorHoverWidth"
+        IndicatorColor = "indicatorColor"
+        Description = "description"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+        self.style_data = RadioButtonStyleData()
+        self._description = ""
+        self._indi_hover_width = 0
+        self._indi_width_prog = 0
+        self._indi_color = self.style_data.unchecked_indicator_color
+
+        self.indi_width_ani = SiExpAnimationRefactor(self, self.Property.indicatorWidthProg)
+        self.indi_width_ani.init(1/6, 0.015, 0, 0)
+
+        self.indi_hover_width_ani = SiExpAnimationRefactor(self, self.Property.indicatorHoverWidth)
+        self.indi_hover_width_ani.init(1/4, 0.01, 0, 0)
+
+        self.indi_color_ani = SiExpAnimationRefactor(self, self.Property.IndicatorColor)
+        self.indi_color_ani.init(1/3, 1, self._indi_color, self._indi_color)
+
+        self.toggled.connect(self._onButtonToggled)
+
+        self._initStyle()
+
+    def _initStyle(self):
+        self.setFont(SiFont.getFont(size=14))
+
+    @pyqtProperty(str)
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, value: str):
+        self._description = value
+        self.update()
+
+    @pyqtProperty(float)
+    def indicatorWidthProg(self):
+        return self._indi_width_prog
+
+    @indicatorWidthProg.setter
+    def indicatorWidthProg(self, value: float):
+        self._indi_width_prog = value
+        self.update()
+
+    @pyqtProperty(float)
+    def indicatorHoverWidth(self):
+        return self._indi_hover_width
+
+    @indicatorHoverWidth.setter
+    def indicatorHoverWidth(self, value: float):
+        self._indi_hover_width = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def indicatorColor(self):
+        return self._indi_color
+
+    @indicatorColor.setter
+    def indicatorColor(self, value: QColor):
+        self._indi_color = value
+        self.update()
+
+    def _indicatorWidthInterpolation(self, p: float) -> float:
+        start = self.style_data.unchecked_indicator_width
+        end = self.style_data.checked_indicator_width
+        return start + (end - start) * 3 * p / (2 * p ** 2 + 1)
+
+    def _drawIndicatorPath(self, rect: QRect) -> QPainterPath:
+        alloc_width = self.style_data.indicator_allocated_width
+        radius = self.style_data.indicator_border_radius
+        width = (self._indicatorWidthInterpolation(self._indi_width_prog) +
+                 self._indi_hover_width * (1 - self._indi_width_prog * 0.6))
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(alloc_width - width, rect.y(), width, rect.height()), radius, radius)
+        return path
+
+    def _drawIndicatorRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setBrush(self._indi_color)
+        painter.drawPath(self._drawIndicatorPath(rect))
+
+    def _drawIndicatorInnerPath(self, rect: QRect) -> QPainterPath:
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(26.5, 8, self.style_data.unchecked_indicator_width - 4, rect.height() - 8), 6, 6)
+        return path
+
+    def _drawIndicatorInnerRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setBrush(self.style_data.unchecked_indicator_color)
+        painter.drawPath(self._drawIndicatorInnerPath(rect))
+
+    def _drawNameTextRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setPen(self.style_data.text_color)
+        painter.setFont(self.font())
+        painter.drawText(rect, Qt.AlignVCenter | Qt.AlignLeft, self.text())
+        painter.setPen(Qt.NoPen)
+
+    def _onButtonToggled(self):
+        if self.isChecked():
+            self.indi_width_ani.setEndValue(1)
+            self.indi_color_ani.setEndValue(self.style_data.checked_indicator_color)
+            self.indi_color_ani.setCurrentValue(self.style_data.checked_indicator_color)
+            self.setProperty(self.Property.IndicatorColor, self.style_data.checked_indicator_color)
+        else:
+            self.indi_width_ani.setEndValue(0)
+            self.indi_width_ani.setCurrentValue(0.5)
+            self.indi_color_ani.setEndValue(self.style_data.unchecked_indicator_color)
+
+        self.indi_width_ani.start()
+        self.indi_color_ani.start()
+
+    def sizeHint(self) -> QSize:
+        return QSize(super().sizeHint().width() + self.style_data.indicator_allocated_width, 24)
+
+    def paintEvent(self, a0):
+        rect = self.rect()
+        indi_rect = QRect(0, 4, self.style_data.indicator_allocated_width, self.style_data.indicator_height)
+        text_rect = QRect(indi_rect.width() + 20, 0, rect.width() - indi_rect.width() - 20, 26)
+
+        renderHints = (
+            QPainter.RenderHint.SmoothPixmapTransform
+            | QPainter.RenderHint.TextAntialiasing
+            | QPainter.RenderHint.Antialiasing
+        )
+
+        with createPainter(self, renderHints) as painter:
+            self._drawIndicatorRect(painter, indi_rect)
+            self._drawIndicatorInnerRect(painter, indi_rect)
+            self._drawNameTextRect(painter, text_rect)
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        self.indi_hover_width_ani.setEndValue(self.style_data.indicator_hover_additional_width)
+        self.indi_hover_width_ani.start()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self.indi_hover_width_ani.setEndValue(0)
+        self.indi_hover_width_ani.start()

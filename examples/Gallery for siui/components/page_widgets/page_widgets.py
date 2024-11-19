@@ -12,14 +12,14 @@ from siui.components import (
     SiLineEditWithItemName,
     SiOptionCardLinear,
     SiTitledWidgetGroup,
-    SiWidget,
+    SiWidget, SiDenseVContainer,
 )
 from siui.components.button import (
     SiFlatButton,
     SiLongPressButtonRefactor,
     SiProgressPushButton,
     SiPushButtonRefactor,
-    SiToggleButtonRefactor, SiSwitchRefactor,
+    SiToggleButtonRefactor, SiSwitchRefactor, SiRadioButtonRefactor,
 )
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
@@ -293,12 +293,33 @@ class ExampleWidgets(SiPage):
 
             self.refactor_switch = SiSwitchRefactor(self)
 
+            radio_button_container = SiDenseVContainer(self)
+            radio_button_container.setSpacing(6)
+
+            self.refactor_radio_button = SiRadioButtonRefactor(self)
+            self.refactor_radio_button.setText("I want to go sleep now")
+            self.refactor_radio_button.adjustSize()
+
+            self.refactor_radio_button2 = SiRadioButtonRefactor(self)
+            self.refactor_radio_button2.setText("你干嘛嗨嗨呦")
+            self.refactor_radio_button2.adjustSize()
+
+            self.refactor_radio_button3 = SiRadioButtonRefactor(self)
+            self.refactor_radio_button3.setText("唱跳 Rap 篮球")
+            self.refactor_radio_button3.adjustSize()
+
+            radio_button_container.addWidget(self.refactor_radio_button)
+            radio_button_container.addWidget(self.refactor_radio_button2)
+            radio_button_container.addWidget(self.refactor_radio_button3)
+            radio_button_container.adjustSize()
+
             self.refactor_buttons.body().addWidget(self.refactor_pushbutton)
             self.refactor_buttons.body().addWidget(self.refactor_progress_button)
             self.refactor_buttons.body().addWidget(self.refactor_long_press_button)
             self.refactor_buttons.body().addWidget(self.refactor_flat_button)
             self.refactor_buttons.body().addWidget(self.refactor_toggle_button)
             self.refactor_buttons.body().addWidget(self.refactor_switch)
+            self.refactor_buttons.body().addWidget(radio_button_container)
             self.refactor_buttons.body().addPlaceholder(12)
             self.refactor_buttons.adjustSize()
 
