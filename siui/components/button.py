@@ -30,7 +30,7 @@ from PyQt5.QtGui import (
     QPixmap,
 )
 from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QPushButton, QRadioButton
+from PyQt5.QtWidgets import QPushButton, QRadioButton, QLabel
 from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
@@ -994,17 +994,8 @@ class SiRadioButtonRefactor(QRadioButton):
 
         self._initStyle()
 
-    def _initStyle(self):
-        self.setFont(SiFont.getFont(size=14))
-
-    @pyqtProperty(str)
-    def description(self):
-        return self._description
-
-    @description.setter
-    def description(self, value: str):
-        self._description = value
-        self.update()
+    def _initStyle(self) -> None:
+        self.setFont(SiFont.getFont(size=13))
 
     @pyqtProperty(float)
     def indicatorWidthProg(self):
@@ -1053,12 +1044,13 @@ class SiRadioButtonRefactor(QRadioButton):
 
     def _drawIndicatorInnerPath(self, rect: QRect) -> QPainterPath:
         path = QPainterPath()
-        path.addRoundedRect(QRectF(26.5, 8, self.style_data.unchecked_indicator_width - 4, rect.height() - 8), 6, 6)
+        path.addRoundedRect(QRectF(28.5, 8, self.style_data.unchecked_indicator_width - 6, rect.height() - 8), 6, 6)
         return path
 
     def _drawIndicatorInnerRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setBrush(self.style_data.unchecked_indicator_color)
-        painter.drawPath(self._drawIndicatorInnerPath(rect))
+        if self.isChecked():
+            painter.setBrush(self.style_data.unchecked_indicator_color)
+            painter.drawPath(self._drawIndicatorInnerPath(rect))
 
     def _drawNameTextRect(self, painter: QPainter, rect: QRect) -> None:
         painter.setPen(self.style_data.text_color)
@@ -1066,7 +1058,7 @@ class SiRadioButtonRefactor(QRadioButton):
         painter.drawText(rect, Qt.AlignVCenter | Qt.AlignLeft, self.text())
         painter.setPen(Qt.NoPen)
 
-    def _onButtonToggled(self):
+    def _onButtonToggled(self) -> None:
         if self.isChecked():
             self.indi_width_ani.setEndValue(1)
             self.indi_color_ani.setEndValue(self.style_data.checked_indicator_color)
@@ -1083,10 +1075,10 @@ class SiRadioButtonRefactor(QRadioButton):
     def sizeHint(self) -> QSize:
         return QSize(super().sizeHint().width() + self.style_data.indicator_allocated_width, 24)
 
-    def paintEvent(self, a0):
+    def paintEvent(self, a0) -> None:
         rect = self.rect()
         indi_rect = QRect(0, 4, self.style_data.indicator_allocated_width, self.style_data.indicator_height)
-        text_rect = QRect(indi_rect.width() + 20, 0, rect.width() - indi_rect.width() - 20, 26)
+        text_rect = QRect(indi_rect.width() + 22, 0, rect.width() - indi_rect.width() - 22, 26)
 
         renderHints = (
             QPainter.RenderHint.SmoothPixmapTransform
@@ -1099,12 +1091,45 @@ class SiRadioButtonRefactor(QRadioButton):
             self._drawIndicatorInnerRect(painter, indi_rect)
             self._drawNameTextRect(painter, text_rect)
 
-    def enterEvent(self, a0):
+    def enterEvent(self, a0) -> None:
         super().enterEvent(a0)
         self.indi_hover_width_ani.setEndValue(self.style_data.indicator_hover_additional_width)
         self.indi_hover_width_ani.start()
 
-    def leaveEvent(self, a0):
+    def leaveEvent(self, a0) -> None:
         super().leaveEvent(a0)
         self.indi_hover_width_ani.setEndValue(0)
         self.indi_hover_width_ani.start()
+
+    def mousePressEvent(self, e):
+        super().mousePressEvent(e)
+        self.click()
+
+
+class SiRadioButtonWithDescription(SiRadioButtonRefactor):
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self._desc_width = 100
+
+        self.desc_label = QLabel(self)
+        self.desc_label.setStyleSheet("color: #918497")
+        self.desc_label.setFont(SiFont.getFont(size=12))
+        self.desc_label.setWordWrap(True)
+        self.desc_label.move(self.style_data.indicator_allocated_width + 22, 24)
+
+    def setDescription(self, desc: str) -> None:
+        self.desc_label.setText(desc)
+
+    def setDescriptionWidth(self, width: int) -> None:
+        self._desc_width = width
+        self.desc_label.setFixedWidth(width)
+
+    def sizeHint(self) -> QSize:
+        width = max(self.desc_label.width(), super().sizeHint().width()) + self.style_data.indicator_allocated_width +22
+        height = self.desc_label.sizeHint().height() + 24
+        return QSize(width, height)
+
+    def adjustSize(self) -> None:
+        super().adjustSize()
+        self.desc_label.adjustSize()
