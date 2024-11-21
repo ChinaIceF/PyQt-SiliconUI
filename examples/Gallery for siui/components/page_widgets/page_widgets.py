@@ -19,7 +19,8 @@ from siui.components.button import (
     SiLongPressButtonRefactor,
     SiProgressPushButton,
     SiPushButtonRefactor,
-    SiToggleButtonRefactor, SiSwitchRefactor, SiRadioButtonRefactor,
+    SiToggleButtonRefactor, SiSwitchRefactor, SiRadioButtonRefactor, SiRadioButtonWithDescription,
+    SiRadioButtonWithAvatar,
 )
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
@@ -293,12 +294,27 @@ class ExampleWidgets(SiPage):
 
             self.refactor_switch = SiSwitchRefactor(self)
 
+            self.refactor_buttons.body().addWidget(self.refactor_pushbutton)
+            self.refactor_buttons.body().addWidget(self.refactor_progress_button)
+            self.refactor_buttons.body().addWidget(self.refactor_long_press_button)
+            self.refactor_buttons.body().addWidget(self.refactor_flat_button)
+            self.refactor_buttons.body().addWidget(self.refactor_toggle_button)
+            self.refactor_buttons.body().addWidget(self.refactor_switch)
+            self.refactor_buttons.body().addPlaceholder(12)
+            self.refactor_buttons.adjustSize()
+
+            self.refactor_radiobuttons = OptionCardPlaneForWidgetDemos(self)
+            self.refactor_radiobuttons.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                               "/widgets/button.py")
+            self.refactor_radiobuttons.setTitle("单行单选框")
+
             radio_button_container = SiDenseVContainer(self)
             radio_button_container.setSpacing(6)
 
             self.refactor_radio_button = SiRadioButtonRefactor(self)
             self.refactor_radio_button.setText("I want to go sleep now")
             self.refactor_radio_button.adjustSize()
+            self.refactor_radio_button.setChecked(True)
 
             self.refactor_radio_button2 = SiRadioButtonRefactor(self)
             self.refactor_radio_button2.setText("你干嘛嗨嗨呦")
@@ -308,20 +324,93 @@ class ExampleWidgets(SiPage):
             self.refactor_radio_button3.setText("唱跳 Rap 篮球")
             self.refactor_radio_button3.adjustSize()
 
+            self.refactor_radio_button4 = SiRadioButtonRefactor(self)
+            self.refactor_radio_button4.setText("不是哥们我真的要困死了让我睡觉吧")
+            self.refactor_radio_button4.adjustSize()
+
+            radio_button_container.addWidget(self.refactor_radio_button)
+            radio_button_container.addWidget(self.refactor_radio_button2)
+            radio_button_container.addWidget(self.refactor_radio_button3)
+            radio_button_container.addWidget(self.refactor_radio_button4)
+            radio_button_container.adjustSize()
+
+            self.refactor_radiobuttons.body().addWidget(radio_button_container)
+            self.refactor_radiobuttons.body().addPlaceholder(12)
+            self.refactor_radiobuttons.adjustSize()
+
+            self.refactor_radiobuttons_desc = OptionCardPlaneForWidgetDemos(self)
+            self.refactor_radiobuttons_desc.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                               "/widgets/button.py")
+            self.refactor_radiobuttons_desc.setTitle("带解释的单选框")
+
+            radio_button_container = SiDenseVContainer(self)
+            radio_button_container.setSpacing(6)
+
+            self.refactor_radio_button = SiRadioButtonWithDescription(self)
+            self.refactor_radio_button.setText("Hello World")
+            self.refactor_radio_button.setDescription("This is the description of Item1, which is very long.")
+            self.refactor_radio_button.setDescriptionWidth(180)
+            self.refactor_radio_button.adjustSize()
+            self.refactor_radio_button.setChecked(True)
+
+            self.refactor_radio_button2 = SiRadioButtonWithDescription(self)
+            self.refactor_radio_button2.setText("我吃你牛魔")
+            self.refactor_radio_button2.setDescription("这是第二个选项的解释，短一些")
+            self.refactor_radio_button2.setDescriptionWidth(180)
+            self.refactor_radio_button2.adjustSize()
+
+            self.refactor_radio_button3 = SiRadioButtonWithDescription(self)
+            self.refactor_radio_button3.setText("诗人我吃")
+            self.refactor_radio_button3.setDescription("你干嘛嗨嗨呦~")
+            self.refactor_radio_button3.setDescriptionWidth(180)
+            self.refactor_radio_button3.adjustSize()
+
             radio_button_container.addWidget(self.refactor_radio_button)
             radio_button_container.addWidget(self.refactor_radio_button2)
             radio_button_container.addWidget(self.refactor_radio_button3)
             radio_button_container.adjustSize()
 
-            self.refactor_buttons.body().addWidget(self.refactor_pushbutton)
-            self.refactor_buttons.body().addWidget(self.refactor_progress_button)
-            self.refactor_buttons.body().addWidget(self.refactor_long_press_button)
-            self.refactor_buttons.body().addWidget(self.refactor_flat_button)
-            self.refactor_buttons.body().addWidget(self.refactor_toggle_button)
-            self.refactor_buttons.body().addWidget(self.refactor_switch)
-            self.refactor_buttons.body().addWidget(radio_button_container)
-            self.refactor_buttons.body().addPlaceholder(12)
-            self.refactor_buttons.adjustSize()
+            self.refactor_radiobuttons_desc.body().addWidget(radio_button_container)
+            self.refactor_radiobuttons_desc.body().addPlaceholder(12)
+            self.refactor_radiobuttons_desc.adjustSize()
+
+
+            self.refactor_radiobuttons_avatar = OptionCardPlaneForWidgetDemos(self)
+            self.refactor_radiobuttons_avatar.setSourceCodeURL("https://github.com/ChinaIceF/PyQt-SiliconUI/blob/main/siui/components"
+                                               "/widgets/button.py")
+            self.refactor_radiobuttons_avatar.setTitle("带头像的单选框")
+
+            radio_button_container = SiDenseVContainer(self)
+            radio_button_container.setSpacing(16)
+
+            self.refactor_radio_button = SiRadioButtonWithAvatar(self)
+            self.refactor_radio_button.setText("霏泠Ice")
+            self.refactor_radio_button.setDescription("114514@nigamna.com")
+            self.refactor_radio_button.setIcon(QIcon("./img/avatar1.png"))
+            self.refactor_radio_button.adjustSize()
+            self.refactor_radio_button.setChecked(True)
+
+            self.refactor_radio_button2 = SiRadioButtonWithAvatar(self)
+            self.refactor_radio_button2.setText("我家鸽鸽")
+            self.refactor_radio_button2.setDescription("zhiyin@qq.com")
+            self.refactor_radio_button2.setIcon(QIcon("./img/avatar2.png"))
+            self.refactor_radio_button2.adjustSize()
+
+            self.refactor_radio_button3 = SiRadioButtonWithAvatar(self)
+            self.refactor_radio_button3.setText("你干嘛嗨嗨呦")
+            self.refactor_radio_button3.setDescription("1231524232@qq.com")
+            self.refactor_radio_button3.setIcon(QIcon("./img/avatar1.png"))
+            self.refactor_radio_button3.adjustSize()
+
+            radio_button_container.addWidget(self.refactor_radio_button)
+            radio_button_container.addWidget(self.refactor_radio_button2)
+            radio_button_container.addWidget(self.refactor_radio_button3)
+            radio_button_container.adjustSize()
+
+            self.refactor_radiobuttons_avatar.body().addWidget(radio_button_container)
+            self.refactor_radiobuttons_avatar.body().addPlaceholder(12)
+            self.refactor_radiobuttons_avatar.adjustSize()
+
 
             # 按钮
             self.push_buttons = OptionCardPlaneForWidgetDemos(self)
@@ -455,6 +544,9 @@ class ExampleWidgets(SiPage):
             self.checkboxes.adjustSize()
 
             group.addWidget(self.refactor_buttons)
+            group.addWidget(self.refactor_radiobuttons)
+            group.addWidget(self.refactor_radiobuttons_desc)
+            group.addWidget(self.refactor_radiobuttons_avatar)
             group.addWidget(self.push_buttons)
             group.addWidget(self.flat_buttons)
             group.addWidget(self.switches)
