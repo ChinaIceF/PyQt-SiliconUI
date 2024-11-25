@@ -33,7 +33,7 @@ def createPainter(
     """
     painter = QPainter(paintDevice)
     if renderHint is not None:
-        painter.setRenderHint(renderHint)
+        painter.setRenderHints(renderHint)
 
     if penStyle is not None:
         painter.setPen(penStyle)

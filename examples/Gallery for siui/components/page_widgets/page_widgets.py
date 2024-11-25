@@ -328,10 +328,15 @@ class ExampleWidgets(SiPage):
             self.refactor_radio_button4.setText("不是哥们我真的要困死了让我睡觉吧")
             self.refactor_radio_button4.adjustSize()
 
+            self.refactor_radio_button5 = SiRadioButtonRefactor(self)
+            self.refactor_radio_button5.setText("nihao")
+            self.refactor_radio_button5.adjustSize()
+
             radio_button_container.addWidget(self.refactor_radio_button)
             radio_button_container.addWidget(self.refactor_radio_button2)
             radio_button_container.addWidget(self.refactor_radio_button3)
             radio_button_container.addWidget(self.refactor_radio_button4)
+            radio_button_container.addWidget(self.refactor_radio_button5)
             radio_button_container.adjustSize()
 
             self.refactor_radiobuttons.body().addWidget(radio_button_container)

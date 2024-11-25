@@ -799,10 +799,10 @@ class SiToggleButtonRefactor(SiFlatButton):
 class SwitchStyleData(QObject):
     STYLE_TYPES = ["Switch"]
 
-    background_color_starting: QColor = QColor("#52389a")
-    background_color_ending: QColor = QColor("#9c4e8b")
+    background_color_starting: QColor = QColor("#519868")
+    background_color_ending: QColor = QColor("#519868")
     frame_color: QColor = QColor("#D2D2D2")
-    thumb_color_checked: QColor = QColor("#100912")
+    thumb_color_checked: QColor = QColor("#09120c")
     thumb_color_unchecked: QColor = QColor("#D2D2D2")
 
 
@@ -957,7 +957,7 @@ class RadioButtonStyleData(QObject):
 
     indicator_border_radius: float = 9.5
     indicator_allocated_width: int = 60
-    indicator_hover_additional_width: int = 4
+    indicator_hover_additional_width: int = 2
     indicator_height: int = 19
 
     avatar_width: int = 36
@@ -965,7 +965,7 @@ class RadioButtonStyleData(QObject):
     avatar_border_radius: int = 18
 
     highlight_idle_color: QColor = QColor("#00baadc7")
-    highlight_flash_color: QColor = QColor("#70baadc7")
+    highlight_flash_color: QColor = QColor("#90baadc7")
     highlight_hover_color: QColor = QColor("#40baadc7")
 
     unchecked_indicator_color: QColor = QColor("#25222A")
@@ -1056,7 +1056,7 @@ class SiRadioButtonRefactor(QRadioButton):
         alloc_width = self.style_data.indicator_allocated_width
         radius = self.style_data.indicator_border_radius
         width = (self._indicatorWidthInterpolation(self._indi_width_prog) +
-                 self._indi_hover_width * (1 - self._indi_width_prog * 0.6))
+                 self._indi_hover_width * ((self._indi_width_prog + 1) / 2))
         path = QPainterPath()
         path.addRoundedRect(QRectF(alloc_width - width, rect.y(), width, rect.height()), radius, radius)
         return path
