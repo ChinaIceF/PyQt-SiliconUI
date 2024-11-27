@@ -7,26 +7,31 @@ from PyQt5.QtGui import QCursor, QIcon
 
 from siui.components import (
     SiCircularProgressBar,
+    SiDenseVContainer,
     SiLineEdit,
     SiLineEditWithDeletionButton,
     SiLineEditWithItemName,
     SiOptionCardLinear,
     SiTitledWidgetGroup,
-    SiWidget, SiDenseVContainer,
+    SiWidget,
 )
 from siui.components.button import (
     SiFlatButton,
     SiLongPressButtonRefactor,
     SiProgressPushButton,
     SiPushButtonRefactor,
-    SiToggleButtonRefactor, SiSwitchRefactor, SiRadioButtonRefactor, SiRadioButtonWithDescription,
+    SiRadioButtonRefactor,
     SiRadioButtonWithAvatar,
+    SiRadioButtonWithDescription,
+    SiSwitchRefactor,
+    SiToggleButtonRefactor,
 )
 from siui.components.combobox import SiComboBox
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
 from siui.components.progress_bar import SiProgressBar
 from siui.components.slider import SiSliderH
+from siui.components.slider_ import SiSlider
 from siui.components.spinbox.spinbox import SiDoubleSpinBox, SiIntSpinBox
 from siui.components.widgets import (
     SiCheckBox,
@@ -292,6 +297,21 @@ class ExampleWidgets(SiPage):
             self.refactor_toggle_button.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_save_filled"))
             self.refactor_toggle_button.adjustSize()
 
+            self.refactor_slider = SiSlider(self)
+            self.refactor_slider.resize(512, 32)
+            self.refactor_slider.setValue(5)
+            self.refactor_slider.setMinimum(-50)
+            self.refactor_slider.setMaximum(50)
+            self.refactor_slider.setToolTipConvertionFunc(lambda x: f"{x} ms")
+
+            self.refactor_slider2 = SiSlider(self)
+            self.refactor_slider2.resize(32, 256)
+            self.refactor_slider2.setOrientation(Qt.Orientation.Vertical)
+            self.refactor_slider2.setValue(5)
+            self.refactor_slider2.setMinimum(-50)
+            self.refactor_slider2.setMaximum(50)
+            self.refactor_slider2.setToolTipConvertionFunc(lambda x: f"{x} ms")
+
             self.refactor_switch = SiSwitchRefactor(self)
 
             self.refactor_buttons.body().addWidget(self.refactor_pushbutton)
@@ -300,6 +320,8 @@ class ExampleWidgets(SiPage):
             self.refactor_buttons.body().addWidget(self.refactor_flat_button)
             self.refactor_buttons.body().addWidget(self.refactor_toggle_button)
             self.refactor_buttons.body().addWidget(self.refactor_switch)
+            self.refactor_buttons.body().addWidget(self.refactor_slider)
+            self.refactor_buttons.body().addWidget(self.refactor_slider2)
             self.refactor_buttons.body().addPlaceholder(12)
             self.refactor_buttons.adjustSize()
 

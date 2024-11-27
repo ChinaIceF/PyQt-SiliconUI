@@ -30,7 +30,7 @@ from PyQt5.QtGui import (
     QPixmap,
 )
 from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QPushButton, QRadioButton, QLabel
+from PyQt5.QtWidgets import QLabel, QPushButton, QRadioButton
 from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
