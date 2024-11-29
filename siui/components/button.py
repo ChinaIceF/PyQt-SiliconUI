@@ -81,7 +81,7 @@ class GlobalStyleManager:
                 SA.BackgroundColor: QColor("#2d2932"),
                 SA.ToggledTextColor: QColor("#DFDFDF"),
                 SA.ToggledButtonColor: QColor("#519868"),
-                SA.BorderInnerRadius: 4,
+                SA.BorderInnerRadius: 5,
                 SA.BorderRadius: 7,
                 SA.BorderHeight: 3,
                 SA.IconTextGap: 4,
@@ -799,10 +799,10 @@ class SiToggleButtonRefactor(SiFlatButton):
 class SwitchStyleData(QObject):
     STYLE_TYPES = ["Switch"]
 
-    background_color_starting: QColor = QColor("#519868")
-    background_color_ending: QColor = QColor("#519868")
+    background_color_starting: QColor = QColor("#a681bf")
+    background_color_ending: QColor = QColor("#a681bf")
     frame_color: QColor = QColor("#D2D2D2")
-    thumb_color_checked: QColor = QColor("#09120c")
+    thumb_color_checked: QColor = QColor("#0f0912")
     thumb_color_unchecked: QColor = QColor("#D2D2D2")
 
 
@@ -971,7 +971,7 @@ class RadioButtonStyleData(QObject):
     unchecked_indicator_color: QColor = QColor("#25222A")
     unchecked_indicator_width: float = 33
 
-    checked_indicator_color: QColor = QColor("#9F89AA")
+    checked_indicator_color: QColor = QColor("#a681bf")
     checked_indicator_width: float = 51
 
 

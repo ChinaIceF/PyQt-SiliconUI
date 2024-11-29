@@ -4,6 +4,7 @@ import random
 import numpy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QIcon
+from PyQt5.QtWidgets import QGraphicsBlurEffect
 
 from siui.components import (
     SiCircularProgressBar,
@@ -31,7 +32,7 @@ from siui.components.menu import SiMenu
 from siui.components.page import SiPage
 from siui.components.progress_bar import SiProgressBar
 from siui.components.slider import SiSliderH
-from siui.components.slider_ import SiSlider
+from siui.components.slider_ import SiSlider, SiCoordinatePicker2D
 from siui.components.spinbox.spinbox import SiDoubleSpinBox, SiIntSpinBox
 from siui.components.widgets import (
     SiCheckBox,
@@ -307,10 +308,13 @@ class ExampleWidgets(SiPage):
             self.refactor_slider2 = SiSlider(self)
             self.refactor_slider2.resize(32, 256)
             self.refactor_slider2.setOrientation(Qt.Orientation.Vertical)
-            self.refactor_slider2.setValue(5)
-            self.refactor_slider2.setMinimum(-50)
-            self.refactor_slider2.setMaximum(50)
-            self.refactor_slider2.setToolTipConvertionFunc(lambda x: f"{x} ms")
+            self.refactor_slider2.setValue(0)
+            self.refactor_slider2.setMinimum(-30)
+            self.refactor_slider2.setMaximum(12)
+            self.refactor_slider2.setToolTipConvertionFunc(lambda x: f"{x} dB")
+
+            self.coordinate_picker_2d = SiCoordinatePicker2D(self)
+            self.coordinate_picker_2d.resize(768, 384)
 
             self.refactor_switch = SiSwitchRefactor(self)
 
@@ -322,6 +326,8 @@ class ExampleWidgets(SiPage):
             self.refactor_buttons.body().addWidget(self.refactor_switch)
             self.refactor_buttons.body().addWidget(self.refactor_slider)
             self.refactor_buttons.body().addWidget(self.refactor_slider2)
+            self.refactor_buttons.body().addWidget(self.coordinate_picker_2d)
+
             self.refactor_buttons.body().addPlaceholder(12)
             self.refactor_buttons.adjustSize()
 
