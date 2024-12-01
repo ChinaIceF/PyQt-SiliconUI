@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, Qt, pyqtProperty
-from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPen
+from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, Qt, pyqtProperty, QSize
+from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
 from PyQt5.QtWidgets import QAbstractSlider, QWidget
 
 from siui.core import SiGlobal, createPainter
@@ -35,9 +35,7 @@ class SiSlider(QAbstractSlider):
         self.setMouseTracking(True)
 
         self.style_data = SliderStyleData()
-        self._track_color = self.style_data.track_color
         self._thumb_color = self.style_data.thumb_idle_color
-        self._background_color = self.style_data.background_color
         self._track_progress = 0
         self._is_dragging = False
         self._is_dragging_thumb = False
@@ -104,28 +102,28 @@ class SiSlider(QAbstractSlider):
     def _drawBackgroundPath(self, rect) -> QPainterPath:
         radius = min(rect.height() / 2, rect.width() / 2)
         path = QPainterPath()
-        path.addRoundedRect(rect, radius, radius)
+        path.addRoundedRect(QRectF(rect), radius, radius)
         return path
 
     def _drawTrackPath(self, rect: QRect) -> QPainterPath:
         radius = min(rect.height() / 2, rect.width() / 2)
         path = QPainterPath()
-        path.addRoundedRect(rect, radius, radius)
+        path.addRoundedRect(QRectF(rect), radius, radius)
         return path
 
     def _drawThumbPath(self, rect: QRect) -> QPainterPath:
         radius = min(rect.height() / 2, rect.width() / 2)
         path = QPainterPath()
-        path.addRoundedRect(rect, radius, radius)
+        path.addRoundedRect(QRectF(rect), radius, radius)
         return path
 
     def _drawBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setBrush(self._background_color)
+        painter.setBrush(self.style_data.background_color)
         painter.drawPath(self._drawBackgroundPath(rect))
 
     def _drawTrackRect(self, painter: QPainter, rect: QRect) -> None:
         if self._is_draw_track:
-            painter.setBrush(self._track_color)
+            painter.setBrush(self.style_data.track_color)
             painter.drawPath(self._drawTrackPath(rect))
 
     def _drawThumbRect(self, painter: QPainter, rect: QRect) -> None:
@@ -276,7 +274,10 @@ class CoordinatePickerStyleData:
     indicator_stroke_color: QColor = QColor("#a681bf")
 
     base_line_weight: int = 2
-    base_line_color: QColor = QColor("#30a681bf")
+    base_line_color: QColor = QColor("#3b3143")
+
+    xoy_plate_background_color: QColor = QColor("#571c191f")
+    deepest_background_color: QColor = QColor("#1c191f")
 
     background_color: QColor = QColor("#25222a")
     background_border_radius: int = 6
@@ -299,6 +300,7 @@ class SiCoordinatePicker2D(QWidget):
         self._dragging_start_pos = QPoint()
         self._is_dragging_thumb = False
         self._is_dragging = False
+        self._value_to_tooltip_func = self._defaultValueToToolTip
 
         self._progress_x = 0
         self._progress_y = 0
@@ -318,9 +320,13 @@ class SiCoordinatePicker2D(QWidget):
         self.progress_y_ani.init(1/3.5, 0.00001, 0, 0)
 
         self._initStyle()
+        self._initToolTip()
 
         self.slider_x.valueChanged.connect(self._onSliderXValueChanged)
         self.slider_y.valueChanged.connect(self._onSliderYValueChanged)
+
+    def _initToolTip(self) -> None:
+        self.setToolTip(self._value_to_tooltip_func(self.slider_x.value(), self.slider_y.value()))
 
     def _initStyle(self) -> None:
         self.slider_x.setOrientation(Qt.Orientation.Horizontal)
@@ -329,6 +335,12 @@ class SiCoordinatePicker2D(QWidget):
         self.slider_y.setOrientation(Qt.Orientation.Vertical)
         self.slider_x.setDrawTrack(False)
         self.slider_y.setDrawTrack(False)
+
+        # self.slider_x.style_data.thumb_idle_color = QColor("#b9e2e6")
+        # self.slider_x.style_data.track_color = QColor("#83b4b9")
+        #
+        # self.slider_y.style_data.thumb_idle_color = QColor("#eaa9c4")
+        # self.slider_y.style_data.track_color = QColor("#b96f98")
 
     @pyqtProperty(QColor)
     def thumbColor(self):
@@ -365,13 +377,15 @@ class SiCoordinatePicker2D(QWidget):
     def indicatorRect(self, value: QRectF):
         self._indicator_rect = value
 
-    def _isMouseInThumbRect(self, pos: QPoint) -> bool:
-        # margin = self.slider_x.style_data.thumb_width / 2
-        # slider_y_width = self.style_data.slider_y_width
-        #
-        # pos.setX(pos.x() - margin - slider_y_width)
-        # pos.setY(pos.y() - margin)
+    @staticmethod
+    def _defaultValueToToolTip(*args):
+        return f"x = {args[0]}\ny = {args[1]}"
 
+    def setToolTipConvertionFunc(self, func) -> None:
+        self._value_to_tooltip_func = func
+        self.setToolTip(func(self.value()))
+
+    def _isMouseInThumbRect(self, pos: QPoint) -> bool:
         rect: QRect = self.property(self.Property.IndicatorRect)
         return rect.contains(pos)
 
@@ -408,10 +422,12 @@ class SiCoordinatePicker2D(QWidget):
     def _onSliderXValueChanged(self, _) -> None:
         self.progress_x_ani.setEndValue(self._progressSliderX())
         self.progress_x_ani.start()
+        self._updateToolTip(flash=False)
 
     def _onSliderYValueChanged(self, _) -> None:
         self.progress_y_ani.setEndValue(self._progressSliderY())
         self.progress_y_ani.start()
+        self._updateToolTip(flash=False)
 
     def _progressSliderX(self) -> float:
         return (self.slider_x.value() - self.slider_x.minimum()) / (self.slider_x.maximum() - self.slider_x.minimum())
@@ -422,13 +438,13 @@ class SiCoordinatePicker2D(QWidget):
     def _drawBackgroundPath(self, rect: QRect) -> QPainterPath:
         radius = self.style_data.background_border_radius
         path = QPainterPath()
-        path.addRoundedRect(rect, radius, radius)
+        path.addRoundedRect(QRectF(rect), radius, radius)
         return path
 
     def _drawIndicatorPath(self, rect: QRect) -> QPainterPath:
         indicator_size = self.style_data.indicator_size
         path = QPainterPath()
-        path.addRoundedRect(rect, indicator_size / 2, indicator_size / 2)
+        path.addRoundedRect(QRectF(rect), indicator_size / 2, indicator_size / 2)
         return path
 
     def _drawBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
@@ -490,6 +506,7 @@ class SiCoordinatePicker2D(QWidget):
 
     def mouseMoveEvent(self, a0):
         super().mouseMoveEvent(a0)
+
         if self._is_dragging:
             if self._is_dragging_thumb:
                 pos = self._dragging_anchor_pos + (a0.pos() - self._dragging_start_pos)
@@ -507,6 +524,38 @@ class SiCoordinatePicker2D(QWidget):
         self._is_dragging_thumb = False
         self._is_dragging = False
 
+    def _showToolTip(self) -> None:
+        tool_tip_window = SiGlobal.siui.windows.get("TOOL_TIP")
+        if tool_tip_window is not None and self.toolTip() != "":
+            tool_tip_window.setNowInsideOf(self)
+            tool_tip_window.show_()
+
+    def _hideToolTip(self) -> None:
+        tool_tip_window = SiGlobal.siui.windows.get("TOOL_TIP")
+        if tool_tip_window is not None and self.toolTip() != "":
+            tool_tip_window.setNowInsideOf(None)
+            tool_tip_window.hide_()
+
+    def _updateToolTip(self, flash: bool = True) -> None:
+        self.setToolTip(self._value_to_tooltip_func(self.slider_x.value(), self.slider_y.value()))
+        tool_tip_window = SiGlobal.siui.windows.get("TOOL_TIP")
+        if tool_tip_window is not None and tool_tip_window.nowInsideOf() == self:
+            tool_tip_window.setText(self.toolTip(), flash=flash)
+
+    def event(self, event):
+        if event.type() == QEvent.ToolTip:
+            return True  # 忽略工具提示事件
+        return super().event(event)
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        self._showToolTip()
+        self._updateToolTip()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self._hideToolTip()
+
     def paintEvent(self, a0):
         slider_x_height = self.style_data.slider_y_width
         slider_y_width = self.style_data.slider_x_height
@@ -522,3 +571,150 @@ class SiCoordinatePicker2D(QWidget):
             self._drawBackgroundRect(painter, background_rect)
             self._drawBaseLine(painter, background_rect)
             self._drawIndicatorRect(painter, background_rect)
+
+
+class SiCoordinatePicker3D(SiCoordinatePicker2D):
+    class Property:
+        ProgressX = "progressX"
+        ProgressY = "progressY"
+        ProgressZ = "progressZ"
+        IndicatorRect = "indicatorRect"
+        ThumbColor = "thumbColor"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+        self._value_to_tooltip_func = lambda *args: f"x = {args[0]}\ny = {args[1]}\nz = {args[2]}"
+        self._progress_z = 0
+        self._min_scale_factor = 0.75
+
+        self.slider_z = SiSlider(self)
+        self.slider_z.setVisible(False)
+
+        self.progress_z_ani = SiExpAnimationRefactor(self, self.Property.ProgressZ)
+        self.progress_z_ani.init(1/4, 0.00001, 0, 0)
+
+        self.slider_z.valueChanged.connect(self._onSliderZValueChanged)
+
+    @pyqtProperty(float)
+    def progressZ(self):
+        return self._progress_z
+
+    @progressZ.setter
+    def progressZ(self, value: float):
+        self._progress_z = value
+        self.update()
+
+    def _updateToolTip(self, flash: bool = True) -> None:
+        self.setToolTip(
+            self._value_to_tooltip_func(self.slider_x.value(), self.slider_y.value(), self.slider_z.value()))
+
+        tool_tip_window = SiGlobal.siui.windows.get("TOOL_TIP")
+        if tool_tip_window is not None and tool_tip_window.nowInsideOf() == self:
+            tool_tip_window.setText(self.toolTip(), flash=flash)
+
+    def _progressSliderZ(self) -> float:
+        return (self.slider_z.value() - self.slider_z.minimum()) / (self.slider_z.maximum() - self.slider_z.minimum())
+
+    def _onSliderZValueChanged(self, _) -> None:
+        self.progress_z_ani.setEndValue(self._progressSliderZ())
+        self.progress_z_ani.start()
+
+    def _drawXOYPlatePath(self, rect: QRect) -> QPainterPath:
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), 8, 8)
+        return path
+
+    def _drawXOYPlateRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setBrush(self.style_data.xoy_plate_background_color)
+        painter.drawPath(self._drawXOYPlatePath(rect))
+
+    def _drawBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setBrush(self.style_data.background_color)
+        painter.drawPath(self._drawBackgroundPath(rect))
+
+    def _drawDeepestBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setBrush(self.style_data.deepest_background_color)
+        painter.drawPath(self._drawBackgroundPath(rect))
+
+    def _drawBaseLine(self, painter: QPainter, rect: QRect) -> None:  # the rect should be the rect of background.
+        margin = self.slider_x.style_data.thumb_width / 2
+        available_w = rect.width() - margin * 2
+        available_h = rect.height() - margin * 2
+
+        x = margin + available_w * self._progress_x
+        y = margin + available_h * (1 - self._progress_y)
+        d = 12
+
+        painter.setPen(QPen(self.style_data.base_line_color, self.style_data.base_line_weight))
+        painter.drawLine(QPointF(x, margin - d), QPointF(x, margin + d + available_h))
+        painter.drawLine(QPointF(margin + rect.x() - d, y), QPointF(margin + available_w + rect.x() + d, y))
+        painter.setPen(Qt.NoPen)
+
+    def _drawIndicatorRect(self, painter: QPainter, rect: QRect) -> None:  # the rect should be the rect of background.
+        margin = self.slider_x.style_data.thumb_width / 2
+        indicator_size = self.style_data.indicator_size - self.style_data.indicator_stroke_weight
+        available_w = rect.width() - margin * 2
+        available_h = rect.height() - margin * 2
+
+        x = margin + available_w * self._progress_x - indicator_size / 2
+        y = margin + available_h * (1 - self._progress_y) - indicator_size / 2
+        d = self.style_data.indicator_outline_weight
+        indicator_rect = QRectF(x, y, indicator_size, indicator_size)
+        indicator_outline_rect = QRectF(x - d, y - d, indicator_size + d * 2, indicator_size + d * 2)
+        self.setProperty(self.Property.IndicatorRect, indicator_outline_rect)
+
+        # painter.setBrush(self.style_data.background_color)
+        # painter.drawPath(self._drawIndicatorPath(indicator_outline_rect))
+
+        painter.setBrush(self.style_data.indicator_background_color)
+        painter.setPen(QPen(self._thumb_color, self.style_data.indicator_stroke_weight))
+        painter.drawPath(self._drawIndicatorPath(indicator_rect))
+        painter.setPen(Qt.NoPen)
+
+    def wheelEvent(self, a0):
+        super().wheelEvent(a0)
+        direction = 1 if a0.angleDelta().y() > 0 else -1
+        self.slider_z.setValue(self.slider_z.value() + self.slider_z.singleStep() * direction)  # noqa: E501
+        self._updateToolTip(flash=False)
+        a0.accept()
+
+    def paintEvent(self, a0):
+        slider_x_height = self.style_data.slider_y_width
+        slider_y_width = self.style_data.slider_x_height
+        background_rect = QRect(slider_y_width, 0, self.width() - slider_y_width, self.height() - slider_x_height)
+        buffer_rect = QRect(0, 0, self.width() - slider_y_width, self.height() - slider_x_height)
+
+        device_pixel_ratio = self.devicePixelRatioF()
+        min_scale_factor = self._min_scale_factor
+
+        buffer = QPixmap(background_rect.size() * device_pixel_ratio)
+        buffer.setDevicePixelRatio(device_pixel_ratio)
+        buffer.fill(Qt.transparent)
+
+        renderHints = (
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
+        )
+
+        with createPainter(buffer, renderHints) as painter:
+            self._drawXOYPlateRect(painter, buffer_rect)
+            self._drawBaseLine(painter, buffer_rect)
+            self._drawIndicatorRect(painter, buffer_rect)
+
+        a = self._progress_z * (1 - min_scale_factor) + min_scale_factor
+        b = min_scale_factor
+        with createPainter(self, renderHints) as painter:
+            self._drawBackgroundRect(painter, background_rect)
+
+            painter.save()
+            painter.translate(QPointF(background_rect.width() * (1 - b) / 2 + self.style_data.slider_y_width,
+                                      background_rect.height() * (1 - b) / 2))
+            painter.scale(b, b)
+            self._drawDeepestBackgroundRect(painter, buffer_rect)
+
+            painter.restore()
+            painter.translate(QPointF(background_rect.width() * (1 - a) / 2 + self.style_data.slider_y_width,
+                                      background_rect.height() * (1 - a) / 2))
+            painter.scale(a, a)
+            painter.drawPixmap(0, 0, buffer)

@@ -32,7 +32,7 @@ from siui.components.menu import SiMenu
 from siui.components.page import SiPage
 from siui.components.progress_bar import SiProgressBar
 from siui.components.slider import SiSliderH
-from siui.components.slider_ import SiSlider, SiCoordinatePicker2D
+from siui.components.slider_ import SiCoordinatePicker2D, SiCoordinatePicker3D, SiSlider
 from siui.components.spinbox.spinbox import SiDoubleSpinBox, SiIntSpinBox
 from siui.components.widgets import (
     SiCheckBox,
@@ -313,8 +313,9 @@ class ExampleWidgets(SiPage):
             self.refactor_slider2.setMaximum(12)
             self.refactor_slider2.setToolTipConvertionFunc(lambda x: f"{x} dB")
 
-            self.coordinate_picker_2d = SiCoordinatePicker2D(self)
-            self.coordinate_picker_2d.resize(768, 384)
+            self.coordinate_picker_2d = SiCoordinatePicker3D(self)
+            self.coordinate_picker_2d.resize(384, 256)
+            self.coordinate_picker_2d.slider_z.setMaximum(6)
 
             self.refactor_switch = SiSwitchRefactor(self)
 
