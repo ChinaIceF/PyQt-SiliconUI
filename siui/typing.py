@@ -10,7 +10,7 @@ Use Python's Type Hint syntax, reference:
 from typing import Optional, Union
 
 from PyQt5.QtCore import QObject, Qt
-from PyQt5.QtGui import QColor, QGradient, QPen
+from PyQt5.QtGui import QColor, QGradient, QPainter, QPen
 from PyQt5.QtWidgets import QWidget
 from typing_extensions import TypeAlias
 
@@ -25,3 +25,6 @@ T_PenStyle: TypeAlias = Union[QPen, Qt.PenStyle, QColor, Qt.GlobalColor]
 
 T_Brush: TypeAlias = Optional[Union[QGradient, QColor, Qt.GlobalColor]]
 """Type of QBrush"""
+
+T_RenderHint: TypeAlias = Optional[Union[QPainter.RenderHint, int]]
+"""Type of QPainter.RenderHint"""

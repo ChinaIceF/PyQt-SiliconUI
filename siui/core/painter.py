@@ -7,13 +7,12 @@ from PyQt5.QtGui import QPainter
 
 if TYPE_CHECKING:
     from PyQt5.QtGui import QFont, QPaintDevice
-
-    from siui.typing import T_Brush, T_PenStyle
+    from siui.typing import T_Brush, T_PenStyle, T_RenderHint
 
 
 def createPainter(
     paintDevice: QPaintDevice,
-    renderHint: Optional[QPainter.RenderHint] = QPainter.RenderHint.Antialiasing,
+    renderHint: T_RenderHint = QPainter.RenderHint.Antialiasing,
     penStyle: T_PenStyle = Qt.PenStyle.NoPen,
     brush: T_Brush = None,
     font: Optional[QFont] = None,
@@ -33,7 +32,7 @@ def createPainter(
     """
     painter = QPainter(paintDevice)
     if renderHint is not None:
-        painter.setRenderHint(renderHint)
+        painter.setRenderHints(renderHint)
 
     if penStyle is not None:
         painter.setPen(penStyle)

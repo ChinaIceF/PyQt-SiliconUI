@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt
 
-from siui.components import SiLabel, SiSliderH, SiTitledWidgetGroup, SiWidget
+from siui.components import SiLabel, SiTitledWidgetGroup, SiWidget
+from siui.components.slider.slider import SiSliderH
 from siui.components.combobox import SiComboBox
 from siui.core import SiColor
 from siui.core import SiGlobal
