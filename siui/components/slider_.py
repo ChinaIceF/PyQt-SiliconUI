@@ -89,7 +89,6 @@ class SiSlider(QAbstractSlider):
     def _onValueChanged(self, value):
         self.progress_ani.setEndValue((value - self.minimum()) / (self.maximum() - self.minimum()))
         self.progress_ani.start()
-        self.setToolTip(self._value_to_tooltip_func(self.value()))
         self._updateToolTip(flash=False)
 
     def _onRangeChanged(self, _, __):
@@ -180,6 +179,7 @@ class SiSlider(QAbstractSlider):
             tool_tip_window.hide_()
 
     def _updateToolTip(self, flash: bool = True) -> None:
+        self.setToolTip(self._value_to_tooltip_func(self.value()))
         tool_tip_window = SiGlobal.siui.windows.get("TOOL_TIP")
         if tool_tip_window is not None and tool_tip_window.nowInsideOf() == self:
             tool_tip_window.setText(self.toolTip(), flash=flash)
@@ -320,13 +320,9 @@ class SiCoordinatePicker2D(QWidget):
         self.progress_y_ani.init(1/3.5, 0.00001, 0, 0)
 
         self._initStyle()
-        self._initToolTip()
 
         self.slider_x.valueChanged.connect(self._onSliderXValueChanged)
         self.slider_y.valueChanged.connect(self._onSliderYValueChanged)
-
-    def _initToolTip(self) -> None:
-        self.setToolTip(self._value_to_tooltip_func(self.slider_x.value(), self.slider_y.value()))
 
     def _initStyle(self) -> None:
         self.slider_x.setOrientation(Qt.Orientation.Horizontal)
@@ -335,6 +331,8 @@ class SiCoordinatePicker2D(QWidget):
         self.slider_y.setOrientation(Qt.Orientation.Vertical)
         self.slider_x.setDrawTrack(False)
         self.slider_y.setDrawTrack(False)
+        self.slider_x.leaveEvent = self.enterEvent
+        self.slider_y.leaveEvent = self.enterEvent
 
         # self.slider_x.style_data.thumb_idle_color = QColor("#b9e2e6")
         # self.slider_x.style_data.track_color = QColor("#83b4b9")
@@ -506,7 +504,6 @@ class SiCoordinatePicker2D(QWidget):
 
     def mouseMoveEvent(self, a0):
         super().mouseMoveEvent(a0)
-
         if self._is_dragging:
             if self._is_dragging_thumb:
                 pos = self._dragging_anchor_pos + (a0.pos() - self._dragging_start_pos)
