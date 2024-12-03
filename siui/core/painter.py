@@ -7,7 +7,6 @@ from PyQt5.QtGui import QPainter
 
 if TYPE_CHECKING:
     from PyQt5.QtGui import QFont, QPaintDevice
-
     from siui.typing import T_Brush, T_PenStyle, T_RenderHint
 
 
