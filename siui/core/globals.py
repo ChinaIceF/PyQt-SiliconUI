@@ -1,5 +1,7 @@
 import time
 
+from PyQt5.QtWidgets import QWidget
+
 from siui.core import SiColor
 from siui.gui.color_group import DarkColorGroup
 from siui.gui.icons.parser import GlobalIconPack
@@ -87,3 +89,41 @@ class NewGlobal:
     新全局数据
     """
     create_time = time.time()
+
+
+def _getToolTipWindow() -> QWidget:
+    return SiGlobal.siui.windows.get("TOOL_TIP")
+
+
+def showToolTip(widget, flash: bool = True) -> None:
+    window = _getToolTipWindow()
+    if window is None:
+        return
+    if widget.toolTip() == "":
+        return
+    window.setText(widget.toolTip(), flash=flash)
+    window.setNowInsideOf(widget)
+    window.show_()
+
+
+def hideToolTip(widget) -> None:
+    window = _getToolTipWindow()
+    if window is None:
+        return
+    if widget.toolTip() == "":
+        return
+    window.setNowInsideOf(None)
+    window.hide_()
+
+
+def updateToolTip(widget, flash: bool = True) -> None:
+    window = _getToolTipWindow()
+    if window is None:
+        return
+    if widget.toolTip() == "":
+        return
+    window.setText(widget.toolTip(), flash=flash)
+
+
+def isTooltipShown() -> bool:
+    return _getToolTipWindow().is_shown

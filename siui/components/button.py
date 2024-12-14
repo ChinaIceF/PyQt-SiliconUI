@@ -35,6 +35,7 @@ from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
+from siui.core.painter import getSuperRoundedRectPath
 from siui.gui import SiFont
 
 if TYPE_CHECKING:

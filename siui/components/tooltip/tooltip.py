@@ -12,6 +12,7 @@ class ToolTipWindow(SiWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.is_shown = False
         self.completely_hid = False
         """ 是否已经完全隐藏（透明度是不是0） """
         self.now_inside_of = None
@@ -73,9 +74,11 @@ class ToolTipWindow(SiWidget):
         self.text_label.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
 
     def show_(self):
+        self.is_shown = True
         self.setOpacityTo(1.0)
 
     def hide_(self):
+        self.is_shown = False
         self.setOpacityTo(0)
 
     def _completely_hid_signal_handler(self, target):
@@ -83,6 +86,8 @@ class ToolTipWindow(SiWidget):
             self.completely_hid = True
             self.resize(2 * self.margin, 36 + 2 * self.margin)  # 变单行内容的高度，宽度不足以显示任何内容 # 2024.11.1 宽度设0解决幽灵窗口
             self.text_label.setText("")   # 清空文本内容
+        else:
+            self.completely_hid = False
 
     def setNowInsideOf(self, widget):
         """
