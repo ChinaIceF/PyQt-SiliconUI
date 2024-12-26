@@ -2,9 +2,9 @@ import datetime
 import random
 
 import numpy
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPointF, QRectF
 from PyQt5.QtGui import QCursor, QIcon
-from PyQt5.QtWidgets import QGraphicsBlurEffect
+from PyQt5.QtWidgets import QGraphicsBlurEffect, QLabel
 
 from siui.components import (
     SiCircularProgressBar,
@@ -27,7 +27,9 @@ from siui.components.button import (
     SiSwitchRefactor,
     SiToggleButtonRefactor,
 )
+from siui.components.chart import SiTrendChart
 from siui.components.combobox import SiComboBox
+from siui.components.label import HyperRoundBorderTest
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
 from siui.components.progress_bar import SiProgressBar
@@ -319,6 +321,16 @@ class ExampleWidgets(SiPage):
 
             self.refactor_switch = SiSwitchRefactor(self)
 
+            self.test_rect = HyperRoundBorderTest(self)
+            self.test_rect.resize(256, 128)
+
+            self.original_rect = QLabel(self)
+            self.original_rect.resize(64, 64)
+            self.original_rect.setStyleSheet("background-color: #a681bf; border-radius: 14px")
+            # self.trend_chart.adjustViewRect()
+            # print(self.trend_chart.viewRect())
+
+            # self.refactor_buttons.body().setAdjustWidgetsSize(True)
             self.refactor_buttons.body().addWidget(self.refactor_pushbutton)
             self.refactor_buttons.body().addWidget(self.refactor_progress_button)
             self.refactor_buttons.body().addWidget(self.refactor_long_press_button)
@@ -328,6 +340,9 @@ class ExampleWidgets(SiPage):
             self.refactor_buttons.body().addWidget(self.refactor_slider)
             self.refactor_buttons.body().addWidget(self.refactor_slider2)
             self.refactor_buttons.body().addWidget(self.coordinate_picker_2d)
+            self.refactor_buttons.body().addWidget(self.test_rect)
+            self.refactor_buttons.body().addWidget(self.original_rect)
+            # self.refactor_buttons.body().addWidget(self.trend_chart)
 
             self.refactor_buttons.body().addPlaceholder(12)
             self.refactor_buttons.adjustSize()

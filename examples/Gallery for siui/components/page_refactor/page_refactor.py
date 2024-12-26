@@ -1,6 +1,6 @@
 import random
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QLabel
 
@@ -8,6 +8,7 @@ from siui.components import SiDenseHContainer, SiTitledWidgetGroup, SiLongPressB
 from siui.components.button import SiPushButtonRefactor, SiProgressPushButton, SiLongPressButtonRefactor, SiFlatButton, \
     SiToggleButtonRefactor, SiSwitchRefactor, SiRadioButtonWithAvatar, SiRadioButtonWithDescription, \
     SiRadioButtonRefactor
+from siui.components.chart import SiTrendChart
 from siui.components.page import SiPage
 from siui.components.slider_ import SiSlider, SiCoordinatePicker2D, SiCoordinatePicker3D
 from siui.core import SiGlobal
@@ -367,6 +368,26 @@ class RefactoredWidgets(SiPage):
             group.addWidget(self.sliders_vertical)
             group.addWidget(self.coordinate_picker_2ds)
             group.addWidget(self.coordinate_picker_3ds)
+
+        with self.titled_widgets_group as group:
+            group.addTitle("统计图表")
+
+            self.charts = OptionCardPlaneForWidgetDemos(self)
+            self.charts.setTitle("趋势折线图")
+
+            self.trend_chart = SiTrendChart(self)
+            self.trend_chart.resize(900, 340)
+            self.trend_chart.setPointList([QPointF(i, (i/50)**2 * 0 + random.random() * (5 + 25 * ((i + 5) % 20 == 0))) for i in range(-50, 51)])
+            self.trend_chart.setToolTipFunc(lambda x, y: f"起始点：{x}\n振幅：{y}")
+            self.trend_chart.setQuality(1)
+            self.trend_chart.adjustViewRect()
+
+            self.charts.body().setAdjustWidgetsSize(True)
+            self.charts.body().addWidget(self.trend_chart)
+            self.charts.body().addPlaceholder(12)
+            self.charts.adjustSize()
+
+            group.addWidget(self.charts)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)
