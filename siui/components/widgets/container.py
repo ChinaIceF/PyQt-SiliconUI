@@ -20,7 +20,7 @@ class ABCDenseContainer(SiWidget):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, *kwargs)
+        super().__init__(*args, **kwargs)
 
         self.adjust_widgets_size = False  # 子控件适应高度
         self.shrinking = True  # 调整尺寸方法被调用时，允许尺寸变小
@@ -100,7 +100,7 @@ class SiDenseHContainer(ABCDenseContainer):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, *kwargs)
+        super().__init__(*args, **kwargs)
         self.widgets_left = []
         self.widgets_right = []
         self.alignment_ = Qt.AlignTop
@@ -283,7 +283,7 @@ class SiDenseVContainer(ABCDenseContainer):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, *kwargs)
+        super().__init__(*args, **kwargs)
         self.widgets_bottom = []
         self.widgets_top = []
         self.alignment_ = Qt.AlignLeft
