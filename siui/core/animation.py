@@ -441,6 +441,9 @@ class SiExpAnimationRefactor(QAbstractAnimation):
         self.factor = 1/4
         self.bias = 0.5
 
+        self._velocity_inertia = 0.0  # value between 0 and 1, higher value causes animation harder to accelerate.
+        self._velocity = 0
+
         if property_name is not None:
             self.setPropertyName(property_name)
 
@@ -449,6 +452,7 @@ class SiExpAnimationRefactor(QAbstractAnimation):
         self.bias = bias
         self.setCurrentValue(current_value)
         self.setEndValue(end_value)
+        self.resetVelocity()
 
     def setFactor(self, factor: float):
         self.factor = factor
@@ -514,6 +518,12 @@ class SiExpAnimationRefactor(QAbstractAnimation):
             self._current_value = numpy.array(value)
         self.valueChanged.emit(self._current_value)
 
+    def resetVelocity(self):
+        self._velocity = 0 * self._current_value
+
+    def setVelocityInertia(self, n: float):
+        self._velocity_inertia = n
+
     def updateCurrentTime(self, _) -> None:
         # print(self.distance())
         if (self.distance() == 0).all():
@@ -526,7 +536,9 @@ class SiExpAnimationRefactor(QAbstractAnimation):
         step = step * (numpy.array(distance > 0, dtype="int8") * 2 - 1)  # 确定动画方向
         step = step * (1 - flag) + distance * flag                       # 差距小于偏置的项，返回差距
 
-        self._current_value = self._current_value + step
+        self._velocity = self._velocity * self._velocity_inertia + step * (1 - self._velocity_inertia)
+
+        self._current_value = self._current_value + self._velocity
         self.valueChanged.emit(self._current_value)
         try:
             self._target.setProperty(self._property_name, self._out_func(self._current_value))
