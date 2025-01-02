@@ -9,6 +9,7 @@ from siui.components.button import SiPushButtonRefactor, SiProgressPushButton, S
     SiToggleButtonRefactor, SiSwitchRefactor, SiRadioButtonWithAvatar, SiRadioButtonWithDescription, \
     SiRadioButtonRefactor
 from siui.components.chart import SiTrendChart
+from siui.components.editbox import SiLineEdit
 from siui.components.page import SiPage
 from siui.components.slider_ import SiSlider, SiCoordinatePicker2D, SiCoordinatePicker3D
 from siui.core import SiGlobal
@@ -368,6 +369,43 @@ class RefactoredWidgets(SiPage):
             group.addWidget(self.sliders_vertical)
             group.addWidget(self.coordinate_picker_2ds)
             group.addWidget(self.coordinate_picker_3ds)
+
+        with self.titled_widgets_group as group:
+            group.addTitle("编辑框")
+
+            self.editbox = OptionCardPlaneForWidgetDemos(self)
+            self.editbox.setTitle("单行文本编辑框")
+
+            self.linear_edit_box = SiLineEdit(self)
+            self.linear_edit_box.resize(560, 36)
+            self.linear_edit_box.setTitle("Repository Name")
+            self.linear_edit_box.setText("PyQt-SiliconUI")
+
+            self.linear_edit_box2 = SiLineEdit(self)
+            self.linear_edit_box2.resize(560, 36)
+            self.linear_edit_box2.setTitle("Owner")
+            self.linear_edit_box2.setText("ChinaIceF")
+
+            self.linear_edit_box3 = SiLineEdit(self)
+            self.linear_edit_box3.resize(560, 36)
+            self.linear_edit_box3.setTitle("Description")
+            self.linear_edit_box3.setText("A powerful and artistic UI library based on PyQt5")
+
+            self.check_button = SiPushButtonRefactor(self)
+            self.check_button.setText("确定")
+            self.check_button.clicked.connect(self.linear_edit_box.notifyInvalidInput)
+            self.check_button.clicked.connect(self.linear_edit_box2.notifyInvalidInput)
+            self.check_button.clicked.connect(self.linear_edit_box3.notifyInvalidInput)
+
+            self.editbox.body().setSpacing(11)
+            self.editbox.body().addWidget(self.linear_edit_box)
+            self.editbox.body().addWidget(self.linear_edit_box2)
+            self.editbox.body().addWidget(self.linear_edit_box3)
+            self.editbox.body().addWidget(self.check_button)
+            self.editbox.body().addPlaceholder(12)
+            self.editbox.adjustSize()
+
+            group.addWidget(self.editbox)
 
         with self.titled_widgets_group as group:
             group.addTitle("统计图表")
