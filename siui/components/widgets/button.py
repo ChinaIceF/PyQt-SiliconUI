@@ -159,6 +159,7 @@ class SiToggleButton(ABCToggleButton):
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+	self.label.setAttribute(Qt.WA_TransparentForMouseEvents, True)
 
         # 绑定到主体
         self.setAttachment(self.label)
