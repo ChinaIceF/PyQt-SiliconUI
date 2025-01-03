@@ -170,7 +170,7 @@ class ABCButton(QPushButton):
             SiGlobal.siui.windows["TOOL_TIP"].setText(self.hint)
 
     def leaveEvent(self, event):
-        super().enterEvent(event)
+        super().leaveEvent(event)
         self.hover_highlight.setColorTo(SiColor.trans(self.color_group.fromToken(SiColor.BUTTON_HOVER), 0))
 
         if self.hint != "" and "TOOL_TIP" in SiGlobal.siui.windows:
