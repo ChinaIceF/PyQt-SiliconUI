@@ -35,7 +35,6 @@ from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
-from siui.core.painter import getSuperRoundedRectPath
 from siui.gui import SiFont
 
 if TYPE_CHECKING:
@@ -775,14 +774,15 @@ class SiToggleButtonRefactor(SiFlatButton):
         self.update()
 
     def _onButtonToggled(self, state: bool) -> None:
+        sd = self.style_data
         if state:
-            self.toggle_btn_color_ani.setEndValue(self.style_data.toggled_button_color)
-            self.toggle_text_color_ani.setEndValue(self.style_data.toggled_text_color)
+            self.toggle_btn_color_ani.setEndValue(sd.toggled_button_color)
+            self.toggle_text_color_ani.setEndValue(sd.toggled_text_color)
             self.toggle_btn_color_ani.start()
             self.toggle_text_color_ani.start()
         else:
-            self.toggle_btn_color_ani.setEndValue(self.style_data.button_color)
-            self.toggle_text_color_ani.setEndValue(self.style_data.text_color)
+            self.toggle_btn_color_ani.setEndValue(sd.button_color)
+            self.toggle_text_color_ani.setEndValue(sd.text_color)
             self.toggle_btn_color_ani.start()
             self.toggle_text_color_ani.start()
 
@@ -1089,15 +1089,16 @@ class SiRadioButtonRefactor(QRadioButton):
         painter.setPen(Qt.NoPen)
 
     def _onButtonToggled(self) -> None:
+        sd = self.style_data
         if self.isChecked():
             self.indi_width_ani.setEndValue(1)
-            self.indi_color_ani.setEndValue(self.style_data.checked_indicator_color)
-            self.indi_color_ani.setCurrentValue(self.style_data.checked_indicator_color)
-            self.setProperty(self.Property.IndicatorColor, self.style_data.checked_indicator_color)
+            self.indi_color_ani.setEndValue(sd.checked_indicator_color)
+            self.indi_color_ani.setCurrentValue(sd.checked_indicator_color)
+            self.setProperty(self.Property.IndicatorColor, sd.checked_indicator_color)
         else:
             self.indi_width_ani.setEndValue(0)
             self.indi_width_ani.setCurrentValue(0.5)
-            self.indi_color_ani.setEndValue(self.style_data.unchecked_indicator_color)
+            self.indi_color_ani.setEndValue(sd.unchecked_indicator_color)
 
         self.indi_width_ani.start()
         self.indi_color_ani.start()
@@ -1160,7 +1161,8 @@ class SiRadioButtonWithDescription(SiRadioButtonRefactor):
         self.desc_label.setFixedWidth(width)
 
     def sizeHint(self) -> QSize:
-        width = max(self.desc_label.width(), super().sizeHint().width()) + self.style_data.indicator_allocated_width +22
+        sd = self.style_data
+        width = max(self.desc_label.width(), super().sizeHint().width()) + sd.indicator_allocated_width + 22
         height = self.desc_label.sizeHint().height() + 24
         return QSize(width, height)
 
@@ -1230,10 +1232,11 @@ class SiRadioButtonWithAvatar(SiRadioButtonRefactor):
 
     def paintEvent(self, a0) -> None:
         rect = self.rect()
-        indi_rect = QRect(0, 8, self.style_data.indicator_allocated_width, self.style_data.indicator_height)
-        avatar_rect = QRect(indi_rect.width() + 22, 0, self.style_data.avatar_width, self.style_data.avatar_height)
-        text_rect = QRect(indi_rect.width() + 22 + self.style_data.avatar_width + 12, 3, rect.width() - indi_rect.width() - 22, 14)
-        desc_rect = QRect(indi_rect.width() + 22 + self.style_data.avatar_width + 12, 19, rect.width() - indi_rect.width() - 22, 18)
+        sd = self.style_data
+        indi_rect = QRect(0, 8, sd.indicator_allocated_width, sd.indicator_height)
+        avatar_rect = QRect(indi_rect.width() + 22, 0, sd.avatar_width, sd.avatar_height)
+        text_rect = QRect(indi_rect.width() + 22 + sd.avatar_width + 12, 3, rect.width() - indi_rect.width() - 22, 14)
+        desc_rect = QRect(indi_rect.width() + 22 + sd.avatar_width + 12, 19, rect.width() - indi_rect.width() - 22, 18)
 
         renderHints = (
             QPainter.RenderHint.SmoothPixmapTransform
