@@ -2,14 +2,15 @@ import random
 
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QBoxLayout, QSizePolicy
 
 from siui.components import SiDenseHContainer, SiTitledWidgetGroup, SiLongPressButton, SiDenseVContainer
 from siui.components.button import SiPushButtonRefactor, SiProgressPushButton, SiLongPressButtonRefactor, SiFlatButton, \
     SiToggleButtonRefactor, SiSwitchRefactor, SiRadioButtonWithAvatar, SiRadioButtonWithDescription, \
     SiRadioButtonRefactor
 from siui.components.chart import SiTrendChart
-from siui.components.editbox import SiLineEdit
+from siui.components.container import SiDenseContainer
+from siui.components.editbox import SiLineEdit, SiCapsuleEdit
 from siui.components.page import SiPage
 from siui.components.slider_ import SiSlider, SiCoordinatePicker2D, SiCoordinatePicker3D
 from siui.core import SiGlobal
@@ -405,7 +406,21 @@ class RefactoredWidgets(SiPage):
             self.editbox.body().addPlaceholder(12)
             self.editbox.adjustSize()
 
+            self.capsule_editbox = OptionCardPlaneForWidgetDemos(self)
+            self.capsule_editbox.setTitle("小型文本编辑框")
+
+            self.capsule_edit = SiCapsuleEdit(self)
+            self.capsule_edit.setTitle("用户名")
+            self.capsule_edit.setPlaceholderText("您的用户名...")
+            self.capsule_edit.resize(170, 58)
+
+            self.capsule_editbox.body().setSpacing(11)
+            self.capsule_editbox.body().addWidget(self.capsule_edit)
+            self.capsule_editbox.body().addPlaceholder(12)
+            self.capsule_editbox.adjustSize()
+
             group.addWidget(self.editbox)
+            group.addWidget(self.capsule_editbox)
 
         with self.titled_widgets_group as group:
             group.addTitle("统计图表")
@@ -426,6 +441,40 @@ class RefactoredWidgets(SiPage):
             self.charts.adjustSize()
 
             group.addWidget(self.charts)
+
+        with self.titled_widgets_group as group:
+            group.addTitle("容器")
+
+            self.containers = OptionCardPlaneForWidgetDemos(self)
+            self.containers.setTitle("密堆积容器")
+
+            self.container_v = SiDenseContainer(self, QBoxLayout.TopToBottom)
+            self.container_h = SiDenseContainer(self, QBoxLayout.LeftToRight)
+            # self.container_h.setFixedHeight(300)
+
+            button1 = SiPushButtonRefactor.withText("按钮1", parent=self)
+            button2 = SiPushButtonRefactor.withText("按钮2", parent=self)
+            button3 = SiPushButtonRefactor.withText("按钮3", parent=self)
+
+            self.container_h.addWidget(button1)
+            self.container_h.addWidget(button2)
+            self.container_h.addWidget(button3, Qt.RightEdge)
+            self.container_h.setFixedWidth(400)
+
+            slider1 = SiSlider(self)
+            # slider1.setMaximumWidth(600)
+
+            self.container_v.addWidget(slider1)
+            self.container_v.addWidget(self.container_h)
+            self.container_v.layout().setAlignment(self.container_h, Qt.AlignHCenter)
+            self.container_v.adjustSize()
+
+            self.containers.body().setAdjustWidgetsSize(True)
+            self.containers.body().addWidget(self.container_v)
+            self.containers.body().addPlaceholder(12)
+            self.containers.adjustSize()
+
+            group.addWidget(self.containers)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)
