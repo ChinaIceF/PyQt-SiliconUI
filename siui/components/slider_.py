@@ -184,6 +184,9 @@ class SiSlider(QAbstractSlider):
         if tool_tip_window is not None and tool_tip_window.nowInsideOf() == self:
             tool_tip_window.setText(self.toolTip(), flash=flash)
 
+    def sizeHint(self) -> QSize:
+        return self.size()
+
     def event(self, event):
         if event.type() == QEvent.ToolTip:
             return True  # 忽略工具提示事件
