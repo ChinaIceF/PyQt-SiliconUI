@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, Qt, pyqtProperty, QSize
 from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
@@ -13,15 +13,15 @@ from siui.typing import T_WidgetParent
 class SliderStyleData:
     STYLE_TYPES = ["Slider"]
 
-    thumb_idle_color: QColor = QColor("#a681bf")
-    thumb_hover_color: QColor = QColor("#EDE1F4")
+    thumb_idle_color: QColor = field(default_factory=lambda: QColor("#a681bf"))
+    thumb_hover_color: QColor = field(default_factory=lambda: QColor("#EDE1F4"))
     thumb_width: int = 52
     thumb_height: int = 14
 
-    track_color: QColor = QColor("#77568d")
+    track_color: QColor = field(default_factory=lambda: QColor("#77568d"))
     track_height: int = 5
 
-    background_color: QColor = QColor("#1C191F")
+    background_color: QColor = field(default_factory=lambda: QColor("#1C191F"))
 
 
 class SiSlider(QAbstractSlider):
@@ -269,20 +269,20 @@ class CoordinatePickerStyleData:
     slider_y_width: int = 64
 
     indicator_size: int = 26
-    indicator_idle_color: QColor = QColor("#a681bf")
-    indicator_hover_color: QColor = QColor("#EDE1F4")
+    indicator_idle_color: QColor = field(default_factory=lambda: QColor("#a681bf"))
+    indicator_hover_color: QColor = field(default_factory=lambda: QColor("#EDE1F4"))
     indicator_outline_weight: int = 10
     indicator_stroke_weight: int = 6
-    indicator_background_color: QColor = QColor("#25222a")
-    indicator_stroke_color: QColor = QColor("#a681bf")
+    indicator_background_color: QColor = field(default_factory=lambda: QColor("#25222a"))
+    indicator_stroke_color: QColor = field(default_factory=lambda: QColor("#a681bf"))
 
     base_line_weight: int = 2
-    base_line_color: QColor = QColor("#3b3143")
+    base_line_color: QColor = field(default_factory=lambda: QColor("#3b3143"))
 
-    xoy_plate_background_color: QColor = QColor("#571c191f")
-    deepest_background_color: QColor = QColor("#1c191f")
+    xoy_plate_background_color: QColor = field(default_factory=lambda: QColor("#571c191f"))
+    deepest_background_color: QColor = field(default_factory=lambda: QColor("#1c191f"))
 
-    background_color: QColor = QColor("#25222a")
+    background_color: QColor = field(default_factory=lambda: QColor("#25222a"))
     background_border_radius: int = 6
 
 

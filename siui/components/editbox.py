@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from PyQt5.QtCore import QRectF, Qt, pyqtProperty
 from PyQt5.QtGui import QColor, QFont, QFontMetrics, QPainter, QPainterPath, QPalette
@@ -16,17 +16,17 @@ from siui.typing import T_WidgetParent
 class LineEditStyleData:
     STYLE_TYPES = ["Slider"]
 
-    title_background_color: QColor = QColor("#28252d")
-    title_color_idle: QColor = QColor("#918497")
-    title_color_focused: QColor = QColor("#D1CBD4")
-    title_color_error: QColor = QColor("#b27b84")
+    title_background_color: QColor = field(default_factory=lambda: QColor("#28252d"))
+    title_color_idle: QColor = field(default_factory=lambda: QColor("#918497"))
+    title_color_focused: QColor = field(default_factory=lambda: QColor("#D1CBD4"))
+    title_color_error: QColor = field(default_factory=lambda: QColor("#b27b84"))
 
-    text_background_color: QColor = QColor("#201d23")
-    text_color: QColor = QColor("#D1CBD4")
+    text_background_color: QColor = field(default_factory=lambda: QColor("#201d23"))
+    text_color: QColor = field(default_factory=lambda: QColor("#D1CBD4"))
 
-    text_indicator_color_idle: QColor = QColor("#00A681BF")
-    text_indicator_color_editing: QColor = QColor("#A681BF")
-    text_indicator_color_error: QColor = QColor("#d36764")
+    text_indicator_color_idle: QColor = field(default_factory=lambda: QColor("#00A681BF"))
+    text_indicator_color_editing: QColor = field(default_factory=lambda: QColor("#A681BF"))
+    text_indicator_color_error: QColor = field(default_factory=lambda: QColor("#d36764"))
 
 
 class SiLineEdit(QLineEdit):

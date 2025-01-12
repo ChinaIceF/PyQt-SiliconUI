@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from PyQt5.QtCore import QEvent, QLineF, QPoint, QPointF, QRect, QRectF, Qt, pyqtProperty
 from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
@@ -11,18 +11,18 @@ from siui.typing import T_WidgetParent
 
 @dataclass
 class TrendChartStyleData:
-    background_color: QColor = QColor("#25222a")
-    major_tick_color: QColor = QColor("#433b49")
-    minor_tick_color: QColor = QColor("#2e2a34")
-    axis_tick_color: QColor = QColor("#6a5e73")
+    background_color: QColor = field(default_factory=lambda: QColor("#25222a"))
+    major_tick_color: QColor = field(default_factory=lambda: QColor("#433b49"))
+    minor_tick_color: QColor = field(default_factory=lambda: QColor("#2e2a34"))
+    axis_tick_color: QColor = field(default_factory=lambda: QColor("#6a5e73"))
 
-    axis_label_color: QColor = QColor("#918497")
-    axis_name_color: QColor = QColor("#DFDFDF")
+    axis_label_color: QColor = field(default_factory=lambda: QColor("#918497"))
+    axis_name_color: QColor = field(default_factory=lambda: QColor("#DFDFDF"))
 
-    line_color: QColor = QColor("#A681BF")
-    indicator_idle_color: QColor = QColor("#00DFDFDF")
-    indicator_hover_color: QColor = QColor("#FFDFDFDF")
-    tick_text_color: QColor = QColor("#918497")
+    line_color: QColor = field(default_factory=lambda: QColor("#A681BF"))
+    indicator_idle_color: QColor = field(default_factory=lambda: QColor("#00DFDFDF"))
+    indicator_hover_color: QColor = field(default_factory=lambda: QColor("#FFDFDFDF"))
+    tick_text_color: QColor = field(default_factory=lambda: QColor("#918497"))
 
     axis_y_label_width: int = 64
     axis_y_name_width: int = 32

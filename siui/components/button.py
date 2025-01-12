@@ -2,7 +2,7 @@
 # replace button once it's done. Now it's draft, code may be ugly and verbose temporarily.
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import (
@@ -800,11 +800,11 @@ class SiToggleButtonRefactor(SiFlatButton):
 class SwitchStyleData(QObject):
     STYLE_TYPES = ["Switch"]
 
-    background_color_starting: QColor = QColor("#a681bf")
-    background_color_ending: QColor = QColor("#a681bf")
-    frame_color: QColor = QColor("#D2D2D2")
-    thumb_color_checked: QColor = QColor("#0f0912")
-    thumb_color_unchecked: QColor = QColor("#D2D2D2")
+    background_color_starting: QColor = field(default_factory=lambda: QColor("#a681bf"))
+    background_color_ending: QColor = field(default_factory=lambda: QColor("#a681bf"))
+    frame_color: QColor = field(default_factory=lambda: QColor("#D2D2D2"))
+    thumb_color_checked: QColor = field(default_factory=lambda: QColor("#0f0912"))
+    thumb_color_unchecked: QColor = field(default_factory=lambda: QColor("#D2D2D2"))
 
 
 class SiSwitchRefactor(QPushButton):
@@ -965,14 +965,14 @@ class RadioButtonStyleData(QObject):
     avatar_height: int = 36
     avatar_border_radius: int = 18
 
-    highlight_idle_color: QColor = QColor("#00baadc7")
-    highlight_flash_color: QColor = QColor("#90baadc7")
-    highlight_hover_color: QColor = QColor("#40baadc7")
+    highlight_idle_color: QColor = field(default_factory=lambda: QColor("#00baadc7"))
+    highlight_flash_color: QColor = field(default_factory=lambda: QColor("#90baadc7"))
+    highlight_hover_color: QColor = field(default_factory=lambda: QColor("#40baadc7"))
 
-    unchecked_indicator_color: QColor = QColor("#25222A")
+    unchecked_indicator_color: QColor = field(default_factory=lambda: QColor("#25222A"))
     unchecked_indicator_width: float = 33
 
-    checked_indicator_color: QColor = QColor("#a681bf")
+    checked_indicator_color: QColor = field(default_factory=lambda: QColor("#a681bf"))
     checked_indicator_width: float = 51
 
 
