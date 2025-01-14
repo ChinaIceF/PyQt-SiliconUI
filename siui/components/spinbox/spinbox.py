@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QIntValidator, QDoubleValidator
+from PyQt5.QtGui import QDoubleValidator, QIntValidator
 
 from siui.components.widgets.button import SiSimpleButton
 from siui.components.widgets.line_edit import SiLineEdit

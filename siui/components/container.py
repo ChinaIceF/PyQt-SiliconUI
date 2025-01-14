@@ -9,10 +9,16 @@ from siui.typing import T_WidgetParent
 
 
 class SiDenseContainer(QWidget):
+    LeftToRight = QBoxLayout.LeftToRight
+    RightToLeft = QBoxLayout.RightToLeft
+    TopToBottom = QBoxLayout.TopToBottom
+    BottomToTop = QBoxLayout.BottomToTop
+
     def __init__(self, parent: T_WidgetParent = None, direction: QBoxLayout.Direction = QBoxLayout.LeftToRight) -> None:
         super().__init__(parent)
 
         self.stretch_widget = QWidget(self)
+        self.stretch_widget.resize(0, 0)
         self._initLayout(direction)
 
     def _initLayout(self, direction) -> None:
@@ -25,6 +31,9 @@ class SiDenseContainer(QWidget):
     def layout(self) -> QBoxLayout | None:  # overloaded for coding hints, has no effect on any impl.
         return super().layout()
 
+    def stretchWidget(self) -> QWidget:
+        return self.stretch_widget
+
     def addWidget(self, widget: QWidget, side: Qt.Edges = Qt.LeftEdge | Qt.TopEdge) -> None:
         sw_index = self.layout().indexOf(self.stretch_widget)
         if side & Qt.LeftEdge or side & Qt.TopEdge:
@@ -33,3 +42,4 @@ class SiDenseContainer(QWidget):
             self.layout().insertWidget(sw_index+1, widget)
         else:
             raise ValueError(f"Unexpected side: {side}")
+

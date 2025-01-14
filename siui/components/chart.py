@@ -9,7 +9,7 @@ from siui.core.animation import SiExpAnimationRefactor
 from siui.typing import T_WidgetParent
 
 
-@dataclass
+# @dataclass
 class TrendChartStyleData:
     background_color: QColor = QColor("#25222a")
     major_tick_color: QColor = QColor("#433b49")

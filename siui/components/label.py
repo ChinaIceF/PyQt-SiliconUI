@@ -15,7 +15,7 @@ from siui.core import SiColor, SiGlobal, createPainter
 from siui.core.painter import getSuperRoundedRectPath
 
 
-@dataclass
+# @dataclass
 class SiLabelStyleData:
     text_color = SiColor.toArray("#00FFFFFF")
     background_color = SiColor.toArray("#00FFFFFF")

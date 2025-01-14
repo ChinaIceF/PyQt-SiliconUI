@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, Qt, pyqtProperty, QSize
+from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
 from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
 from PyQt5.QtWidgets import QAbstractSlider, QWidget
 
@@ -9,7 +9,7 @@ from siui.core.animation import SiExpAnimationRefactor
 from siui.typing import T_WidgetParent
 
 
-@dataclass
+# @dataclass
 class SliderStyleData:
     STYLE_TYPES = ["Slider"]
 
@@ -185,7 +185,7 @@ class SiSlider(QAbstractSlider):
             tool_tip_window.setText(self.toolTip(), flash=flash)
 
     def sizeHint(self) -> QSize:
-        return self.size()
+        return QSize(max(self.size().width(), 64), max(self.size().height(), 32))
 
     def event(self, event):
         if event.type() == QEvent.ToolTip:
@@ -261,7 +261,7 @@ class SiSlider(QAbstractSlider):
             self._drawThumbRect(painter, thumb_rect)
 
 
-@dataclass
+# @dataclass
 class CoordinatePickerStyleData:
     STYLE_TYPES = ["Slider"]
 

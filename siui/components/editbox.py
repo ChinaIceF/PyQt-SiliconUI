@@ -2,17 +2,29 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QRectF, Qt, pyqtProperty
-from PyQt5.QtGui import QColor, QFont, QFontMetrics, QPainter, QPainterPath, QPalette
-from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtCore import QEvent, QRectF, QSize, Qt, pyqtProperty
+from PyQt5.QtGui import (
+    QColor,
+    QDoubleValidator,
+    QFont,
+    QFontMetrics,
+    QIcon,
+    QIntValidator,
+    QPainter,
+    QPainterPath,
+    QPalette,
+)
+from PyQt5.QtWidgets import QLineEdit, QSpinBox
 
-from siui.core import createPainter
+from siui.components.button import SiFlatButton
+from siui.components.container import SiDenseContainer
+from siui.core import SiGlobal, createPainter, hideToolTip, isToolTipInsideOf, isTooltipShown, showToolTip
 from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
 
 
-@dataclass
+# @dataclass
 class LineEditStyleData:
     STYLE_TYPES = ["Slider"]
 
@@ -126,6 +138,12 @@ class SiLineEdit(QLineEdit):
         self._initStyleSheet()
         self.update()
 
+    @staticmethod
+    def _validationFunc(text: str) -> bool | str:
+        if text == "":
+            return "此项不能为空"
+        return True
+
     def notifyInvalidInput(self):
         self.text_indicator_color_ani.setEndValue(self.style_data.text_indicator_color_error)
         self.text_indicator_color_ani.start()
@@ -133,6 +151,14 @@ class SiLineEdit(QLineEdit):
         self.title_color_ani.start()
         self.text_indicator_width_ani.setEndValue(self.width() - self._title_width - 36)
         self.text_indicator_width_ani.start()
+
+    def validate(self):
+        result = self._validationFunc(self.text())
+        if result is True:
+            self.setToolTip("")
+        else:
+            self.setToolTip(result)
+            self.notifyInvalidInput()
 
     def _onTextEdited(self, text: str):
         metric = QFontMetrics(self.font())
@@ -157,6 +183,8 @@ class SiLineEdit(QLineEdit):
         if target is not None:
             target.setFocus()
         self.clearFocus()
+
+        self.validate()
 
     def _drawTitleBackgroundPath(self, rect: QRectF) -> QPainterPath:
         path = QPainterPath()
@@ -195,6 +223,11 @@ class SiLineEdit(QLineEdit):
         painter.setBrush(self._text_indi_color)
         painter.drawPath(self._drawTextIndicatorPath(rect))
 
+    def event(self, event):
+        if event.type() == QEvent.ToolTip:
+            return True  # 忽略工具提示事件
+        return super().event(event)
+
     def paintEvent(self, a0):
         title_rect = QRectF(0, 0, self.width(), self.height())
         text_rect = QRectF(self._title_width, 0, self.width() - self._title_width, self.height())
@@ -219,6 +252,10 @@ class SiLineEdit(QLineEdit):
         self.title_color_ani.start()
 
         self._onTextEdited(self.text())
+        self.setToolTip("")  # clean tooltip once it gets focus.
+
+        if isToolTipInsideOf(self):
+            hideToolTip(self)
 
     def focusOutEvent(self, a0):
         super().focusOutEvent(a0)
@@ -228,6 +265,14 @@ class SiLineEdit(QLineEdit):
         self.title_color_ani.start()
 
         self._onTextEdited("")
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        showToolTip(self)
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        hideToolTip(self)
 
 
 class SiCapsuleEdit(QLineEdit):
@@ -425,3 +470,137 @@ class SiCapsuleEdit(QLineEdit):
         self.title_color_ani.start()
 
         self._onTextEdited("")
+
+
+class SiSpinBox(SiCapsuleEdit):
+    def __init__(self, parent: T_WidgetParent = None, title: str = "Untitled Edit Box") -> None:
+        super().__init__(parent)
+
+        self._single_step = 1
+        self._value = 0
+        self._minimum = 0
+        self._maximum = 99
+
+        self.setValue(0)
+        self.setValidator(QIntValidator(self))
+
+        self.button_increase = SiFlatButton(self)
+        self.button_increase.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_caret_up_filled", "#F7A7C7"))
+        self.button_increase.style_data.button_color = QColor("#42353f")
+        self.button_increase.setIconSize(QSize(12, 12))
+        self.button_increase.setFixedSize(20, 20)
+        self.button_increase.setAutoRepeat(True)
+        self.button_increase.clicked.connect(self.stepForth)
+
+        self.button_decrease = SiFlatButton(self)
+        self.button_decrease.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_caret_down_filled", "#AEE5E8"))
+        self.button_decrease.style_data.button_color = QColor("#3a3f44")
+        self.button_decrease.setIconSize(QSize(12, 12))
+        self.button_decrease.setFixedSize(20, 20)
+        self.button_decrease.setAutoRepeat(True)
+        self.button_decrease.clicked.connect(self.stepBack)
+
+        self.button_container = SiDenseContainer(self, SiDenseContainer.LeftToRight)
+        self.button_container.setCursor(Qt.CursorShape.ArrowCursor)
+        self.button_container.addWidget(self.button_decrease, Qt.RightEdge)
+        self.button_container.addWidget(self.button_increase, Qt.RightEdge)
+        self.button_container.layout().setContentsMargins(11, 0, 11, 0)
+        self.button_container.layout().setSpacing(6)
+        self.button_container.setFixedWidth(68)
+        self.button_container.stretchWidget().hide()
+
+        self.editingFinished.connect(self._onEditingFinished)
+
+    def _initStyleSheet(self) -> None:
+        self.setStyleSheet(
+            "QLineEdit {"
+            "     selection-background-color: #493F4E;"
+            "     background-color: transparent;"
+            f"    color: {self.style_data.text_color.name()};"
+            "     border: 0px;"
+            f"    padding-top: 22px;"
+            "     padding-bottom: 1px;"
+            "     padding-right: 68px;"
+            "     padding-left: 15px;"
+            "}"
+        )
+
+    def _onEditingFinished(self):
+        self.setValue(int(self.text()))
+
+    def singleStep(self):
+        return self._single_step
+
+    def setSingleStep(self, step):
+        self._single_step = step
+
+    def minimum(self):
+        return self._minimum
+
+    def setMinimum(self, minimum):
+        self._minimum = minimum
+
+    def maximum(self):
+        return self._maximum
+
+    def setMaximum(self, maximum):
+        self._maximum = maximum
+
+    def value(self):
+        return self._value
+
+    def setValue(self, value):
+        self._value = min(self._maximum, max(value, self._minimum))
+        self.setText(str(int(self._value)))
+
+    def stepForth(self):
+        self.setValue(self._value + self._single_step)
+
+    def stepBack(self):
+        self.setValue(self._value - self._single_step)
+
+    def stepBy(self, step):
+        self.setValue(self._value + step)
+
+    def resizeEvent(self, a0):
+        super().resizeEvent(a0)
+        self.button_container.setGeometry(a0.size().width() - self.button_container.width(), 22,
+                                          self.button_container.width(), a0.size().height() - 22)
+
+    def wheelEvent(self, a0):
+        super().wheelEvent(a0)
+        if a0.angleDelta().y() > 0:
+            self.stepForth()
+            self.button_increase.flash()
+        elif a0.angleDelta().y() < 0:
+            self.stepBack()
+            self.button_decrease.flash()
+        a0.accept()
+
+    def keyPressEvent(self, a0):
+        super().keyPressEvent(a0)
+        if a0.key() == Qt.Key_Up:
+            self.stepForth()
+            self.button_increase.flash()
+        elif a0.key() == Qt.Key_Down:
+            self.stepBack()
+            self.button_decrease.flash()
+        a0.accept()
+
+
+class SiDoubleSpinBox(SiSpinBox):
+    def __init__(self, parent: T_WidgetParent = None, title: str = "Untitled Edit Box") -> None:
+        super().__init__(parent)
+
+        self.setValidator(QDoubleValidator(self))
+
+    @staticmethod
+    def _double(value) -> float:
+        return round(float(value), 10)
+
+    def _onEditingFinished(self):
+        self.setValue(float(self.text()))
+
+    def setValue(self, value):
+        self._value = min(self._maximum, max(value, self._minimum))
+        self.setText(str(self._double(self._value)))
