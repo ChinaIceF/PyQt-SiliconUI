@@ -1,18 +1,26 @@
 import random
 
-from PyQt5.QtCore import Qt, QPointF
+from PyQt5.QtCore import QPointF, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QLabel, QBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QBoxLayout, QLabel, QSizePolicy
 
-from siui.components import SiDenseHContainer, SiTitledWidgetGroup, SiLongPressButton, SiDenseVContainer
-from siui.components.button import SiPushButtonRefactor, SiProgressPushButton, SiLongPressButtonRefactor, SiFlatButton, \
-    SiToggleButtonRefactor, SiSwitchRefactor, SiRadioButtonWithAvatar, SiRadioButtonWithDescription, \
-    SiRadioButtonRefactor
+from siui.components import SiDenseHContainer, SiDenseVContainer, SiLongPressButton, SiTitledWidgetGroup
+from siui.components.button import (
+    SiFlatButton,
+    SiLongPressButtonRefactor,
+    SiProgressPushButton,
+    SiPushButtonRefactor,
+    SiRadioButtonRefactor,
+    SiRadioButtonWithAvatar,
+    SiRadioButtonWithDescription,
+    SiSwitchRefactor,
+    SiToggleButtonRefactor,
+)
 from siui.components.chart import SiTrendChart
 from siui.components.container import SiDenseContainer
-from siui.components.editbox import SiLineEdit, SiCapsuleEdit
+from siui.components.editbox import SiCapsuleEdit, SiLineEdit, SiSpinBox, SiDoubleSpinBox
 from siui.components.page import SiPage
-from siui.components.slider_ import SiSlider, SiCoordinatePicker2D, SiCoordinatePicker3D
+from siui.components.slider_ import SiCoordinatePicker2D, SiCoordinatePicker3D, SiSlider
 from siui.core import SiGlobal
 from siui.gui import SiFont
 
@@ -394,9 +402,9 @@ class RefactoredWidgets(SiPage):
 
             self.check_button = SiPushButtonRefactor(self)
             self.check_button.setText("确定")
-            self.check_button.clicked.connect(self.linear_edit_box.notifyInvalidInput)
-            self.check_button.clicked.connect(self.linear_edit_box2.notifyInvalidInput)
-            self.check_button.clicked.connect(self.linear_edit_box3.notifyInvalidInput)
+            self.check_button.clicked.connect(self.linear_edit_box.validate)
+            self.check_button.clicked.connect(self.linear_edit_box2.validate)
+            self.check_button.clicked.connect(self.linear_edit_box3.validate)
 
             self.editbox.body().setSpacing(11)
             self.editbox.body().addWidget(self.linear_edit_box)
@@ -414,8 +422,19 @@ class RefactoredWidgets(SiPage):
             self.capsule_edit.setPlaceholderText("您的用户名...")
             self.capsule_edit.resize(170, 58)
 
+            self.spinbox = SiSpinBox(self)
+            self.spinbox.setTitle("运行次数")
+            self.spinbox.resize(170, 58)
+
+            self.spinbox_double = SiDoubleSpinBox(self)
+            self.spinbox_double.setTitle("参数")
+            self.spinbox_double.setSingleStep(0.1)
+            self.spinbox_double.resize(170, 58)
+
             self.capsule_editbox.body().setSpacing(11)
             self.capsule_editbox.body().addWidget(self.capsule_edit)
+            self.capsule_editbox.body().addWidget(self.spinbox)
+            self.capsule_editbox.body().addWidget(self.spinbox_double)
             self.capsule_editbox.body().addPlaceholder(12)
             self.capsule_editbox.adjustSize()
 

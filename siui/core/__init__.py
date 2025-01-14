@@ -11,7 +11,7 @@ from .animation import (
 from .color import SiColor
 from .effect import SiQuickEffect
 from .enumrates import Si
-from .globals import NewGlobal, SiGlobal, hideToolTip, showToolTip, updateToolTip, isTooltipShown
+from .globals import NewGlobal, SiGlobal, hideToolTip, isToolTipInsideOf, isTooltipShown, showToolTip, updateToolTip
 from .painter import createPainter as createPainter
 from .token import FontStyle as FontStyle
 from .token import GlobalFont as GlobalFont
@@ -39,5 +39,6 @@ __all__ = (
     "hideToolTip",
     "showToolTip",
     "updateToolTip",
-    "isTooltipShown"
+    "isTooltipShown",
+    "isToolTipInsideOf",
 )

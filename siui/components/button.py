@@ -125,7 +125,7 @@ class GlobalStyleManager:
             setattr(instance, attr_name, value)
 
 
-@dataclass
+# @dataclass
 class ButtonStyleData(QObject):
     STYLE_TYPES = ["Button"]
 
@@ -152,27 +152,27 @@ class ButtonStyleData(QObject):
         GlobalStyleManager().updateStyleData(self)
 
 
-@dataclass(init=False)
+# @dataclass(init=False)
 class FlatButtonStyleData(ButtonStyleData):
     pass
 
 
-@dataclass(init=False)
+# @dataclass(init=False)
 class PushButtonStyleData(ButtonStyleData):
     pass
 
 
-@dataclass(init=False)
+# @dataclass(init=False)
 class ProgressPushButtonStyleData(PushButtonStyleData):
     pass
 
 
-@dataclass(init=False)
+# @dataclass(init=False)
 class LongPressButtonStyleData(PushButtonStyleData):
     pass
 
 
-@dataclass(init=False)
+# @dataclass(init=False)
 class ToggleButtonStyleData(ButtonStyleData):
     pass
 
@@ -796,7 +796,7 @@ class SiToggleButtonRefactor(SiFlatButton):
         painter.drawText(rect, Qt.AlignCenter, self.text())
 
 
-@dataclass
+# @dataclass
 class SwitchStyleData(QObject):
     STYLE_TYPES = ["Switch"]
 
@@ -949,7 +949,7 @@ class SiSwitchRefactor(QPushButton):
         self.scale_factor_ani.start()
 
 
-@dataclass
+# @dataclass
 class RadioButtonStyleData(QObject):
     STYLE_TYPES = ["Button"]
 

@@ -110,8 +110,6 @@ def hideToolTip(widget) -> None:
     window = _getToolTipWindow()
     if window is None:
         return
-    if widget.toolTip() == "":
-        return
     window.setNowInsideOf(None)
     window.hide_()
 
@@ -127,3 +125,8 @@ def updateToolTip(widget, flash: bool = True) -> None:
 
 def isTooltipShown() -> bool:
     return _getToolTipWindow().is_shown
+
+
+def isToolTipInsideOf(widget: QWidget) -> bool:
+    return widget == _getToolTipWindow().nowInsideOf()
+

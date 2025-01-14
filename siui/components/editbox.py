@@ -2,20 +2,29 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QRectF, Qt, pyqtProperty, QSize
-from PyQt5.QtGui import QColor, QFont, QFontMetrics, QPainter, QPainterPath, QPalette, QIcon, QIntValidator, \
-    QDoubleValidator
+from PyQt5.QtCore import QEvent, QRectF, QSize, Qt, pyqtProperty
+from PyQt5.QtGui import (
+    QColor,
+    QDoubleValidator,
+    QFont,
+    QFontMetrics,
+    QIcon,
+    QIntValidator,
+    QPainter,
+    QPainterPath,
+    QPalette,
+)
 from PyQt5.QtWidgets import QLineEdit, QSpinBox
 
 from siui.components.button import SiFlatButton
 from siui.components.container import SiDenseContainer
-from siui.core import createPainter, SiGlobal
+from siui.core import SiGlobal, createPainter, hideToolTip, isToolTipInsideOf, isTooltipShown, showToolTip
 from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
 
 
-@dataclass
+# @dataclass
 class LineEditStyleData:
     STYLE_TYPES = ["Slider"]
 
@@ -129,6 +138,12 @@ class SiLineEdit(QLineEdit):
         self._initStyleSheet()
         self.update()
 
+    @staticmethod
+    def _validationFunc(text: str) -> bool | str:
+        if text == "":
+            return "此项不能为空"
+        return True
+
     def notifyInvalidInput(self):
         self.text_indicator_color_ani.setEndValue(self.style_data.text_indicator_color_error)
         self.text_indicator_color_ani.start()
@@ -136,6 +151,14 @@ class SiLineEdit(QLineEdit):
         self.title_color_ani.start()
         self.text_indicator_width_ani.setEndValue(self.width() - self._title_width - 36)
         self.text_indicator_width_ani.start()
+
+    def validate(self):
+        result = self._validationFunc(self.text())
+        if result is True:
+            self.setToolTip("")
+        else:
+            self.setToolTip(result)
+            self.notifyInvalidInput()
 
     def _onTextEdited(self, text: str):
         metric = QFontMetrics(self.font())
@@ -160,6 +183,8 @@ class SiLineEdit(QLineEdit):
         if target is not None:
             target.setFocus()
         self.clearFocus()
+
+        self.validate()
 
     def _drawTitleBackgroundPath(self, rect: QRectF) -> QPainterPath:
         path = QPainterPath()
@@ -198,6 +223,11 @@ class SiLineEdit(QLineEdit):
         painter.setBrush(self._text_indi_color)
         painter.drawPath(self._drawTextIndicatorPath(rect))
 
+    def event(self, event):
+        if event.type() == QEvent.ToolTip:
+            return True  # 忽略工具提示事件
+        return super().event(event)
+
     def paintEvent(self, a0):
         title_rect = QRectF(0, 0, self.width(), self.height())
         text_rect = QRectF(self._title_width, 0, self.width() - self._title_width, self.height())
@@ -222,6 +252,10 @@ class SiLineEdit(QLineEdit):
         self.title_color_ani.start()
 
         self._onTextEdited(self.text())
+        self.setToolTip("")  # clean tooltip once it gets focus.
+
+        if isToolTipInsideOf(self):
+            hideToolTip(self)
 
     def focusOutEvent(self, a0):
         super().focusOutEvent(a0)
@@ -231,6 +265,14 @@ class SiLineEdit(QLineEdit):
         self.title_color_ani.start()
 
         self._onTextEdited("")
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        showToolTip(self)
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        hideToolTip(self)
 
 
 class SiCapsuleEdit(QLineEdit):
