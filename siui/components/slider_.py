@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
 from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
-from PyQt5.QtWidgets import QAbstractSlider, QWidget
+from PyQt5.QtWidgets import QAbstractSlider, QScrollArea, QScrollBar, QWidget
 
 from siui.core import SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
@@ -718,3 +718,326 @@ class SiCoordinatePicker3D(SiCoordinatePicker2D):
                                       background_rect.height() * (1 - a) / 2))
             painter.scale(a, a)
             painter.drawPixmap(0, 0, buffer)
+
+
+class ScrollBarStyleData:
+    STYLE_TYPES = ["Slider"]
+
+    thumb_idle_color: QColor = QColor("#70EDE1F4")
+    thumb_hover_color: QColor = QColor("#EDE1F4")
+    thumb_width: int = 52
+    thumb_height: int = 8
+
+    track_color: QColor = QColor("#0077568d")
+    track_height: int = 5
+
+    background_color: QColor = QColor("#001C191F")
+
+
+class SiScrollBar(QScrollBar):
+
+    class Property:
+        ThumbColor = "thumbColor"
+        TrackProgress = "trackProgress"
+        ColorOpacity = "colorOpacity"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self.setMouseTracking(True)
+
+        self.style_data = ScrollBarStyleData()
+        self._thumb_color = self.style_data.thumb_idle_color
+        self._track_progress = 0
+        self._color_opacity = 1
+        self._is_dragging = False
+        self._is_dragging_thumb = False
+        self._dragging_start_pos = QPoint()
+        self._dragging_anchor_pos = QPoint()
+        self._value_to_tooltip_func = self._defaultValueToToolTip
+        self._is_draw_track = True
+
+        self.thumb_color_ani = SiExpAnimationRefactor(self, self.Property.ThumbColor)
+        self.thumb_color_ani.init(1/4, 0.01, self._thumb_color, self._thumb_color)
+
+        self.progress_ani = SiExpAnimationRefactor(self, self.Property.TrackProgress)
+        self.progress_ani.init(1/3.5, 0.00001, 0, 0)
+
+        self.color_opacity_ani = SiExpAnimationRefactor(self, self.Property.ColorOpacity)
+        self.color_opacity_ani.init(1/6, 0.00001, 1, 1)
+
+        self.valueChanged.connect(self._onValueChanged)
+        self.rangeChanged.connect(self._onRangeChanged)
+
+    @pyqtProperty(QColor)
+    def thumbColor(self):
+        return self._thumb_color
+
+    @thumbColor.setter
+    def thumbColor(self, value: QColor):
+        self._thumb_color = value
+        self.update()
+
+    @pyqtProperty(float)
+    def trackProgress(self):
+        return self._track_progress
+
+    @trackProgress.setter
+    def trackProgress(self, value: float):
+        self._track_progress = value
+        self.update()
+
+    @pyqtProperty(float)
+    def colorOpacity(self):
+        return self._color_opacity
+
+    @colorOpacity.setter
+    def colorOpacity(self, value: float):
+        self._color_opacity = value
+        self.update()
+
+    def setPageStep(self, a0):
+        super().setPageStep(a0)
+        self.update()
+
+    def setDrawTrack(self, state: bool) -> None:
+        self._is_draw_track = state
+        self.update()
+
+    def isDrawTrack(self) -> bool:
+        return self._is_draw_track
+
+    @staticmethod
+    def _defaultValueToToolTip(value: int) -> str:
+        return str(value)
+
+    def setToolTipConvertionFunc(self, func) -> None:
+        self._value_to_tooltip_func = func
+        self.setToolTip(func(self.value()))
+
+    def _onValueChanged(self, value):
+        if self.maximum() - self.minimum() != 0:
+            self.progress_ani.setEndValue((value - self.minimum()) / (self.maximum() - self.minimum()))
+            self.progress_ani.start()
+
+    def _onRangeChanged(self, _, __):
+        if self.maximum() - self.minimum() != 0:
+            self.color_opacity_ani.setEndValue(1)
+            self.color_opacity_ani.start()
+
+            p = (self.value() - self.minimum()) / (self.maximum() - self.minimum())
+            self.setProperty(self.Property.TrackProgress, p)
+            self.progress_ani.update()
+            self.progress_ani.setCurrentValue(p)
+            self.progress_ani.setEndValue(p)
+
+        else:
+            self.color_opacity_ani.setEndValue(0)
+            self.color_opacity_ani.start()
+
+    def _drawBackgroundPath(self, rect) -> QPainterPath:
+        radius = min(rect.height() / 2, rect.width() / 2)
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), radius, radius)
+        return path
+
+    def _drawTrackPath(self, rect: QRect) -> QPainterPath:
+        radius = min(rect.height() / 2, rect.width() / 2)
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), radius, radius)
+        return path
+
+    def _drawThumbPath(self, rect: QRect) -> QPainterPath:
+        radius = min(rect.height() / 2, rect.width() / 2)
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), radius, radius)
+        return path
+
+    def _drawBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
+        painter.setBrush(self.style_data.background_color)
+        painter.drawPath(self._drawBackgroundPath(rect))
+
+    def _drawTrackRect(self, painter: QPainter, rect: QRect) -> None:
+        if self._is_draw_track:
+            painter.setBrush(self.style_data.track_color)
+            painter.drawPath(self._drawTrackPath(rect))
+
+    def _drawThumbRect(self, painter: QPainter, rect: QRect) -> None:
+        color = QColor(self._thumb_color)
+        color.setAlphaF(color.alphaF() * self._color_opacity)
+        painter.setBrush(color)
+        painter.drawPath(self._drawThumbPath(rect))
+
+    def _isMouseInThumbRect(self, pos: QPoint) -> bool:
+        p = self._track_progress
+        thumb_w = self.style_data.thumb_width
+        thumb_h = self.style_data.thumb_height
+        if self.orientation() == Qt.Orientation.Horizontal:
+            thumb_rect = QRectF((self.width() - thumb_w) * p, (self.height() - thumb_h) / 2, thumb_w, thumb_h)
+        else:
+            thumb_rect = QRectF((self.width() - thumb_h) / 2, (self.height() - thumb_w) * p, thumb_h, thumb_w)
+        return thumb_rect.contains(pos)
+
+    def _setValueToMousePos(self, pos: QPoint) -> None:
+        thumb_width = self.style_data.thumb_width
+        region = self.maximum() - self.minimum()
+        if self.orientation() == Qt.Orientation.Horizontal:
+            p = min(1, max((pos.x() - thumb_width / 2) / (self.width() - thumb_width), 0))
+        else:
+            p = min(1, max((pos.y() - thumb_width / 2) / (self.height() - thumb_width), 0))
+        self.setValue(int(self.minimum() + region * p))
+
+    def _setThumbHovering(self, state: bool) -> None:
+        if state:
+            self.thumb_color_ani.setEndValue(self.style_data.thumb_hover_color)
+            self.thumb_color_ani.start()
+        else:
+            self.thumb_color_ani.setEndValue(self.style_data.thumb_idle_color)
+            self.thumb_color_ani.start()
+
+    def _updateDraggingAnchor(self):
+        p = (self.value() - self.minimum()) / (self.maximum() - self.minimum())
+        thumb_w = self.style_data.thumb_width
+        thumb_h = self.style_data.thumb_height
+        if self.orientation() == Qt.Orientation.Horizontal:
+            thumb_rect = QRectF((self.width() - thumb_w) * p, (self.height() - thumb_h) / 2, thumb_w, thumb_h)
+        else:
+            thumb_rect = QRectF((self.width() - thumb_h) / 2, (self.height() - thumb_w) * p, thumb_h, thumb_w)
+        self._dragging_anchor_pos = thumb_rect.center()
+
+    def event(self, event):
+        if event.type() == QEvent.ToolTip:
+            return True  # 忽略工具提示事件
+        return super().event(event)
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        self._setThumbHovering(True)
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self._setThumbHovering(False)
+
+    def mousePressEvent(self, a0):
+        super().mousePressEvent(a0)
+        self.sliderPressed.emit()
+
+        if self.maximum() == self.minimum():
+            return
+
+        self._is_dragging = True
+        if self._isMouseInThumbRect(a0.pos()):
+            self._is_dragging_thumb = True
+            self._updateDraggingAnchor()
+            self._dragging_start_pos = a0.pos()
+        else:
+            self._setValueToMousePos(a0.pos())
+
+    def mouseMoveEvent(self, a0):
+        super().mouseMoveEvent(a0)
+        if self._is_dragging:
+            if self._is_dragging_thumb:
+                pos = self._dragging_anchor_pos + (a0.pos() - self._dragging_start_pos)
+                self._setValueToMousePos(pos)
+            else:
+                self._setValueToMousePos(a0.pos())
+
+        else:
+            self._setThumbHovering(state=self._isMouseInThumbRect(a0.pos()))
+
+    def mouseReleaseEvent(self, a0):
+        super().mouseReleaseEvent(a0)
+        self.sliderReleased.emit()
+
+        self._setThumbHovering(False)
+        self._is_dragging_thumb = False
+        self._is_dragging = False
+
+    def paintEvent(self, event):
+        p = self._track_progress
+        thumb_w = self.style_data.thumb_width
+        thumb_h = self.style_data.thumb_height
+        track_w = self.style_data.track_height
+        track_h = self.style_data.track_height
+
+        if self.orientation() == Qt.Orientation.Horizontal:
+            background_rect = QRectF(0, (self.height() - track_h) / 2, self.width(), track_h)
+            track_rect = QRectF(0, (self.height() - track_h) / 2, thumb_w / 2 + (self.width() - thumb_w) * p, track_h)
+            thumb_rect = QRectF((self.width() - thumb_w) * p, (self.height() - thumb_h) / 2, thumb_w, thumb_h)
+        else:
+            background_rect = QRectF((self.width() - track_w) / 2, 0, track_w, self.height())
+            track_rect = QRectF((self.width() - track_w) / 2, self.height() * (1-p), track_w, self.height() * p)
+            thumb_rect = QRectF((self.width() - thumb_h) / 2, (self.height() - thumb_w) * p, thumb_h, thumb_w)
+
+        renderHints = (
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
+        )
+
+        with createPainter(self, renderHints) as painter:
+            self._drawBackgroundRect(painter, background_rect)
+            self._drawTrackRect(painter, track_rect)
+            self._drawThumbRect(painter, thumb_rect)
+
+    def resizeEvent(self, a0):
+        super().resizeEvent(a0)
+        page_step = self.pageStep()
+        length = self.width() if self.orientation() == Qt.Horizontal else self.height()
+        self.style_data.thumb_width = int(page_step / (page_step + self.maximum() - self.minimum()) * length)
+
+
+class SiScrollAreaRefactor(QScrollArea):
+    class Property:
+        ContentsPos = "contentsPos"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self._contents_pos = QPointF(0.0, 0.0)
+        self.contents_pos_ani = SiExpAnimationRefactor(self, self.Property.ContentsPos)
+        self.contents_pos_ani.init(1/6, 2, self._contents_pos, self._contents_pos)
+
+        self._initScrollBar()
+        self.setStyleSheet("background-color: transparent; border: none; border-radius: 6px")
+
+    @pyqtProperty(QPointF)
+    def contentsPos(self):
+        return self._contents_pos
+
+    @contentsPos.setter
+    def contentsPos(self, value: QPointF):
+        self._contents_pos = value
+        self.widget().move(int(value.x()), int(value.y()))
+
+    def _initScrollBar(self) -> None:
+        self.scrollbar_v = SiScrollBar(self)
+        self.scrollbar_v.setOrientation(Qt.Vertical)
+        self.scrollbar_v.setFixedWidth(8)
+        self.scrollbar_v.setStyleSheet(
+            "QScrollBar:vertical {"
+            "    border: none;"
+            "    width: 8px;"
+            "    margin: 0px 0px 0px 0px;"
+            "}"
+        )
+
+        self.scrollbar_h = SiScrollBar(self)
+        self.scrollbar_h.setOrientation(Qt.Horizontal)
+        self.scrollbar_h.setFixedHeight(8)
+        self.scrollbar_h.setStyleSheet(
+            "QScrollBar:horizontal {"
+            "    border: none;"
+            "    height: 8px;"
+            "    margin: 0px 0px 0px 0px;"
+            "}"
+        )
+
+        self.setVerticalScrollBar(self.scrollbar_v)
+        self.setHorizontalScrollBar(self.scrollbar_h)
+
+    def scrollContentsBy(self, dx, dy):
+        prev_end_value: QPointF = self.contents_pos_ani.endValue()
+        self.contents_pos_ani.setEndValue(QPointF(prev_end_value.x() + dx, prev_end_value.y() + dy))
+        self.contents_pos_ani.start()
+
