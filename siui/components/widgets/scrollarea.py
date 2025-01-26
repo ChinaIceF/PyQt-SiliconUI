@@ -1,6 +1,6 @@
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiDraggableLabel, SiLabel
-from siui.core import Si
+from siui.core import Si, SiExpAnimation
 from siui.core import SiExpAccelerateAnimation
 from siui.core import SiGlobal
 
@@ -31,9 +31,9 @@ class SiScrollArea(SiWidget):
         self.scroll_bar_horizontal.dragged.connect(self._scroll_horizontal_handler)
 
         # 定义滚动动画，为了让所有控件都能用上滚动动画
-        self.widget_scroll_animation = SiExpAccelerateAnimation(self)
-        self.widget_scroll_animation.setFactor(1/9)
-        self.widget_scroll_animation.setBias(1)
+        self.widget_scroll_animation = SiExpAnimation(self)
+        self.widget_scroll_animation.setFactor(1/6)
+        self.widget_scroll_animation.setBias(2)
         self.widget_scroll_animation.setCurrent([0, 0])
         self.widget_scroll_animation.setTarget([0, 0])
         self.widget_scroll_animation.ticked.connect(lambda pos: self.attachment_.move(int(pos[0]), int(pos[1])))

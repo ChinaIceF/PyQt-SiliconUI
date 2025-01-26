@@ -1,3 +1,4 @@
+import math
 from dataclasses import dataclass
 
 from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
@@ -1035,6 +1036,29 @@ class SiScrollAreaRefactor(QScrollArea):
 
         self.setVerticalScrollBar(self.scrollbar_v)
         self.setHorizontalScrollBar(self.scrollbar_h)
+
+    def wheelEvent(self, a0):
+        scroll_length = self.scrollbar_v.maximum() - self.scrollbar_v.minimum()
+        end_y = self.contents_pos_ani.endValue().y()
+
+        if scroll_length != 0:
+            if end_y == -scroll_length:
+                pos = QPointF(self.contents_pos_ani.currentValue())
+                exceeded_y = max(0, abs(end_y - pos.y()))
+
+                pos.setY(pos.y() + a0.angleDelta().y() / math.log(exceeded_y + 100))
+                self.contents_pos_ani.setCurrentValue(pos)
+                self.contents_pos_ani.start()
+
+            if end_y == 0:
+                pos = QPointF(self.contents_pos_ani.currentValue())
+                exceeded_y = max(0, abs(end_y - pos.y()))
+
+                pos.setY(pos.y() + a0.angleDelta().y() / math.log(exceeded_y + 100))
+                self.contents_pos_ani.setCurrentValue(pos)
+                self.contents_pos_ani.start()
+
+        super().wheelEvent(a0)
 
     def scrollContentsBy(self, dx, dy):
         prev_end_value: QPointF = self.contents_pos_ani.endValue()
