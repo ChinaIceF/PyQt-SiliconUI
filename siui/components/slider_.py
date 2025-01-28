@@ -1065,3 +1065,6 @@ class SiScrollAreaRefactor(QScrollArea):
         self.contents_pos_ani.setEndValue(QPointF(prev_end_value.x() + dx, prev_end_value.y() + dy))
         self.contents_pos_ani.start()
 
+    def resizeEvent(self, a0):
+        super().resizeEvent(a0)
+        self.contents_pos_ani.stop()
