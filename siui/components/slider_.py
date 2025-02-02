@@ -995,6 +995,8 @@ class SiScrollAreaRefactor(QScrollArea):
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
+        self._over_scroll = False
+
         self._contents_pos = QPointF(0.0, 0.0)
         self.contents_pos_ani = SiExpAnimationRefactor(self, self.Property.ContentsPos)
         self.contents_pos_ani.init(1/6, 2, self._contents_pos, self._contents_pos)
@@ -1010,6 +1012,12 @@ class SiScrollAreaRefactor(QScrollArea):
     def contentsPos(self, value: QPointF):
         self._contents_pos = value
         self.widget().move(int(value.x()), int(value.y()))
+
+    def isOverScrollEnabled(self) -> bool:
+        return self._over_scroll
+
+    def setOverScrollEnabled(self, state: bool) -> None:
+        self._over_scroll = state
 
     def _initScrollBar(self) -> None:
         self.scrollbar_v = SiScrollBar(self)
@@ -1041,7 +1049,7 @@ class SiScrollAreaRefactor(QScrollArea):
         scroll_length = self.scrollbar_v.maximum() - self.scrollbar_v.minimum()
         end_y = self.contents_pos_ani.endValue().y()
 
-        if scroll_length != 0:
+        if scroll_length != 0 and self._over_scroll:
             if end_y == -scroll_length:
                 pos = QPointF(self.contents_pos_ani.currentValue())
                 exceeded_y = max(0, abs(end_y - pos.y()))
