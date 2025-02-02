@@ -1,7 +1,7 @@
 import os
 
 from PyQt5.QtCore import QByteArray, QSize, Qt
-from PyQt5.QtGui import QPainter, QPixmap
+from PyQt5.QtGui import QPainter, QPixmap, QIcon
 from PyQt5.QtSvg import QSvgRenderer
 
 
@@ -92,3 +92,7 @@ class GlobalIconPack:
         svg_renderer.render(painter)
         painter.end()
         return pixmap
+
+    def toIcon(self, name: str, size: QSize = QSize(64, 64), color_code: str = None) -> QIcon:
+        return QIcon(self.toPixmap(name, size, color_code))
+
