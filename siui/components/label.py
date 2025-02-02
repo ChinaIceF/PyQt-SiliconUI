@@ -7,11 +7,12 @@ from functools import lru_cache
 
 import numpy
 from PyQt5 import Qt
-from PyQt5.QtCore import QEvent, QPointF, QRect, QRectF
-from PyQt5.QtGui import QColor, QPainter, QPainterPath
+from PyQt5.QtCore import QEvent, QPointF, QRect, QRectF, pyqtProperty
+from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPaintEvent, QBrush
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from siui.core import SiColor, SiGlobal, createPainter
+from siui.core.animation import SiExpAnimationRefactor
 from siui.core.painter import getSuperRoundedRectPath
 
 
@@ -105,8 +106,64 @@ class SiLabelRefactor(QLabel):
         self._hideToolTip()
 
 
+class SiAnimatedColorWidget(QWidget):
+    class Property:
+        BackgroundColor = "backgroundColor"
 
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
 
+        self._background_color = QColor("#00000000")
+        self._border_radius = 0.0
+
+        self.color_ani = SiExpAnimationRefactor(self, self.Property.BackgroundColor)
+        self.color_ani.init(1/8, 0.01, self._background_color, self._background_color)
+
+    @pyqtProperty(QColor)
+    def backgroundColor(self):
+        return self._background_color
+
+    @backgroundColor.setter
+    def backgroundColor(self, value: QColor):
+        self._background_color = value
+        self.update()
+
+    def borderRadius(self) -> float:
+        return self._border_radius
+
+    def setBorderRadius(self, value: float) -> None:
+        self._border_radius = value
+        self.update()
+
+    def animation(self) -> SiExpAnimationRefactor:
+        return self.color_ani
+
+    def setAnimation(self, ani) -> None:
+        self.color_ani.stop()
+        self.color_ani.deleteLater()
+        self.color_ani = ani
+
+    def _drawBackgroundPath(self, rect: QRectF) -> QPainterPath:
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(0, 0, rect.width(), rect.height()), self._border_radius, self._border_radius)
+        return path
+
+    def _drawBackgroundRect(self, painter: QPainter, rect: QRectF) -> None:
+        painter.setBrush(self._background_color)
+        painter.drawPath(self._drawBackgroundPath(rect))
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        rect = self.rect()
+        renderHints = (
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
+        )
+
+        with createPainter(self, renderHints) as painter:
+            self._drawBackgroundRect(painter, rect)
+
+        painter.end()
 
 # class SiPainterPath(QPainterPath):
 #     class Quality:
