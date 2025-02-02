@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QRectF, QSize, Qt, pyqtProperty
+from PyQt5.QtCore import QEvent, QRectF, QSize, Qt, pyqtProperty, QPoint
 from PyQt5.QtGui import (
     QColor,
     QDoubleValidator,
@@ -14,10 +14,11 @@ from PyQt5.QtGui import (
     QPainterPath,
     QPalette,
 )
-from PyQt5.QtWidgets import QLineEdit, QSpinBox
+from PyQt5.QtWidgets import QLineEdit, QSpinBox, QAction, QApplication
 
 from siui.components.button import SiFlatButton
 from siui.components.container import SiDenseContainer
+from siui.components.menu_ import SiRoundMenu
 from siui.core import SiGlobal, createPainter, hideToolTip, isToolTipInsideOf, isTooltipShown, showToolTip
 from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
@@ -70,7 +71,11 @@ class SiLineEdit(QLineEdit):
 
         self.setFont(SiFont.getFont(size=14))
         self._initStyleSheet()
+        self._createCustomMenu()
 
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+
+        self.customContextMenuRequested.connect(self._showCustomMenu)
         self.textChanged.connect(self._onTextEdited)
         self.returnPressed.connect(self._onReturnPressed)
 
@@ -122,6 +127,60 @@ class SiLineEdit(QLineEdit):
     def textIndicatorWidth(self, value: float):
         self._text_indi_width = value
         self.update()
+
+    def _showCustomMenu(self, pos: QPoint):
+        self.undo_action.setEnabled(self.isUndoAvailable())
+        self.redo_action.setEnabled(self.isRedoAvailable())
+        self.cut_action.setEnabled(self.hasSelectedText())
+        self.copy_action.setEnabled(self.hasSelectedText())
+        self.paste_action.setEnabled(bool(QApplication.clipboard().text()))
+        self.select_all_action.setEnabled(len(self.text()) > 0)
+
+        self.menu.exec_(self.mapToGlobal(pos))
+
+    def _createCustomMenu(self):
+        self.menu = SiRoundMenu(self)  # 创建菜单
+
+        self.undo_action = QAction("撤销", self)
+        self.undo_action.setShortcut("Ctrl+Z")
+        self.undo_action.triggered.connect(self.undo)
+        # self.addAction(self.undo_action)
+
+        self.redo_action = QAction("重做", self)
+        self.redo_action.setShortcut("Ctrl+Shift+Z")
+        self.redo_action.triggered.connect(self.redo)
+        # self.addAction(self.redo_action)
+
+        self.cut_action = QAction("剪切", self)
+        self.cut_action.setShortcut("Ctrl+X")
+        self.cut_action.triggered.connect(self.cut)
+        # self.addAction(self.cut_action)
+
+        self.copy_action = QAction("复制", self)
+        self.copy_action.setShortcut("Ctrl+C")
+        self.copy_action.triggered.connect(self.copy)
+        # self.addAction(self.copy_action)
+
+        self.paste_action = QAction("粘贴", self)
+        self.paste_action.setShortcut("Ctrl+V")
+        self.paste_action.triggered.connect(self.paste)
+        # self.addAction(self.paste_action)
+
+        self.select_all_action = QAction("全选", self)
+        self.select_all_action.setShortcut("Ctrl+A")
+        self.select_all_action.triggered.connect(self.selectAll)
+        # self.addAction(self.select_all_action)
+
+        # 组装菜单
+        self.menu.addAction(self.undo_action)
+        self.menu.addAction(self.redo_action)
+        self.menu.addSeparator()
+        self.menu.addAction(self.cut_action)
+        self.menu.addAction(self.copy_action)
+        self.menu.addAction(self.paste_action)
+        self.menu.addSeparator()
+        self.menu.addAction(self.select_all_action)
+        self.menu.adjustSize()
 
     def title(self) -> str:
         return self._title
