@@ -2,24 +2,22 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QRectF, QSize, Qt, pyqtProperty, QPoint
+from PyQt5.QtCore import QEvent, QPoint, QRectF, QSize, Qt, pyqtProperty
 from PyQt5.QtGui import (
     QColor,
     QDoubleValidator,
     QFont,
     QFontMetrics,
-    QIcon,
     QIntValidator,
     QPainter,
     QPainterPath,
-    QPalette,
 )
-from PyQt5.QtWidgets import QLineEdit, QSpinBox, QAction, QApplication
+from PyQt5.QtWidgets import QAction, QApplication, QLineEdit
 
 from siui.components.button import SiFlatButton
 from siui.components.container import SiDenseContainer
 from siui.components.menu_ import SiRoundMenu
-from siui.core import SiGlobal, createPainter, hideToolTip, isToolTipInsideOf, isTooltipShown, showToolTip
+from siui.core import SiGlobal, createPainter, hideToolTip, isToolTipInsideOf, showToolTip
 from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
@@ -136,7 +134,7 @@ class SiLineEdit(QLineEdit):
         self.paste_action.setEnabled(bool(QApplication.clipboard().text()))
         self.select_all_action.setEnabled(len(self.text()) > 0)
 
-        self.menu.exec_(self.mapToGlobal(pos))
+        self.menu.exec_(self.menu.toPopupPos(self.mapToGlobal(pos)))
 
     def _createCustomMenu(self):
         self.menu = SiRoundMenu(self)  # 创建菜单
