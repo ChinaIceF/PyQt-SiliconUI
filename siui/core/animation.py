@@ -491,12 +491,13 @@ class SiExpAnimationRefactor(QAbstractAnimation):
     def startAfter(self, msec: int):
         self.start_after_timer.singleShot(msec, self.start)
 
-    def update(self):
+    def fromProperty(self):
+        """ load value from target's property """
         self.setCurrentValue(self._target.property(self._property_name))
 
-    def updateAndStart(self):
-        self.update()
-        self.start()
+    def toProperty(self):
+        """ set target's property to animation value """
+        self._target.setProperty(self._property_name, self._out_func(self._current_value))
 
     def setPropertyName(self, name: str) -> None:
         self._property_name = name
