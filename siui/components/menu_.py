@@ -25,26 +25,43 @@ class SiRoundMenuWidgetAction(QWidgetAction):
         return button
 
 
+class MenuItemsWidgetStyleData:
+    seperator_color: QColor = QColor("#6a5e73")
+    seperator_padding: int = 4
+
+    action_idle: QColor = QColor("#00EDE1F4")
+    action_hover: QColor = QColor("#20EDE1F4")
+    action_name_enabled: QColor = QColor("#D1CBD4")
+    action_name_disabled: QColor = QColor("#50D1CBD4")
+    action_shortcut_name: QColor = QColor("#918497")
+    action_shortcut_background: QColor = QColor("#201d23")
+
+
 class SeperatorWidget(QWidget):
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
+        self.style_data = MenuItemsWidgetStyleData()
         self.setFixedHeight(1)
 
     def paintEvent(self, a0):
+        padding = self.style_data.seperator_padding
+        color = self.style_data.seperator_color
         with createPainter(self) as painter:
-            painter.setPen(QColor("#6a5e73"))
-            painter.drawLine(QPoint(4, 0), QPoint(self.width() - 4, 0))
+            painter.setPen(color)
+            painter.drawLine(QPoint(padding, 0), QPoint(self.width() - padding, 0))
 
 
 class ActionWidget(SiDenseContainer):
-    def __init__(self, action: QAction, parent: QWidget) -> None:
+    def __init__(self, action: QAction, parent_menu: QMenu, parent: QWidget) -> None:
         super().__init__(parent, direction=SiDenseContainer.LeftToRight)
 
         self.setContentsMargins(10, 0, 10, 0)
         self.layout().setSpacing(4)
 
         self.action = action
+        self.parent_menu = parent_menu
         self._pressed_flag = False
+        self.style_data = MenuItemsWidgetStyleData()
 
         self.color_widget = SiAnimatedColorWidget(self)
         self.icon = QLabel(self)
@@ -64,16 +81,23 @@ class ActionWidget(SiDenseContainer):
     def _initContents(self) -> None:
         self.setToolTip(self.action.whatsThis())
 
-        self.color_widget.animation().setCurrentValue(QColor("#00EDE1F4"))
-        self.color_widget.animation().setEndValue(QColor("#00EDE1F4"))
-        self.color_widget.setBorderRadius(6)
+        sd = self.style_data
+        ani = self.color_widget.animation()
+
+        ani.setEndValue(self.style_data.action_idle)
+        ani.setCurrentValue(self.style_data.action_idle)
+
+        name_color = sd.action_name_enabled if self.action.isEnabled() else sd.action_name_disabled
+        shortcut_text = sd.action_shortcut_name.name()
+        shortcut_background = sd.action_shortcut_background.name()
 
         self.name.setStyleSheet(
-            f"color: {'#D1CBD4' if self.action.isEnabled() else '#50D1CBD4'};"
+            f"color: {name_color.name(QColor.HexArgb)};"
             "padding-right: 4px"
         )
         self.shortcut.setStyleSheet(
-            "color: #918497; background-color: #201d23;"
+            f"color: {shortcut_text};"
+            f"background-color: {shortcut_background};"
             "padding: 1px 6px 1px 6px;"
             "margin: 1px 0px 0px 0px;"
             "border-radius: 4px;"
@@ -104,6 +128,20 @@ class ActionWidget(SiDenseContainer):
         self.child_icon.setFixedSize(16, 16)
         # self.child_icon.setVisible(False)
 
+        self.color_widget.setBorderRadius(6)
+
+    def setHover(self, state: bool, to_action: bool = True) -> None:
+        ani = self.color_widget.animation()
+        if state:
+            ani.setEndValue(self.style_data.action_hover)
+            ani.start()
+        else:
+            ani.setEndValue(self.style_data.action_idle)
+            ani.start()
+
+        if state and to_action:
+            self.action.hover()
+
     def event(self, event):
         if event.type() == QEvent.ToolTip:
             return True  # 忽略工具提示事件
@@ -111,54 +149,53 @@ class ActionWidget(SiDenseContainer):
 
     def enterEvent(self, a0):
         super().enterEvent(a0)
-        self.color_widget.animation().setEndValue(QColor("#20EDE1F4"))
-        self.color_widget.animation().start()
-        self.action.hover()
+        self.setHover(True)
         showToolTip(self)
         raiseToolTipWindow()
 
     def leaveEvent(self, a0):
         super().leaveEvent(a0)
-        self.color_widget.animation().setEndValue(QColor("#00EDE1F4"))
-        self.color_widget.animation().start()
+        self.setHover(False)
         hideToolTip(self)
 
     def paintEvent(self, a0):
         super().paintEvent(a0)
         local_pos = self.mapFromGlobal(QCursor.pos())
-        if self.rect().contains(local_pos):
-            self.color_widget.animation().setEndValue(QColor("#20EDE1F4"))
-            self.color_widget.animation().start()
-        else:
-            self.color_widget.animation().setEndValue(QColor("#00EDE1F4"))
-            self.color_widget.animation().start()
+        is_hover = self.rect().contains(local_pos)
+        self.setHover(is_hover, to_action=False)
 
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
         self.color_widget.resize(a0.size())
 
     def mousePressEvent(self, a0):
-        if self.action.isEnabled() is False:
-            a0.accept()
-            return
-        else:
+        state = self.action.isEnabled()
+        self._pressed_flag = state
+
+        if state:
             a0.ignore()
-            self._pressed_flag = True
+        else:
+            a0.accept()
 
     def mouseReleaseEvent(self, a0):
-        if self.action.isEnabled():
-            if self._pressed_flag:
-                print(self.action.parent())
-                if self.action.menu() is not None:
-                    menu = self.action.menu()
-                    menu.popup(menu.toPopupPos(self.mapToGlobal(self.rect().topRight())))
-                    a0.accept()
-                else:
-                    a0.ignore()
-                self.action.trigger()
+        menu = self.action.menu()
+        has_child_menu = self.action.menu() is not None
+
+        if self.action.isEnabled() and self._pressed_flag:
+            self.action.trigger()
+
+            if has_child_menu:
+                menu.popup(menu.toPopupPos(self.mapToGlobal(self.rect().topRight())))
+                a0.accept()
+            else:
+                a0.ignore()
         else:
             a0.accept()
         self._pressed_flag = False
+
+    def focusOutEvent(self, a0):
+        super().focusOutEvent(a0)
+        self.setHover(False)
 
 
 class MenuActionContainer(SiDenseContainer):
@@ -168,6 +205,10 @@ class MenuActionContainer(SiDenseContainer):
         self.layout().setSpacing(4)
         self.setContentsMargins(6, 4, 6, 4)
 
+
+class RoundMenuStyleData:
+    background: QColor = QColor("#322e37")
+    border: QColor = QColor("#3c3841")
 
 class SiRoundMenu(QMenu):
     class Property:
@@ -185,6 +226,7 @@ class SiRoundMenu(QMenu):
         self._actions = []
         self._padding = 32
         self._view_size = QSize(0, 0)
+        self.style_data = RoundMenuStyleData()
 
         self.background = QLabel(self)
         self.view = SiScrollAreaRefactor(self)
@@ -196,14 +238,21 @@ class SiRoundMenu(QMenu):
         self._initStyle()
 
     def _initStyle(self) -> None:
-        self.background.setStyleSheet("background-color: #322e37; border-radius: 6px; border: 1px solid #3c3841")
-        self.background.move(self._padding, self._padding)
+        background = self.style_data.background.name()
+        border = self.style_data.border.name()
 
+        self.background.move(self._padding, self._padding)
+        self.background.setStyleSheet(
+            f"background-color: {background};"
+            f"border: 1px solid {border};"
+            "border-radius: 6px;"
+        )
+
+        self.view.setWidget(self.container)
+        self.view.setViewportMargins(0, 1, -8, 1)
+        self.view.move(self._padding, self._padding)
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.view.setViewportMargins(0, 1, -8, 1)
-        self.view.setWidget(self.container)
-        self.view.move(self._padding, self._padding)
 
     def _applyDropShadowEffect(self):
         SiQuickEffect.applyDropShadowOn(self.background, color=(0, 0, 0, 128))
@@ -222,7 +271,7 @@ class SiRoundMenu(QMenu):
         return QPoint(pos.x() - self._padding, pos.y() - self._padding)
 
     def addAction(self, action: QAction) -> None:
-        new_widget = ActionWidget(action=action, parent=self)
+        new_widget = ActionWidget(action=action, parent_menu=self, parent=self)
         self.container.addWidget(new_widget)
         self.container.adjustSize()
         self._actions.append(action)
@@ -256,14 +305,15 @@ class SiRoundMenu(QMenu):
 
     def showEvent(self, a0):
         super().showEvent(a0)
-
         self._applyDropShadowEffect()
 
         width = self.size().width() - self._padding * 2
         height = self.size().height() - self._padding * 2
-        self.view_size_ani.setCurrentValue(QSize(width, int(height * 0.6)))
-        self.view_size_ani.setEndValue(QSize(width, height))
-        self.view_size_ani.start()
+
+        ani = self.view_size_ani
+        ani.setCurrentValue(QSize(width, int(height * 0.6)))
+        ani.setEndValue(QSize(width, height))
+        ani.start()
 
     def hideEvent(self, a0):
         super().hideEvent(a0)
@@ -271,6 +321,7 @@ class SiRoundMenu(QMenu):
         width = self.size().width() - self._padding * 2
         height = self.size().height() - self._padding * 2
 
-        self.view_size_ani.stop()
-        self.view_size_ani.setCurrentValue(QSize(width, int(height * 0.6)))
-        self.setProperty(self.Property.ViewSize, QSize(width, int(height * 0.6)))
+        ani = self.view_size_ani
+        ani.stop()
+        ani.setCurrentValue(QSize(width, int(height * 0.6)))
+        ani.toProperty()
