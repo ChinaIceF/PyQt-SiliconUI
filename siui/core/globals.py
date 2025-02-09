@@ -91,12 +91,19 @@ class NewGlobal:
     create_time = time.time()
 
 
-def _getToolTipWindow() -> QWidget:
+def toolTipWindow() -> QWidget:
     return SiGlobal.siui.windows.get("TOOL_TIP")
 
 
+def raiseToolTipWindow():
+    window = toolTipWindow()
+    if window is not None:
+        window.raise_()
+
+
 def showToolTip(widget, flash: bool = True) -> None:
-    window = _getToolTipWindow()
+    """ Show tool tip of specified widget """
+    window = toolTipWindow()
     if window is None:
         return
     if widget.toolTip() == "":
@@ -107,7 +114,7 @@ def showToolTip(widget, flash: bool = True) -> None:
 
 
 def hideToolTip(widget) -> None:
-    window = _getToolTipWindow()
+    window = toolTipWindow()
     if window is None:
         return
     window.setNowInsideOf(None)
@@ -115,7 +122,7 @@ def hideToolTip(widget) -> None:
 
 
 def updateToolTip(widget, flash: bool = True) -> None:
-    window = _getToolTipWindow()
+    window = toolTipWindow()
     if window is None:
         return
     if widget.toolTip() == "":
@@ -124,9 +131,9 @@ def updateToolTip(widget, flash: bool = True) -> None:
 
 
 def isTooltipShown() -> bool:
-    return _getToolTipWindow().is_shown
+    return toolTipWindow().is_shown
 
 
 def isToolTipInsideOf(widget: QWidget) -> bool:
-    return widget == _getToolTipWindow().nowInsideOf()
+    return widget == toolTipWindow().nowInsideOf()
 

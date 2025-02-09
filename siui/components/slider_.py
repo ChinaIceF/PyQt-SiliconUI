@@ -95,7 +95,7 @@ class SiSlider(QAbstractSlider):
     def _onRangeChanged(self, _, __):
         p = (self.value() - self.minimum()) / (self.maximum() - self.minimum())
         self.setProperty(self.Property.TrackProgress, p)
-        self.progress_ani.update()
+        self.progress_ani.fromProperty()
         self.progress_ani.setCurrentValue(p)
         self.progress_ani.setEndValue(p)
 
@@ -828,7 +828,7 @@ class SiScrollBar(QScrollBar):
 
             p = (self.value() - self.minimum()) / (self.maximum() - self.minimum())
             self.setProperty(self.Property.TrackProgress, p)
-            self.progress_ani.update()
+            self.progress_ani.fromProperty()
             self.progress_ani.setCurrentValue(p)
             self.progress_ani.setEndValue(p)
 

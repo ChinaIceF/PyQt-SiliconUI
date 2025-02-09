@@ -1,25 +1,25 @@
 from __future__ import annotations
 
+import random
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QRectF, QSize, Qt, pyqtProperty, QPoint
+import numpy
+from PyQt5.QtCore import QEvent, QPoint, QRectF, QSize, Qt, pyqtProperty, QPointF
 from PyQt5.QtGui import (
     QColor,
     QDoubleValidator,
     QFont,
     QFontMetrics,
-    QIcon,
     QIntValidator,
     QPainter,
     QPainterPath,
-    QPalette,
 )
-from PyQt5.QtWidgets import QLineEdit, QSpinBox, QAction, QApplication
+from PyQt5.QtWidgets import QAction, QApplication, QLineEdit
 
 from siui.components.button import SiFlatButton
 from siui.components.container import SiDenseContainer
 from siui.components.menu_ import SiRoundMenu
-from siui.core import SiGlobal, createPainter, hideToolTip, isToolTipInsideOf, isTooltipShown, showToolTip
+from siui.core import SiGlobal, createPainter, hideToolTip, isToolTipInsideOf, showToolTip
 from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
@@ -136,7 +136,7 @@ class SiLineEdit(QLineEdit):
         self.paste_action.setEnabled(bool(QApplication.clipboard().text()))
         self.select_all_action.setEnabled(len(self.text()) > 0)
 
-        self.menu.exec_(self.mapToGlobal(pos))
+        self.menu.exec_(self.menu.toPopupPos(self.mapToGlobal(pos)))
 
     def _createCustomMenu(self):
         self.menu = SiRoundMenu(self)  # 创建菜单
@@ -332,6 +332,105 @@ class SiLineEdit(QLineEdit):
     def leaveEvent(self, a0):
         super().leaveEvent(a0)
         hideToolTip(self)
+
+
+class SiCustomLineEdit(QLineEdit):
+    class Property:
+        CharProgress = "charProgress"
+        CursorX = "cursorX"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+        self._origin_point = QPointF(0.0, 0.0)
+        self._max_supported_length = 1000  # supported maximum length is 1000 chars
+        self._char_progress = [0] * 1000
+        self._cursor_x = 0
+
+        self.char_prog_ani = SiExpAnimationRefactor(self, self.Property.CharProgress)
+        self.char_prog_ani.init(1/4, 0.001, self._char_progress, self._char_progress)
+
+        self.cursor_x_ani = SiExpAnimationRefactor(self, self.Property.CursorX)
+        self.cursor_x_ani.init(1/2, 0.001, self._cursor_x, self._cursor_x)
+
+        self.setFont(SiFont.getFont(size=14))
+        self.setMaxLength(100)
+
+        self.textChanged.connect(self._onTextChanged)
+        self.cursorPositionChanged.connect(self._onCursorPositionChanged)
+
+    @pyqtProperty(list)
+    def charProgress(self):
+        return self._char_progress
+
+    @charProgress.setter
+    def charProgress(self, value: list):
+        self._char_progress = value
+        self.update()
+
+    @pyqtProperty(float)
+    def cursorX(self):
+        return self._cursor_x
+
+    @cursorX.setter
+    def cursorX(self, value: float):
+        self._cursor_x = value
+        self.update()
+
+    def _getCharColor(self, index: int) -> QColor:
+        return QColor(255, 255, 255, int(255 * self._char_progress[index] ** 0.5))
+
+    def _getCharRect(self, x, y, line_rect, index: int) -> QRectF:
+        pos = QPointF(x, y) + self._origin_point
+        delta_y = 2 ** ((1 - self._char_progress[index]) * 2) - 1
+        return QRectF(pos.x(), pos.y() + delta_y, 32, line_rect.height() - 1)
+
+    def _drawTextChar(self, painter: QPainter, rect: QRectF) -> None:
+        font = self.font()
+        metrics = QFontMetrics(font)
+
+        sum_x, sum_y = 0, 0
+        for index, char in enumerate(self.text()):
+            char_rect = self._getCharRect(sum_x, sum_y, rect, index)
+            char_color = self._getCharColor(index)
+
+            painter.setPen(char_color)
+            painter.drawText(char_rect, Qt.AlignVCenter | Qt.AlignLeft, char)
+            sum_x += metrics.width(char)
+
+    def _drawCursorRect(self, painter: QPainter, line_rect: QRectF) -> None:
+        if self.hasFocus():
+            path = QPainterPath()
+            path.addRoundedRect(self._cursor_x + 1, (line_rect.height() - 20) / 2, 5, 20, 2.0, 2.0)
+            painter.setBrush(QColor("#90EDE1F4"))
+            painter.setPen(Qt.NoPen)
+            painter.drawPath(path)
+
+    def _drawBackgroundRect(self, painter: QPainter, rect: QRectF) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(rect, 6.0, 6.0)
+        painter.setBrush(QColor("#252229"))
+        painter.drawPath(path)
+
+    def paintEvent(self, a0):
+        text_rect = self.rect()
+        background_rect = QRectF(0, 0, self.rect().width(), self.rect().height())
+
+        with createPainter(self) as painter:
+            self._drawBackgroundRect(painter, background_rect)
+            self._drawTextChar(painter, text_rect)
+            self._drawCursorRect(painter, text_rect)
+
+    def _onTextChanged(self, text) -> None:
+        m = self._max_supported_length
+        self.char_prog_ani.setEndValue([1] * len(text) + [0] * (m - len(text)))
+        self.char_prog_ani.start()
+
+    def _onCursorPositionChanged(self, old, new) -> None:
+        metrics = QFontMetrics(self.font())
+        cursor_x = sum([metrics.width(char) for char in self.text()[:new]]) + self._origin_point.x() - 1
+
+        self.cursor_x_ani.setEndValue(cursor_x)
+        self.cursor_x_ani.start()
 
 
 class SiCapsuleEdit(QLineEdit):
