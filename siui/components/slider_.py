@@ -1,7 +1,7 @@
 import math
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
+from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty
 from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
 from PyQt5.QtWidgets import QAbstractSlider, QScrollArea, QScrollBar, QWidget
 
@@ -997,20 +997,25 @@ class SiScrollAreaRefactor(QScrollArea):
 
         self._over_scroll = False
 
-        self._contents_pos = QPointF(0.0, 0.0)
+        self._contents_visual_pos = QPointF(0.0, 0.0)
+        self._contents_anchor_pos = QPointF(0.0, 0.0)
         self.contents_pos_ani = SiExpAnimationRefactor(self, self.Property.ContentsPos)
-        self.contents_pos_ani.init(1/6, 2, self._contents_pos, self._contents_pos)
+        self.contents_pos_ani.init(1/6, 2, self._contents_visual_pos, self._contents_visual_pos)
 
         self._initScrollBar()
         self.setStyleSheet("background-color: transparent; border: none; border-radius: 6px")
 
+        self.pileScrollTimer = QTimer(self)
+        self.pileScrollTimer.setSingleShot(True)
+        self.pileScrollTimer.timeout.connect(self._onPileScrollTriggered)
+
     @pyqtProperty(QPointF)
     def contentsPos(self):
-        return self._contents_pos
+        return self._contents_visual_pos
 
     @contentsPos.setter
     def contentsPos(self, value: QPointF):
-        self._contents_pos = value
+        self._contents_visual_pos = value
         self.widget().move(int(value.x()), int(value.y()))
 
     def isOverScrollEnabled(self) -> bool:
@@ -1045,32 +1050,66 @@ class SiScrollAreaRefactor(QScrollArea):
         self.setVerticalScrollBar(self.scrollbar_v)
         self.setHorizontalScrollBar(self.scrollbar_h)
 
+    def _onPileScrollTriggered(self) -> None:
+        self.contents_pos_ani.setEndValue(self._contents_anchor_pos)
+        self.contents_pos_ani.start()
+
+    def _createPileScroll(self) -> None:
+        self.pileScrollTimer.start(80)
+
+    def _cancelPileScroll(self) -> None:
+        self.pileScrollTimer.stop()
+
+    def _overScrollStepLength(self) -> float:
+        anchor = self._contents_anchor_pos
+        visual = self.contents_pos_ani.endValue()
+        dis = max(0, abs(anchor.y() - visual.y()))
+
+        k, init_step = 0.05, 10
+        return math.exp(-dis * k) * init_step
+
     def wheelEvent(self, a0):
+        anchor = self._contents_anchor_pos
+        visual = self._contents_visual_pos
+
         scroll_length = self.scrollbar_v.maximum() - self.scrollbar_v.minimum()
-        end_y = self.contents_pos_ani.endValue().y()
+        wheel_delta_y = a0.angleDelta().y()
+        end_y = anchor.y()
+        k = min(1, abs(wheel_delta_y) / 120)
 
         if scroll_length != 0 and self._over_scroll:
-            if end_y == -scroll_length:
-                pos = QPointF(self.contents_pos_ani.currentValue())
-                exceeded_y = max(0, abs(end_y - pos.y()))
 
-                pos.setY(pos.y() + a0.angleDelta().y() / math.log(exceeded_y + 100))
-                self.contents_pos_ani.setCurrentValue(pos)
+            if end_y == 0 and wheel_delta_y > 0:
+                new_pos = QPointF(visual)  # 拿视觉位置处理
+                new_pos.setY(max(new_pos.y(), anchor.y()) + self._overScrollStepLength() * k)
+
+                self.contents_pos_ani.setEndValue(new_pos)
                 self.contents_pos_ani.start()
 
-            if end_y == 0:
-                pos = QPointF(self.contents_pos_ani.currentValue())
-                exceeded_y = max(0, abs(end_y - pos.y()))
+                self._cancelPileScroll()
+                self._createPileScroll()  # 创建计划滚动
 
-                pos.setY(pos.y() + a0.angleDelta().y() / math.log(exceeded_y + 100))
-                self.contents_pos_ani.setCurrentValue(pos)
+            if end_y == -scroll_length and wheel_delta_y < 0:
+                new_pos = QPointF(visual)  # 拿视觉位置处理
+                new_pos.setY(min(new_pos.y(), anchor.y()) - self._overScrollStepLength() * k)
+
+                self.contents_pos_ani.setEndValue(new_pos)
                 self.contents_pos_ani.start()
+
+                self._cancelPileScroll()
+                self._createPileScroll()  # 创建计划滚动
+
+            if 0 > end_y > -scroll_length:
+                self._cancelPileScroll()
 
         super().wheelEvent(a0)
 
     def scrollContentsBy(self, dx, dy):
-        prev_end_value: QPointF = self.contents_pos_ani.endValue()
-        self.contents_pos_ani.setEndValue(QPointF(prev_end_value.x() + dx, prev_end_value.y() + dy))
+        anchor = self._contents_anchor_pos
+        self._contents_anchor_pos.setX(anchor.x() + dx)
+        self._contents_anchor_pos.setY(anchor.y() + dy)
+
+        self.contents_pos_ani.setEndValue(self._contents_anchor_pos)
         self.contents_pos_ani.start()
 
     def resizeEvent(self, a0):
