@@ -17,7 +17,7 @@ from siui.components.button import (
     SiToggleButtonRefactor,
 )
 from siui.components.chart import SiTrendChart
-from siui.components.container import SiDenseContainer
+from siui.components.container import SiDenseContainer, SiTriSectionPanelCard
 from siui.components.editbox import SiCapsuleEdit, SiLineEdit, SiSpinBox, SiDoubleSpinBox
 from siui.components.page import SiPage
 from siui.components.slider_ import SiCoordinatePicker2D, SiCoordinatePicker3D, SiSlider
@@ -479,6 +479,7 @@ class RefactoredWidgets(SiPage):
             self.container_h.addWidget(button2)
             self.container_h.addWidget(button3, Qt.RightEdge)
             self.container_h.setFixedWidth(400)
+            # self.container_h.layout().setSpacing()
 
             slider1 = SiSlider(self)
             # slider1.setMaximumWidth(600)
@@ -494,6 +495,14 @@ class RefactoredWidgets(SiPage):
             self.containers.adjustSize()
 
             group.addWidget(self.containers)
+
+        with self.titled_widgets_group as group:
+            group.addTitle("卡片容器")
+
+            card_test = SiTriSectionPanelCard(self)
+            card_test.setMinimumHeight(500)
+
+            group.addWidget(card_test)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)
