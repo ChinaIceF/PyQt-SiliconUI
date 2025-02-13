@@ -572,7 +572,7 @@ class SiLongPressButtonRefactor(SiPushButtonRefactor):
     def setProgress(self, p: float, ani: bool = True) -> None:
         self._progress = max(0.0, min(p, 1.0))
         self._updateProgress(ani)
-        self.progress_ani.update()
+        self.progress_ani.fromProperty()
         self.update()
 
     def reloadStyleData(self) -> None:
