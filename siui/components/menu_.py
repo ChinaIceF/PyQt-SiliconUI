@@ -210,6 +210,7 @@ class RoundMenuStyleData:
     background: QColor = QColor("#322e37")
     border: QColor = QColor("#3c3841")
 
+
 class SiRoundMenu(QMenu):
     class Property:
         ViewSize = "viewSize"

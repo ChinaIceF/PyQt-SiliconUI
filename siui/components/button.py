@@ -473,9 +473,9 @@ class SiPushButtonRefactor(ABCButton):
         text_rect, icon_rect = self.textRectAndIconRect()
         device_pixel_ratio = self.devicePixelRatioF()
         renderHints = (
-            QPainter.RenderHint.SmoothPixmapTransform
-            | QPainter.RenderHint.TextAntialiasing
-            | QPainter.RenderHint.Antialiasing
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
         )
 
         buffer = QPixmap(rect.size() * device_pixel_ratio)
@@ -802,9 +802,9 @@ class SwitchStyleData(QObject):
 
     background_color_starting: QColor = QColor("#a681bf")
     background_color_ending: QColor = QColor("#a681bf")
-    frame_color: QColor = QColor("#D2D2D2")
+    frame_color: QColor = QColor("#D1CBD4")
     thumb_color_checked: QColor = QColor("#0f0912")
-    thumb_color_unchecked: QColor = QColor("#D2D2D2")
+    thumb_color_unchecked: QColor = QColor("#D1CBD4")
 
 
 class SiSwitchRefactor(QPushButton):
@@ -976,6 +976,204 @@ class RadioButtonStyleData(QObject):
     checked_indicator_width: float = 51
 
 
+class RadioButtonStyleDataR:
+    text_color = QColor("#D1CBD4")
+    indicator_idle_color = QColor("#332e38")
+    indicator_idle_strike_color = QColor("#25222A")
+
+    indicator_hover_strike_color = QColor("#4c4453")
+
+    indicator_flash_color = QColor("#4c4453")
+    indicator_flash_strike_color = QColor("#FFFFFF")
+
+    indicator_selected_color = QColor("#332E38")
+    indicator_selected_strike_color = QColor("#CDB0DB")
+
+
+class SiRadioButtonR(QRadioButton):
+    class Property:
+        ScaleFactor = "scaleFactor"
+        IndicatorColor = "indicatorColor"
+        IndicatorSpinProg = "indicatorSpinProg"
+        IndicatorStrikeColor = "indicatorStrikeColor"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self.style_data = RadioButtonStyleDataR()
+
+        self._scale_factor = 1
+        self._indi_spin_prog = 1
+        self._indi_color = self.style_data.indicator_idle_color
+        self._indi_strike_color = self.style_data.indicator_idle_strike_color
+
+        self.scale_factor_ani = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
+        self.scale_factor_ani.init(1/16, 0, 1, 1)
+
+        self.indi_spin_prog_ani = SiExpAnimationRefactor(self, self.Property.IndicatorSpinProg)
+        self.indi_spin_prog_ani.init(1/5, 0.0001, 1, 1)
+
+        self.indi_color_ani = SiExpAnimationRefactor(self, self.Property.IndicatorColor)
+        self.indi_color_ani.init(1/8, 0.001, self._indi_color, self._indi_color)
+
+        self.indi_strike_color_ani = SiExpAnimationRefactor(self, self.Property.IndicatorStrikeColor)
+        self.indi_strike_color_ani.init(1/4, 0.001, self._indi_strike_color, self._indi_strike_color)
+
+        self._initStyle()
+        self.toggled.connect(self._onToggled)
+
+    def _initStyle(self):
+        self.setFont(SiFont.getFont(size=14))
+        self.setStyleSheet(
+            "QRadioButton::indicator { width: 0px; height: 0px; }"
+            "QRadioButton {"
+            f"    color: {self.style_data.text_color.name()};"
+            "     margin: 7px 0px 8px 24px"
+            "}"
+        )
+
+    @pyqtProperty(float)
+    def scaleFactor(self):
+        return self._scale_factor
+
+    @scaleFactor.setter
+    def scaleFactor(self, value: float):
+        self._scale_factor = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def indicatorColor(self):
+        return self._indi_color
+
+    @indicatorColor.setter
+    def indicatorColor(self, value: QColor):
+        self._indi_color = value
+        self.update()
+
+    @pyqtProperty(float)
+    def indicatorSpinProg(self):
+        return self._indi_spin_prog
+
+    @indicatorSpinProg.setter
+    def indicatorSpinProg(self, value: float):
+        self._indi_spin_prog = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def indicatorStrikeColor(self):
+        return self._indi_strike_color
+
+    @indicatorStrikeColor.setter
+    def indicatorStrikeColor(self, value: QColor):
+        self._indi_strike_color = value
+        self.update()
+
+    def _onToggled(self, state):
+        if state:
+            self.indi_spin_prog_ani.setCurrentValue(0)
+            self.indi_spin_prog_ani.setEndValue(1)
+            self.indi_spin_prog_ani.start()
+
+            self.indi_color_ani.setCurrentValue(self.style_data.indicator_flash_color)
+            self.indi_color_ani.setEndValue(self.style_data.indicator_selected_color)
+            self.indi_color_ani.start()
+
+            self.indi_strike_color_ani.setCurrentValue(self.style_data.indicator_flash_strike_color)
+            self.indi_strike_color_ani.setEndValue(self.style_data.indicator_selected_strike_color)
+            self.indi_strike_color_ani.start()
+
+        else:
+            self.indi_color_ani.setEndValue(self.style_data.indicator_idle_color)
+            self.indi_color_ani.start()
+
+            self.indi_strike_color_ani.setEndValue(self.style_data.indicator_idle_strike_color)
+            self.indi_strike_color_ani.start()
+
+    def _drawIndicatorBackgroundEllipse(self, painter: QPainter, rect: QRectF) -> None:
+        path = QPainterPath()
+        path.addEllipse(rect)
+
+        painter.setBrush(self._indi_color)
+        painter.drawPath(path)
+
+    def _drawIndicatorStrike(self, painter: QPainter, rect: QRectF) -> None:
+        rect.adjust(2.5, 2.5, -2.5, -2.5)
+
+        start_angle = 360 * 16 + 120 * 16 * self._indi_spin_prog
+        span_angle = 360 * 16 * self._indi_spin_prog
+
+        pen = QPen(self._indi_strike_color, 5)
+        pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+
+        painter.setPen(pen)
+        painter.drawArc(rect, int(start_angle), int(span_angle))
+
+    def _drawBufferToSelf(self, painter: QPainter,
+                          buffer_rect: QRectF,
+                          target_rect: QRectF,
+                          buffer: QPixmap) -> None:
+        br = buffer_rect
+        tr = target_rect
+        a = self._scale_factor
+
+        painter.translate(QPointF(tr.width() * (1 - a) / 2, tr.height() * (1 - a) / 2))
+        painter.scale(a, a)
+
+        painter.drawPixmap((tr.width() - br.width()) // 2 + tr.x(),
+                           (tr.height() - br.height()) // 2 + tr.y(), buffer)
+
+    def paintEvent(self, a0):
+        super().paintEvent(a0)
+
+        device_pixel_ratio = self.devicePixelRatioF()
+        indicator_rect = QRectF(0, 0, 24, 24)
+        buffer_rect = QRectF(0, 0, 24, 24)
+        buffer_target_rect = QRectF(0, (self.height() - 24) / 2, 24, 24)
+
+        buffer = QPixmap(buffer_rect.size().toSize() * device_pixel_ratio)
+        buffer.setDevicePixelRatio(device_pixel_ratio)
+        buffer.fill(Qt.transparent)
+
+        renderHints = (
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
+        )
+
+        with createPainter(buffer) as painter:
+            self._drawIndicatorBackgroundEllipse(painter, indicator_rect)
+            self._drawIndicatorStrike(painter, indicator_rect)
+
+        with createPainter(self, renderHints) as painter:
+            self._drawBufferToSelf(painter, buffer_rect, buffer_target_rect, buffer)
+
+    def mousePressEvent(self, e) -> None:
+        super().mousePressEvent(e)
+        self.scale_factor_ani.setFactor(1 / 16)
+        self.scale_factor_ani.setBias(0)
+        self.scale_factor_ani.setEndValue(0.8)
+        self.scale_factor_ani.start()
+
+    def mouseReleaseEvent(self, e) -> None:
+        super().mouseReleaseEvent(e)
+        self.scale_factor_ani.setFactor(1 / 4)
+        self.scale_factor_ani.setBias(0.001)
+        self.scale_factor_ani.setEndValue(1)
+        self.scale_factor_ani.start()
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        if self.isChecked() is False:
+            self.indi_strike_color_ani.setEndValue(self.style_data.indicator_hover_strike_color)
+            self.indi_strike_color_ani.start()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        if self.isChecked() is False:
+            self.indi_strike_color_ani.setEndValue(self.style_data.indicator_idle_strike_color)
+            self.indi_strike_color_ani.start()
+
+
 class SiRadioButtonRefactor(QRadioButton):
     class Property:
         IndicatorWidthProg = "indicatorWidthProg"
@@ -994,16 +1192,16 @@ class SiRadioButtonRefactor(QRadioButton):
         self._hl_color = self.style_data.highlight_idle_color
 
         self.indi_width_ani = SiExpAnimationRefactor(self, self.Property.IndicatorWidthProg)
-        self.indi_width_ani.init(1/6, 0.015, 0, 0)
+        self.indi_width_ani.init(1 / 6, 0.015, 0, 0)
 
         self.indi_hover_width_ani = SiExpAnimationRefactor(self, self.Property.IndicatorHoverWidth)
-        self.indi_hover_width_ani.init(1/4, 0.01, 0, 0)
+        self.indi_hover_width_ani.init(1 / 4, 0.01, 0, 0)
 
         self.indi_color_ani = SiExpAnimationRefactor(self, self.Property.IndicatorColor)
-        self.indi_color_ani.init(1/3, 1, self._indi_color, self._indi_color)
+        self.indi_color_ani.init(1 / 3, 1, self._indi_color, self._indi_color)
 
         self.highlight_color_ani = SiExpAnimationRefactor(self, self.Property.HighlightRectColor)
-        self.highlight_color_ani.init(1/8, 0.1, self._hl_color, self._hl_color)
+        self.highlight_color_ani.init(1 / 8, 0.1, self._hl_color, self._hl_color)
 
         self.toggled.connect(self._onButtonToggled)
 
@@ -1112,9 +1310,9 @@ class SiRadioButtonRefactor(QRadioButton):
         text_rect = QRect(indi_rect.width() + 22, 0, rect.width() - indi_rect.width() - 22, 26)
 
         renderHints = (
-            QPainter.RenderHint.SmoothPixmapTransform
-            | QPainter.RenderHint.TextAntialiasing
-            | QPainter.RenderHint.Antialiasing
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
         )
 
         with createPainter(self, renderHints) as painter:
@@ -1220,9 +1418,9 @@ class SiRadioButtonWithAvatar(SiRadioButtonRefactor):
         size = QSize(width, height) * device_pixel_ratio
 
         path = QPainterPath()
-        path.addRoundedRect(x,                  y,
-                            width,              height,
-                            border_radius,      border_radius)
+        path.addRoundedRect(x, y,
+                            width, height,
+                            border_radius, border_radius)
 
         buffer_painter.setClipPath(path)
         buffer_painter.drawPixmap(target_rect, self.icon().pixmap(size))
@@ -1239,9 +1437,9 @@ class SiRadioButtonWithAvatar(SiRadioButtonRefactor):
         desc_rect = QRect(indi_rect.width() + 22 + sd.avatar_width + 12, 19, rect.width() - indi_rect.width() - 22, 18)
 
         renderHints = (
-            QPainter.RenderHint.SmoothPixmapTransform
-            | QPainter.RenderHint.TextAntialiasing
-            | QPainter.RenderHint.Antialiasing
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
         )
 
         with createPainter(self, renderHints) as painter:

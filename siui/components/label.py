@@ -1,14 +1,10 @@
 from __future__ import annotations
 
 import math
-import random
-from dataclasses import dataclass
-from functools import lru_cache
 
 import numpy
-from PyQt5 import Qt
-from PyQt5.QtCore import QEvent, QPointF, QRect, QRectF, pyqtProperty
-from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPaintEvent, QBrush
+from PyQt5.QtCore import QEvent, QPointF, QRect, QRectF, QSize, QSizeF, Qt, pyqtProperty
+from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPaintEvent, QPixmap
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from siui.core import SiColor, SiGlobal, createPainter
@@ -163,7 +159,88 @@ class SiAnimatedColorWidget(QWidget):
         with createPainter(self, renderHints) as painter:
             self._drawBackgroundRect(painter, rect)
 
-        painter.end()
+
+class SiRoundPixmapWidget(QWidget):
+    def __init__(self, pixmap: QPixmap, parent=None):
+        super().__init__(parent)
+        self._pixmap = pixmap
+        self._visual_size = QSize(32, 32)
+        self._visual_size_enabled = False
+        self._border_radius = 0.0
+
+    def setPixmap(self, pixmap: QPixmap) -> None:
+        self._pixmap = pixmap
+        self.update()
+
+    def setVisualSize(self, size: QSize) -> None:
+        self._visual_size = size
+        self.update()
+
+    def setVisualSizeEnabled(self, state: bool) -> None:
+        self._visual_size_enabled = state
+        self.update()
+
+    def setBorderRadius(self, radius: float) -> None:
+        self._border_radius = radius
+        self.update()
+
+    def pixmap(self) -> QPixmap:
+        return self._pixmap
+
+    def visualSize(self) -> QSize:
+        return self._visual_size
+
+    def isVisualSizeEnabled(self) -> bool:
+        return self._visual_size_enabled
+
+    def borderRadius(self) -> float:
+        return self._border_radius
+
+    def _drawPixmap(self, painter: QPainter, rect: QRect) -> None:
+        device_pixel_ratio = self.devicePixelRatioF()
+        border_radius = self._border_radius
+
+        if self._visual_size_enabled:
+            width = self._visual_size.width()
+            height = self._visual_size.height()
+
+        else:
+            width = rect.width()
+            height = rect.height()
+
+        x = (rect.width() - width) // 2
+        y = (rect.height() - height) // 2
+        target_rect = QRect(x, y, width, height)
+        size = QSize(width, height) * device_pixel_ratio
+
+        pixmap = self._pixmap.scaled(size, transformMode=Qt.TransformationMode.SmoothTransformation)
+
+        path = QPainterPath()
+        path.addRoundedRect(x, y, width, height, border_radius, border_radius)
+        painter.setClipPath(path)
+        painter.drawPixmap(target_rect, pixmap)
+
+    def paintEvent(self, event) -> None:
+        rect = self.rect()
+        device_pixel_ratio = self.devicePixelRatioF()
+
+        buffer = QPixmap(rect.size() * device_pixel_ratio)
+        buffer.setDevicePixelRatio(device_pixel_ratio)
+        buffer.fill(Qt.transparent)
+
+        renderHints = (
+            QPainter.RenderHint.SmoothPixmapTransform
+            | QPainter.RenderHint.TextAntialiasing
+            | QPainter.RenderHint.Antialiasing
+        )
+
+        with createPainter(buffer, renderHints) as buffer_painter:
+            self._drawPixmap(buffer_painter, rect)
+
+        with createPainter(self, renderHints) as painter:
+            painter.drawPixmap(rect, buffer)
+
+
 
 # class SiPainterPath(QPainterPath):
 #     class Quality:

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QRectF, Qt
-from PyQt5.QtGui import QColor, QPainter, QPainterPath
+from PyQt5.QtCore import QRectF, QSize, Qt
+from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPixmap
 from PyQt5.QtWidgets import QBoxLayout, QLabel, QWidget
 
-from siui.components.button import SiPushButtonRefactor
+from siui.components.label import SiRoundPixmapWidget
 from siui.core import GlobalFont, createPainter
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
@@ -59,7 +59,7 @@ class PanelCardStyleData:
 
 class SiPanelCard(SiDenseContainer):
     """
-    提供“立体样式”的卡片容器
+    提供“立体样式”的卡片样容器
     """
 
     def __init__(self,
@@ -152,3 +152,114 @@ class SiTriSectionPanelCard(SiPanelCard):
 
     def footer(self) -> SiDenseContainer:
         return self._footer
+
+
+class RowCardStyleData:
+    background_color: QColor = QColor("#332e38")
+    border_radius: float = 6
+
+
+class SiRowCard(SiDenseContainer):
+    """
+    提供“平面化样式”的条状卡片样容器
+    """
+
+    def __init__(self,
+                 parent: T_WidgetParent = None,
+                 direction: QBoxLayout.Direction = QBoxLayout.LeftToRight) -> None:
+        super().__init__(parent, direction)
+
+        self.style_data = RowCardStyleData()
+
+        self.setContentsMargins(0, 0, 0, 0)
+
+    def _drawBackgroundPath(self, rect: QRectF) -> QPainterPath:
+        fore_radius = self.style_data.border_radius
+
+        path = QPainterPath()
+        path.addRoundedRect(rect, fore_radius, fore_radius)
+        return path
+
+    def _drawBackgroundRect(self, painter: QPainter, rect: QRectF) -> None:
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self.style_data.background_color)
+        painter.drawPath(self._drawBackgroundPath(rect))
+
+    def paintEvent(self, a0):
+        background_rect = QRectF(0, 0, self.width(), self.height())
+
+        with createPainter(self) as painter:
+            self._drawBackgroundRect(painter, background_rect)
+
+
+class SiTriSectionRowCard(SiRowCard):
+    def __init__(self,
+                 parent: T_WidgetParent = None,
+                 pixmap: QPixmap | None = None,
+                 title: str = "Tri-Section Row Card",
+                 description: str = "This is the description text of this card.") -> None:
+        super().__init__(parent, self.LeftToRight)
+
+        self._icon_container = SiDenseContainer(self, self.TopToBottom)
+        self._text_container = SiDenseContainer(self, self.TopToBottom)
+        self._action_container = SiDenseContainer(self, self.RightToLeft)
+
+        self._icon = SiRoundPixmapWidget(pixmap, self)
+        self._title = QLabel(title, self)
+        self._description = QLabel(description, self)
+
+        self._icon_container.addWidget(self._icon)
+        self._text_container.addWidget(self._title)
+        self._text_container.addWidget(self._description)
+
+        self.addWidget(self._icon_container)
+        self.addWidget(self._text_container)
+        self.addWidget(self._action_container, Qt.RightEdge)
+
+        self._initStyle()
+
+    def _initStyle(self) -> None:
+        self.setMinimumHeight(80)
+        self.layout().setSpacing(0)
+
+        self._icon.setFixedSize(80, 80)
+        self._icon.setVisualSizeEnabled(True)
+        self._icon.setVisualSize(QSize(32, 32))
+
+        self._title.setFont(SiFont.tokenized(GlobalFont.S_BOLD))
+        self._title.setStyleSheet(
+            "color: #D1CBD4"
+        )
+
+        self._description.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
+        self._description.setStyleSheet(
+            "color: #918497"
+        )
+
+        self._icon_container.setFixedWidth(80)
+        self._icon_container.layout().setSpacing(0)
+        self._icon_container.layout().setAlignment(self._icon, Qt.AlignCenter)
+        self._icon_container.layout().setStretchFactor(self._icon_container.stretchWidget(), 0)
+
+        self._text_container.layout().setSpacing(0)
+        self._text_container.layout().setStretchFactor(self._text_container.stretchWidget(), 0)
+        self._text_container.setContentsMargins(0, 20, 0, 20)
+
+        self._action_container.setContentsMargins(16, 0, 28, 0)
+
+        self.adjustSize()
+
+    def iconContainer(self) -> SiDenseContainer:
+        return self._icon_container
+
+    def textContainer(self) -> SiDenseContainer:
+        return self._text_container
+
+    def actionsContainer(self) -> SiDenseContainer:
+        return self._action_container
+
+    def titleLabel(self) -> QLabel:
+        return self._title
+
+    def descriptionLabel(self) -> QLabel:
+        return self._description
