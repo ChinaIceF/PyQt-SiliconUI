@@ -10,15 +10,15 @@ from siui.components.button import (
     SiLongPressButtonRefactor,
     SiProgressPushButton,
     SiPushButtonRefactor,
-    SiRadioButtonRefactor,
+    SiRadioButtonR,
     SiRadioButtonWithAvatar,
     SiRadioButtonWithDescription,
     SiSwitchRefactor,
     SiToggleButtonRefactor,
 )
 from siui.components.chart import SiTrendChart
-from siui.components.container import SiDenseContainer, SiTriSectionPanelCard
-from siui.components.editbox import SiCapsuleEdit, SiLineEdit, SiSpinBox, SiDoubleSpinBox
+from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
+from siui.components.editbox import SiCapsuleEdit, SiDoubleSpinBox, SiLineEdit, SiSpinBox
 from siui.components.page import SiPage
 from siui.components.slider_ import SiCoordinatePicker2D, SiCoordinatePicker3D, SiSlider
 from siui.core import SiGlobal
@@ -219,32 +219,22 @@ class RefactoredWidgets(SiPage):
             radio_button_container = SiDenseVContainer(self)
             radio_button_container.setSpacing(6)
 
-            self.refactor_radio_button = SiRadioButtonRefactor(self)
-            self.refactor_radio_button.setText("I want to go sleep now")
+            self.refactor_radio_button = SiRadioButtonR(self)
+            self.refactor_radio_button.setText("只因你太美")
             self.refactor_radio_button.adjustSize()
             self.refactor_radio_button.setChecked(True)
 
-            self.refactor_radio_button2 = SiRadioButtonRefactor(self)
+            self.refactor_radio_button2 = SiRadioButtonR(self)
             self.refactor_radio_button2.setText("你干嘛嗨嗨呦")
             self.refactor_radio_button2.adjustSize()
 
-            self.refactor_radio_button3 = SiRadioButtonRefactor(self)
+            self.refactor_radio_button3 = SiRadioButtonR(self)
             self.refactor_radio_button3.setText("唱跳 Rap 篮球")
             self.refactor_radio_button3.adjustSize()
-
-            self.refactor_radio_button4 = SiRadioButtonRefactor(self)
-            self.refactor_radio_button4.setText("不是哥们我真的要困死了让我睡觉吧")
-            self.refactor_radio_button4.adjustSize()
-
-            self.refactor_radio_button5 = SiRadioButtonRefactor(self)
-            self.refactor_radio_button5.setText("nihao")
-            self.refactor_radio_button5.adjustSize()
 
             radio_button_container.addWidget(self.refactor_radio_button)
             radio_button_container.addWidget(self.refactor_radio_button2)
             radio_button_container.addWidget(self.refactor_radio_button3)
-            radio_button_container.addWidget(self.refactor_radio_button4)
-            radio_button_container.addWidget(self.refactor_radio_button5)
             radio_button_container.adjustSize()
 
             self.refactor_radiobuttons.body().addWidget(radio_button_container)
@@ -500,9 +490,14 @@ class RefactoredWidgets(SiPage):
             group.addTitle("卡片容器")
 
             card_test = SiTriSectionPanelCard(self)
-            card_test.setMinimumHeight(500)
+            card_test.setMinimumHeight(250)
+
+            bar_test = SiTriSectionRowCard(self, SiGlobal.siui.iconpack.toPixmap("ic_fluent_slide_text_cursor_filled"))
+            bar_test.actionsContainer().addWidget(SiSwitchRefactor(self))
+            bar_test.adjustSize()
 
             group.addWidget(card_test)
+            group.addWidget(bar_test)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)
