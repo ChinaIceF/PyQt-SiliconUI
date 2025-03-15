@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import difflib
 import random
 from dataclasses import dataclass
 
 import numpy
-from PyQt5.QtCore import QEvent, QPoint, QRectF, QSize, Qt, pyqtProperty, QPointF
+from PyQt5.QtCore import QEvent, QPoint, QRectF, QSize, Qt, pyqtProperty, QPointF, QObject
 from PyQt5.QtGui import (
     QColor,
     QDoubleValidator,
@@ -334,6 +335,64 @@ class SiLineEdit(QLineEdit):
         hideToolTip(self)
 
 
+class AnimatedCharObject(QObject):
+
+    class Property:
+        TextOpacity = "textOpacity"
+        TextPosition = "textPosition"
+
+    def __init__(self, parent, text, start_pos: QPointF):
+        super().__init__(parent)
+
+        self._text = text
+        self._start_pos = start_pos
+
+        self._text_opacity = 1
+        self._text_pos_p = 0
+
+        self.opacity_ani = SiExpAnimationRefactor(self, self.Property.TextOpacity)
+        self.opacity_ani.init(1/4, 0.0001, 1, 1)
+
+        self.position_ani = SiExpAnimationRefactor(self, self.Property.TextPosition)
+        self.position_ani.init(0, 0.05, self._text_pos_p, self._text_pos_p)
+
+    @pyqtProperty(float)
+    def textOpacity(self):
+        return self._text_opacity
+
+    @textOpacity.setter
+    def textOpacity(self, value: float):
+        self._text_opacity = value
+
+    @pyqtProperty(float)
+    def textPosition(self):
+        return self._text_pos_p
+
+    @textPosition.setter
+    def textPosition(self, value: float):
+        self._text_pos_p = value
+
+    def disappear(self):
+        self.position_ani.setEndValue(1)
+        self.opacity_ani.setEndValue(0)
+
+        self.position_ani.start()
+        self.opacity_ani.start()
+
+    def isDone(self):
+        return self.opacity_ani.currentValue() == 0
+
+    def text(self) -> str:
+        return self._text
+
+    def opacity(self) -> float:
+        return self._text_opacity
+
+    def position(self) -> QPointF:
+        p = self._text_pos_p ** 2
+        return self._start_pos + QPointF(0, 10) * p
+
+
 class SiCustomLineEdit(QLineEdit):
     class Property:
         CharProgress = "charProgress"
@@ -345,6 +404,8 @@ class SiCustomLineEdit(QLineEdit):
         self._max_supported_length = 1000  # supported maximum length is 1000 chars
         self._char_progress = [0] * 1000
         self._cursor_x = 0
+        self._animated_chars = []
+        self._prev_text = ""
 
         self.char_prog_ani = SiExpAnimationRefactor(self, self.Property.CharProgress)
         self.char_prog_ani.init(1/4, 0.001, self._char_progress, self._char_progress)
@@ -352,7 +413,9 @@ class SiCustomLineEdit(QLineEdit):
         self.cursor_x_ani = SiExpAnimationRefactor(self, self.Property.CursorX)
         self.cursor_x_ani.init(1/2, 0.001, self._cursor_x, self._cursor_x)
 
-        self.setFont(SiFont.getFont(size=14))
+        font = SiFont.getFont(size=14)
+        font.setLetterSpacing(QFont.AbsoluteSpacing, 0)
+        self.setFont(font)
         self.setMaxLength(100)
 
         self.textChanged.connect(self._onTextChanged)
@@ -401,7 +464,7 @@ class SiCustomLineEdit(QLineEdit):
         if self.hasFocus():
             path = QPainterPath()
             path.addRoundedRect(self._cursor_x + 1, (line_rect.height() - 20) / 2, 5, 20, 2.0, 2.0)
-            painter.setBrush(QColor("#90EDE1F4"))
+            painter.setBrush(QColor("#30EDE1F4"))
             painter.setPen(Qt.NoPen)
             painter.drawPath(path)
 
@@ -410,6 +473,12 @@ class SiCustomLineEdit(QLineEdit):
         path.addRoundedRect(rect, 6.0, 6.0)
         painter.setBrush(QColor("#252229"))
         painter.drawPath(path)
+
+    def _drawAnimatedChar(self, painter: QPainter, rect: QRectF, obj: AnimatedCharObject):
+        color = QColor("#EDE1F4")
+        color.setAlphaF(obj.opacity())
+        painter.setPen(color)
+        painter.drawText(obj.position() + QPointF(1, 24), obj.text())
 
     def paintEvent(self, a0):
         text_rect = self.rect()
@@ -420,10 +489,40 @@ class SiCustomLineEdit(QLineEdit):
             self._drawTextChar(painter, text_rect)
             self._drawCursorRect(painter, text_rect)
 
+            new_list = []
+            for obj in self._animated_chars:
+                if obj.isDone() is False:
+                    self._drawAnimatedChar(painter, text_rect, obj)
+                    new_list.append(obj)
+
+            self._animated_chars = new_list
+
+    @staticmethod
+    def _findDeletedText(old_text, new_text):
+        """使用 difflib 计算被删除的文本"""
+        deleted = []
+        seq = difflib.SequenceMatcher(None, old_text, new_text)
+
+        for tag, i1, i2, j1, j2 in seq.get_opcodes():
+            if tag == "delete":  # 标记删除的部分
+                deleted.append(old_text[i1:i2])
+
+        return "".join(deleted)
+
     def _onTextChanged(self, text) -> None:
         m = self._max_supported_length
         self.char_prog_ani.setEndValue([1] * len(text) + [0] * (m - len(text)))
         self.char_prog_ani.start()
+
+        metrics = QFontMetrics(self.font())
+        cursor_x = sum([metrics.width(char) for char in self.text()[:self.cursorPosition()]]) + self._origin_point.x() - 1
+
+        deleted_text = self._findDeletedText(self._prev_text, text)
+        obj = AnimatedCharObject(self, deleted_text, QPointF(cursor_x, 0))
+        obj.disappear()
+
+        self._animated_chars.append(obj)
+        self._prev_text = text
 
     def _onCursorPositionChanged(self, old, new) -> None:
         metrics = QFontMetrics(self.font())
@@ -431,6 +530,12 @@ class SiCustomLineEdit(QLineEdit):
 
         self.cursor_x_ani.setEndValue(cursor_x)
         self.cursor_x_ani.start()
+
+
+
+
+
+
 
 
 class SiCapsuleEdit(QLineEdit):
