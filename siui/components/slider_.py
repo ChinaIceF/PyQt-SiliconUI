@@ -1,12 +1,26 @@
+from __future__ import annotations
+
 import math
 from dataclasses import dataclass
 
 from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty
-from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
-from PyQt5.QtWidgets import QAbstractSlider, QScrollArea, QScrollBar, QWidget
+from PyQt5.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QPixmap
+from PyQt5.QtWidgets import (
+    QAbstractSlider,
+    QAbstractSpinBox,
+    QBoxLayout,
+    QLabel,
+    QScrollArea,
+    QScrollBar,
+    QSpinBox,
+    QWidget,
+)
 
+from siui.components.container import SiDenseContainer
+from siui.components.label import SiLinearIndicator
 from siui.core import SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
+from siui.gui import SiFont
 from siui.typing import T_WidgetParent
 
 
@@ -719,6 +733,122 @@ class SiCoordinatePicker3D(SiCoordinatePicker2D):
                                       background_rect.height() * (1 - a) / 2))
             painter.scale(a, a)
             painter.drawPixmap(0, 0, buffer)
+
+
+class SiWheelSpinBox(QSpinBox):
+    def wheelEvent(self, e):
+        super().wheelEvent(e)
+
+        delta_y = e.angleDelta().y()
+        if delta_y > 0:
+            self.stepUp()
+        if delta_y < 0:
+            self.stepDown()
+
+
+class WheelPickerStyleData:
+    indicator_hover = QColor("#A681BF")
+    indicator_idle = QColor("#4C4554")
+    indicator_flash = QColor("#F5EBF9")
+
+class SiWheelPickerVertical(SiDenseContainer):
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self.style_data = WheelPickerStyleData()
+        self._mouse_in = False
+
+        self._indicator = SiLinearIndicator(self)
+        self._title_label = QLabel(self)
+        self._spinbox = SiWheelSpinBox(self)
+
+        self._container = SiDenseContainer(self, self.TopToBottom)
+        self._container.addWidget(self._title_label)
+        self._container.addWidget(self._spinbox)
+        self._container.layout().setStretchFactor(self._container.stretchWidget(), 0)
+
+        self.layout().setDirection(self.LeftToRight)
+        self.addWidget(self._indicator)
+        self.addWidget(self._container)
+
+        self._initStyle()
+
+        self._spinbox.valueChanged.connect(self._onValueChanged)
+
+    def _initStyle(self):
+        self.setFixedHeight(45)
+        self.layout().setSpacing(8)
+        self._container.layout().setSpacing(0)
+        self._container.setContentsMargins(0, 2, 0, 2)
+
+        self._indicator.setVisualWidth(2)
+        self._indicator.setVisualHeight(45)
+        self._indicator.setFixedSize(4, 45)
+        self._indicator.setColor(self.style_data.indicator_idle)
+
+        self._title_label.setFixedHeight(12)
+        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.DemiBold))
+        self._title_label.setStyleSheet(
+            "color: #918497;"
+            # "background-color: red;"
+        )
+
+        self._spinbox.setFixedHeight(33)
+        font = SiFont.getFont(size=32, weight=QFont.DemiBold)
+        font.setHintingPreference(QFont.PreferFullHinting)
+        self._spinbox.setFont(font)
+        self._spinbox.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self._spinbox.setReadOnly(True)
+        self._spinbox.setStyleSheet(
+            # "background-color: blue;"
+            "color: #D1CBD4;"
+            "border: none;"
+            "padding: -4px -4px 0px -2px;"
+            "selection-color: #D1CBD4;"
+            "selection-background-color: transparent;"
+        )
+
+    def setDirection(self, direction: QBoxLayout.Direction):
+        if direction == QBoxLayout.LeftToRight:
+            self.layout().setDirection(self.LeftToRight)
+            self._title_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+            self._spinbox.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        if direction == QBoxLayout.RightToLeft:
+            self.layout().setDirection(self.RightToLeft)
+            self._title_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            self._spinbox.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+    def spinBox(self) -> QSpinBox:
+        return self._spinbox
+
+    def setTitle(self, value: str) -> None:
+        self._title_label.setText(value)
+
+    def _onValueChanged(self, _) -> None:
+        end_value = self.style_data.indicator_hover if self._mouse_in else self.style_data.indicator_idle
+
+        self._indicator.colorAnimation().setCurrentValue(self.style_data.indicator_flash)
+        self._indicator.colorAnimation().setEndValue(end_value)
+        self._indicator.colorAnimation().start()
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        self._mouse_in = True
+
+        self._indicator.colorAnimation().setEndValue(self.style_data.indicator_hover)
+        self._indicator.colorAnimation().start()
+        self._indicator.visualWidthAnimation().setEndValue(4)
+        self._indicator.visualWidthAnimation().start()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self._mouse_in = False
+
+        self._indicator.colorAnimation().setEndValue(self.style_data.indicator_idle)
+        self._indicator.colorAnimation().start()
+        self._indicator.visualWidthAnimation().setEndValue(2)
+        self._indicator.visualWidthAnimation().start()
 
 
 class ScrollBarStyleData:
