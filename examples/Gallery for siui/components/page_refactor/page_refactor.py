@@ -1,10 +1,11 @@
 import random
+from contextlib import contextmanager
 
 from PyQt5.QtCore import QPointF, Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QBoxLayout, QLabel, QSizePolicy
+from PyQt5.QtGui import QIcon, QColor
+from PyQt5.QtWidgets import QBoxLayout, QWidget
 
-from siui.components import SiDenseHContainer, SiDenseVContainer, SiLongPressButton, SiTitledWidgetGroup
+from siui.components import SiDenseHContainer, SiDenseVContainer, SiTitledWidgetGroup
 from siui.components.button import (
     SiFlatButton,
     SiLongPressButtonRefactor,
@@ -19,12 +20,24 @@ from siui.components.button import (
 from siui.components.chart import SiTrendChart
 from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
 from siui.components.editbox import SiCapsuleEdit, SiDoubleSpinBox, SiLineEdit, SiSpinBox
+from siui.components.label import SiLinearIndicator
 from siui.components.page import SiPage
 from siui.components.slider_ import SiCoordinatePicker2D, SiCoordinatePicker3D, SiSlider
 from siui.core import SiGlobal
 from siui.gui import SiFont
 
 from ..option_card import OptionCardPlaneForWidgetDemos
+
+
+@contextmanager
+def createPanelCard(parent: QWidget, title: str) -> SiTriSectionPanelCard:
+    card = SiTriSectionPanelCard(parent)
+    card.setTitle(title)
+    try:
+        yield card
+    finally:
+        card.adjustSize()
+        parent.addWidget(card)
 
 
 class RefactoredWidgets(SiPage):
@@ -498,6 +511,18 @@ class RefactoredWidgets(SiPage):
 
             group.addWidget(card_test)
             group.addWidget(bar_test)
+
+        with self.titled_widgets_group as group:
+            group.addTitle("指示标签")
+
+            with createPanelCard(group, "线性标签") as card:
+                indicator = SiLinearIndicator(self)
+                indicator.setFixedSize(48, 4)
+
+                indicator.color_ani.setEndValue(QColor("#FFFFFF"))
+                indicator.color_ani.start()
+
+                card.body().addWidget(indicator)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)

@@ -3,13 +3,14 @@ from __future__ import annotations
 import math
 
 import numpy
-from PyQt5.QtCore import QEvent, QPointF, QRect, QRectF, QSize, QSizeF, Qt, pyqtProperty
+from PyQt5.QtCore import QEvent, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
 from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPaintEvent, QPixmap
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from siui.core import SiColor, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
 from siui.core.painter import getSuperRoundedRectPath
+from siui.typing import T_WidgetParent
 
 
 # @dataclass
@@ -113,7 +114,7 @@ class SiAnimatedColorWidget(QWidget):
         self._border_radius = 0.0
 
         self.color_ani = SiExpAnimationRefactor(self, self.Property.BackgroundColor)
-        self.color_ani.init(1/8, 0.01, self._background_color, self._background_color)
+        self.color_ani.init(1 / 8, 0.01, self._background_color, self._background_color)
 
     @pyqtProperty(QColor)
     def backgroundColor(self):
@@ -229,9 +230,9 @@ class SiRoundPixmapWidget(QWidget):
         buffer.fill(Qt.transparent)
 
         renderHints = (
-            QPainter.RenderHint.SmoothPixmapTransform
-            | QPainter.RenderHint.TextAntialiasing
-            | QPainter.RenderHint.Antialiasing
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
         )
 
         with createPainter(buffer, renderHints) as buffer_painter:
@@ -239,7 +240,6 @@ class SiRoundPixmapWidget(QWidget):
 
         with createPainter(self, renderHints) as painter:
             painter.drawPixmap(rect, buffer)
-
 
 
 # class SiPainterPath(QPainterPath):
@@ -349,3 +349,119 @@ class HyperRoundBorderTest(QWidget):
         for i in range(q // 4 * 1, q // 4 * 2):
             self.points.append(QPointF((self.sinSuper(2 * math.pi * i / q) + 1) * self.width() / 2,
                                        (self.cosSuper(2 * math.pi * i / q) + 1) * self.height() / 2))
+
+
+class SiLinearIndicator(QWidget):
+    class Property:
+        VisualWidth = "visualWidth"
+        VisualHeight = "visualHeight"
+        Color = "color"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self._visual_width = 0
+        self._visual_height = 0
+        self._border_radius = 4.0
+        self._color = QColor()
+
+        self.visual_width_ani = SiExpAnimationRefactor(self, self.Property.VisualWidth)
+        self.visual_width_ani.init(1/4, 0, self._visual_width, self._visual_width)
+
+        self.visual_height_ani = SiExpAnimationRefactor(self, self.Property.VisualHeight)
+        self.visual_height_ani.init(1/4, 0, self._visual_height, self._visual_height)
+
+        self.color_ani = SiExpAnimationRefactor(self, self.Property.Color)
+        self.color_ani.init(1/8, 0, self._color, self._color)
+
+    @pyqtProperty(float)
+    def visualWidth(self):
+        return self._visual_width
+
+    @visualWidth.setter
+    def visualWidth(self, value: float):
+        self._visual_width = value
+        self.update()
+
+    @pyqtProperty(float)
+    def visualHeight(self):
+        return self._visual_height
+
+    @visualHeight.setter
+    def visualHeight(self, value: float):
+        self._visual_height = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, value: QColor):
+        self._color = value
+        self.update()
+
+    def setBorderRadius(self, value: float) -> None:
+        self._border_radius = value
+        self.update()
+
+    def borderRadius(self) -> float:
+        return self._border_radius
+
+    def setVisualWidth(self, value: float, ani: bool = False) -> None:
+        if ani:
+            self.visual_width_ani.setEndValue(value)
+            self.visual_width_ani.start()
+        else:
+            self.visual_width_ani.stop()
+            self.visual_width_ani.setCurrentValue(value)
+            self.visual_width_ani.toProperty()
+
+    def setVisualHeight(self, value: float, ani: bool = False) -> None:
+        if ani:
+            self.visual_height_ani.setEndValue(value)
+            self.visual_height_ani.start()
+        else:
+            self.visual_height_ani.stop()
+            self.visual_height_ani.setCurrentValue(value)
+            self.visual_height_ani.toProperty()
+
+    def setColor(self, value: QColor, ani: bool = False):
+        if ani:
+            self.color_ani.setEndValue(value)
+            self.color_ani.start()
+        else:
+            self.color_ani.stop()
+            self.color_ani.setCurrentValue(value)
+            self.color_ani.toProperty()
+
+    def colorAnimation(self) -> SiExpAnimationRefactor:
+        return self.color_ani
+
+    def visualWidthAnimation(self) -> SiExpAnimationRefactor:
+        return self.visual_width_ani
+
+    def visualHeightAnimation(self) -> SiExpAnimationRefactor:
+        return self.visual_height_ani
+
+    def _borderRadiusLegalized(self):
+        min_shape = min(self.width(), self.height())
+        legalized = min(self._border_radius, min_shape / 2)
+        return legalized
+
+    def _drawBodyRect(self, painter: QPainter, rect: QRectF) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(rect, self._borderRadiusLegalized(), self._borderRadiusLegalized())
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._color)
+        painter.drawPath(path)
+
+    def paintEvent(self, a0):
+        x = (self.width() - self._visual_width) / 2
+        y = (self.height() - self._visual_height) / 2
+        rect = QRectF(x, y, self._visual_width, self._visual_height)
+
+        with createPainter(self) as painter:
+            self._drawBodyRect(painter, rect)
+
