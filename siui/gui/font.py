@@ -21,10 +21,11 @@ class SiFont:
     @staticmethod
     def getFont(
         families: Sequence[str] = qApp.font().families()
-        or ["Segoe UI", "Microsoft YaHei", "San Francisco Fonts", "PingFang SC"],
+        or ["Segoe UI", "Microsoft YaHei", "San Francisco Fonts", ".PingFang TC", "PingFang SC"],
         size: int = 14,
         weight: QFont.Weight = QFont.Weight.Normal,
         italic: bool = False,
+        hinting_preference: QFont.HintingPreference = QFont.PreferFullHinting
     ) -> QFont:
         """Low-level API for creating font instance
 
@@ -36,6 +37,7 @@ class SiFont:
             - size: 字体大小
             - weight: 字体粗细
             - italic: 是否斜体
+            - hinting_preference: 字体 Hinting 偏好， 默认为 PreferFullHinting
 
         Returns:
             - QFont: 字体实例
@@ -46,6 +48,7 @@ class SiFont:
         font.setPixelSize(size)
         font.setWeight(weight)
         font.setItalic(italic)
+        # font.setHintingPreference(hinting_preference)
         return font
 
     @staticmethod
