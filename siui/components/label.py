@@ -366,13 +366,13 @@ class SiLinearIndicator(QWidget):
         self._color = QColor()
 
         self.visual_width_ani = SiExpAnimationRefactor(self, self.Property.VisualWidth)
-        self.visual_width_ani.init(1/4, 0, self._visual_width, self._visual_width)
+        self.visual_width_ani.init(1/4, 0.0001, self._visual_width, self._visual_width)
 
         self.visual_height_ani = SiExpAnimationRefactor(self, self.Property.VisualHeight)
-        self.visual_height_ani.init(1/4, 0, self._visual_height, self._visual_height)
+        self.visual_height_ani.init(1/4, 0.0001, self._visual_height, self._visual_height)
 
         self.color_ani = SiExpAnimationRefactor(self, self.Property.Color)
-        self.color_ani.init(1/8, 0, self._color, self._color)
+        self.color_ani.init(1/8, 0.0001, self._color, self._color)
 
     @pyqtProperty(float)
     def visualWidth(self):
