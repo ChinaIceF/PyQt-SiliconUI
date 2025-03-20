@@ -512,17 +512,6 @@ class RefactoredWidgets(SiPage):
             group.addWidget(card_test)
             group.addWidget(bar_test)
 
-        with self.titled_widgets_group as group:
-            group.addTitle("指示标签")
-
-            with createPanelCard(group, "线性标签") as card:
-                indicator = SiLinearIndicator(self)
-                indicator.setFixedSize(48, 4)
-
-                indicator.color_ani.setEndValue(QColor("#FFFFFF"))
-                indicator.color_ani.start()
-
-                card.body().addWidget(indicator)
 
         # 添加页脚的空白以增加美观性
         self.titled_widgets_group.addPlaceholder(64)
