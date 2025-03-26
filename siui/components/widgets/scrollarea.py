@@ -149,9 +149,14 @@ class SiScrollArea(SiWidget):
         self.widget_scroll_animation.setTarget(target)
 
         # 计算滚动条的目标位置
-        process = -target[1] / (self.attachment_.height() - self.height())
-        scroll_bar_vertical_target_y = int(process * (self.height() - self.scroll_bar_vertical.height()))
+        attachment_height = self.attachment_.height()
+        if attachment_height == self.height():  # 避免分母为 0
+            process = 0
+        else:
+            process = -target[1] / (attachment_height - self.height())
 
+        scroll_bar_vertical_target_y = int(process * (self.height() - self.scroll_bar_vertical.height()))
+        
         # 如果竖直方向滚动条可见，尝试启动动画
         if self.scroll_bar_vertical.isVisible():
             self.scroll_bar_vertical.moveTo(0, scroll_bar_vertical_target_y)
