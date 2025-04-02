@@ -20,8 +20,7 @@ class SiFont:
 
     @staticmethod
     def getFont(
-        families: Sequence[str] = qApp.font().families()
-        or ["Segoe UI", "Microsoft YaHei", "San Francisco Fonts", ".PingFang TC", "PingFang SC"],
+        families=None,
         size: int = 14,
         weight: QFont.Weight = QFont.Weight.Normal,
         italic: bool = False,
@@ -43,12 +42,18 @@ class SiFont:
             - QFont: 字体实例
 
         """
+        if families is None:
+            families = (
+                    qApp.font().families() or
+                    ["Segoe UI", "Microsoft YaHei", "San Francisco Fonts", ".PingFang TC", "PingFang SC"]
+            )
+
         font = QFont()
         font.setFamilies(families)
         font.setPixelSize(size)
         font.setWeight(weight)
         font.setItalic(italic)
-        # font.setHintingPreference(hinting_preference)
+        font.setHintingPreference(hinting_preference)
         return font
 
     @staticmethod
