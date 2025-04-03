@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-import warnings
 
 import numpy
 from PyQt5.QtCore import QEvent, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
@@ -352,28 +351,19 @@ class HyperRoundBorderTest(QWidget):
                                        (self.cosSuper(2 * math.pi * i / q) + 1) * self.height() / 2))
 
 
-class LinearIndicatorStyleData:
-    hl_color_inactive = QColor("#00A681BF")
-    hl_color_flash = QColor("#F5EBF9")
-    hl_color_active = QColor("#A681BF")
-    hl_color_warn_flash = QColor("#ed716c")
-    track_color = QColor("#4d4753")
-
-
 class SiLinearIndicator(QWidget):
     class Property:
-        Color = "color"
         VisualWidth = "visualWidth"
         VisualHeight = "visualHeight"
+        Color = "color"
 
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
-        self.style_data = LinearIndicatorStyleData()
         self._visual_width = 0
         self._visual_height = 0
         self._border_radius = 4.0
-        self._color = self.style_data.hl_color_inactive
+        self._color = QColor()
 
         self.visual_width_ani = SiExpAnimationRefactor(self, self.Property.VisualWidth)
         self.visual_width_ani.init(1/4, 0.0001, self._visual_width, self._visual_width)
@@ -445,20 +435,6 @@ class SiLinearIndicator(QWidget):
             self.color_ani.setCurrentValue(value)
             self.color_ani.toProperty()
 
-    def activate(self, flash=True) -> None:
-        if flash:
-            self.color_ani.setCurrentValue(self.style_data.hl_color_flash)
-        self.color_ani.setEndValue(self.style_data.hl_color_active)
-        self.color_ani.start()
-
-    def deactivate(self) -> None:
-        self.color_ani.setEndValue(self.style_data.hl_color_inactive)
-        self.color_ani.start()
-
-    def warn(self):
-        self.color_ani.setCurrentValue(self.style_data.hl_color_warn_flash)
-        self.color_ani.start()
-
     def colorAnimation(self) -> SiExpAnimationRefactor:
         return self.color_ani
 
@@ -468,20 +444,12 @@ class SiLinearIndicator(QWidget):
     def visualHeightAnimation(self) -> SiExpAnimationRefactor:
         return self.visual_height_ani
 
-    def _borderRadiusLegalized(self) -> float:
+    def _borderRadiusLegalized(self):
         min_shape = min(self.width(), self.height())
         legalized = min(self._border_radius, min_shape / 2)
         return legalized
 
-    def _drawTrackRect(self, painter: QPainter, rect: QRectF) -> None:
-        path = QPainterPath()
-        path.addRoundedRect(rect, self._borderRadiusLegalized(), self._borderRadiusLegalized())
-
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(self.style_data.track_color)
-        painter.drawPath(path)
-
-    def _drawIndicatorRect(self, painter: QPainter, rect: QRectF) -> None:
+    def _drawBodyRect(self, painter: QPainter, rect: QRectF) -> None:
         path = QPainterPath()
         path.addRoundedRect(rect, self._borderRadiusLegalized(), self._borderRadiusLegalized())
 
@@ -495,122 +463,5 @@ class SiLinearIndicator(QWidget):
         rect = QRectF(x, y, self._visual_width, self._visual_height)
 
         with createPainter(self) as painter:
-            self._drawTrackRect(painter, rect)
-            self._drawIndicatorRect(painter, rect)
+            self._drawBodyRect(painter, rect)
 
-
-class SiLinearPartitionIndicator(SiLinearIndicator):
-
-    class Property:
-        Color = "color"
-        VisualWidth = "visualWidth"
-        VisualHeight = "visualHeight"
-        HighlightRect = "highlightRect"
-
-    def __init__(self, parent: T_WidgetParent = None) -> None:
-        super().__init__(parent)
-
-        self._orientation = Qt.Horizontal
-        self._node_amount = 2
-        self._indicator_start_index = 0
-        self._indicator_end_index = 1
-        self._hl_rect = QRectF()
-
-        self.hl_rect_ani = SiExpAnimationRefactor(self, self.Property.HighlightRect)
-        self.hl_rect_ani.init(1/4, 0.0001, self._hl_rect, self._hl_rect)
-
-    @pyqtProperty(QRectF)
-    def highlightRect(self):
-        return self._hl_rect
-
-    @highlightRect.setter
-    def highlightRect(self, value: QRectF):
-        self._hl_rect = value
-        self.update()
-
-    def setOrientation(self, ori: Qt.Orientation):
-        if ori != Qt.Horizontal and ori != Qt.Vertical:
-            raise ValueError(f"{ori} is not in Qt.Orientation.")
-
-        self._orientation = ori
-        self.update()
-
-    def orientation(self) -> Qt.Orientation:
-        return self._orientation
-
-    def updateIndicatorRect(self) -> None:
-        x = (self.width() - self._visual_width) / 2
-        y = (self.height() - self._visual_height) / 2
-        start_i = self._indicator_start_index
-        end_i = self._indicator_end_index
-
-        section_amount = self._node_amount - 1
-
-        if section_amount == 0:
-            rect = QRectF(x, y, self._visual_width, self._visual_height)
-            self.hl_rect_ani.setEndValue(rect)
-            self.hl_rect_ani.start()
-            return
-
-        if self._orientation == Qt.Horizontal:
-            section_span = self._visual_width / section_amount
-            rect = QRectF(x + start_i * section_span, y, (end_i - start_i) * section_span, self._visual_height)
-
-        elif self._orientation == Qt.Vertical:
-            section_span = self._visual_height / section_amount
-            rect = QRectF(x, y + start_i * section_span, self._visual_width, (end_i - start_i) * section_span)
-
-        else:
-            raise ValueError(f"Unexpected orientation value: {self._orientation}")
-
-        self.hl_rect_ani.setEndValue(rect)
-        self.hl_rect_ani.start()
-
-    def setStartIndex(self, index: int) -> None:
-        if index >= self._node_amount or self._node_amount < 0:
-            warnings.warn("Start index out of range. "
-                          f"(expected {0} to {self._node_amount - 1}, but encountered {index}) "
-                          "set to closest legal value instead")
-
-            index = 0 if index < 0 else self._node_amount - 1
-
-        self._indicator_start_index = index
-        self.updateIndicatorRect()
-
-    def setEndIndex(self, index: int) -> None:
-        if index >= self._node_amount or self._node_amount < 0:
-            warnings.warn("End index out of range. "
-                          f"(expected {0} to {self._node_amount - 1}, but encountered {index}) "
-                          "set to closest legal value instead")
-
-            index = 0 if index < 0 else self._node_amount - 1
-
-        self._indicator_end_index = index
-        self.updateIndicatorRect()
-
-    def setNodeAmount(self, a: int) -> None:
-        if a <= 0:
-            warnings.warn("Node amount must be a positive int value, set to 1 instead.")
-            a = 1
-
-        self._node_amount = a
-        self.updateIndicatorRect()
-
-    def startIndex(self) -> int:
-        return self._indicator_start_index
-
-    def endIndex(self) -> int:
-        return self._indicator_end_index
-
-    def nodeAmount(self) -> int:
-        return self._node_amount
-
-    def paintEvent(self, a0):
-        x = (self.width() - self._visual_width) / 2
-        y = (self.height() - self._visual_height) / 2
-        track_rect = QRectF(x, y, self._visual_width, self._visual_height)
-        indi_rect = self._hl_rect
-
-        with createPainter(self) as painter:
-            self._drawTrackRect(painter, track_rect)
-            self._drawIndicatorRect(painter, indi_rect)
