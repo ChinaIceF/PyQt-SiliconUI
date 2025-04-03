@@ -415,7 +415,7 @@ class TypeConversionFuncs:
         ],
         QRectF.__name__: [
             lambda x: numpy.array((x.x(), x.y(), x.width(), x.height()), dtype="float32"),
-            lambda x: QRect(float(x[0]), float(x[1]), float(x[2]), float(x[3]))
+            lambda x: QRectF(float(x[0]), float(x[1]), float(x[2]), float(x[3]))
         ],
         QColor.__name__: [
             lambda x: numpy.array(x.getRgb(), dtype="float32"),

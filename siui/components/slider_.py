@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty
+from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
 from PyQt5.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QPixmap
 from PyQt5.QtWidgets import (
     QAbstractSlider,
@@ -736,13 +736,20 @@ class SiCoordinatePicker3D(SiCoordinatePicker2D):
 
 
 class SiWheelSpinBox(QSpinBox):
+    limitReached = pyqtSignal(float)
+
     def wheelEvent(self, e):
         super().wheelEvent(e)
 
         delta_y = e.angleDelta().y()
         if delta_y > 0:
+            if self.value() == self.maximum():
+                self.limitReached.emit(self.value())
             self.stepUp()
+
         if delta_y < 0:
+            if self.value() == self.minimum():
+                self.limitReached.emit(self.value())
             self.stepDown()
 
 
@@ -750,6 +757,7 @@ class WheelPickerStyleData:
     indicator_hover = QColor("#A681BF")
     indicator_idle = QColor("#4C4554")
     indicator_flash = QColor("#F5EBF9")
+
 
 class SiWheelPickerVertical(SiDenseContainer):
     def __init__(self, parent: T_WidgetParent = None) -> None:
@@ -774,6 +782,7 @@ class SiWheelPickerVertical(SiDenseContainer):
         self._initStyle()
 
         self._spinbox.valueChanged.connect(self._onValueChanged)
+        self._spinbox.limitReached.connect(self._onLimitReached)
 
     def _initStyle(self):
         self.setFixedHeight(45)
@@ -831,6 +840,9 @@ class SiWheelPickerVertical(SiDenseContainer):
         self._indicator.colorAnimation().setCurrentValue(self.style_data.indicator_flash)
         self._indicator.colorAnimation().setEndValue(end_value)
         self._indicator.colorAnimation().start()
+
+    def _onLimitReached(self, _) -> None:
+        self._indicator.warn()
 
     def enterEvent(self, a0):
         super().enterEvent(a0)

@@ -774,10 +774,10 @@ class SiFlatButtonWithIndicator(SiFlatButton):
         self._indicator_color = self.style_data.indicator_idle_color
 
         self.indi_width_ani = SiExpAnimationRefactor(self, self.Property.IndicatorWidth)
-        self.indi_width_ani.init(1/3, 0, 0, 0)
+        self.indi_width_ani.init(1/3, 0.001, 0, 0)
 
         self.indi_color_ani = SiExpAnimationRefactor(self, self.Property.IndicatorColor)
-        self.indi_color_ani.init(1/6, 0, self._indicator_color, self._indicator_color)
+        self.indi_color_ani.init(1/6, 0.001, self._indicator_color, self._indicator_color)
 
         self.toggled.connect(self._onButtonToggled)
 
@@ -808,12 +808,20 @@ class SiFlatButtonWithIndicator(SiFlatButton):
             self.indi_color_ani.setEndValue(self.style_data.indicator_selected_color)
             self.indi_color_ani.start()
 
+            if not self.underMouse():
+                self.highlight_ani.setEndValue(self.style_data.hover_color)
+                self.highlight_ani.start()
+
         else:
             self.indi_width_ani.setEndValue(0)
             self.indi_width_ani.start()
 
             self.indi_color_ani.setEndValue(self.style_data.indicator_idle_color)
             self.indi_color_ani.start()
+
+            if not self.underMouse():
+                self.highlight_ani.setEndValue(self.style_data.idle_color)
+                self.highlight_ani.start()
 
     def _drawIndicatorRect(self, painter: QPainter, rect: QRectF) -> None:
         path = QPainterPath()
@@ -827,9 +835,6 @@ class SiFlatButtonWithIndicator(SiFlatButton):
         super().enterEvent(event)
 
         if not self.isChecked():
-            self.indi_width_ani.setEndValue(4)
-            self.indi_width_ani.start()
-
             self.indi_color_ani.setEndValue(self.style_data.indicator_hover_color)
             self.indi_color_ani.start()
 
@@ -837,11 +842,15 @@ class SiFlatButtonWithIndicator(SiFlatButton):
         super().leaveEvent(event)
 
         if not self.isChecked():
-            self.indi_width_ani.setEndValue(0)
-            self.indi_width_ani.start()
-
             self.indi_color_ani.setEndValue(self.style_data.indicator_idle_color)
             self.indi_color_ani.start()
+
+            self.highlight_ani.setEndValue(self.style_data.idle_color)
+            self.highlight_ani.start()
+
+        else:
+            self.highlight_ani.setEndValue(self.style_data.hover_color)
+            self.highlight_ani.start()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         rect = self.rect()
