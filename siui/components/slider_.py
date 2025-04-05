@@ -13,10 +13,11 @@ from PyQt5.QtWidgets import (
     QScrollArea,
     QScrollBar,
     QSpinBox,
-    QWidget,
+    QWidget, QGraphicsView, QGraphicsScene,
 )
 
 from siui.components.container import SiDenseContainer
+from siui.components.graphic import SiAnimatedTransformGraphicProxyWidget
 from siui.components.label import SiLinearIndicator
 from siui.core import SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
@@ -1257,3 +1258,47 @@ class SiScrollAreaRefactor(QScrollArea):
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
         self.contents_pos_ani.stop()
+
+
+class SiScrollAreaGraphicWidget(QWidget):
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self._proxy_widget = SiAnimatedTransformGraphicProxyWidget()
+        self._scene = QGraphicsScene()
+        self._view = QGraphicsView(self._scene, self)
+        self._scroll_area = SiScrollAreaRefactor()
+
+        self._proxy_widget.setWidget(self._scroll_area)
+        self._scene.addItem(self._proxy_widget)
+
+        self._initStyle()
+
+    def _initStyle(self) -> None:
+        self._view.setStyleSheet("background-color: transparent; border: none")
+        self._view.setRenderHints(
+            QPainter.Antialiasing
+            | QPainter.SmoothPixmapTransform
+            | QPainter.TextAntialiasing
+        )
+
+    def scrollArea(self) -> SiScrollAreaRefactor:
+        return self._scroll_area
+
+    def fadeIn(self) -> None:
+        translate_ani = self._proxy_widget.animation(self._proxy_widget.Property.Translate)
+        opacity_ani = self._proxy_widget.animation(self._proxy_widget.Property.Opacity)
+
+        translate_ani.setCurrentValue(QPointF(0, 50))
+        translate_ani.setEndValue(QPointF(0, 0))
+        translate_ani.start()
+
+        opacity_ani.setCurrentValue(0.0)
+        opacity_ani.setEndValue(1.0)
+        opacity_ani.start()
+
+    def resizeEvent(self, a0):
+        super().resizeEvent(a0)
+        self._view.setGeometry(0, 0, self.width(), self.height())
+        self._scene.setSceneRect(QRectF(0, 0, self.width(), self.height()))
+        self._scroll_area.resize(self.size())
