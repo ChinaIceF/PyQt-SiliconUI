@@ -2,8 +2,8 @@ import random
 from contextlib import contextmanager
 
 from PyQt5.QtCore import QPointF, Qt
-from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QBoxLayout, QWidget
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QBoxLayout, QWidget, QButtonGroup
 
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiTitledWidgetGroup
 from siui.components.button import (
@@ -15,12 +15,12 @@ from siui.components.button import (
     SiRadioButtonWithAvatar,
     SiRadioButtonWithDescription,
     SiSwitchRefactor,
-    SiToggleButtonRefactor,
+    SiToggleButtonRefactor, SiFlatButtonWithIndicator,
 )
 from siui.components.chart import SiTrendChart
 from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
 from siui.components.editbox import SiCapsuleEdit, SiDoubleSpinBox, SiLineEdit, SiSpinBox
-from siui.components.label import SiLinearIndicator
+from siui.components.label import SiLinearIndicator, SiLinearPartitionIndicator
 from siui.components.page import SiPage
 from siui.components.slider_ import SiCoordinatePicker2D, SiCoordinatePicker3D, SiSlider
 from siui.core import SiGlobal
@@ -53,6 +53,89 @@ class RefactoredWidgets(SiPage):
         self.titled_widgets_group = SiTitledWidgetGroup(self)
         self.titled_widgets_group.setSpacing(32)
         self.titled_widgets_group.setAdjustWidgetsSize(True)  # 禁用调整宽度
+
+        with self.titled_widgets_group as group:
+            group.addTitle("卡片容器")
+
+            bar_test = SiTriSectionRowCard(self, SiGlobal.siui.iconpack.toPixmap("ic_fluent_slide_text_cursor_filled"))
+            bar_test.actionsContainer().addWidget(SiSwitchRefactor(self))
+            bar_test.adjustSize()
+            group.addWidget(bar_test)
+
+            with createPanelCard(group, "区间指示器") as card:
+
+                indicator = SiLinearPartitionIndicator(self)
+                indicator.activate()
+                indicator.setFixedSize(200, 4)
+                indicator.setNodeAmount(7)
+                indicator.setVisualWidth(200)
+                indicator.setVisualHeight(4)
+
+                indicator.setEndIndex(1)
+
+                def test_func_1():
+                    indicator.setStartIndex((indicator.startIndex() + 1) if indicator.startIndex() < indicator.nodeAmount() - 1 else 0)
+                def test_func_2():
+                    indicator.setEndIndex((indicator.endIndex() + 1) if indicator.endIndex() < indicator.nodeAmount() - 1 else 0)
+
+                btn_container = SiDenseContainer(self, QBoxLayout.LeftToRight)
+
+                button1 = SiPushButtonRefactor.withText("开始增加", self)
+                button2 = SiPushButtonRefactor.withText("结束增加", self)
+                button3 = SiPushButtonRefactor.withText("平移", self)
+                button4 = SiPushButtonRefactor.withText("激活", self)
+                button5 = SiPushButtonRefactor.withText("去激活", self)
+                button6 = SiPushButtonRefactor.withText("错误", self)
+
+                button1.clicked.connect(test_func_1)
+                button2.clicked.connect(test_func_2)
+
+                button3.clicked.connect(test_func_1)
+                button3.clicked.connect(test_func_2)
+
+                button4.clicked.connect(lambda: indicator.activate())
+                button5.clicked.connect(indicator.deactivate)
+                button6.clicked.connect(indicator.warn)
+
+                btn_container.addWidget(button1)
+                btn_container.addWidget(button2)
+                btn_container.addWidget(button3)
+                btn_container.addWidget(button4)
+                btn_container.addWidget(button5)
+                btn_container.addWidget(button6)
+
+                card.body().addWidget(indicator)
+                card.body().addWidget(btn_container)
+
+            with createPanelCard(group, "带指示器的按钮") as card:
+
+                container = SiDenseContainer(self, direction=SiDenseContainer.LeftToRight)
+
+                indicator_button1 = SiFlatButtonWithIndicator(self)
+                indicator_button1.setText("日期设置")
+                indicator_button1.setFixedHeight(40)
+                indicator_button1.setChecked(True)
+
+                indicator_button2 = SiFlatButtonWithIndicator(self)
+                indicator_button2.setText("时间设置")
+                indicator_button2.setFixedHeight(40)
+
+                indicator_button3 = SiFlatButtonWithIndicator(self)
+                indicator_button3.setText("首选项")
+                indicator_button3.setFixedHeight(40)
+
+                container.addWidget(indicator_button1)
+                container.addWidget(indicator_button2)
+                container.addWidget(indicator_button3)
+
+                button_group = QButtonGroup(self)
+                button_group.addButton(indicator_button1)
+                button_group.addButton(indicator_button2)
+                button_group.addButton(indicator_button3)
+                button_group.setExclusive(True)
+
+                card.body().addWidget(container)
+
 
         # 按钮
         with self.titled_widgets_group as group:
@@ -463,54 +546,6 @@ class RefactoredWidgets(SiPage):
             self.charts.adjustSize()
 
             group.addWidget(self.charts)
-
-        with self.titled_widgets_group as group:
-            group.addTitle("容器")
-
-            self.containers = OptionCardPlaneForWidgetDemos(self)
-            self.containers.setTitle("密堆积容器")
-
-            self.container_v = SiDenseContainer(self, QBoxLayout.TopToBottom)
-            self.container_h = SiDenseContainer(self, QBoxLayout.LeftToRight)
-            # self.container_h.setFixedHeight(300)
-
-            button1 = SiPushButtonRefactor.withText("按钮1", parent=self)
-            button2 = SiPushButtonRefactor.withText("按钮2", parent=self)
-            button3 = SiPushButtonRefactor.withText("按钮3", parent=self)
-
-            self.container_h.addWidget(button1)
-            self.container_h.addWidget(button2)
-            self.container_h.addWidget(button3, Qt.RightEdge)
-            self.container_h.setFixedWidth(400)
-            # self.container_h.layout().setSpacing()
-
-            slider1 = SiSlider(self)
-            # slider1.setMaximumWidth(600)
-
-            self.container_v.addWidget(slider1)
-            self.container_v.addWidget(self.container_h)
-            self.container_v.layout().setAlignment(self.container_h, Qt.AlignHCenter)
-            self.container_v.adjustSize()
-
-            self.containers.body().setAdjustWidgetsSize(True)
-            self.containers.body().addWidget(self.container_v)
-            self.containers.body().addPlaceholder(12)
-            self.containers.adjustSize()
-
-            group.addWidget(self.containers)
-
-        with self.titled_widgets_group as group:
-            group.addTitle("卡片容器")
-
-            card_test = SiTriSectionPanelCard(self)
-            card_test.setMinimumHeight(250)
-
-            bar_test = SiTriSectionRowCard(self, SiGlobal.siui.iconpack.toPixmap("ic_fluent_slide_text_cursor_filled"))
-            bar_test.actionsContainer().addWidget(SiSwitchRefactor(self))
-            bar_test.adjustSize()
-
-            group.addWidget(card_test)
-            group.addWidget(bar_test)
 
 
         # 添加页脚的空白以增加美观性
