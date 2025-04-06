@@ -1,6 +1,7 @@
-from PyQt5.QtCore import QPointF, Qt, pyqtProperty
-from PyQt5.QtGui import QTransform
-from PyQt5.QtWidgets import QGraphicsProxyWidget
+from PyQt5.QtCore import QPointF, Qt, pyqtProperty, QRectF
+from PyQt5.QtGui import QTransform, QPainter
+from PyQt5.QtWidgets import QGraphicsProxyWidget, QWidget, QGraphicsScene, QGraphicsView
+from typing import List
 
 from siui.core.animation import SiExpAnimationRefactor
 from siui.typing import T_WidgetParent
@@ -122,3 +123,83 @@ class SiAnimatedTransformGraphicProxyWidget(QGraphicsProxyWidget):
         transform.translate(self._translate.x(), self._translate.y())
 
         self.setTransform(transform)
+
+
+class SiGraphicWrapperWidget(QWidget):
+    class TransitionAnimations:
+        @staticmethod
+        def fadeIn(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
+            opacity_ani = proxy_widget.animation(proxy_widget.Property.Opacity)
+            opacity_ani.setCurrentValue(0.0)
+            opacity_ani.setEndValue(1.0)
+            opacity_ani.start()
+
+        @staticmethod
+        def floatUp(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
+            translate_ani = proxy_widget.animation(proxy_widget.Property.Translate)
+            translate_ani.setCurrentValue(QPointF(0, 50))
+            translate_ani.setEndValue(QPointF(0, 0))
+            translate_ani.start()
+
+        @staticmethod
+        def floatDown(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
+            translate_ani = proxy_widget.animation(proxy_widget.Property.Translate)
+            translate_ani.setCurrentValue(QPointF(0, -50))
+            translate_ani.setEndValue(QPointF(0, 0))
+            translate_ani.start()
+
+        @staticmethod
+        def scaleUp(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
+            scale_ani = proxy_widget.animation(proxy_widget.Property.Scale)
+            scale_ani.setBias(0.001)
+            scale_ani.setCurrentValue(0.95)
+            scale_ani.setEndValue(1.0)
+            scale_ani.start()
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self._animation_funcs = []
+        self._proxy_widget = SiAnimatedTransformGraphicProxyWidget()
+        self._scene = QGraphicsScene()
+        self._view = QGraphicsView(self._scene, self)
+        self._widget = QWidget()
+
+        self._proxy_widget.setWidget(self._widget)
+        self._scene.addItem(self._proxy_widget)
+
+        self._initStyle()
+
+    def _initStyle(self) -> None:
+        self._view.setStyleSheet("background-color: transparent; border: none")
+        self._view.setRenderHints(
+            QPainter.Antialiasing
+            | QPainter.SmoothPixmapTransform
+            | QPainter.TextAntialiasing
+        )
+
+    def setAnimationFuncs(self, *funcs) -> None:
+        self._animation_funcs = funcs
+
+    def animationFuncs(self) -> List:
+        return self._animation_funcs
+
+    def widget(self) -> QWidget:
+        return self._widget
+
+    def setWidget(self, widget: QWidget) -> None:
+        widget.setParent(None)
+        self._widget = widget
+        self._proxy_widget.setWidget(self._widget)
+
+    def playMergeAnimation(self):
+        for func in self._animation_funcs:
+            func(self._proxy_widget)
+
+    def resizeEvent(self, a0):
+        super().resizeEvent(a0)
+        self._view.setGeometry(0, 0, self.width(), self.height())
+        self._scene.setSceneRect(QRectF(0, 0, self.width(), self.height()))
+        self._widget.resize(self.size())
+
+        self._proxy_widget.setProperty(self._proxy_widget.Property.Center, QPointF(self.width() / 2, self.height() / 2))

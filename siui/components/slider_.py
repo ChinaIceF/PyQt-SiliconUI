@@ -1302,3 +1302,5 @@ class SiScrollAreaGraphicWidget(QWidget):
         self._view.setGeometry(0, 0, self.width(), self.height())
         self._scene.setSceneRect(QRectF(0, 0, self.width(), self.height()))
         self._scroll_area.resize(self.size())
+
+        self._proxy_widget.setProperty(self._proxy_widget.Property.Center, QPointF(self.width() / 2, self.height() / 2))
