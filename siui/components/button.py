@@ -1248,8 +1248,8 @@ class SiRadioButtonR(QRadioButton):
                           buffer_rect: QRectF,
                           target_rect: QRectF,
                           buffer: QPixmap) -> None:
-        br = buffer_rect
-        tr = target_rect
+        br = buffer_rect.toRect()
+        tr = target_rect.toRect()
         a = self._scale_factor
 
         painter.translate(QPointF(tr.width() * (1 - a) / 2, tr.height() * (1 - a) / 2))
