@@ -40,7 +40,7 @@ class SiAnimatedTransformGraphicProxyWidget(QGraphicsProxyWidget):
         self.x_rotate_ani.init(1/6, 0.01, self._x_rotate, self._x_rotate)
         self.y_rotate_ani.init(1/6, 0.01, self._y_rotate, self._y_rotate)
         self.z_rotate_ani.init(1/6, 0.01, self._z_rotate, self._z_rotate)
-        self.scale_ani.init(1/6, 0.01, self._scale, self._scale)
+        self.scale_ani.init(1/8, 0.0001, self._scale, self._scale)
         self.center_ani.init(1/6, 0.01, self._center, self._center)
         self.opacity_ani.init(1/16, 0.01, self._opacity, self._opacity)
         self.translate_ani.init(1/6, 0.01, self._translate, self._translate)
@@ -151,7 +151,6 @@ class SiGraphicWrapperWidget(QWidget):
         @staticmethod
         def scaleUp(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
             scale_ani = proxy_widget.animation(proxy_widget.Property.Scale)
-            scale_ani.setBias(0.001)
             scale_ani.setCurrentValue(0.95)
             scale_ani.setEndValue(1.0)
             scale_ani.start()

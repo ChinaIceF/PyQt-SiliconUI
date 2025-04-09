@@ -204,7 +204,7 @@ class SiTriSectionRowCard(SiRowCard):
         self._text_container = SiDenseContainer(self, self.TopToBottom)
         self._action_container = SiDenseContainer(self, self.RightToLeft)
 
-        self._icon = SiRoundPixmapWidget(pixmap, self)
+        self._icon = SiRoundPixmapWidget(self, pixmap)
         self._title = QLabel(title, self)
         self._description = QLabel(description, self)
 
@@ -263,3 +263,6 @@ class SiTriSectionRowCard(SiRowCard):
 
     def descriptionLabel(self) -> QLabel:
         return self._description
+
+#
+# class SiStackWidget():

@@ -163,7 +163,7 @@ class SiAnimatedColorWidget(QWidget):
 
 
 class SiRoundPixmapWidget(QWidget):
-    def __init__(self, pixmap: QPixmap, parent=None):
+    def __init__(self, parent, pixmap: QPixmap | None = None):
         super().__init__(parent)
         self._pixmap = pixmap
         self._visual_size = QSize(32, 32)
@@ -199,6 +199,9 @@ class SiRoundPixmapWidget(QWidget):
         return self._border_radius
 
     def _drawPixmap(self, painter: QPainter, rect: QRect) -> None:
+        if self._pixmap is None:
+            return
+
         device_pixel_ratio = self.devicePixelRatioF()
         border_radius = self._border_radius
 
