@@ -10,6 +10,7 @@ class SiTableValueManagerLabels(ABCSiTabelManager):
 
     def _value_write_parser(self, row_index, col_index, value):
         self.parent().getRowWidget(row_index)[col_index].setText(value)
+        self.parent().getRowWidget(row_index)[col_index].setTextColor(self.parent().getColor(SiColor.TEXT_A))
 
     def _widget_creator(self, col_index):
         label = SiLabel(self.parent())
