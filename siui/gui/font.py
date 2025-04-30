@@ -17,6 +17,7 @@ class SiFont:
     You can use low-level API to customize fonts details,
     or use tokenized global fonts to quickly create fonts.
     """
+    Weight = QFont.Weight
 
     @staticmethod
     def getFont(
