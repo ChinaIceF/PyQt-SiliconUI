@@ -368,25 +368,27 @@ class SiPopover(QMenu):
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
-        self.setStyleSheet("background: transparent;")
-
         self._padding = 32
 
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
+
         self._shadow_frame = QWidget(self)
-        self._shadow_frame.setStyleSheet("background-color: #C88CD4; border-radius: 6px")
+
         self._wrapper = SiGraphicWrapperWidget(self)
         self._wrapper.setAttribute(Qt.WA_TranslucentBackground)
 
+        self._initStyle()
         SiQuickEffect.applyDropShadowOn(self._shadow_frame, (0, 0, 0, 180), blur_radius=32)
+
+    def _initStyle(self) -> None:
+        self.setStyleSheet("background: transparent;")
+        self._shadow_frame.setStyleSheet("background-color: #C88CD4; border-radius: 6px")
 
     def wrapper(self) -> SiGraphicWrapperWidget:
         return self._wrapper
 
     def resizeEvent(self, a0):
-        super().resizeEvent(a0)
-
         p = self._padding
         self._shadow_frame.setGeometry(p+1, p+1, self.width()-2*p-2, self.height()-2*p-2)
         self._wrapper.setGeometry(p, p, self.width()-2*p, self.height()-2*p)
