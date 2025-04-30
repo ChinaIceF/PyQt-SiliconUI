@@ -204,6 +204,9 @@ class SiGraphicWrapperWidget(QWidget):
             | QPainter.TextAntialiasing
         )
 
+    def sizeHint(self):
+        return self.widget().sizeHint()
+
     def setMergeAnimations(self, *funcs) -> None:
         self._animation_funcs = funcs
 
