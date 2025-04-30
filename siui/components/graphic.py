@@ -1,7 +1,8 @@
-from PyQt5.QtCore import QPointF, Qt, pyqtProperty, QRectF
-from PyQt5.QtGui import QTransform, QPainter
-from PyQt5.QtWidgets import QGraphicsProxyWidget, QWidget, QGraphicsScene, QGraphicsView
 from typing import List
+
+from PyQt5.QtCore import QPointF, QRectF, Qt, pyqtProperty
+from PyQt5.QtGui import QPainter, QTransform
+from PyQt5.QtWidgets import QGraphicsProxyWidget, QGraphicsScene, QGraphicsView, QWidget
 
 from siui.core.animation import SiExpAnimationRefactor
 from siui.typing import T_WidgetParent
@@ -132,6 +133,7 @@ class SiGraphicWrapperWidget(QWidget):
             opacity_ani = proxy_widget.animation(proxy_widget.Property.Opacity)
             opacity_ani.setCurrentValue(0.0)
             opacity_ani.setEndValue(1.0)
+            # opacity_ani.toProperty()
             opacity_ani.start()
 
         @staticmethod
@@ -139,6 +141,7 @@ class SiGraphicWrapperWidget(QWidget):
             translate_ani = proxy_widget.animation(proxy_widget.Property.Translate)
             translate_ani.setCurrentValue(QPointF(0, 50))
             translate_ani.setEndValue(QPointF(0, 0))
+            # translate_ani.toProperty()
             translate_ani.start()
 
         @staticmethod
@@ -146,6 +149,23 @@ class SiGraphicWrapperWidget(QWidget):
             translate_ani = proxy_widget.animation(proxy_widget.Property.Translate)
             translate_ani.setCurrentValue(QPointF(0, -50))
             translate_ani.setEndValue(QPointF(0, 0))
+            # translate_ani.toProperty()
+            translate_ani.start()
+
+        @staticmethod
+        def floatLeftIn(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
+            translate_ani = proxy_widget.animation(proxy_widget.Property.Translate)
+            translate_ani.setCurrentValue(QPointF(-50, 0))
+            translate_ani.setEndValue(QPointF(0, 0))
+            # translate_ani.toProperty()
+            translate_ani.start()
+
+        @staticmethod
+        def floatRightIn(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
+            translate_ani = proxy_widget.animation(proxy_widget.Property.Translate)
+            translate_ani.setCurrentValue(QPointF(50, 0))
+            translate_ani.setEndValue(QPointF(0, 0))
+            # translate_ani.toProperty()
             translate_ani.start()
 
         @staticmethod
@@ -153,7 +173,14 @@ class SiGraphicWrapperWidget(QWidget):
             scale_ani = proxy_widget.animation(proxy_widget.Property.Scale)
             scale_ani.setCurrentValue(0.95)
             scale_ani.setEndValue(1.0)
+            # scale_ani.toProperty()
             scale_ani.start()
+
+        @staticmethod
+        def resetToFloatUp(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
+            translate_ani = proxy_widget.animation(proxy_widget.Property.Translate)
+            translate_ani.setCurrentValue(QPointF(0, 50))
+            translate_ani.toProperty()
 
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
@@ -177,10 +204,10 @@ class SiGraphicWrapperWidget(QWidget):
             | QPainter.TextAntialiasing
         )
 
-    def setAnimationFuncs(self, *funcs) -> None:
+    def setMergeAnimations(self, *funcs) -> None:
         self._animation_funcs = funcs
 
-    def animationFuncs(self) -> List:
+    def mergeAnimations(self) -> List:
         return self._animation_funcs
 
     def widget(self) -> QWidget:
@@ -191,8 +218,12 @@ class SiGraphicWrapperWidget(QWidget):
         self._widget = widget
         self._proxy_widget.setWidget(self._widget)
 
-    def playMergeAnimation(self):
+    def playMergeAnimations(self):
         for func in self._animation_funcs:
+            func(self._proxy_widget)
+
+    def playAnimations(self, alist: List):
+        for func in alist:
             func(self._proxy_widget)
 
     def resizeEvent(self, a0):
