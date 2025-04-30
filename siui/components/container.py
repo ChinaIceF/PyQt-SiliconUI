@@ -138,6 +138,19 @@ class SiTriSectionPanelCard(SiPanelCard):
         self.layout().setStretchFactor(self.stretchWidget(), 0)
         self.layout().setStretchFactor(self._body, 1)
 
+    def sizeHint(self):
+        header_margins = self.header().contentsMargins()
+        body_margins = self.body().contentsMargins()
+        footer_margins = self.footer().contentsMargins()
+
+        header_width = self.header().sizeHint().width() + header_margins.left() + header_margins.right()
+        body_width = self.body().sizeHint().width() + body_margins.left() + body_margins.right()
+        footer_width = self.footer().sizeHint().width() + footer_margins.left() + footer_margins.right()
+
+        widths = [header_width, body_width, footer_width]
+
+        return QSize(max(widths), super().sizeHint().height())
+
     def title(self) -> str:
         return self._title.text()
 
