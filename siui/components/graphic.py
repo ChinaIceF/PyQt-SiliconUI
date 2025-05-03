@@ -1,7 +1,7 @@
 from typing import List
 
 from PyQt5.QtCore import QPointF, QRectF, Qt, pyqtProperty
-from PyQt5.QtGui import QPainter, QTransform
+from PyQt5.QtGui import QPainter, QTransform, QWheelEvent
 from PyQt5.QtWidgets import QGraphicsProxyWidget, QGraphicsScene, QGraphicsView, QWidget
 
 from siui.core.animation import SiExpAnimationRefactor
@@ -45,6 +45,8 @@ class SiAnimatedTransformGraphicProxyWidget(QGraphicsProxyWidget):
         self.center_ani.init(1/6, 0.01, self._center, self._center)
         self.opacity_ani.init(1/16, 0.01, self._opacity, self._opacity)
         self.translate_ani.init(1/6, 0.01, self._translate, self._translate)
+
+        self.setAcceptHoverEvents(True)
 
     @pyqtProperty(QPointF)
     def center(self):
@@ -124,6 +126,14 @@ class SiAnimatedTransformGraphicProxyWidget(QGraphicsProxyWidget):
         transform.translate(self._translate.x(), self._translate.y())
 
         self.setTransform(transform)
+
+    def hoverEnterEvent(self, event):
+        super().hoverEnterEvent(event)
+        self.grabMouse()
+
+    def hoverLeaveEvent(self, event):
+        super().hoverLeaveEvent(event)
+        self.ungrabMouse()
 
 
 class SiGraphicWrapperWidget(QWidget):
