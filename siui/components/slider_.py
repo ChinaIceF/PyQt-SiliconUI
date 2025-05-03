@@ -864,6 +864,90 @@ class SiWheelPickerVertical(SiDenseContainer):
         self._indicator.visualWidthAnimation().start()
 
 
+class SiWheelPickerHorizontal(SiDenseContainer):
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self.style_data = WheelPickerStyleData()
+        self._mouse_in = False
+
+        self._indicator = SiLinearIndicator(self)
+        self._title_label = QLabel(self)
+        self._spinbox = SiWheelSpinBox(self)
+
+        self.layout().setDirection(self.TopToBottom)
+        self.addWidget(self._title_label)
+        self.addWidget(self._spinbox)
+        self.addWidget(self._indicator)
+
+        self._initStyle()
+
+        self._spinbox.valueChanged.connect(self._onValueChanged)
+        self._spinbox.limitReached.connect(self._onLimitReached)
+
+    def _initStyle(self):
+        self.setFixedHeight(80)
+        self.layout().setSpacing(8)
+
+        self._indicator.setVisualWidth(45)
+        self._indicator.setVisualHeight(2)
+        self._indicator.setFixedSize(45, 4)
+        self._indicator.setColor(self.style_data.indicator_idle)
+
+        self._title_label.setFixedHeight(12)
+        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.DemiBold))
+        self._title_label.setStyleSheet(
+            "color: #918497;"
+        )
+
+        self._spinbox.setFixedHeight(33)
+        self._spinbox.setFont(SiFont.getFont(size=32, weight=QFont.DemiBold))
+        self._spinbox.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        # self._spinbox.setReadOnly(True)
+        self._spinbox.setStyleSheet(
+            # "background-color: blue;"
+            "color: #D1CBD4;"
+            "border: none;"
+            "padding: -4px -4px 0px -2px;"
+            "selection-color: #D1CBD4;"
+            "selection-background-color: transparent;"
+        )
+
+    def spinBox(self) -> QSpinBox:
+        return self._spinbox
+
+    def setTitle(self, value: str) -> None:
+        self._title_label.setText(value)
+
+    def _onValueChanged(self, _) -> None:
+        end_value = self.style_data.indicator_hover if self._mouse_in else self.style_data.indicator_idle
+
+        self._indicator.colorAnimation().setCurrentValue(self.style_data.indicator_flash)
+        self._indicator.colorAnimation().setEndValue(end_value)
+        self._indicator.colorAnimation().start()
+
+    def _onLimitReached(self, _) -> None:
+        self._indicator.warn()
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        self._mouse_in = True
+
+        self._indicator.colorAnimation().setEndValue(self.style_data.indicator_hover)
+        self._indicator.colorAnimation().start()
+        self._indicator.visualHeightAnimation().setEndValue(4)
+        self._indicator.visualHeightAnimation().start()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self._mouse_in = False
+
+        self._indicator.colorAnimation().setEndValue(self.style_data.indicator_idle)
+        self._indicator.colorAnimation().start()
+        self._indicator.visualHeightAnimation().setEndValue(2)
+        self._indicator.visualHeightAnimation().start()
+
+
 class ScrollBarStyleData:
     STYLE_TYPES = ["Slider"]
 
