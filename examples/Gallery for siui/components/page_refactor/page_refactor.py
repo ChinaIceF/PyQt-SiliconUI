@@ -3,11 +3,12 @@ from contextlib import contextmanager
 
 from PyQt5.QtCore import QPointF, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QBoxLayout, QWidget, QButtonGroup
+from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QWidget
 
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiTitledWidgetGroup
 from siui.components.button import (
     SiFlatButton,
+    SiFlatButtonWithIndicator,
     SiLongPressButtonRefactor,
     SiProgressPushButton,
     SiPushButtonRefactor,
@@ -15,7 +16,7 @@ from siui.components.button import (
     SiRadioButtonWithAvatar,
     SiRadioButtonWithDescription,
     SiSwitchRefactor,
-    SiToggleButtonRefactor, SiFlatButtonWithIndicator,
+    SiToggleButtonRefactor,
 )
 from siui.components.chart import SiTrendChart
 from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
