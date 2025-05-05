@@ -154,10 +154,10 @@ class ButtonStyleData(QObject):
 
 # @dataclass(init=False)
 class FlatButtonStyleData(ButtonStyleData):
-    indicator_hover_color = QColor("#A681BF")
-    indicator_selected_color = QColor("#A681BF")
+    indicator_hover_color = QColor("#C88CD4")
+    indicator_selected_color = QColor("#C88CD4")
     indicator_flash_color = QColor("#F5EBF9")
-    indicator_idle_color = QColor("#00A681BF")
+    indicator_idle_color = QColor("#00C88CD4")
 
 
 # @dataclass(init=False)
@@ -1108,7 +1108,7 @@ class RadioButtonStyleData(QObject):
     unchecked_indicator_color: QColor = QColor("#25222A")
     unchecked_indicator_width: float = 33
 
-    checked_indicator_color: QColor = QColor("#a681bf")
+    checked_indicator_color: QColor = QColor("#C88CD4")
     checked_indicator_width: float = 51
 
 
