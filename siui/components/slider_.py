@@ -4,7 +4,7 @@ import math
 from dataclasses import dataclass
 
 from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
-from PyQt5.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QPixmap
+from PyQt5.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QPixmap, QValidator
 from PyQt5.QtWidgets import (
     QAbstractSlider,
     QAbstractSpinBox,
@@ -29,7 +29,7 @@ from siui.typing import T_WidgetParent
 class SliderStyleData:
     STYLE_TYPES = ["Slider"]
 
-    thumb_idle_color: QColor = QColor("#a681bf")
+    thumb_idle_color: QColor = QColor("#C88CD4")
     thumb_hover_color: QColor = QColor("#EDE1F4")
     thumb_width: int = 52
     thumb_height: int = 14
@@ -285,12 +285,12 @@ class CoordinatePickerStyleData:
     slider_y_width: int = 64
 
     indicator_size: int = 26
-    indicator_idle_color: QColor = QColor("#a681bf")
+    indicator_idle_color: QColor = QColor("#C88CD4")
     indicator_hover_color: QColor = QColor("#EDE1F4")
     indicator_outline_weight: int = 10
     indicator_stroke_weight: int = 6
     indicator_background_color: QColor = QColor("#25222a")
-    indicator_stroke_color: QColor = QColor("#a681bf")
+    indicator_stroke_color: QColor = QColor("#C88CD4")
 
     base_line_weight: int = 2
     base_line_color: QColor = QColor("#3b3143")
@@ -754,8 +754,48 @@ class SiWheelSpinBox(QSpinBox):
             self.stepDown()
 
 
+class SiWeekdaySpinBox(QSpinBox):
+    WEEKDAYS = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
+    limitReached = pyqtSignal(float)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setRange(0, 6)  # 索引范围对应一周七天
+        self.setWrapping(True)  # 支持循环滚动
+        self.setValue(0)
+
+    def textFromValue(self, value):
+        if 0 <= value < len(self.WEEKDAYS):
+            return self.WEEKDAYS[value]
+        return "?"
+
+    def valueFromText(self, text):
+        if text in self.WEEKDAYS:
+            return self.WEEKDAYS.index(text)
+        return 0  # 默认返回星期一
+
+    def validate(self, text, pos):
+        if text in self.WEEKDAYS:
+            return QValidator.Acceptable, text, pos
+        return QValidator.Invalid, text, pos
+
+    def wheelEvent(self, e):
+        super().wheelEvent(e)
+
+        delta_y = e.angleDelta().y()
+        if delta_y > 0:
+            if self.value() == self.maximum():
+                self.limitReached.emit(self.value())
+            self.stepUp()
+
+        if delta_y < 0:
+            if self.value() == self.minimum():
+                self.limitReached.emit(self.value())
+            self.stepDown()
+
+
 class WheelPickerStyleData:
-    indicator_hover = QColor("#A681BF")
+    indicator_hover = QColor("#C88CD4")
     indicator_idle = QColor("#4C4554")
     indicator_flash = QColor("#F5EBF9")
 
@@ -818,6 +858,20 @@ class SiWheelPickerVertical(SiDenseContainer):
             "selection-background-color: transparent;"
         )
 
+    def spinBox(self) -> QSpinBox:
+        return self._spinbox
+
+    def setSpinBox(self, spinbox: QSpinBox) -> None:
+        self._spinbox.deleteLater()
+
+        self._spinbox = spinbox
+        self._spinbox.setParent(self)
+
+        self._initStyle()
+
+        self._spinbox.valueChanged.connect(self._onValueChanged)
+        self._spinbox.limitReached.connect(self._onLimitReached)
+
     def setDirection(self, direction: QBoxLayout.Direction):
         if direction == QBoxLayout.LeftToRight:
             self.layout().setDirection(self.LeftToRight)
@@ -828,9 +882,6 @@ class SiWheelPickerVertical(SiDenseContainer):
             self.layout().setDirection(self.RightToLeft)
             self._title_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self._spinbox.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-
-    def spinBox(self) -> QSpinBox:
-        return self._spinbox
 
     def setTitle(self, value: str) -> None:
         self._title_label.setText(value)
@@ -844,6 +895,10 @@ class SiWheelPickerVertical(SiDenseContainer):
 
     def _onLimitReached(self, _) -> None:
         self._indicator.warn()
+
+    def indicatorFlash(self) -> None:
+        self._indicator.colorAnimation().setCurrentValue(self.style_data.indicator_flash)
+        self._indicator.colorAnimation().start()
 
     def enterEvent(self, a0):
         super().enterEvent(a0)
@@ -886,35 +941,51 @@ class SiWheelPickerHorizontal(SiDenseContainer):
         self._spinbox.limitReached.connect(self._onLimitReached)
 
     def _initStyle(self):
-        self.setFixedHeight(80)
-        self.layout().setSpacing(8)
+        self.setFixedHeight(64)
+        self.layout().setSpacing(0)
 
         self._indicator.setVisualWidth(45)
         self._indicator.setVisualHeight(2)
         self._indicator.setFixedSize(45, 4)
         self._indicator.setColor(self.style_data.indicator_idle)
 
-        self._title_label.setFixedHeight(12)
-        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.DemiBold))
+        # self._title_label.setFixedHeight(12)
+        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.Bold))
+        self._title_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self._title_label.setStyleSheet(
+            # "background-color: red;"
             "color: #918497;"
+            "padding-bottom: 3px;"
         )
 
-        self._spinbox.setFixedHeight(33)
-        self._spinbox.setFont(SiFont.getFont(size=32, weight=QFont.DemiBold))
+        self._spinbox.setFixedHeight(40)
+        self._spinbox.setFont(SiFont.getFont(size=32, weight=QFont.Bold))
         self._spinbox.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        # self._spinbox.setReadOnly(True)
+        self._spinbox.setReadOnly(True)
         self._spinbox.setStyleSheet(
             # "background-color: blue;"
             "color: #D1CBD4;"
             "border: none;"
-            "padding: -4px -4px 0px -2px;"
+            "padding: -4px -4px 0px 0px;"
             "selection-color: #D1CBD4;"
             "selection-background-color: transparent;"
+            "padding-bottom: 8px;"
         )
 
     def spinBox(self) -> QSpinBox:
         return self._spinbox
+
+    def setSpinBox(self, spinbox: QSpinBox) -> None:
+        self._spinbox.deleteLater()
+
+        self._spinbox = spinbox
+        self._spinbox.setParent(self)
+
+        self._initStyle()
+        self.layout().insertWidget(1, self._spinbox)
+
+        self._spinbox.valueChanged.connect(self._onValueChanged)
+        self._spinbox.limitReached.connect(self._onLimitReached)
 
     def setTitle(self, value: str) -> None:
         self._title_label.setText(value)
@@ -928,6 +999,14 @@ class SiWheelPickerHorizontal(SiDenseContainer):
 
     def _onLimitReached(self, _) -> None:
         self._indicator.warn()
+
+    def indicatorFlash(self) -> None:
+        self._indicator.colorAnimation().setCurrentValue(self.style_data.indicator_flash)
+        self._indicator.colorAnimation().start()
+
+    def resizeEvent(self, a0):
+        self._indicator.setVisualWidth(self.width())
+        self._indicator.setFixedSize(self.width(), 4)
 
     def enterEvent(self, a0):
         super().enterEvent(a0)

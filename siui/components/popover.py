@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import calendar
+import datetime
+
 from PyQt5.QtCore import QEvent, QObject, QSize, Qt
 from PyQt5.QtWidgets import QButtonGroup, QLabel, QMenu, QStackedWidget, QWidget
 
 from siui.components.button import SiFlatButton, SiFlatButtonWithIndicator
 from siui.components.container import SiDenseContainer
 from siui.components.graphic import SiGraphicWrapperWidget
-from siui.components.slider_ import SiWheelPickerHorizontal, SiWheelPickerVertical
+from siui.components.slider_ import SiWheelPickerHorizontal, SiWheelPickerVertical, SiWeekdaySpinBox
 from siui.core import SiQuickEffect
 from siui.core.globals import SiGlobal
 from siui.gui import SiFont
@@ -102,7 +105,7 @@ class SiPopoverStackedWidget(SiDenseContainer):
         self._stack_widget.setMinimumSize(320, 100)
         self._stack_widget.setContentsMargins(1, 0, 1, 1)
 
-        self._close_button.setFixedSize(32, 32)
+        self._close_button.setFixedSize(36, 36)
         self._close_button.setToolTip("关闭")
         self._close_button.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_dismiss_filled"))
 
@@ -147,13 +150,126 @@ class SiPopoverDatePicker(SiDenseContainer):
         self.setStyleSheet("background-color: transparent")
 
         self._year_picker = SiWheelPickerHorizontal(self)
-        self._year_picker.spinBox().setAttribute(Qt.WA_TranslucentBackground)
+        self._month_picker = SiWheelPickerHorizontal(self)
+        self._day_picker = SiWheelPickerHorizontal(self)
+        self._day_of_week_picker = SiWheelPickerHorizontal(self)
+
+        self._set_to_today_button = SiFlatButton(self)
+        self._set_to_today_button.clicked.connect(self.setToToday)
 
         self.addWidget(self._year_picker)
+        self.addWidget(self._month_picker)
+        self.addWidget(self._day_picker)
+        self.addWidget(self._day_of_week_picker)
+        self.addWidget(self._set_to_today_button, side=Qt.RightEdge)
+
+        self._day_of_week_picker.setSpinBox(SiWeekdaySpinBox(self))
+        self._day_of_week_picker.spinBox().setFont(SiFont.getFont(size=24, weight=SiFont.Weight.Bold))
 
         self._initStyle()
+        self._year_picker.spinBox().valueChanged.connect(self._updatePickerRange)
+        self._month_picker.spinBox().valueChanged.connect(self._updatePickerRange)
+
+        self._updatePickerRange()
+        self._bindDayAndWeekSync()
+        self.setToToday()
 
     def _initStyle(self) -> None:
-        self._year_picker.setTitle("年")
-        self._year_picker.spinBox().setMaximum(3000)
+        self.layout().setSpacing(20)
+        self.setContentsMargins(24, 12, 16, 12)
+
+        self._year_picker.setTitle("年份")
+        self._year_picker.spinBox().setAttribute(Qt.WA_TranslucentBackground)
         self._year_picker.spinBox().setValue(2025)
+
+        self._month_picker.setTitle("月份")
+        self._month_picker.spinBox().setAttribute(Qt.WA_TranslucentBackground)
+        self._month_picker.spinBox().setValue(1)
+
+        self._day_picker.setTitle("日期")
+        self._day_picker.spinBox().setAttribute(Qt.WA_TranslucentBackground)
+        self._day_picker.spinBox().setValue(1)
+
+        self._day_of_week_picker.setMinimumWidth(135)
+        self._day_of_week_picker.setTitle("星期")
+        self._day_of_week_picker.spinBox().setAttribute(Qt.WA_TranslucentBackground)
+        self._day_of_week_picker.spinBox().lineEdit().setValidator(None)
+        self._day_of_week_picker.spinBox().lineEdit().setText("w")
+
+        self._set_to_today_button.setFixedSize(36, 36)
+        self._set_to_today_button.setToolTip("设为今天")
+        self._set_to_today_button.setSvgIcon(
+            SiGlobal.siui.iconpack.get("ic_fluent_calendar_arrow_counterclockwise_regular"))
+
+    def _bindDayAndWeekSync(self) -> None:
+        def currentDate() -> datetime.date:
+            year = self._year_picker.spinBox().value()
+            month = self._month_picker.spinBox().value()
+            day = self._day_picker.spinBox().value()
+            return datetime.date(year, month, day)
+
+        def setDate(d: datetime.date) -> None:
+            self._year_picker.spinBox().blockSignals(True)
+            self._month_picker.spinBox().blockSignals(True)
+            self._day_picker.spinBox().blockSignals(True)
+            self._day_of_week_picker.spinBox().blockSignals(True)
+
+            self._year_picker.indicatorFlash() if d.year != self._year_picker.spinBox().value() else None
+            self._month_picker.indicatorFlash() if d.month != self._month_picker.spinBox().value() else None
+            self._day_picker.indicatorFlash() if d.day != self._day_picker.spinBox().value() else None
+
+            self._year_picker.spinBox().setValue(d.year)
+            self._month_picker.spinBox().setValue(d.month)
+            self._day_picker.spinBox().setValue(d.day)
+            self._day_of_week_picker.spinBox().setValue((d.weekday()) % 7)  # Monday=0
+
+            self._year_picker.spinBox().blockSignals(False)
+            self._month_picker.spinBox().blockSignals(False)
+            self._day_picker.spinBox().blockSignals(False)
+            self._day_of_week_picker.spinBox().blockSignals(False)
+
+        # 当星期控件被滚动，修改日期
+        last_weekday = [self._day_of_week_picker.spinBox().value()]
+
+        def onWeekChanged(value: int):
+            today = currentDate()
+            delta = (value - last_weekday[0]) % 7
+            if delta > 3:
+                delta -= 7  # 滚动方向校正：取最近方向
+            new_date = today + datetime.timedelta(days=delta)
+            setDate(new_date)
+            last_weekday[0] = value
+
+        self._day_of_week_picker.spinBox().valueChanged.connect(onWeekChanged)
+
+        # 当日期控件被滚动，修改星期
+        def onDateChanged(value: int):
+            d = currentDate()
+            self._day_of_week_picker.spinBox().blockSignals(True)
+            self._day_of_week_picker.spinBox().setValue((d.weekday()) % 7)
+            self._day_of_week_picker.spinBox().blockSignals(False)
+            self._day_of_week_picker.indicatorFlash()
+            last_weekday[0] = d.weekday()
+
+        self._year_picker.spinBox().valueChanged.connect(onDateChanged)
+        self._month_picker.spinBox().valueChanged.connect(onDateChanged)
+        self._day_picker.spinBox().valueChanged.connect(onDateChanged)
+
+    def setToToday(self) -> None:
+        today = datetime.datetime.today()
+        self._year_picker.spinBox().setValue(today.year)
+        self._month_picker.spinBox().setValue(today.month)
+        self._day_picker.spinBox().setValue(today.day)
+
+    def _updatePickerRange(self) -> None:
+        year = self._year_picker.spinBox().value()
+        month = self._month_picker.spinBox().value()
+        max_day = calendar.monthrange(year, month)[1]
+
+        self._year_picker.spinBox().setRange(1840, 3000)
+        self._month_picker.spinBox().setRange(1, 12)
+        self._day_picker.spinBox().setRange(1, max_day)
+
+        # 纠正日期
+        if self._day_picker.spinBox().value() > max_day:
+            self._day_picker.spinBox().setValue(max_day)
