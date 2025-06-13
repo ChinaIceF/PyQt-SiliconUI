@@ -137,6 +137,7 @@ class SiFrameless(QWidget):
             if ctypes.windll.user32.IsZoomed(msg.hWnd):
                 border = ctypes.windll.user32.GetSystemMetrics(SM_CXSIZEFRAME) + 2
                 params = ctypes.cast(msg.lParam, ctypes.POINTER(NCCALCSIZE_PARAMS)).contents
+                # 注意这里需要测试。为窗口添加边框
                 rect = params.rgrc[0]
                 rect.top += border
                 rect.left += border
