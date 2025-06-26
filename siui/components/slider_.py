@@ -738,6 +738,9 @@ class SiCoordinatePicker3D(SiCoordinatePicker2D):
 
 class SiWheelSpinBox(QSpinBox):
     limitReached = pyqtSignal(float)
+    carried = pyqtSignal(int)
+    increased = pyqtSignal()
+    decreased = pyqtSignal()
 
     def wheelEvent(self, e):
         super().wheelEvent(e)
@@ -747,16 +750,35 @@ class SiWheelSpinBox(QSpinBox):
             if self.value() == self.maximum():
                 self.limitReached.emit(self.value())
             self.stepUp()
+            self.increased.emit()
 
         if delta_y < 0:
             if self.value() == self.minimum():
                 self.limitReached.emit(self.value())
             self.stepDown()
+            self.decreased.emit()
+
+    def stepBy(self, steps: int) -> None:
+        val = self.value()
+        min_val = self.minimum()
+        max_val = self.maximum()
+        range_size = max_val - min_val + 1
+
+        new_val = (val - min_val + steps) % range_size + min_val
+        self.setValue(new_val)
+
+        if val + steps > max_val:
+            self.carried.emit(1)
+
+        if val + steps < min_val:
+            self.carried.emit(-1)
 
 
 class SiWeekdaySpinBox(QSpinBox):
     WEEKDAYS = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
     limitReached = pyqtSignal(float)
+    increased = pyqtSignal()
+    decreased = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -787,11 +809,13 @@ class SiWeekdaySpinBox(QSpinBox):
             if self.value() == self.maximum():
                 self.limitReached.emit(self.value())
             self.stepUp()
+            self.increased.emit()
 
         if delta_y < 0:
             if self.value() == self.minimum():
                 self.limitReached.emit(self.value())
             self.stepDown()
+            self.decreased.emit()
 
 
 class WheelPickerStyleData:
@@ -836,16 +860,16 @@ class SiWheelPickerVertical(SiDenseContainer):
         self._indicator.setFixedSize(4, 45)
         self._indicator.setColor(self.style_data.indicator_idle)
 
-        self._title_label.setFixedHeight(12)
-        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.DemiBold))
+        self._title_label.setFixedHeight(11)
+        self._title_label.setAlignment(Qt.AlignTop)
+        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.Bold))
         self._title_label.setStyleSheet(
             "color: #918497;"
             # "background-color: red;"
         )
 
         self._spinbox.setFixedHeight(33)
-        font = SiFont.getFont(size=32, weight=QFont.DemiBold)
-        font.setHintingPreference(QFont.PreferFullHinting)
+        font = SiFont.getFont(size=32, weight=QFont.Bold)
         self._spinbox.setFont(font)
         self._spinbox.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self._spinbox.setReadOnly(True)
