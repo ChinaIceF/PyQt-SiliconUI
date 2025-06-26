@@ -23,6 +23,7 @@ class SiDenseContainer(QWidget):
                  direction: QBoxLayout.Direction = QBoxLayout.LeftToRight) -> None:
         super().__init__(parent)
 
+        self._is_stretch_widget_muted = False
         self.stretch_widget = QWidget(self)
         self.stretch_widget.resize(0, 0)
         self._initLayout(direction)
@@ -39,6 +40,13 @@ class SiDenseContainer(QWidget):
 
     def stretchWidget(self) -> QWidget:
         return self.stretch_widget
+
+    def muteStretchWidget(self) -> None:
+        self.layout().setStretchFactor(self.stretch_widget, 0)
+        self._is_stretch_widget_muted = True
+
+    def isStretchWidgetMuted(self) -> bool:
+        return self._is_stretch_widget_muted
 
     def addWidget(self, widget: QWidget, side: Qt.Edges = Qt.LeftEdge | Qt.TopEdge) -> None:
         sw_index = self.layout().indexOf(self.stretch_widget)

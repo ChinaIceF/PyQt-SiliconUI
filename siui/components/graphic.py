@@ -192,6 +192,20 @@ class SiGraphicWrapperWidget(QWidget):
             translate_ani.setCurrentValue(QPointF(0, 50))
             translate_ani.toProperty()
 
+        @staticmethod
+        def rotateInX(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
+            rotate_ani = proxy_widget.animation(proxy_widget.Property.XRotate)
+            rotate_ani.setCurrentValue(90)
+            rotate_ani.setEndValue(0)
+            rotate_ani.start()
+
+        @staticmethod
+        def rotateInY(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
+            rotate_ani = proxy_widget.animation(proxy_widget.Property.YRotate)
+            rotate_ani.setCurrentValue(90)
+            rotate_ani.setEndValue(0)
+            rotate_ani.start()
+
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
