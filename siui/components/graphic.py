@@ -195,14 +195,14 @@ class SiGraphicWrapperWidget(QWidget):
         @staticmethod
         def rotateInX(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
             rotate_ani = proxy_widget.animation(proxy_widget.Property.XRotate)
-            rotate_ani.setCurrentValue(90)
+            rotate_ani.setCurrentValue(25)
             rotate_ani.setEndValue(0)
             rotate_ani.start()
 
         @staticmethod
         def rotateInY(proxy_widget: SiAnimatedTransformGraphicProxyWidget):
             rotate_ani = proxy_widget.animation(proxy_widget.Property.YRotate)
-            rotate_ani.setCurrentValue(90)
+            rotate_ani.setCurrentValue(25)
             rotate_ani.setEndValue(0)
             rotate_ani.start()
 
@@ -240,6 +240,9 @@ class SiGraphicWrapperWidget(QWidget):
     def widget(self) -> QWidget:
         return self._widget
 
+    def graphicsProxyWidget(self) -> SiAnimatedTransformGraphicProxyWidget:
+        return self._proxy_widget
+
     def setWidget(self, widget: QWidget) -> None:
         widget.setParent(None)
         self._widget = widget
@@ -258,5 +261,5 @@ class SiGraphicWrapperWidget(QWidget):
         self._view.setGeometry(0, 0, self.width(), self.height())
         self._scene.setSceneRect(QRectF(0, 0, self.width(), self.height()))
         self._widget.resize(self.size())
-
+        print(self.size())
         self._proxy_widget.setProperty(self._proxy_widget.Property.Center, QPointF(self.width() / 2, self.height() / 2))
