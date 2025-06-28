@@ -23,6 +23,7 @@ from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, S
 from siui.components.editbox import SiCapsuleEdit, SiDoubleSpinBox, SiLineEdit, SiSpinBox
 from siui.components.label import SiLinearIndicator, SiLinearPartitionIndicator
 from siui.components.page import SiPage
+from siui.components.progress_bar_ import SiProgressBarRefactor
 from siui.components.slider_ import SiCoordinatePicker2D, SiCoordinatePicker3D, SiSlider
 from siui.core import SiGlobal
 from siui.gui import SiFont
@@ -40,6 +41,17 @@ def createPanelCard(parent: QWidget, title: str) -> SiTriSectionPanelCard:
         card.adjustSize()
         parent.addWidget(card)
 
+@contextmanager
+def createDenseContainer(parent: SiDenseContainer,
+                         direction: QBoxLayout.Direction,
+                         side: Qt.Edges = Qt.LeftEdge | Qt.TopEdge) -> SiDenseContainer:
+    container = SiDenseContainer(parent)
+    container.layout().setDirection(direction)
+    try:
+        yield container
+    finally:
+        parent.addWidget(container, side)
+
 
 class RefactoredWidgets(SiPage):
     def __init__(self, *args, **kwargs):
@@ -54,6 +66,50 @@ class RefactoredWidgets(SiPage):
         self.titled_widgets_group = SiTitledWidgetGroup(self)
         self.titled_widgets_group.setSpacing(32)
         self.titled_widgets_group.setAdjustWidgetsSize(True)  # 禁用调整宽度
+
+        with self.titled_widgets_group as group:
+            group.addTitle("进度条")
+
+            with createPanelCard(group, "条形进度条") as card:
+                progress_bar = SiProgressBarRefactor(self)
+                card.body().addWidget(progress_bar)
+
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                    button_random_value = SiPushButtonRefactor.withText("随机赋值")
+                    button_random_value.clicked.connect(
+                        lambda: progress_bar.setValue(int(random.random() * 101)))
+
+                    button_random_add = SiPushButtonRefactor.withText("随机增加")
+                    button_random_add.clicked.connect(
+                        lambda: progress_bar.setValue(progress_bar.value() + int(random.random() * 10 + 2)))
+
+                    button_loading = SiPushButtonRefactor.withText("加载")
+                    button_loading.clicked.connect(
+                        lambda: progress_bar.setState(progress_bar.State.Loading))
+
+                    button_processing = SiPushButtonRefactor.withText("处理")
+                    button_processing.clicked.connect(
+                        lambda: progress_bar.setState(progress_bar.State.Processing))
+
+                    button_paused = SiPushButtonRefactor.withText("暂停")
+                    button_paused.clicked.connect(
+                        lambda: progress_bar.setState(progress_bar.State.Paused))
+
+                    button_error = SiPushButtonRefactor.withText("错误")
+                    button_error.clicked.connect(
+                        lambda: progress_bar.setState(progress_bar.State.Error))
+
+                    button_toggle_flashing = SiToggleButtonRefactor(self)
+                    button_toggle_flashing.setText("自动闪烁")
+                    button_toggle_flashing.toggled.connect(progress_bar.setFlashing)
+
+                    container.addWidget(button_random_value)
+                    container.addWidget(button_random_add)
+                    container.addWidget(button_error, Qt.RightEdge)
+                    container.addWidget(button_paused, Qt.RightEdge)
+                    container.addWidget(button_processing, Qt.RightEdge)
+                    container.addWidget(button_loading, Qt.RightEdge)
+                    container.addWidget(button_toggle_flashing, Qt.RightEdge)
 
         with self.titled_widgets_group as group:
             group.addTitle("卡片容器")

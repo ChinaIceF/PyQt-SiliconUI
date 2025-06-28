@@ -219,7 +219,7 @@ class SiPopoverDatePicker(SiDenseContainer):
         day = self._date.day()
         month = self._date.month()
         year = self._date.year()
-        weekday = self._date.dayOfWeek()
+        weekday = self._date.dayOfWeek() - 1
 
         self._day_picker.spinBox().setValue(day)
         self._month_picker.spinBox().setValue(month)
