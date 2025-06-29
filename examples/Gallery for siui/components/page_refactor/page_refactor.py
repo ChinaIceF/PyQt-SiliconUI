@@ -72,16 +72,17 @@ class RefactoredWidgets(SiPage):
 
             with createPanelCard(group, "条形进度条") as card:
                 progress_bar = SiProgressBarRefactor(self)
+                progress_bar.setMaximum(1000)
                 card.body().addWidget(progress_bar)
 
                 with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
                     button_random_value = SiPushButtonRefactor.withText("随机赋值")
                     button_random_value.clicked.connect(
-                        lambda: progress_bar.setValue(int(random.random() * 101)))
+                        lambda: progress_bar.setValue(int(random.random() * 1001)))
 
                     button_random_add = SiPushButtonRefactor.withText("随机增加")
                     button_random_add.clicked.connect(
-                        lambda: progress_bar.setValue(progress_bar.value() + int(random.random() * 10 + 2)))
+                        lambda: progress_bar.setValue(progress_bar.value() + int(random.random() * 50 + 2)))
 
                     button_loading = SiPushButtonRefactor.withText("加载")
                     button_loading.clicked.connect(
