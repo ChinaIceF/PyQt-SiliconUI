@@ -16,7 +16,7 @@ from siui.components.button import (
     SiRadioButtonWithAvatar,
     SiRadioButtonWithDescription,
     SiSwitchRefactor,
-    SiToggleButtonRefactor,
+    SiToggleButtonRefactor, SiCheckBoxRefactor,
 )
 from siui.components.chart import SiTrendChart
 from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
@@ -111,6 +111,23 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(button_processing, Qt.RightEdge)
                     container.addWidget(button_loading, Qt.RightEdge)
                     container.addWidget(button_toggle_flashing, Qt.RightEdge)
+
+            with createPanelCard(group, "新多选按钮") as card:
+                checkbox = SiCheckBoxRefactor(self)
+                checkbox.setText("可以多选的选项")
+                checkbox.setDescription("选项的解释说明文本")
+                checkbox.setMaximumWidth(274)
+                # checkbox.setAutoExclusive(True)
+
+                checkbox2 = SiCheckBoxRefactor(self)
+                checkbox2.setText("可以多选的选项")
+                checkbox2.setDescription("选项的解释说明文本")
+                checkbox2.setMaximumWidth(274)
+                checkbox2.setToolTip("上面的你怎么没有工具提示啊")
+                # checkbox2.setAutoExclusive(True)
+
+                card.body().addWidget(checkbox)
+                card.body().addWidget(checkbox2)
 
         with self.titled_widgets_group as group:
             group.addTitle("卡片容器")
