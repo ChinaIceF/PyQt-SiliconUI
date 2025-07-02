@@ -1,9 +1,12 @@
+
 from PyQt5.QtCore import QTimer, QRect, QRectF, Qt, pyqtProperty, pyqtSignal
 from PyQt5.QtGui import QColor, QPainter, QPainterPath
 from PyQt5.QtWidgets import QProgressBar
 
 from siui.core import createPainter
 from siui.core.animation import SiExpAnimationRefactor
+from siui.core.event_filter import TooltipManager
+from siui.core.globals import toolTipWindow
 from siui.typing import T_WidgetParent
 
 
@@ -37,6 +40,7 @@ class SiProgressBarRefactor(QProgressBar):
         self.style_data = ProgressBarStyleData()
         self._is_flashing = False
         self._state = self.State.Loading
+        self._prog_to_str_func = self._defaultProgressToToolTipFunc
 
         self._prog_color = self.style_data.loading_color
         self._prog_value = self.minimum()
@@ -49,13 +53,14 @@ class SiProgressBarRefactor(QProgressBar):
         self.ani_prog_value.init(1/4, 0.001, self._prog_value, self._prog_value)
 
         self.ani_flash_color = SiExpAnimationRefactor(self, self.Property.FlashColor)
-        self.ani_flash_color.init(1/16, 0.001, self._flash_color, self._flash_color)
+        self.ani_flash_color.init(1/16, 1, self._flash_color, self._flash_color)
 
         self.flash_timer = QTimer()
         self.flash_timer.setInterval(1000)
 
         self._initStyle()
         self._initSignal()
+        self._initToolTipManager()
 
     def _initStyle(self) -> None:
         self.setContentsMargins(0, 8, 0, 8)
@@ -65,6 +70,10 @@ class SiProgressBarRefactor(QProgressBar):
         self.flash_timer.timeout.connect(self.flash)
         self.valueChanged.connect(self._onValueChanged)
         self.stateChanged.connect(self._onStateChanged)
+
+    def _initToolTipManager(self) -> None:
+        self._manager = TooltipManager(toolTipWindow())
+        self.installEventFilter(self._manager)
 
     @pyqtProperty(QColor)
     def progressColor(self):
@@ -92,6 +101,13 @@ class SiProgressBarRefactor(QProgressBar):
     def flashColor(self, value: QColor):
         self._flash_color = value
         self.update()
+
+    @staticmethod
+    def _defaultProgressToToolTipFunc(progress: float) -> str:
+        return str(round(progress * 100, 2)) + "%"
+
+    def setProgressToToolTipFunc(self, func) -> None:
+        self._prog_to_str_func = func
 
     def setFlashing(self, state: bool) -> None:
         self._is_flashing = state
@@ -136,6 +152,12 @@ class SiProgressBarRefactor(QProgressBar):
         self.ani_prog_value.setEndValue(self._valueToProgress(self.value()))
         self.ani_prog_value.start()
         self.flash()
+
+        new_tooltip = self._prog_to_str_func(self._valueToProgress(self.value()))
+        self.setToolTip(new_tooltip)
+
+        if self._manager.isEntered():
+            self._manager.setToolTip(new_tooltip)
 
     def _valueToProgress(self, value: float) -> float:
         return (value - self.minimum()) / (self.maximum() - self.minimum())
