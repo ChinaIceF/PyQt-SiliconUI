@@ -15,7 +15,7 @@ from PyQt5.QtCore import (
     Qt,
     QTimer,
     pyqtProperty,
-    pyqtSignal,
+    pyqtSignal, QMargins, QPoint,
 )
 from PyQt5.QtGui import (
     QColor,
@@ -27,14 +27,16 @@ from PyQt5.QtGui import (
     QPainterPath,
     QPaintEvent,
     QPen,
-    QPixmap,
+    QPixmap, QTextOption, QTransform,
 )
 from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QLabel, QPushButton, QRadioButton
+from PyQt5.QtWidgets import QLabel, QPushButton, QRadioButton, QAbstractButton, QVBoxLayout, QWidget, QSizePolicy
 from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
+from siui.core.event_filter import TooltipManager, ButtonScaleOnPressedManager
+from siui.core.globals import toolTipWindow
 from siui.gui import SiFont
 
 if TYPE_CHECKING:
@@ -1585,3 +1587,296 @@ class SiRadioButtonWithAvatar(SiRadioButtonRefactor):
             self._drawAvatarIcon(painter, avatar_rect)
             self._drawNameTextRect(painter, text_rect)
             self._drawDescriptionTextRect(painter, desc_rect)
+
+
+class CheckBoxStyleData:
+    flash_start_color = QColor("#50baadc7")
+    flash_end_color = QColor("#00baadc7")
+    hover_idle_color = QColor("#00baadc7")
+    hover_active_color = QColor("#1abaadc7")
+    title_normal_color = QColor("#D1CBD4")
+    title_bold_color = QColor("#FFFFFF")
+    description_color = QColor("#918497")
+    indicator_deactivated_color = QColor("#25222A")
+    indicator_activated_color = QColor("#C88CD4")
+
+
+class SiCheckBoxRefactor(QAbstractButton):
+    class Property:
+        FlashColor = "flashColor"
+        HoverColor = "hoverColor"
+        ScaleFactor = "scaleFactor"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self.style_data = CheckBoxStyleData()
+
+        self._font_title_bold = SiFont.getFont(size=14, weight=SiFont.Weight.Bold)
+        self._font_title_normal = SiFont.getFont(size=14)
+        self._font_description = SiFont.getFont(size=12)
+
+        self._flash_color = self.style_data.flash_end_color
+        self._hover_color = self.style_data.hover_idle_color
+        self._scale_factor = 1
+        self._description_text = ""
+
+        self.ani_flash_color = SiExpAnimationRefactor(self, self.Property.FlashColor)
+        self.ani_flash_color.init(1/8, 1, self._flash_color, self._flash_color)
+
+        self.ani_hover_color = SiExpAnimationRefactor(self, self.Property.HoverColor)
+        self.ani_hover_color.init(1/8, 1, self._hover_color, self._hover_color)
+
+        self.ani_scale_factor = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
+        self.ani_scale_factor.init(1/8, 0.001, self._scale_factor, self._scale_factor)
+
+        self._title_label = QLabel(self)
+        self._description_label = QLabel(self)
+        self._title_label.setVisible(False)
+        self._description_label.setVisible(False)
+
+        self.resize(274, 64)
+        self.setMinimumHeight(64)
+        self.setCheckable(True)
+        # self._initLayout()
+        self._initStyle()
+        self._initToolTipManager()
+        self._initScaleManager()
+
+    def _initLayout(self) -> None:
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(64, 14, 28, 14)
+        layout.setSpacing(0)
+        layout.addWidget(self._title_label, stretch=0)
+        layout.addWidget(self._description_label, stretch=0)
+        self.setLayout(layout)
+
+    def _initStyle(self) -> None:
+        self._title_label.setFont(self._font_title_normal)
+        self._title_label.setStyleSheet(f"color: {self.style_data.title_normal_color.name()}")
+
+        self._description_label.setFont(self._font_description)
+        self._description_label.setStyleSheet(f"color: {self.style_data.description_color.name()}")
+        self._description_label.setWordWrap(True)
+
+    def _initToolTipManager(self) -> None:
+        self._tooltip_manager = TooltipManager(toolTipWindow())
+        self.installEventFilter(self._tooltip_manager)
+
+    def _initScaleManager(self) -> None:
+        self._scale_manager = ButtonScaleOnPressedManager(self)
+        self._scale_manager.setMinScaleFactor(0.95)
+        self.installEventFilter(self._scale_manager)
+
+    @pyqtProperty(QColor)
+    def flashColor(self):
+        return self._flash_color
+
+    @flashColor.setter
+    def flashColor(self, value):
+        self._flash_color = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def hoverColor(self):
+        return self._hover_color
+
+    @hoverColor.setter
+    def hoverColor(self, value):
+        self._hover_color = value
+        self.update()
+
+    @pyqtProperty(float)
+    def scaleFactor(self):
+        return self._scale_factor
+
+    @scaleFactor.setter
+    def scaleFactor(self, value):
+        self._scale_factor = value
+        self.update()
+
+
+    # def sizeHint(self) -> QSize:
+    #     margins = QMargins(64, 12, 28, 12)
+    #     content_width = self.width() - margins.left() - margins.right()  # 最小宽度为 300
+    #
+    #     # 计算标题高度
+    #     title_metrics = QFontMetrics(self._font_title_normal)
+    #     title_rect = title_metrics.boundingRect(
+    #         QRect(0, 0, content_width, 10000),  # 高度足够大以容纳多行
+    #         Qt.TextWordWrap,
+    #         self.text()
+    #     )
+    #     title_height = title_rect.height()
+    #
+    #     # 间距 + 描述文字高度
+    #     description_metrics = QFontMetrics(self._font_description)
+    #     desc_rect = description_metrics.boundingRect(
+    #         QRect(0, 0, content_width, 10000),
+    #         Qt.TextWordWrap,
+    #         self._description_text
+    #     )
+    #     description_height = desc_rect.height()
+    #
+    #     spacing_between = 4
+    #     content_height = title_height + spacing_between + description_height
+    #
+    #     total_height = content_height + margins.top() + margins.bottom()
+    #
+    #     return QSize(self.width(), total_height)
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        self.ani_hover_color.setEndValue(self.style_data.hover_active_color)
+        self.ani_hover_color.start()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self.ani_hover_color.setEndValue(self.style_data.hover_idle_color)
+        self.ani_hover_color.start()
+
+    def mouseReleaseEvent(self, e):
+        super().mouseReleaseEvent(e)
+        self.ani_flash_color.setCurrentValue(self.style_data.flash_start_color)
+        self.ani_flash_color.setEndValue(self.style_data.flash_end_color)
+        self.ani_flash_color.start()
+
+    def animation(self, prop_name: str) -> SiExpAnimationRefactor:
+        return {
+            self.Property.FlashColor: self.ani_flash_color,
+            self.Property.HoverColor: self.ani_hover_color,
+            self.Property.ScaleFactor: self.ani_scale_factor,
+        }.get(prop_name)
+
+    def setDescription(self, text) -> None:
+        self._description_text = text
+
+    def description(self) -> str:
+        return self._description_text
+
+    def _getCheckmarkPath(self) -> QPainterPath:
+        points = [QPointF(x, y) for x, y in [
+            (9.76497, 3.20474), (10.0661, 3.48915), (9.79526, 4.26497),
+            (5.54526, 8.76497), (5.40613, 8.91228), (5.01071, 8.99993),
+            (4.8081, 9.00282), (4.46967, 8.78033), (2.21967, 6.53033),
+            (1.92678, 6.23744), (2.21967, 5.46967), (2.51256, 5.17678),
+            (3.28033, 5.46967), (4.98463, 7.17397), (8.70474, 3.23503),
+            (8.98915, 2.9339), (9.76497, 3.20474)
+        ]]
+
+        quad_control_end_pairs = [
+            (1, 2), (2, 3), (4, 5), (6, 7), (7, 8),
+            (9, 10), (11, 12), (12, 13), (13, 14), (15, 16)
+        ]
+
+        path = QPainterPath()
+        path.moveTo(points[0])
+        for control_idx, end_idx in quad_control_end_pairs:
+            path.quadTo(points[control_idx], points[end_idx])
+        path.closeSubpath()
+
+        transform = QTransform()
+        transform.scale(1.75, 1.75)
+
+        return transform.map(path)
+
+    def _drawHoverRect(self, painter: QPainter, rect: QRect) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), 12, 12)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._hover_color)
+        painter.drawPath(path)
+
+    def _drawFlashRect(self, painter: QPainter, rect: QRect) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), 12, 12)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._flash_color)
+        painter.drawPath(path)
+
+    def _drawTitleText(self, painter: QPainter, rect: QRect) -> None:
+        option = QTextOption()
+        option.setWrapMode(QTextOption.WordWrap)
+        painter.setFont(self._font_title_normal)
+        painter.setPen(self.style_data.title_normal_color)
+        painter.drawText(QRectF(rect), self.text(), option)
+
+    def _drawDescriptionText(self, painter: QPainter, rect: QRect) -> None:
+        option = QTextOption()
+        option.setWrapMode(QTextOption.WordWrap)
+        painter.setFont(self._font_description)
+        painter.setPen(self.style_data.description_color)
+        painter.drawText(QRectF(rect), self._description_text, option)
+
+    def _drawIndicator(self, painter: QPainter, rect: QRect) -> None:
+        checkmark_path = self._getCheckmarkPath()
+        checkmark_path.translate(rect.center() - QPointF(9.5, 9.25))
+
+        if self.autoExclusive():
+            outer_path = QPainterPath()
+            outer_path.addEllipse(QRectF(rect))
+            inner_path = QPainterPath()
+            inner_path.addEllipse(QRectF(rect.marginsRemoved(QMargins(5, 5, 5, 5))))
+
+        else:
+            outer_path = QPainterPath()
+            outer_path.addRoundedRect(QRectF(rect), 8, 8)
+            inner_path = QPainterPath()
+            inner_path.addRoundedRect(QRectF(rect.marginsRemoved(QMargins(5, 5, 5, 5))), 3, 3)
+
+        if self.isChecked():
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(self.style_data.indicator_activated_color)
+            painter.drawPath(outer_path - checkmark_path)
+
+        else:
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(self.style_data.indicator_deactivated_color)
+            painter.drawPath(outer_path - inner_path)
+
+    def _drawBuffer(self, painter: QPainter, buffer: QPixmap, rect: QRect):
+        a = self._scale_factor
+        painter.translate(QPointF(rect.width() * (1 - a) / 2, rect.height() * (1 - a) / 2))
+        painter.scale(a, a)
+        painter.drawPixmap(rect, buffer)
+
+    def paintEvent(self, e):
+        full_rect = self.rect()
+        margin = QMargins(64, 12, 28, 12)
+        content_rect = full_rect.marginsRemoved(margin)
+
+        # Indicator 固定位置
+        indicator_rect = QRect(20, 20, 24, 24)
+
+        # Title 占一行（定高）
+        title_height = 18
+        title_rect = QRect(content_rect.left(), content_rect.top(),
+                           content_rect.width(), title_height)
+
+        # Description 从 title 底下开始，占剩下空间
+        spacing = 4
+        description_rect = QRect(content_rect.left(),
+                                 title_rect.bottom() + spacing,
+                                 content_rect.width(),
+                                 content_rect.bottom() - (title_rect.bottom() + spacing))
+
+        renderHints = (
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
+        )
+
+        buffer = QPixmap(full_rect.size() * self.devicePixelRatioF())
+        buffer.setDevicePixelRatio(self.devicePixelRatioF())
+        buffer.fill(Qt.transparent)
+
+        with createPainter(buffer) as painter:
+            self._drawHoverRect(painter, full_rect)
+            self._drawIndicator(painter, indicator_rect)
+            self._drawTitleText(painter, title_rect)
+            self._drawDescriptionText(painter, description_rect)
+            self._drawFlashRect(painter, full_rect)
+
+        with createPainter(self, renderHints) as painter:
+            self._drawBuffer(painter, buffer, full_rect)
+
