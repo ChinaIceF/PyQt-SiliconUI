@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import calendar
-import datetime
-
-from PyQt5.QtCore import QEvent, QPoint, QPointF, QRectF, QSize, Qt, pyqtProperty, pyqtSignal, QDate
+from PyQt5.QtCore import QDate, QEvent, QPoint, QPointF, QRectF, QSize, Qt, pyqtProperty, pyqtSignal
 from PyQt5.QtGui import QColor, QPainter, QPainterPath
 from PyQt5.QtWidgets import QButtonGroup, QLabel, QMenu, QStackedWidget, QWidget
 

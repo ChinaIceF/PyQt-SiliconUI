@@ -11,17 +11,23 @@ class TooltipManager(QObject):
         self._entered = False
 
     def setToolTip(self, text: str, do_flash: bool = True) -> None:
+        if self._tooltip_window is None:
+            return
         if text == "":
             return
         self._tooltip_window.setText(text, flash=do_flash)
         self._tooltip_window.show_()
 
     def showToolTip(self, do_flash: bool = True) -> None:
+        if self._tooltip_window is None:
+            return
         self._tooltip_window.show_()
         if do_flash:
             self._tooltip_window.flash()
 
     def hideToolTip(self) -> None:
+        if self._tooltip_window is None:
+            return
         self._tooltip_window.hide_()
 
     def isEntered(self) -> bool:
