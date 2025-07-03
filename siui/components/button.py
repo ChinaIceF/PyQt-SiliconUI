@@ -1695,35 +1695,43 @@ class SiCheckBoxRefactor(QAbstractButton):
         self._scale_factor = value
         self.update()
 
+    def hasHeightForWidth(self) -> bool:
+        return True
 
-    # def sizeHint(self) -> QSize:
-    #     margins = QMargins(64, 12, 28, 12)
-    #     content_width = self.width() - margins.left() - margins.right()  # 最小宽度为 300
-    #
-    #     # 计算标题高度
-    #     title_metrics = QFontMetrics(self._font_title_normal)
-    #     title_rect = title_metrics.boundingRect(
-    #         QRect(0, 0, content_width, 10000),  # 高度足够大以容纳多行
-    #         Qt.TextWordWrap,
-    #         self.text()
-    #     )
-    #     title_height = title_rect.height()
-    #
-    #     # 间距 + 描述文字高度
-    #     description_metrics = QFontMetrics(self._font_description)
-    #     desc_rect = description_metrics.boundingRect(
-    #         QRect(0, 0, content_width, 10000),
-    #         Qt.TextWordWrap,
-    #         self._description_text
-    #     )
-    #     description_height = desc_rect.height()
-    #
-    #     spacing_between = 4
-    #     content_height = title_height + spacing_between + description_height
-    #
-    #     total_height = content_height + margins.top() + margins.bottom()
-    #
-    #     return QSize(self.width(), total_height)
+    def heightForWidth(self, w: int) -> int:
+        margins = QMargins(64, 12, 28, 12)
+        content_width = w - margins.left() - margins.right()  # 最小宽度为 300
+
+        # 计算标题高度
+        title_metrics = QFontMetrics(self._font_title_normal)
+        title_rect = title_metrics.boundingRect(
+            QRect(0, 0, content_width, 10000),  # 高度足够大以容纳多行
+            Qt.TextWordWrap,
+            self.text()
+        )
+        title_height = title_rect.height()
+
+        # 间距 + 描述文字高度
+        description_metrics = QFontMetrics(self._font_description)
+        desc_rect = description_metrics.boundingRect(
+            QRect(0, 0, content_width, 10000),
+            Qt.TextWordWrap,
+            self._description_text
+        )
+        description_height = desc_rect.height()
+
+        spacing_between = 4
+        content_height = title_height + spacing_between + description_height
+
+        total_height = content_height + margins.top() + margins.bottom()
+
+        return total_height
+
+    def sizeHint(self):
+        return QSize(self.width(), self.heightForWidth(self.width()))
+
+    def resizeEvent(self, a0):
+        self.updateGeometry()
 
     def enterEvent(self, a0):
         super().enterEvent(a0)
