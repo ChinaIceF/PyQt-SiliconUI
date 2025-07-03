@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 from PyQt5.QtCore import QPointF, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QWidget
+from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QWidget, QSizePolicy
 
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiTitledWidgetGroup
 from siui.components.button import (
@@ -47,6 +47,7 @@ def createDenseContainer(parent: SiDenseContainer,
                          side: Qt.Edges = Qt.LeftEdge | Qt.TopEdge) -> SiDenseContainer:
     container = SiDenseContainer(parent)
     container.layout().setDirection(direction)
+    container.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
     try:
         yield container
     finally:
@@ -116,15 +117,14 @@ class RefactoredWidgets(SiPage):
                 checkbox = SiCheckBoxRefactor(self)
                 checkbox.setText("可以多选的选项")
                 checkbox.setDescription("选项的解释说明文本")
-                checkbox.setMaximumWidth(274)
+                checkbox.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
                 # checkbox.setAutoExclusive(True)
 
                 checkbox2 = SiCheckBoxRefactor(self)
                 checkbox2.setText("可以多选的选项")
                 checkbox2.setDescription("选项的解释说明文本")
-                checkbox2.setMaximumWidth(274)
                 checkbox2.setToolTip("上面的你怎么没有工具提示啊")
-                # checkbox2.setAutoExclusive(True)
+                checkbox2.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
 
                 card.body().addWidget(checkbox)
                 card.body().addWidget(checkbox2)

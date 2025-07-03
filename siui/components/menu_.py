@@ -55,7 +55,7 @@ class ActionButton(SiDenseContainer):
     def __init__(self, action: QAction, parent_menu: QMenu, parent: QWidget) -> None:
         super().__init__(parent, direction=SiDenseContainer.LeftToRight)
 
-        self.setContentsMargins(10, 0, 10, 0)
+        self.setContentsMargins(8, 0, 10, 0)
         self.layout().setSpacing(4)
 
         self.style_data = MenuItemsWidgetStyleData()
@@ -65,17 +65,17 @@ class ActionButton(SiDenseContainer):
         self._pressed_flag = False
         self._has_child_menu = action.menu() is not None
 
-        self.name = QLabel(self)
-        self.shortcut = QLabel(self)
-        self.icon = SiRoundPixmapWidget(self)
-        self.child_icon = SiRoundPixmapWidget(self)
-        self.color_widget = SiAnimatedColorWidget(self)
+        self._name_label = QLabel(self)
+        self._shortcut_widget = QLabel(self)
+        self._icon_widget = SiRoundPixmapWidget(self)
+        self._submenu_indicator = SiRoundPixmapWidget(self)
+        self._color_widget = SiAnimatedColorWidget(self)
 
         self._initContents()
-        self.addWidget(self.icon)
-        self.addWidget(self.name)
-        self.addWidget(self.child_icon, side=Qt.RightEdge)
-        self.addWidget(self.shortcut, side=Qt.RightEdge)
+        self.addWidget(self._icon_widget)
+        self.addWidget(self._name_label)
+        self.addWidget(self._submenu_indicator, side=Qt.RightEdge)
+        self.addWidget(self._shortcut_widget, side=Qt.RightEdge)
 
         self._action.changed.connect(self._initContents)
         self._action.changed.connect(lambda: self.setEnabled(self._action.isEnabled()))
@@ -86,7 +86,7 @@ class ActionButton(SiDenseContainer):
         self.setToolTip(self._action.whatsThis())
 
         sd = self.style_data
-        ani = self.color_widget.animation()
+        ani = self._color_widget.animation()
 
         ani.setEndValue(self.style_data.action_idle)
         ani.setCurrentValue(self.style_data.action_idle)
@@ -95,11 +95,11 @@ class ActionButton(SiDenseContainer):
         shortcut_text = sd.action_shortcut_name.name()
         shortcut_background = sd.action_shortcut_background.name()
 
-        self.name.setStyleSheet(
+        self._name_label.setStyleSheet(
             f"color: {name_color.name(QColor.HexArgb)};"
             "padding: 0px 4px 0px 4px;"
         )
-        self.shortcut.setStyleSheet(
+        self._shortcut_widget.setStyleSheet(
             f"color: {shortcut_text};"
             f"background-color: {shortcut_background};"
             "padding: 1px 6px 1px 6px;"
@@ -107,40 +107,40 @@ class ActionButton(SiDenseContainer):
             "border-radius: 4px;"
         )
 
-        self.icon.setPixmap(self._action.icon().pixmap(64, 64))
-        self.icon.setFixedSize(20, 20)
-        self.icon.setVisualSize(QSize(18, 18))
-        self.icon.setContentsMargins(16, 8, 16, 8)
-        self.icon.setVisualSizeEnabled(True)
-        self.icon.setVisible(False)
+        self._icon_widget.setPixmap(self._action.icon().pixmap(64, 64))
+        self._icon_widget.setFixedSize(20, 20)
+        self._icon_widget.setVisualSize(QSize(18, 18))
+        self._icon_widget.setVisualSizeEnabled(True)
+        self._icon_widget.setVisible(False)
 
-        self.name.setFont(SiFont.getFont(size=14))
-        # self.name.setFont(self.action.font())
-        self.name.setText(self._action.text())
-        self.name.setAlignment(Qt.AlignVCenter)
-        self.name.setFixedHeight(32)
-        self.name.setMinimumWidth(32)
-        self.name.adjustSize()
+        self._name_label.setFont(SiFont.getFont(size=14))
+        self._name_label.setText(self._action.text())
+        self._name_label.setAlignment(Qt.AlignVCenter)
+        self._name_label.setFixedHeight(32)
+        self._name_label.setMinimumWidth(32)
+        self._name_label.adjustSize()
 
-        self.shortcut.setFont(SiFont.getFont(size=9))
-        self.shortcut.setText("+".join([sc.toString() for sc in self._action.shortcuts()]))
-        self.shortcut.setAlignment(Qt.AlignCenter)
-        self.shortcut.setFixedHeight(18)
-        self.shortcut.adjustSize()
-        self.shortcut.setVisible(self.shortcut.text() != "")
-        #
+        self._shortcut_widget.setFont(SiFont.getFont(size=9))
+        self._shortcut_widget.setText(self._action.shortcut().toString())
+        self._shortcut_widget.setAlignment(Qt.AlignCenter)
+        self._shortcut_widget.setFixedHeight(18)
+        self._shortcut_widget.adjustSize()
+        self._shortcut_widget.setVisible(self._shortcut_widget.text() != "")
+
         if self._has_child_menu:
-            self.child_icon.setPixmap(SiGlobal.siui.iconpack.toPixmap("ic_fluent_caret_right_filled"))
-        self.child_icon.setFixedSize(16, 16)
-        self.child_icon.setVisualSize(QSize(16, 16))
-        self.child_icon.setContentsMargins(16, 8, 16, 8)
-        self.child_icon.setVisualSizeEnabled(True)
-        self.child_icon.setVisible(False)
+            self._submenu_indicator.setPixmap(SiGlobal.siui.iconpack.toPixmap("ic_fluent_chevron_right_filled"))
+        self._submenu_indicator.setFixedSize(16, 16)
+        self._submenu_indicator.setVisualSize(QSize(16, 16))
+        self._submenu_indicator.setContentsMargins(16, 8, 16, 8)
+        self._submenu_indicator.setVisualSizeEnabled(True)
+        self._submenu_indicator.setVisible(False)
 
-        self.color_widget.setBorderRadius(6)
+        self._action.shortcut().toString()
+
+        self._color_widget.setBorderRadius(6)
 
     def setHover(self, state: bool) -> None:
-        ani = self.color_widget.animation()
+        ani = self._color_widget.animation()
         if state:
             ani.setEndValue(self.style_data.action_hover)
             ani.start()
@@ -150,6 +150,20 @@ class ActionButton(SiDenseContainer):
 
         if state:
             self._action.hover()
+
+    def setIconVisible(self, state: bool) -> None:
+        self._icon_widget.setVisible(state)
+
+    def setSubmenuIndicatorVisible(self, state: bool) -> None:
+        self._submenu_indicator.setVisible(state)
+
+    def setShortCutVisible(self, state: bool) -> None:
+        self._shortcut_widget.setVisible(state)
+
+    def updateShortCutVisibility(self) -> None:
+        text = self._action.shortcut().toString()
+        self._shortcut_widget.setText(text)
+        self._shortcut_widget.setVisible(text != "")
 
     def event(self, event):
         if event.type() == QEvent.ToolTip:
@@ -175,7 +189,7 @@ class ActionButton(SiDenseContainer):
 
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
-        self.color_widget.resize(a0.size())
+        self._color_widget.resize(a0.size())
 
     def mousePressEvent(self, a0):
         state = self._action.isEnabled()
@@ -278,6 +292,28 @@ class SiRoundMenu(QMenu):
     def _applyDropShadowEffect(self):
         SiQuickEffect.applyDropShadowOn(self.background, color=(0, 0, 0, 128))
 
+    def _updateComponentsVisibility(self) -> None:
+        has_icon = False
+        has_submenu = False
+        for action in self.actions():
+            if action.icon().isNull() is False:
+                has_icon = True
+            if action.menu() is not None:
+                has_submenu = True
+
+        layout = self.container.layout()
+        for i in range(layout.count()):
+            widget = layout.itemAt(i).widget()
+            if isinstance(widget, ActionButton) is False:
+                continue
+            widget.setIconVisible(has_icon)
+            widget.setSubmenuIndicatorVisible(has_submenu)
+            widget.updateShortCutVisibility()
+
+        self.container.adjustSize()
+        self.adjustSize()
+
+
     @pyqtProperty(QSize)
     def viewSize(self):
         return self._view_size
@@ -334,14 +370,10 @@ class SiRoundMenu(QMenu):
             self.close()
         self._is_mouse_pressed_in_self = False
 
-    def resizeEvent(self, a0):
-        super().resizeEvent(a0)
-        width = a0.size().width() - self._padding * 2
-        self.container.setFixedWidth(width)
-
     def showEvent(self, a0):
         super().showEvent(a0)
         self._applyDropShadowEffect()
+        self._updateComponentsVisibility()
 
         width = self.size().width() - self._padding * 2
         height = self.size().height() - self._padding * 2
