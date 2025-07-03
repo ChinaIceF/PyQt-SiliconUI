@@ -34,7 +34,7 @@ class SliderStyleData:
     thumb_width: int = 52
     thumb_height: int = 14
 
-    track_color: QColor = QColor("#77568d")
+    track_color: QColor = QColor("#C88CD4") #77568d
     track_height: int = 5
 
     background_color: QColor = QColor("#1C191F")

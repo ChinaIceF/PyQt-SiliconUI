@@ -55,7 +55,7 @@ class ActionButton(SiDenseContainer):
     def __init__(self, action: QAction, parent_menu: QMenu, parent: QWidget) -> None:
         super().__init__(parent, direction=SiDenseContainer.LeftToRight)
 
-        self.setContentsMargins(10, 0, 10, 0)
+        self.setContentsMargins(8, 0, 10, 0)
         self.layout().setSpacing(4)
 
         self.style_data = MenuItemsWidgetStyleData()
@@ -65,15 +65,15 @@ class ActionButton(SiDenseContainer):
         self._pressed_flag = False
         self._has_child_menu = action.menu() is not None
 
-        self.name = QLabel(self)
+        self._name_label = QLabel(self)
         self._shortcut_widget = QLabel(self)
         self._icon_widget = SiRoundPixmapWidget(self)
         self._submenu_indicator = SiRoundPixmapWidget(self)
-        self.color_widget = SiAnimatedColorWidget(self)
+        self._color_widget = SiAnimatedColorWidget(self)
 
         self._initContents()
         self.addWidget(self._icon_widget)
-        self.addWidget(self.name)
+        self.addWidget(self._name_label)
         self.addWidget(self._submenu_indicator, side=Qt.RightEdge)
         self.addWidget(self._shortcut_widget, side=Qt.RightEdge)
 
@@ -86,7 +86,7 @@ class ActionButton(SiDenseContainer):
         self.setToolTip(self._action.whatsThis())
 
         sd = self.style_data
-        ani = self.color_widget.animation()
+        ani = self._color_widget.animation()
 
         ani.setEndValue(self.style_data.action_idle)
         ani.setCurrentValue(self.style_data.action_idle)
@@ -95,7 +95,7 @@ class ActionButton(SiDenseContainer):
         shortcut_text = sd.action_shortcut_name.name()
         shortcut_background = sd.action_shortcut_background.name()
 
-        self.name.setStyleSheet(
+        self._name_label.setStyleSheet(
             f"color: {name_color.name(QColor.HexArgb)};"
             "padding: 0px 4px 0px 4px;"
         )
@@ -110,17 +110,15 @@ class ActionButton(SiDenseContainer):
         self._icon_widget.setPixmap(self._action.icon().pixmap(64, 64))
         self._icon_widget.setFixedSize(20, 20)
         self._icon_widget.setVisualSize(QSize(18, 18))
-        self._icon_widget.setContentsMargins(16, 8, 16, 8)
         self._icon_widget.setVisualSizeEnabled(True)
         self._icon_widget.setVisible(False)
 
-        self.name.setFont(SiFont.getFont(size=14))
-        # self.name.setFont(self.action.font())
-        self.name.setText(self._action.text())
-        self.name.setAlignment(Qt.AlignVCenter)
-        self.name.setFixedHeight(32)
-        self.name.setMinimumWidth(32)
-        self.name.adjustSize()
+        self._name_label.setFont(SiFont.getFont(size=14))
+        self._name_label.setText(self._action.text())
+        self._name_label.setAlignment(Qt.AlignVCenter)
+        self._name_label.setFixedHeight(32)
+        self._name_label.setMinimumWidth(32)
+        self._name_label.adjustSize()
 
         self._shortcut_widget.setFont(SiFont.getFont(size=9))
         self._shortcut_widget.setText(self._action.shortcut().toString())
@@ -128,9 +126,9 @@ class ActionButton(SiDenseContainer):
         self._shortcut_widget.setFixedHeight(18)
         self._shortcut_widget.adjustSize()
         self._shortcut_widget.setVisible(self._shortcut_widget.text() != "")
-        #
+
         if self._has_child_menu:
-            self._submenu_indicator.setPixmap(SiGlobal.siui.iconpack.toPixmap("ic_fluent_caret_right_filled"))
+            self._submenu_indicator.setPixmap(SiGlobal.siui.iconpack.toPixmap("ic_fluent_chevron_right_filled"))
         self._submenu_indicator.setFixedSize(16, 16)
         self._submenu_indicator.setVisualSize(QSize(16, 16))
         self._submenu_indicator.setContentsMargins(16, 8, 16, 8)
@@ -139,10 +137,10 @@ class ActionButton(SiDenseContainer):
 
         self._action.shortcut().toString()
 
-        self.color_widget.setBorderRadius(6)
+        self._color_widget.setBorderRadius(6)
 
     def setHover(self, state: bool) -> None:
-        ani = self.color_widget.animation()
+        ani = self._color_widget.animation()
         if state:
             ani.setEndValue(self.style_data.action_hover)
             ani.start()
@@ -191,7 +189,7 @@ class ActionButton(SiDenseContainer):
 
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
-        self.color_widget.resize(a0.size())
+        self._color_widget.resize(a0.size())
 
     def mousePressEvent(self, a0):
         state = self._action.isEnabled()
