@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from PyQt5.QtCore import QRectF, QSize, Qt
 from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPixmap
-from PyQt5.QtWidgets import QBoxLayout, QLabel, QWidget
+from PyQt5.QtWidgets import QBoxLayout, QLabel, QWidget, QSizePolicy
 
 from siui.components.label import SiRoundPixmapWidget
 from siui.core import GlobalFont, createPainter
@@ -56,7 +56,6 @@ class SiDenseContainer(QWidget):
             self.layout().insertWidget(sw_index+1, widget)
         else:
             raise ValueError(f"Unexpected side: {side}")
-
 
 class PanelCardStyleData:
     background_fore_color: QColor = QColor("#332e38")
@@ -126,6 +125,10 @@ class SiTriSectionPanelCard(SiPanelCard):
         self.addWidget(self._body)
         self.addWidget(self._footer, Qt.BottomEdge)
 
+        self._header.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self._body.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self._footer.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+
         self._initStyle()
 
     def _initStyle(self) -> None:
@@ -145,19 +148,6 @@ class SiTriSectionPanelCard(SiPanelCard):
         self.layout().setSpacing(0)
         self.layout().setStretchFactor(self.stretchWidget(), 0)
         self.layout().setStretchFactor(self._body, 1)
-
-    def sizeHint(self):
-        header_margins = self.header().contentsMargins()
-        body_margins = self.body().contentsMargins()
-        footer_margins = self.footer().contentsMargins()
-
-        header_width = self.header().sizeHint().width() + header_margins.left() + header_margins.right()
-        body_width = self.body().sizeHint().width() + body_margins.left() + body_margins.right()
-        footer_width = self.footer().sizeHint().width() + footer_margins.left() + footer_margins.right()
-
-        widths = [header_width, body_width, footer_width]
-
-        return QSize(max(widths), super().sizeHint().height())
 
     def title(self) -> str:
         return self._title.text()
