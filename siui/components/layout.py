@@ -206,3 +206,89 @@ class SiMasonryLayout(QLayout):
                 item.setGeometry(new_rect)
 
         self._max_column_height_cache = max(column_height)
+
+
+class SiFlowLayout(QLayout):
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self._column_spacing = 8
+        self._line_spacing = 8
+        self._max_line_width_cache = 0
+        self._height_cache = 0
+        self._items = []
+
+    def addItem(self, a0: QLayoutItem) -> None:
+        self._items.append(a0)
+        self.invalidate()
+
+    def count(self) -> int:
+        return len(self._items)
+
+    def itemAt(self, index: int) -> QLayoutItem | None:
+        if index >= len(self._items) or index < 0:
+            return None
+        return self._items[index]
+
+    def takeAt(self, index) -> QLayoutItem | None:
+        if index >= len(self._items) or index < 0:
+            return None
+        return self._items.pop(index)
+
+    def sizeHint(self) -> QSize:
+        width = self._max_line_width_cache - self._column_spacing
+        height = self._height_cache - self._line_spacing
+        return QSize(width, height)
+
+    def columnSpacing(self) -> int:
+        return self._column_spacing
+
+    def setColumnSpacing(self, a0: int) -> None:
+        self._column_spacing = a0
+        self.invalidate()
+
+    def lineSpacing(self) -> int:
+        return self._line_spacing
+
+    def setLineSpacing(self, a0: int) -> None:
+        self._line_spacing = a0
+        self.invalidate()
+
+    def setGeometry(self, geo):
+        super().setGeometry(geo)
+
+        margins = self.parentWidget().contentsMargins()
+        rect = self.geometry()
+        rect_no_margin = rect.marginsAdded(margins)
+
+        max_line_width = 0
+        max_height_in_line = 0
+        current_line_width = 0
+        current_height = 0
+
+        for i in range(self.count()):
+            item = self.itemAt(i)
+            size = item.geometry().size()
+
+            max_height_in_line = max(max_height_in_line, size.height())
+
+            if current_line_width + size.width() > rect.width():
+                current_height += max_height_in_line + self._line_spacing
+                current_line_width = 0
+                max_height_in_line = 0
+
+            pos = QPoint(current_line_width, current_height) + rect.topLeft()
+            new_rect = QRect(pos, size)
+
+            if ((not rect_no_margin.intersects(new_rect)) and (not rect_no_margin.intersects(item.geometry()))
+                    and isinstance(item, AnimatedWidgetItem)):
+                item.setGeometryDirectly(new_rect)  # 初末位置都不可见，并且是 AnimatedWidgetItem，则取消动画以优化性能
+
+            else:
+                item.setGeometry(new_rect)
+
+            current_line_width += size.width() + self._column_spacing
+            max_line_width = max(max_line_width, current_line_width)
+
+        self._max_line_width_cache = max_line_width
+        self._height_cache = current_height
