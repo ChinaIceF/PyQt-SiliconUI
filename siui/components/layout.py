@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from PyQt5.QtCore import QEvent, QObject, QPoint, QRect, QSize, Qt
+from PyQt5.QtCore import QEvent, QObject, QPoint, QRect, QSize, Qt, pyqtSignal
 from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import QLayout, QLayoutItem, QWidget, QWidgetItem
 
+from siui.core import SiQuickEffect
 from siui.core.animation import SiExpAnimationRefactor
 from siui.typing import T_WidgetParent
 
@@ -33,67 +34,134 @@ class AnimatedWidgetItem(QWidgetItem):
 
 
 class DraggingEventFilter(QObject):
-    def __init__(self, parent: QWidget):
-        super().__init__(parent)
+    dropped = pyqtSignal()
+    dragged = pyqtSignal(QPoint)
+    pressed = pyqtSignal()
+
+    def __init__(self, item: QLayoutItem, target: QWidget, trigger: QWidget):
+        super().__init__()
+        # parent 是 LayoutItem, target 是 item 的 widget, trigger 是 widget 或者其子控件
         self._is_dragging = False
         self._drag_start_pos = QPoint()
         self._widget_start_pos = QPoint()
-        self._target = parent  # 默认是 parent
+        self._item = item           # LayoutItem
+        self._target = target       # move 的作用对象
+        self._trigger = trigger     # 谁触发拖动
 
-    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
-        # 确保事件是来自我们期望的 widget
-        if obj != self._target:
-            return super().eventFilter(obj, event)
+        self.dropped.connect(self._onDropped)
+        self.dragged.connect(self._onDragged)
 
-        if event.type() == QEvent.MouseButtonPress:
-            mouse_event: QMouseEvent = event
-            if mouse_event.button() == Qt.LeftButton:
-                self._is_dragging = True
-                self._drag_start_pos = mouse_event.globalPos()
-                self._widget_start_pos = self._target.pos()
-                return False
+    def _onDropped(self) -> None:
+        layout = self._target.parentWidget().layout()
+        layout.invalidate()
 
-        elif event.type() == QEvent.MouseMove:
-            mouse_event: QMouseEvent = event
-            if self._is_dragging and (mouse_event.buttons() & Qt.LeftButton):
-                delta = mouse_event.globalPos() - self._drag_start_pos
-                new_pos = self._widget_start_pos + delta
-                # 直接移动目标 widget
-                self._target.move(new_pos)
-                return False
+    def _onDragged(self, _) -> None:
+        center = self._target.geometry().center()
+        layout = self._target.parentWidget().layout()
 
-        elif event.type() == QEvent.MouseButtonRelease:
-            mouse_event: QMouseEvent = event
-            if mouse_event.button() == Qt.LeftButton:
-                self._is_dragging = False
-                # 拖动结束后的逻辑，比如通知 AnimatedWidgetItem 布局更新
-                # 但在当前场景，我们让 AnimatedWidgetItem 的 setGeometry 自动适应
-                return False
+        dragged_item_index = layout.indexOf(self._item)
+        swap_item_index = None
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            if item is self._item:
+                continue
+            if item.animation("geometry").state() == SiExpAnimationRefactor.State.Running:
+                continue
+            if item.geometry().contains(center):
+                swap_item_index = i
+                break
 
-        return super().eventFilter(obj, event)
+        if swap_item_index is None:
+            return
 
-    def is_dragging(self) -> bool:
-        return self._is_dragging
+        item_a = layout.takeAt(max(dragged_item_index, swap_item_index))
+        item_b = layout.takeAt(min(dragged_item_index, swap_item_index))
+        layout.insertItem(item_a, min(dragged_item_index, swap_item_index))
+        layout.insertItem(item_b, max(dragged_item_index, swap_item_index))
+        layout.invalidate()
 
+    def target(self) -> QWidget:
+        return self._target
 
-class DraggableWidgetItem(QWidgetItem):
-    class Property:
-        Geometry = "geometry"
-
-    def __init__(self, parent: T_WidgetParent = None) -> None:
-        super().__init__(parent)
-
-        self._trigger = parent
-
-        self.ani_geometry = SiExpAnimationRefactor(parent, self.Property.Geometry)
-        self.ani_geometry.init(1/4, 0.2, self.geometry(), self.geometry())
-        self.layout()
+    def setTarget(self, w: QWidget) -> None:
+        self._target = w
 
     def trigger(self) -> QWidget:
         return self._trigger
 
-    def setTrigger(self) -> None:
-        self._trigger.removeEventFilter(self)
+    def setTrigger(self, w: QWidget) -> None:
+        self._trigger = w
+
+    def _onTriggerPressed(self, event: QMouseEvent) -> None:
+        self.pressed.emit()
+        self._is_dragging = True
+        self._drag_start_pos = event.globalPos()
+        self._widget_start_pos = self._target.pos()
+        self._target.raise_()
+        SiQuickEffect.applyDropShadowOn(self._target, (0, 0, 0, 127), blur_radius=32)
+
+    def _onTriggerMouseMoved(self, event: QMouseEvent) -> None:
+        delta = event.globalPos() - self._drag_start_pos
+        new_pos = self._widget_start_pos + delta
+        self.dragged.emit(new_pos)
+        ani: SiExpAnimationRefactor = self._item.animation("geometry")
+        ani.setEndValue(QRect(new_pos, self._target.size()))
+        ani.start()
+
+    def _onTriggerReleased(self, _) -> None:
+        self.dropped.emit()
+        self._is_dragging = False
+        self._target.setGraphicsEffect(None)
+        self._target.updateGeometry()
+
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
+        if obj != self._trigger:
+            return super().eventFilter(obj, event)
+
+        if event.type() == QEvent.MouseButtonPress:
+            if event.button() == Qt.LeftButton:
+                self._onTriggerPressed(event)
+                return False
+
+        elif event.type() == QEvent.MouseMove:
+            if self._is_dragging and (event.buttons() & Qt.LeftButton):
+                self._onTriggerMouseMoved(event)
+                return False
+
+        elif event.type() == QEvent.MouseButtonRelease:
+            if event.button() == Qt.LeftButton:
+                self._onTriggerReleased(event)
+                return False
+
+        return super().eventFilter(obj, event)
+
+    def isDragging(self) -> bool:
+        return self._is_dragging
+
+
+class DraggableWidgetItem(QWidgetItem):
+
+    class Property:
+        Geometry = "geometry"
+
+    def __init__(self, parent: T_WidgetParent, trigger: T_WidgetParent) -> None:
+        super().__init__(parent)
+
+        self._event_filter = DraggingEventFilter(self, parent, trigger)
+        self._trigger = trigger
+        self._trigger.installEventFilter(self._event_filter)
+
+        self.ani_geometry = SiExpAnimationRefactor(parent, self.Property.Geometry)
+        self.ani_geometry.init(1/4, 0.2, self.geometry(), self.geometry())
+
+    def trigger(self) -> QWidget:
+        return self._trigger
+
+    def setTrigger(self, w: QWidget) -> None:
+        self._trigger.removeEventFilter(self._event_filter)
+        self._event_filter.setTrigger(w)
+        self._trigger = w
+        self._trigger.installEventFilter(self._event_filter)
 
     def animation(self, prop_name: str) -> SiExpAnimationRefactor:
         return {
@@ -108,6 +176,9 @@ class DraggableWidgetItem(QWidgetItem):
         self.widget().setGeometry(a0)
         self.ani_geometry.fromProperty()
 
+    def isDragging(self) -> bool:
+        return self._event_filter.isDragging()
+
 
 class SiMasonryLayout(QLayout):
     def __init__(self, parent: T_WidgetParent = None) -> None:
@@ -121,6 +192,10 @@ class SiMasonryLayout(QLayout):
 
     def addItem(self, a0: QLayoutItem) -> None:
         self._items.append(a0)
+        self.invalidate()
+
+    def insertItem(self, a0: QLayoutItem, index: int) -> None:
+        self._items.insert(index, a0)
         self.invalidate()
 
     def count(self) -> int:
@@ -197,6 +272,10 @@ class SiMasonryLayout(QLayout):
             new_rect = QRect(pos, size)
 
             column_height[column_index] += size.height() + self._line_spacing
+            self._max_column_height_cache = max(column_height)
+
+            if isinstance(item, DraggableWidgetItem) and item.isDragging():
+                continue
 
             if ((not rect_no_margin.intersects(new_rect)) and (not rect_no_margin.intersects(item.geometry()))
                     and isinstance(item, AnimatedWidgetItem)):
@@ -205,7 +284,7 @@ class SiMasonryLayout(QLayout):
             else:
                 item.setGeometry(new_rect)
 
-        self._max_column_height_cache = max(column_height)
+
 
 
 class SiFlowLayout(QLayout):
@@ -220,6 +299,10 @@ class SiFlowLayout(QLayout):
 
     def addItem(self, a0: QLayoutItem) -> None:
         self._items.append(a0)
+        self.invalidate()
+
+    def insertItem(self, a0: QLayoutItem, index: int) -> None:
+        self._items.insert(index, a0)
         self.invalidate()
 
     def count(self) -> int:
@@ -280,15 +363,18 @@ class SiFlowLayout(QLayout):
             pos = QPoint(current_line_width, current_height) + rect.topLeft()
             new_rect = QRect(pos, size)
 
+            current_line_width += size.width() + self._column_spacing
+            max_line_width = max(max_line_width, current_line_width)
+
+            if isinstance(item, DraggableWidgetItem) and item.isDragging():
+                continue
+
             if ((not rect_no_margin.intersects(new_rect)) and (not rect_no_margin.intersects(item.geometry()))
                     and isinstance(item, AnimatedWidgetItem)):
                 item.setGeometryDirectly(new_rect)  # 初末位置都不可见，并且是 AnimatedWidgetItem，则取消动画以优化性能
 
             else:
                 item.setGeometry(new_rect)
-
-            current_line_width += size.width() + self._column_spacing
-            max_line_width = max(max_line_width, current_line_width)
 
         self._max_line_width_cache = max_line_width
         self._height_cache = current_height
