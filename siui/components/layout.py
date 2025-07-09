@@ -59,8 +59,7 @@ class DraggingEventFilter(QObject):
         center = self._target.geometry().center()
         layout = self._target.parentWidget().layout()
 
-        dragged_item_index = layout.indexOf(self._item)
-        swap_item_index = None
+        insert_at_index = None
         for i in range(layout.count()):
             item = layout.itemAt(i)
             if item is self._item:
@@ -68,16 +67,14 @@ class DraggingEventFilter(QObject):
             if item.animation("geometry").state() == SiExpAnimationRefactor.State.Running:
                 continue
             if item.geometry().contains(center):
-                swap_item_index = i
+                insert_at_index = i
                 break
 
-        if swap_item_index is None:
+        if insert_at_index is None:
             return
 
-        item_a = layout.takeAt(max(dragged_item_index, swap_item_index))
-        item_b = layout.takeAt(min(dragged_item_index, swap_item_index))
-        layout.insertItem(item_a, min(dragged_item_index, swap_item_index))
-        layout.insertItem(item_b, max(dragged_item_index, swap_item_index))
+        layout.removeItem(self._item)
+        layout.insertItem(self._item, insert_at_index)
         layout.invalidate()
 
     def target(self) -> QWidget:
@@ -213,7 +210,7 @@ class SiMasonryLayout(QLayout):
 
     def sizeHint(self) -> QSize:
         width_unit = self._column_width + self._column_spacing
-        column_n = (self.geometry().width() + self._column_spacing) // width_unit
+        column_n = max((self.geometry().width() + self._column_spacing) // width_unit, 1)
         width = column_n * width_unit - self._column_spacing
         height = self._max_column_height_cache - self._line_spacing
         return QSize(width, height)
@@ -255,12 +252,10 @@ class SiMasonryLayout(QLayout):
     def setGeometry(self, geo):
         super().setGeometry(geo)
 
-        margins = self.parentWidget().contentsMargins()
         rect = self.geometry()
-        rect_no_margin = rect.marginsAdded(margins)
 
         width_unit = self._column_width + self._column_spacing
-        column_n = (rect.width() + self._column_spacing) // width_unit
+        column_n = max((rect.width() + self._column_spacing) // width_unit, 1)
         column_height = [0 for _ in range(column_n)]
 
         for i in range(self.count()):
@@ -277,14 +272,7 @@ class SiMasonryLayout(QLayout):
             if isinstance(item, DraggableWidgetItem) and item.isDragging():
                 continue
 
-            if ((not rect_no_margin.intersects(new_rect)) and (not rect_no_margin.intersects(item.geometry()))
-                    and isinstance(item, AnimatedWidgetItem)):
-                item.setGeometryDirectly(new_rect)  # 初末位置都不可见，并且是 AnimatedWidgetItem，则取消动画以优化性能
-
-            else:
-                item.setGeometry(new_rect)
-
-
+            item.setGeometry(new_rect)
 
 
 class SiFlowLayout(QLayout):
@@ -293,8 +281,9 @@ class SiFlowLayout(QLayout):
 
         self._column_spacing = 8
         self._line_spacing = 8
-        self._max_line_width_cache = 0
-        self._height_cache = 0
+
+        self._cache_max_line_width = 0
+        self._cache_height = 0
         self._items = []
 
     def addItem(self, a0: QLayoutItem) -> None:
@@ -319,8 +308,8 @@ class SiFlowLayout(QLayout):
         return self._items.pop(index)
 
     def sizeHint(self) -> QSize:
-        width = self._max_line_width_cache - self._column_spacing
-        height = self._height_cache - self._line_spacing
+        width = self._cache_max_line_width - self._column_spacing
+        height = self._cache_height - self._line_spacing
         return QSize(width, height)
 
     def columnSpacing(self) -> int:
@@ -340,9 +329,7 @@ class SiFlowLayout(QLayout):
     def setGeometry(self, geo):
         super().setGeometry(geo)
 
-        margins = self.parentWidget().contentsMargins()
         rect = self.geometry()
-        rect_no_margin = rect.marginsAdded(margins)
 
         max_line_width = 0
         max_height_in_line = 0
@@ -353,13 +340,17 @@ class SiFlowLayout(QLayout):
             item = self.itemAt(i)
             size = item.geometry().size()
 
-            max_height_in_line = max(max_height_in_line, size.height())
+            if isinstance(item, (AnimatedWidgetItem, DraggableWidgetItem)):
+                ani = item.animation(item.Property.Geometry)
+                if ani.state() == ani.State.Running and ani.currentValue().size() == size:
+                    size = ani.endValue().size()
 
             if current_line_width + size.width() > rect.width():
                 current_height += max_height_in_line + self._line_spacing
                 current_line_width = 0
                 max_height_in_line = 0
 
+            max_height_in_line = max(max_height_in_line, size.height())
             pos = QPoint(current_line_width, current_height) + rect.topLeft()
             new_rect = QRect(pos, size)
 
@@ -369,12 +360,7 @@ class SiFlowLayout(QLayout):
             if isinstance(item, DraggableWidgetItem) and item.isDragging():
                 continue
 
-            if ((not rect_no_margin.intersects(new_rect)) and (not rect_no_margin.intersects(item.geometry()))
-                    and isinstance(item, AnimatedWidgetItem)):
-                item.setGeometryDirectly(new_rect)  # 初末位置都不可见，并且是 AnimatedWidgetItem，则取消动画以优化性能
+            item.setGeometry(new_rect)
 
-            else:
-                item.setGeometry(new_rect)
-
-        self._max_line_width_cache = max_line_width
-        self._height_cache = current_height
+        self._cache_max_line_width = max_line_width
+        self._cache_height = current_height + max_height_in_line + self._line_spacing
