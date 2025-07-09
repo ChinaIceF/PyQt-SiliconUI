@@ -7,7 +7,9 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import (
     QEvent,
+    QMargins,
     QObject,
+    QPoint,
     QPointF,
     QRect,
     QRectF,
@@ -15,7 +17,7 @@ from PyQt5.QtCore import (
     Qt,
     QTimer,
     pyqtProperty,
-    pyqtSignal, QMargins, QPoint,
+    pyqtSignal,
 )
 from PyQt5.QtGui import (
     QColor,
@@ -27,15 +29,17 @@ from PyQt5.QtGui import (
     QPainterPath,
     QPaintEvent,
     QPen,
-    QPixmap, QTextOption, QTransform,
+    QPixmap,
+    QTextOption,
+    QTransform,
 )
 from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QLabel, QPushButton, QRadioButton, QAbstractButton, QVBoxLayout, QWidget, QSizePolicy
+from PyQt5.QtWidgets import QAbstractButton, QLabel, QPushButton, QRadioButton, QSizePolicy, QVBoxLayout, QWidget
 from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
-from siui.core.event_filter import TooltipManager, ButtonScaleOnPressedManager
+from siui.core.event_filter import ButtonScaleOnPressedManager, TooltipManager
 from siui.core.globals import toolTipWindow
 from siui.gui import SiFont
 
@@ -1638,18 +1642,9 @@ class SiCheckBoxRefactor(QAbstractButton):
         self.resize(274, 64)
         self.setMinimumHeight(64)
         self.setCheckable(True)
-        # self._initLayout()
         self._initStyle()
         self._initToolTipManager()
         self._initScaleManager()
-
-    def _initLayout(self) -> None:
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(64, 14, 28, 14)
-        layout.setSpacing(0)
-        layout.addWidget(self._title_label, stretch=0)
-        layout.addWidget(self._description_label, stretch=0)
-        self.setLayout(layout)
 
     def _initStyle(self) -> None:
         self._title_label.setFont(self._font_title_normal)
