@@ -317,7 +317,7 @@ class ABCButton(QPushButton):
         gap = self.style_data.icon_text_gap if text_width > 0 and icon_width > 0 else 0
 
         preferred_width = text_width + icon_width + gap + 32
-        preferred_height = max(32, text_height, icon_height)
+        preferred_height = max(36, text_height, icon_height)
         return QSize(preferred_width, preferred_height)
 
     def _showToolTip(self) -> None:
@@ -439,7 +439,7 @@ class SiPushButtonRefactor(ABCButton):
             (self.width() - icon_width - text_width - gap) / 2 + icon_width + gap,
             0,
             text_width,
-            self.height() - self.style_data.border_height - 1,
+            self.height() - self.style_data.border_height - 2,
         )
         pixmap_rect = QRect(
             (self.width() - icon_width - text_width - gap) // 2,
