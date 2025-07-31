@@ -81,7 +81,7 @@ class RefactoredWidgets(SiPage):
                     button_random_value.clicked.connect(
                         lambda: progress_bar.setValue(int(random.random() * 1001)))
 
-                    button_random_add = SiPushButtonRefactor.withText("随机增加")
+                    button_random_add = SiPushButtonRefactor.withText("Randomly Increase")
                     button_random_add.clicked.connect(
                         lambda: progress_bar.setValue(progress_bar.value() + int(random.random() * 50 + 2)))
 
