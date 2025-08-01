@@ -6,7 +6,7 @@ from typing import Union
 import numpy
 
 
-class SiColor(Enum):
+class SiColor(Enum):  # Deprecated.
     THEME = auto()
     THEME_TRANSITION_A = auto()
     THEME_TRANSITION_B = auto()

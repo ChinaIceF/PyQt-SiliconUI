@@ -4,8 +4,8 @@ import math
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QPainter, QPainterPath
+from PyQt5.QtCore import QPointF, QRectF, Qt, QPoint
+from PyQt5.QtGui import QPainter, QPainterPath, QColor, QLinearGradient
 
 if TYPE_CHECKING:
     from PyQt5.QtGui import QFont, QPaintDevice
@@ -49,16 +49,14 @@ def createPainter(
     return painter
 
 
-def _superSin(x: float, power: float = 5.0) -> float:
-    return math.copysign(abs(math.sin(x)) ** (2 / power), math.sin(x))
-
-
-def _superCos(x: float, power: float = 5.0) -> float:
-    return math.copysign(abs(math.cos(x)) ** (2 / power), math.cos(x))
-
-
 @lru_cache(maxsize=None)
 def _getSuperRoundedPoints(radius_x: float, radius_y: float, power: float, quality: int):
+    def _superSin(x: float, power: float = 5.0) -> float:
+        return math.copysign(abs(math.sin(x)) ** (2 / power), math.sin(x))
+
+    def _superCos(x: float, power: float = 5.0) -> float:
+        return math.copysign(abs(math.cos(x)) ** (2 / power), math.cos(x))
+
     points = []
     for i in range(quality + 1):
         points.append(QPointF((_superSin(2 * math.pi * i / quality, power) + 0) * radius_x,
@@ -137,6 +135,54 @@ def getSuperRoundedRectPath(rect: QRectF,
     return _cachedGetSuperRoundedRectPath(rect_tuple, radius_x, radius_y, power, quality)
 
 
+@lru_cache(maxsize=None)
+def _cachedGaussianLinearGradient(start_x, start_y, final_stop_x, final_stop_y, color_code, quality):
+
+    def getInterpolationPoints(quality: int):
+        def f(x):
+            return math.exp(-5 * x ** 2)
+
+        def g(x):
+            return (math.sin((x - 1/2) * math.pi) + 1) / 2
+
+        result = []
+
+        for i in range(quality+1):
+            p_x = g(i / quality)
+            p_y = f(p_x)
+            result.append((p_x, p_y))
+
+        return result
+
+    start = QPointF(start_x, start_y)
+    final_stop = QPointF(final_stop_x, final_stop_y)
+
+    r, g, b, a = QColor(color_code).getRgb()
+
+    gradient = QLinearGradient(start, final_stop)
+    points = getInterpolationPoints(quality)
+
+    for pos, transparency in points:
+        p_color = QColor(r, g, b, int(transparency * a))
+        gradient.setColorAt(pos, p_color)
+
+    return gradient
+
+
+def getGaussianLinearGradient(start: QPointF | QPoint,
+                              final_stop: QRectF | QPoint,
+                              color: QColor,
+                              quality: int = 8) -> QLinearGradient:
+
+    start_x = start.x()
+    start_y = start.y()
+    final_stop_x = final_stop.x()
+    final_stop_y = final_stop.y()
+    color_code = color.name(QColor.NameFormat.HexArgb)
+
+    return _cachedGaussianLinearGradient(start_x, start_y, final_stop_x, final_stop_y, color_code, quality)
+
+
 __all__ = [
-    "createPainter", "getSuperRoundedRectPath"
+    "createPainter", "getSuperRoundedRectPath", "getGaussianLinearGradient"
 ]
