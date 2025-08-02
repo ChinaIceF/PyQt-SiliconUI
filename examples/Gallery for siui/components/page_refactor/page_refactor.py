@@ -16,7 +16,7 @@ from siui.components.button import (
     SiRadioButtonWithAvatar,
     SiRadioButtonWithDescription,
     SiSwitchRefactor,
-    SiToggleButtonRefactor, SiCheckBoxRefactor,
+    SiToggleButtonRefactor, SiCheckBoxRefactor, SiCapsuleButton,
 )
 from siui.components.chart import SiTrendChart
 from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
@@ -67,6 +67,30 @@ class RefactoredWidgets(SiPage):
         self.titled_widgets_group = SiTitledWidgetGroup(self)
         self.titled_widgets_group.setSpacing(32)
         self.titled_widgets_group.setAdjustWidgetsSize(True)  # 禁用调整宽度
+
+        with self.titled_widgets_group as group:
+            group.addTitle("按钮")
+
+            with createPanelCard(group, "胶囊按钮") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                    capsule_button_1 = SiCapsuleButton(self)
+                    capsule_button_1.setText("Likes")
+                    capsule_button_1.setValue(114514)
+                    capsule_button_1.setToolTip("你好世界")
+
+                    capsule_button_2 = SiCapsuleButton(self)
+                    capsule_button_2.setText("Comments")
+                    capsule_button_2.setValue(1919)
+                    capsule_button_2.setThemeColor(SiCapsuleButton.Theme.Yellow)
+
+                    capsule_button_3 = SiCapsuleButton(self)
+                    capsule_button_3.setText("Shares")
+                    capsule_button_3.setValue(810)
+                    capsule_button_3.setThemeColor(SiCapsuleButton.Theme.Red)
+
+                    container.addWidget(capsule_button_1)
+                    container.addWidget(capsule_button_2)
+                    container.addWidget(capsule_button_3)
 
         with self.titled_widgets_group as group:
             group.addTitle("进度条")
