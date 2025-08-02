@@ -41,6 +41,7 @@ from siui.core import GlobalFont, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
 from siui.core.event_filter import ButtonScaleOnPressedManager, TooltipManager
 from siui.core.globals import toolTipWindow
+from siui.core.painter import getGaussianLinearGradient
 from siui.gui import SiFont
 
 if TYPE_CHECKING:
@@ -1883,3 +1884,328 @@ class SiCheckBoxRefactor(QAbstractButton):
         with createPainter(self, renderHints) as painter:
             self._drawBuffer(painter, buffer, full_rect)
 
+
+class CapsuleButtonStyleData:
+    label_background_color = QColor("#29252E")
+    label_text_color = QColor("#D1CBD4")
+    value_background_color_deactivated = QColor("#201D24")
+    value_background_color_flash = QColor("#FFFFFF")
+    value_background_color_activated = QColor("#78E09A")
+    value_text_color_deactivated = QColor("#D1CBD4")
+    value_text_color_activated = QColor("#000000")
+    hover_overlay_idle = QColor("#00202020")
+    hover_overlay_hovered = QColor("#202020")
+    hover_overlay_flash = QColor("#7F7F7F")
+    indicator_color = QColor("#519868")
+
+
+class SiCapsuleButton(QAbstractButton):
+    class Property:
+        LabelBackgroundColor = "labelBackgroundColor"
+        LabelTextColor = "labelTextColor"
+        ValueBackgroundColor = "valueBackgroundColor"
+        ValueTextColor = "valueTextColor"
+        HoverOverlayColor = "hoverOverlayColor"
+        ValueYOffset = "valueYOffset"
+        ScaleFactor = "scaleFactor"
+
+    class Theme:
+        Green = QColor("#78E09A")
+        Yellow = QColor("#FFD467")
+        Red = QColor("#FF6767")
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self.setFont(SiFont.getFont(size=14))
+        self.setCheckable(True)
+
+        self._value = 0
+        self._label_margin = QMargins(18, 0, 18, 0)
+        self._value_margin = QMargins(16, 0, 16, 0)
+        self._indicator_margin = QMargins(12, 0, 12, 0)
+
+        self.style_data = CapsuleButtonStyleData()
+
+        self._label_bg_color = self.style_data.label_background_color
+        self._label_text_color = self.style_data.label_text_color
+        self._value_bg_color = self.style_data.value_background_color_deactivated
+        self._value_text_color = self.style_data.value_text_color_deactivated
+        self._hover_overlay_color = self.style_data.hover_overlay_idle
+        self._value_y_offset = 0.0
+        self._scale_factor = 1
+
+        self.ani_label_bg_color = SiExpAnimationRefactor(self, self.Property.LabelBackgroundColor)
+        self.ani_label_bg_color.init(1/8, 1, self._label_bg_color, self._label_bg_color)
+
+        self.ani_label_text_color = SiExpAnimationRefactor(self, self.Property.LabelTextColor)
+        self.ani_label_text_color.init(1/8, 1, self._label_text_color, self._label_text_color)
+
+        self.ani_value_bg_color = SiExpAnimationRefactor(self, self.Property.ValueBackgroundColor)
+        self.ani_value_bg_color.init(1/8, 1, self._value_bg_color, self._value_bg_color)
+
+        self.ani_value_text_color = SiExpAnimationRefactor(self, self.Property.ValueTextColor)
+        self.ani_value_text_color.init(1/8, 1, self._value_text_color, self._value_text_color)
+
+        self.ani_hover_overlay_color = SiExpAnimationRefactor(self, self.Property.HoverOverlayColor)
+        self.ani_hover_overlay_color.init(1/8, 1, self._hover_overlay_color, self._hover_overlay_color)
+
+        self.ani_value_y_offset = SiExpAnimationRefactor(self, self.Property.ValueYOffset)
+        self.ani_value_y_offset.init(1/8, 0.001, self._value_y_offset, self._value_y_offset)
+
+        self.ani_scale_factor = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
+        self.ani_scale_factor.init(1/8, 0.001, self._scale_factor, self._scale_factor)
+
+        self._initScaleManager()
+        self._initToolTipManager()
+        self.toggled.connect(self._onToggled)
+
+    def _initToolTipManager(self) -> None:
+        self._tooltip_manager = TooltipManager(toolTipWindow())
+        self.installEventFilter(self._tooltip_manager)
+
+    def _initScaleManager(self) -> None:
+        self._scale_manager = ButtonScaleOnPressedManager(self)
+        self._scale_manager.setMinScaleFactor(0.95)
+        self.installEventFilter(self._scale_manager)
+
+    # region Properties
+
+    @pyqtProperty(QColor)
+    def labelBackgroundColor(self):
+        return self._label_bg_color
+
+    @labelBackgroundColor.setter
+    def labelBackgroundColor(self, value):
+        self._label_bg_color = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def labelTextColor(self):
+        return self._label_text_color
+
+    @labelTextColor.setter
+    def labelTextColor(self, value):
+        self._label_text_color = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def valueBackgroundColor(self):
+        return self._value_bg_color
+
+    @valueBackgroundColor.setter
+    def valueBackgroundColor(self, value):
+        self._value_bg_color = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def valueTextColor(self):
+        return self._value_text_color
+
+    @valueTextColor.setter
+    def valueTextColor(self, value):
+        self._value_text_color = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def hoverOverlayColor(self):
+        return self._hover_overlay_color
+
+    @hoverOverlayColor.setter
+    def hoverOverlayColor(self, value):
+        self._hover_overlay_color = value
+        self.update()
+
+    @pyqtProperty(float)
+    def valueYOffset(self):
+        return self._value_y_offset
+
+    @valueYOffset.setter
+    def valueYOffset(self, value):
+        self._value_y_offset = value
+        self.update()
+
+    @pyqtProperty(float)
+    def scaleFactor(self):
+        return self._scale_factor
+
+    @scaleFactor.setter
+    def scaleFactor(self, value):
+        self._scale_factor = value
+        self.update()
+
+    # endregion
+
+    def animation(self, prop_name: str) -> SiExpAnimationRefactor:
+        return {
+            self.Property.LabelBackgroundColor: self.ani_label_bg_color,
+            self.Property.LabelTextColor: self.ani_label_text_color,
+            self.Property.ValueBackgroundColor: self.ani_value_bg_color,
+            self.Property.ValueTextColor: self.ani_value_text_color,
+            self.Property.HoverOverlayColor: self.ani_hover_overlay_color,
+            self.Property.ValueYOffset: self.ani_value_y_offset,
+            self.Property.ScaleFactor: self.ani_scale_factor,
+        }.get(prop_name)
+
+    def sizeHint(self) -> QSize:
+        label_font = self.font()
+        value_font = self.font()
+
+        label_metrics = QFontMetrics(label_font)
+        value_metrics = QFontMetrics(value_font)
+
+        label_text_width = label_metrics.horizontalAdvance(self.text())
+        value_text_width = value_metrics.horizontalAdvance(str(self._value))
+
+        total_width = (
+            label_text_width + self._label_margin.left() + self._label_margin.right() +
+            value_text_width + self._value_margin.left() + self._value_margin.right()
+        )
+
+        total_height = 36
+        return QSize(total_width, total_height)
+
+    def value(self):
+        return self._value
+
+    def setValue(self, v):
+        self._value = v
+        self.updateGeometry()
+
+    def setThemeColor(self, color: QColor) -> None:
+        h, s, v, _ = color.getHsv()
+        self.style_data.value_background_color_activated = QColor.fromHsv(h, s, v)
+        self.style_data.indicator_color = QColor.fromHsv(h, s, v - 71)
+        self.update()
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_hovered)
+        self.ani_hover_overlay_color.start()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_idle)
+        self.ani_hover_overlay_color.start()
+
+    def _onToggled(self, checked: bool) -> None:
+        self.ani_hover_overlay_color.setCurrentValue(self.style_data.hover_overlay_flash)
+        self.ani_hover_overlay_color.start()
+
+        if checked:
+            self.ani_value_bg_color.setCurrentValue(self.style_data.value_background_color_flash)
+            self.ani_value_bg_color.setEndValue(self.style_data.value_background_color_activated)
+            self.ani_value_bg_color.start()
+
+            self.ani_value_text_color.setEndValue(self.style_data.value_text_color_activated)
+            self.ani_value_text_color.start()
+
+        else:
+            self.ani_value_bg_color.setEndValue(self.style_data.value_background_color_deactivated)
+            self.ani_value_bg_color.start()
+
+            self.ani_value_text_color.setEndValue(self.style_data.value_text_color_deactivated)
+            self.ani_value_text_color.start()
+
+    def _drawBodyBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), 10, 10)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._value_bg_color)
+        painter.drawPath(path)
+
+    def _drawLabelBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), 10, 10)
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self.style_data.label_background_color)
+        painter.drawPath(path)
+
+        if self.isChecked() is False:
+            return
+
+        color = QColor(self.style_data.value_background_color_activated)
+        color.setAlpha(int(0.2 * 255))
+        gradient = getGaussianLinearGradient(rect.topRight(), rect.topLeft(), color)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(gradient)
+        painter.drawPath(path)
+
+    def _drawIndicatorRect(self, painter: QPainter, rect: QRect) -> None:
+        if self.isChecked():
+            return
+
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), 1, 1)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self.style_data.indicator_color)
+        painter.drawPath(path)
+
+    def _drawLabelText(self, painter: QPainter, rect: QRect) -> None:
+        option = QTextOption()
+        option.setAlignment(Qt.AlignCenter)
+        painter.setFont(self.font())
+        painter.setPen(self.style_data.label_text_color)
+        painter.drawText(QRectF(rect), self.text(), option)
+
+    def _drawValueText(self, painter: QPainter, rect: QRect) -> None:
+        option = QTextOption()
+        option.setAlignment(Qt.AlignCenter)
+        painter.setFont(self.font())
+        painter.setPen(self._value_text_color)
+        painter.drawText(QRectF(rect), str(self._value), option)
+
+    def _drawHoverOverlayRect(self, painter: QPainter, rect: QRect) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), 10, 10)
+        painter.setCompositionMode(QPainter.CompositionMode_Plus)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._hover_overlay_color)
+        painter.drawPath(path)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+
+    def _drawBuffer(self, painter: QPainter, buffer: QPixmap, rect: QRect):
+        a = self._scale_factor
+        painter.translate(QPointF(rect.width() * (1 - a) / 2, rect.height() * (1 - a) / 2))
+        painter.scale(a, a)
+        painter.drawPixmap(rect, buffer)
+
+    def paintEvent(self, e):
+        full_rect = self.rect()
+
+        label_font = self.font()
+        value_font = self.font()
+
+        label_metrics = QFontMetrics(label_font)
+        value_metrics = QFontMetrics(value_font)
+
+        label_text_width = label_metrics.horizontalAdvance(self.text())
+        value_text_width = value_metrics.horizontalAdvance(str(self._value))
+
+        label_rect_width = label_text_width + self._label_margin.left() + self._label_margin.right()
+        value_rect_width = value_text_width + self._value_margin.left() + self._value_margin.right()
+
+        body_rect = full_rect.marginsRemoved(QMargins(10, 0, 0, 0))
+        label_rect = QRect(0, 0, label_rect_width, full_rect.height())
+        value_rect = QRect(label_rect_width, 0, value_rect_width, full_rect.height())
+        indicator_rect = value_rect.marginsRemoved(QMargins(0, full_rect.height() - 2, 0, 0)).marginsRemoved(self._indicator_margin)
+
+        renderHints = (
+            QPainter.RenderHint.SmoothPixmapTransform
+        )
+
+        buffer = QPixmap(full_rect.size() * self.devicePixelRatioF())
+        buffer.setDevicePixelRatio(self.devicePixelRatioF())
+        buffer.fill(Qt.transparent)
+
+        with createPainter(buffer) as painter:
+            self._drawBodyBackgroundRect(painter, body_rect)
+            self._drawLabelBackgroundRect(painter, label_rect)
+            self._drawIndicatorRect(painter, indicator_rect)
+            self._drawLabelText(painter, label_rect)
+            self._drawValueText(painter, value_rect)
+            self._drawHoverOverlayRect(painter, full_rect)
+
+        with createPainter(self, renderHints) as painter:
+            self._drawBuffer(painter, buffer, full_rect)
