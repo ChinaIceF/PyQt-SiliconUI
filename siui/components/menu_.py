@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from PyQt5.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt, pyqtProperty, pyqtSignal
-from PyQt5.QtGui import QColor, QCursor, QIcon, QKeySequence, QPainter, QTextOption
-from PyQt5.QtWidgets import QAction, QHBoxLayout, QLabel, QMenu, QWidget
+from PyQt5.QtGui import QColor, QCursor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption
+from PyQt5.QtWidgets import QAction, QActionGroup, QHBoxLayout, QLabel, QMenu, QWidget, QSpacerItem, QApplication
 
 from siui.components.button import SiTransparentButton
 from siui.components.container import SiDenseContainer
@@ -14,6 +14,11 @@ from siui.core.event_filter import TooltipManager
 from siui.core.globals import SiGlobal, raiseToolTipWindow, toolTipWindow
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
+
+
+class CheckedIndicatorStyleData:
+    independent_indicator_color = QColor("#918497")
+    exclusive_indicator_color = QColor("#918497")
 
 
 class ActionItemsWidgetStyleData:
@@ -39,6 +44,68 @@ class SectionItemsWidgetStyleData:
 class MenuStyleData:
     background_color: QColor = QColor("#322e37")
     border_color: QColor = QColor("#3c3841")
+
+
+class ActionItemWidgetCheckedIndicator(QWidget):
+    def __init__(self, action: QAction, parent=None):
+        super().__init__(parent)
+
+        self._action = action
+        self._margins_independent = QMargins(12, 12, 12, 12)
+        self._margins_exclusive = QMargins(13, 13, 13, 13)
+        self._policy = self._actionExclusivePolicy()
+        self._is_checked = self._action.isChecked()
+
+        self.style_data = CheckedIndicatorStyleData()
+
+    def _actionExclusivePolicy(self) -> QActionGroup.ExclusionPolicy:
+        action_group = self._action.actionGroup()
+
+        if action_group is not None:
+            return action_group.exclusionPolicy()
+
+        return QActionGroup.ExclusionPolicy.None_
+
+    def updateAction(self) -> None:
+        self._policy = self._actionExclusivePolicy()
+        self._is_checked = self._action.isChecked()
+        self.update()
+
+    def _drawIndependentIndicator(self, painter: QPainter, rect: QRect) -> None:
+        if not self._is_checked:
+            return
+
+        top_left = rect.topLeft()
+        point1 = QPoint(0, 4) + top_left
+        point2 = QPoint(4, 8) + top_left
+        point3 = QPoint(12, 0) + top_left
+
+        painter.setPen(self.style_data.independent_indicator_color)
+        painter.setBrush(Qt.NoBrush)
+        painter.drawLine(point1, point2)
+        painter.drawLine(point2, point3)
+
+    def _drawExclusiveIndicator(self, painter: QPainter, rect: QRect) -> None:
+        if not self._is_checked:
+            return
+
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), 3, 3)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self.style_data.exclusive_indicator_color)
+        painter.drawPath(path)
+
+    def paintEvent(self, a0):
+        rect = self.rect()
+        independent_rect = rect.marginsRemoved(self._margins_independent)
+        exclusive_rect = rect.marginsRemoved(self._margins_exclusive)
+
+        with createPainter(self) as painter:
+            if self._policy == QActionGroup.ExclusionPolicy.None_:
+                self._drawIndependentIndicator(painter, independent_rect)
+
+            else:
+                self._drawExclusiveIndicator(painter, exclusive_rect)
 
 
 class SiMenuItem(QObject):
@@ -88,7 +155,7 @@ class ActionItemWidget(SiMenuItemWidget):
         self._action = action
         self.style_data = ActionItemsWidgetStyleData()
 
-        self._checked_indicator = QLabel(self)
+        self._checked_indicator = ActionItemWidgetCheckedIndicator(action, self)
         self._icon_widget = SiRoundPixmapWidget(self)
         self._name_label = QLabel(self)
         self._shortcut_widget = QLabel(self)
@@ -104,23 +171,20 @@ class ActionItemWidget(SiMenuItemWidget):
     def _initWidgets(self) -> None:
         sd = self.style_data
 
-        self._checked_indicator.setFixedSize(5, 5)
+        self._checked_indicator.setFixedSize(32, 32)
 
         self._shortcut_widget.setStyleSheet(
             f"color: {sd.shortcut_text_color.name()};"
             f"background-color: {sd.shortcut_background_color.name()};"
             "padding: 1px 6px 1px 6px;"
-            "margin: 1px 8px 0px 0px;"
+            "margin: 1px 8px 0px 8px;"
             "border-radius: 4px;"
         )
 
         self._icon_widget.setPixmap(self._action.icon().pixmap(64, 64))
-        self._icon_widget.setFixedSize(20, 20)
+        self._icon_widget.setFixedSize(32, 32)
         self._icon_widget.setVisualSize(QSize(18, 18))
         self._icon_widget.setVisualSizeEnabled(True)
-        self._icon_widget.setStyleSheet(
-            "margin: 0px 0px 0px 6px"
-        )
 
         self._name_label.setFont(SiFont.getFont(size=14))
         self._name_label.setText(self._action.text())
@@ -129,13 +193,11 @@ class ActionItemWidget(SiMenuItemWidget):
         self._name_label.setMinimumWidth(32)
         self._name_label.setStyleSheet(f"""
         QLabel {{
-            padding: 0px 2px 0px 2px;
-            margin: 0px 8px 0px 6px;
+            margin: 0px 8px 0px 0px;
             color: {sd.label_text_color_enabled.name(QColor.HexArgb)};
         }}
         QLabel:disabled {{
-            padding: 0px 2px 0px 2px;
-            margin: 0px 8px 0px 6px;
+            margin: 0px 8px 0px 0px;
             color: {sd.label_text_color_disabled.name(QColor.HexArgb)};
         }}
         """)
@@ -149,11 +211,13 @@ class ActionItemWidget(SiMenuItemWidget):
     def _initLayout(self) -> None:
         layout = QHBoxLayout(self)
         layout.addWidget(self._checked_indicator)
+        layout.addSpacerItem(QSpacerItem(4, 32))
         layout.addWidget(self._icon_widget)
+        layout.addSpacerItem(QSpacerItem(4, 32))
         layout.addWidget(self._name_label)
         layout.addStretch()
         layout.addWidget(self._shortcut_widget)
-        layout.setContentsMargins(8, 0, 8, 0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         self.setLayout(layout)
@@ -173,7 +237,8 @@ class ActionItemWidget(SiMenuItemWidget):
         self.setToolTip(action.toolTip())
         self.setShortcut(action.shortcut())
         self.setEnabled(action.isEnabled())
-        self.setChecked(action.isChecked())
+
+        self._checked_indicator.updateAction()
 
     def _onButtonClicked(self) -> None:
         self._action.trigger()
@@ -185,18 +250,6 @@ class ActionItemWidget(SiMenuItemWidget):
 
     def setIcon(self, icon: QIcon) -> None:
         self._icon_widget.setPixmap(icon.pixmap(64, 64))
-
-    def setChecked(self, state: bool) -> None:
-        if state:
-            self._checked_indicator.setStyleSheet(
-                "border-radius: 2px;"
-                f"background-color: {self.style_data.checked_indicator_color_checked.name(QColor.HexArgb)}"
-            )
-        else:
-            self._checked_indicator.setStyleSheet(
-                "border-radius: 2px;"
-                f"background-color: {self.style_data.checked_indicator_color_unchecked.name(QColor.HexArgb)}"
-            )
 
     def setShortcut(self, shortcut: QKeySequence) -> None:
         string = shortcut.toString()
@@ -229,7 +282,7 @@ class SubmenuItemWidget(SiMenuItemWidget):
         self._action = action
         self.style_data = ActionItemsWidgetStyleData()
 
-        self._checked_indicator = QLabel(self)
+        self._checked_indicator = ActionItemWidgetCheckedIndicator(action, self)
         self._icon_widget = SiRoundPixmapWidget(self)
         self._name_label = QLabel(self)
         self._shortcut_widget = QLabel(self)
@@ -246,7 +299,7 @@ class SubmenuItemWidget(SiMenuItemWidget):
     def _initWidgets(self) -> None:
         sd = self.style_data
 
-        self._checked_indicator.setFixedSize(5, 5)
+        self._checked_indicator.setFixedSize(32, 32)
 
         self._shortcut_widget.setStyleSheet(
             f"color: {sd.shortcut_text_color.name()};"
@@ -257,12 +310,9 @@ class SubmenuItemWidget(SiMenuItemWidget):
         )
 
         self._icon_widget.setPixmap(self._action.icon().pixmap(64, 64))
-        self._icon_widget.setFixedSize(20, 20)
+        self._icon_widget.setFixedSize(32, 32)
         self._icon_widget.setVisualSize(QSize(18, 18))
         self._icon_widget.setVisualSizeEnabled(True)
-        self._icon_widget.setStyleSheet(
-            "margin: 0px 0px 0px 6px"
-        )
 
         self._name_label.setFont(SiFont.getFont(size=14))
         self._name_label.setText(self._action.text())
@@ -271,13 +321,11 @@ class SubmenuItemWidget(SiMenuItemWidget):
         self._name_label.setMinimumWidth(32)
         self._name_label.setStyleSheet(f"""
         QLabel {{
-            padding: 0px 2px 0px 2px;
-            margin: 0px 8px 0px 6px;
+            margin: 0px 8px 0px 0px;
             color: {sd.label_text_color_enabled.name(QColor.HexArgb)};
         }}
         QLabel:disabled {{
-            padding: 0px 2px 0px 2px;
-            margin: 0px 8px 0px 6px;
+            margin: 0px 8px 0px 0px;
             color: {sd.label_text_color_disabled.name(QColor.HexArgb)};
         }}
         """)
@@ -296,11 +344,12 @@ class SubmenuItemWidget(SiMenuItemWidget):
         layout = QHBoxLayout(self)
         layout.addWidget(self._checked_indicator)
         layout.addWidget(self._icon_widget)
+        layout.addSpacerItem(QSpacerItem(4, 32))
         layout.addWidget(self._name_label)
         layout.addStretch()
         layout.addWidget(self._shortcut_widget)
         layout.addWidget(self._submenu_indicator)
-        layout.setContentsMargins(8, 0, 8, 0)
+        layout.setContentsMargins(4, 0, 8, 0)
         layout.setSpacing(0)
 
         self.setLayout(layout)
@@ -320,7 +369,8 @@ class SubmenuItemWidget(SiMenuItemWidget):
         self.setToolTip(action.toolTip())
         self.setShortcut(action.shortcut())
         self.setEnabled(action.isEnabled())
-        self.setChecked(action.isChecked())
+
+        self._checked_indicator.updateAction()
 
     def _showSubmenu(self) -> None:
         pos = self.mapToGlobal(self.geometry().topRight() - self.geometry().topLeft())
@@ -337,18 +387,6 @@ class SubmenuItemWidget(SiMenuItemWidget):
 
     def setIcon(self, icon: QIcon) -> None:
         self._icon_widget.setPixmap(icon.pixmap(64, 64))
-
-    def setChecked(self, state: bool) -> None:
-        if state:
-            self._checked_indicator.setStyleSheet(
-                "border-radius: 2px;"
-                f"background-color: {self.style_data.checked_indicator_color_checked.name(QColor.HexArgb)}"
-            )
-        else:
-            self._checked_indicator.setStyleSheet(
-                "border-radius: 2px;"
-                f"background-color: {self.style_data.checked_indicator_color_unchecked.name(QColor.HexArgb)}"
-            )
 
     def setShortcut(self, shortcut: QKeySequence) -> None:
         string = shortcut.toString()
@@ -474,7 +512,6 @@ class SiMenu(QMenu):
 
         self.style_data = MenuStyleData()
 
-        self.setMaximumHeight(400)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowFlags(
             Qt.FramelessWindowHint
@@ -578,6 +615,15 @@ class SiMenu(QMenu):
             widget.setIconVisible(has_icon)
             widget.setShortcutVisible(has_shortcut)
             widget.setSubmenuIndicatorVisible(has_submenu)
+
+    def _prepareToPopup(self) -> None:
+        self._updateComponentsVisibility()
+
+        if self._is_layout_dirty:
+            self._refreshLayoutOrder()
+            self._is_layout_dirty = False
+
+        self._container.adjustSize()
 
     @pyqtProperty(QSize)
     def viewSize(self):
@@ -757,15 +803,18 @@ class SiMenu(QMenu):
         self.adjustSize()
 
     def sizeHint(self):
+        screen_rect = QApplication.desktop().availableGeometry()
         container_size = self._container.sizeHint()
         expanded_rect = container_size.grownBy(self._margins)
 
         width = expanded_rect.width()
-        height = min(expanded_rect.height() + 2, self.maximumHeight())
+        height = min(expanded_rect.height() + 2, screen_rect.height(), self.maximumHeight())
 
         return QSize(width, height)
 
     def popup(self, pos: QPoint, action: QAction | None = None) -> None:
+        self._prepareToPopup()
+
         new_pos = pos - self._scroll_area.pos()
         super().popup(new_pos, action)
 
@@ -776,15 +825,6 @@ class SiMenu(QMenu):
         super().showEvent(a0)
 
         self._applyGraphicEffect()
-        self._updateComponentsVisibility()
-
-        if self._is_layout_dirty:
-            self._refreshLayoutOrder()
-            self._is_layout_dirty = False
-
-        self._container.adjustSize()
-        self.adjustSize()
-
         self._startShowAnimation()
 
     def hideEvent(self, a0):
