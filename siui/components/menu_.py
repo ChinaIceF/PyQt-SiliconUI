@@ -92,7 +92,6 @@ class ActionItemWidget(SiMenuItemWidget):
         self._icon_widget = SiRoundPixmapWidget(self)
         self._name_label = QLabel(self)
         self._shortcut_widget = QLabel(self)
-        self._submenu_indicator = SiRoundPixmapWidget(self)
         self._button = SiTransparentButton(self)
 
         self._applyAction(action)
@@ -145,11 +144,6 @@ class ActionItemWidget(SiMenuItemWidget):
         self._shortcut_widget.setAlignment(Qt.AlignCenter)
         self._shortcut_widget.setFixedHeight(18)
 
-        self._submenu_indicator.setFixedSize(16, 16)
-        self._submenu_indicator.setVisualSize(QSize(16, 16))
-        self._submenu_indicator.setContentsMargins(16, 8, 16, 8)
-        self._submenu_indicator.setVisualSizeEnabled(True)
-
         self._button.setBorderRadius(6)
 
     def _initLayout(self) -> None:
@@ -159,7 +153,6 @@ class ActionItemWidget(SiMenuItemWidget):
         layout.addWidget(self._name_label)
         layout.addStretch()
         layout.addWidget(self._shortcut_widget)
-        layout.addWidget(self._submenu_indicator)
         layout.setContentsMargins(8, 0, 8, 0)
         layout.setSpacing(0)
 
@@ -217,9 +210,6 @@ class ActionItemWidget(SiMenuItemWidget):
 
     def setShortcutVisible(self, state: bool) -> None:
         self._shortcut_widget.setVisible(state and not self._action.shortcut().isEmpty())
-
-    def setSubmenuIndicatorVisible(self, state: bool) -> None:
-        self._submenu_indicator.setVisible(state)
 
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
@@ -455,6 +445,14 @@ class SiMenuItemWidgetFactory:
         elif item.type == SiMenuItem.Type.Section:
             return SectionItemWidget(item.data, parent)
 
+        elif item.type == SiMenuItem.Type.Custom:
+            widget = item.data.parentWidget()
+            if not isinstance(widget, SiMenuItemWidget):
+                raise TypeError(f"Custom widgets must inherit from SiMenuItemWidget, encountered {type(widget)}")
+
+            widget.setParent(parent)
+            return widget
+
         else:
             raise ValueError(f"Type {item.type} is not implemented in SiMenuItemWidgetFactory.create")
 
@@ -465,6 +463,8 @@ class SiMenu(QMenu):
 
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
+
+        self.setMouseTracking(True)
 
         self._items: list[SiMenuItem] = []
         self._widgets: dict[SiMenuItem, QWidget] = {}
@@ -652,6 +652,14 @@ class SiMenu(QMenu):
 
         return new_action
 
+    def addCustomWidget(self, widget: SiMenuItemWidget) -> QAction:
+        new_action = QAction(widget)
+
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, new_action)
+        self._addItem(item)
+
+        return new_action
+
     def addActions(self, actions: list[QAction]) -> None:
         for action in actions:
             item = SiMenuItem(self, SiMenuItem.Type.Action, action)
@@ -685,6 +693,14 @@ class SiMenu(QMenu):
         new_action = super().insertSection(before, text)
 
         item = SiMenuItem(self, SiMenuItem.Type.Section, new_action)
+        self._insertItem(before, item)
+
+        return new_action
+
+    def insertCustomWidget(self, before: QAction, widget: SiMenuItemWidget) -> QAction:
+        new_action = QAction(widget)
+
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, new_action)
         self._insertItem(before, item)
 
         return new_action
@@ -730,6 +746,9 @@ class SiMenu(QMenu):
         while isinstance(widget, SiMenu):
             widget.close()
             widget = widget.parent()
+
+    def isSubmenu(self) -> bool:
+        return isinstance(self.parent(), SiMenu)
 
     def refreshLayout(self) -> None:
         """立即更新布局"""
