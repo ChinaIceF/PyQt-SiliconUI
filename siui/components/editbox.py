@@ -5,7 +5,7 @@ import random
 from dataclasses import dataclass
 
 import numpy
-from PyQt5.QtCore import QEvent, QPoint, QRectF, QSize, Qt, pyqtProperty, QPointF, QObject
+from PyQt5.QtCore import QEvent, QObject, QPoint, QPointF, QRectF, QSize, Qt, pyqtProperty
 from PyQt5.QtGui import (
     QColor,
     QDoubleValidator,
@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import QAction, QApplication, QLineEdit
 
 from siui.components.button import SiFlatButton
 from siui.components.container import SiDenseContainer
-from siui.components.menu_ import SiRoundMenu, SiMenu
+from siui.components.menu_ import SiRoundedMenu
 from siui.core import SiGlobal, createPainter, hideToolTip, isToolTipInsideOf, showToolTip
 from siui.core.animation import SiExpAnimationRefactor
 from siui.gui import SiFont
@@ -140,7 +140,7 @@ class SiLineEdit(QLineEdit):
         self.menu.popup(self.mapToGlobal(pos))
 
     def _createCustomMenu(self):
-        self.menu = SiMenu(self)  # 创建菜单
+        self.menu = SiRoundedMenu(self)  # 创建菜单
 
         self.undo_action = QAction("撤销", self)
         self.undo_action.setShortcut("Ctrl+Z")

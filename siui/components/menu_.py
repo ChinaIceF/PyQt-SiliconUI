@@ -485,7 +485,7 @@ class SiMenuItemWidgetFactory:
             raise ValueError(f"Type {item.type} is not implemented in SiMenuItemWidgetFactory.create")
 
 
-class SiMenu(QMenu):
+class SiRoundedMenu(QMenu):
     class Property:
         ViewSize = "viewSize"
 
@@ -779,12 +779,12 @@ class SiMenu(QMenu):
 
     def _closeMenuTree(self) -> None:
         widget = self
-        while isinstance(widget, SiMenu):
+        while isinstance(widget, SiRoundedMenu):
             widget.close()
             widget = widget.parent()
 
     def isSubmenu(self) -> bool:
-        return isinstance(self.parent(), SiMenu)
+        return isinstance(self.parent(), SiRoundedMenu)
 
     def refreshLayout(self) -> None:
         """立即更新布局"""
