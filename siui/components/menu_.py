@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from PyQt5.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt, pyqtProperty, pyqtSignal
 from PyQt5.QtGui import QColor, QCursor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption
-from PyQt5.QtWidgets import QAction, QActionGroup, QHBoxLayout, QLabel, QMenu, QWidget, QSpacerItem, QApplication
+from PyQt5.QtWidgets import QAction, QActionGroup, QApplication, QHBoxLayout, QLabel, QMenu, QSpacerItem, QWidget
 
 from siui.components.button import SiTransparentButton
 from siui.components.container import SiDenseContainer
@@ -164,7 +164,6 @@ class ActionItemWidget(SiMenuItemWidget):
         self._applyAction(action)
         self._initWidgets()
         self._initLayout()
-        self._initToolTipManager()
 
         self._button.clicked.connect(self._onButtonClicked)
 
@@ -222,10 +221,6 @@ class ActionItemWidget(SiMenuItemWidget):
 
         self.setLayout(layout)
 
-    def _initToolTipManager(self) -> None:
-        self._tooltip_manager = TooltipManager(toolTipWindow())
-        self.installEventFilter(self._tooltip_manager)
-
     def _applyAction(self, action: QAction) -> None:
         self.addAction(action)
         self._updateFromAction(action)
@@ -237,6 +232,7 @@ class ActionItemWidget(SiMenuItemWidget):
         self.setToolTip(action.toolTip())
         self.setShortcut(action.shortcut())
         self.setEnabled(action.isEnabled())
+        print(action.toolTip())
 
         self._checked_indicator.updateAction()
 
@@ -292,7 +288,6 @@ class SubmenuItemWidget(SiMenuItemWidget):
         self._applyAction(action)
         self._initWidgets()
         self._initLayout()
-        self._initToolTipManager()
 
         self._button.clicked.connect(self._onButtonClicked)
 
@@ -353,10 +348,6 @@ class SubmenuItemWidget(SiMenuItemWidget):
         layout.setSpacing(0)
 
         self.setLayout(layout)
-
-    def _initToolTipManager(self) -> None:
-        self._tooltip_manager = TooltipManager(toolTipWindow())
-        self.installEventFilter(self._tooltip_manager)
 
     def _applyAction(self, action: QAction) -> None:
         self.addAction(action)
