@@ -1637,6 +1637,18 @@ class SiTransparentButton(QAbstractButton):
     def borderRadius(self) -> int:
         return self._border_radius
 
+    def flash(self) -> None:
+        self.ani_hover_overlay_color.setCurrentValue(self.style_data.hover_overlay_color_flash)
+        self.ani_hover_overlay_color.start()
+
+    def hover(self) -> None:
+        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_color_hovered)
+        self.ani_hover_overlay_color.start()
+
+    def leave(self) -> None:
+        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_color_idle)
+        self.ani_hover_overlay_color.start()
+
     def _drawHoverOverlayRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), self._border_radius, self._border_radius)
@@ -1646,13 +1658,11 @@ class SiTransparentButton(QAbstractButton):
 
     def enterEvent(self, a0):
         super().enterEvent(a0)
-        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_color_hovered)
-        self.ani_hover_overlay_color.start()
+        self.hover()
 
     def leaveEvent(self, a0):
         super().leaveEvent(a0)
-        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_color_idle)
-        self.ani_hover_overlay_color.start()
+        self.leave()
 
     def mousePressEvent(self, e):
         super().mousePressEvent(e)
@@ -1663,8 +1673,7 @@ class SiTransparentButton(QAbstractButton):
         self._is_pressed = False
 
         if self.rect().contains(e.pos()):
-            self.ani_hover_overlay_color.setCurrentValue(self.style_data.hover_overlay_color_flash)
-            self.ani_hover_overlay_color.start()
+            self.flash()
 
     def paintEvent(self, e):
         rect = self.rect()

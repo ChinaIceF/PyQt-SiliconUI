@@ -242,7 +242,7 @@ class ActionItemWidget(SiMenuItemWidget):
 
     def _onButtonClicked(self) -> None:
         self._action.trigger()
-        self._action.menuRole()
+        self._button.leave()
         self._emitReachedEnd()
 
     def setText(self, text: str) -> None:
@@ -379,7 +379,7 @@ class SubmenuItemWidget(SiMenuItemWidget):
 
     def _onButtonClicked(self) -> None:
         self._action.trigger()
-        self._action.menuRole()
+        self._button.leave()
         self._showSubmenu()
 
     def setText(self, text: str) -> None:
