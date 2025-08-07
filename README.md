@@ -33,11 +33,11 @@ examples/Gallery for siui/start.py
 The refactoring of widgets is nearing completion. You can try them on the "Refactored Widgets" page in the Gallery.
 
 **Please note**:  
-If you plan to start a project using PyQt-SiliconUI in the near future, it is **highly recommended to use only the widgets listed under “Refactored Widgets”**.  
+If you plan to start a project using PyQt-SiliconUI in the near future, it is **highly recommended to use only the widgets listed under “Refactored Widgets”**. 
 The older widgets have many issues and are being gradually replaced.  
 
-Similarly, the application templates are also under a complete overhaul. Work on them will begin once the core widget and component refactors are done.  
-Since the current templates contain many flaws and have poor implementations,  
+Similarly, the application templates are also under a complete overhaul. Work on them will begin once the core widget and component refactors are done. 
+Since the current templates contain many flaws and have poor implementations, 
 **we strongly advise against using the old application templates for real-world projects until the refactor is complete**.
 
 ### Refactored Modules Overview
@@ -46,22 +46,22 @@ Below are actively maintained modules. Once these are fully implemented, outdate
 
 #### Widgets
 
-- siui/components/button.py – Refactored button widgets  
-- siui/components/container.py – Refactored containers managed using Qt’s layout system  
-- siui/components/editor.py – Refactored input/edit widgets  
-- siui/components/graphic.py – Proxy widgets, wrappers, and graphic-related utilities  
-- siui/components/label.py – Widgets for displaying text and images, plus uncategorized ones  
-- siui/components/layout.py – New implementations of flow and waterfall layouts, also using Qt layouts  
-- siui/components/menu_.py – Menu components  
-- siui/components/popover.py – Popover-style widgets such as date pickers and time pickers  
-- siui/components/progress_bar_.py – Refactored progress bar widgets  
-- siui/components/slider_.py – Refactored sliders, including horizontal sliders and scrollbar handles  
+- `siui/components/button.py` – Refactored button widgets  
+- `siui/components/container.py` – Refactored containers managed using Qt’s layout system  
+- `siui/components/editor.py` – Refactored input/edit widgets  
+- `siui/components/graphic.py` – Proxy widgets, wrappers, and graphic-related utilities  
+- `siui/components/label.py` – Widgets for displaying text and images, plus uncategorized ones  
+- `siui/components/layout.py` – New implementations of flow and waterfall layouts, also using Qt layouts  
+- `siui/components/menu_.py` – Menu components  
+- `siui/components/popover.py` – Popover-style widgets such as date pickers and time pickers  
+- `siui/components/progress_bar_.py` – Refactored progress bar widgets  
+- `siui/components/slider_.py` – Refactored sliders, including horizontal sliders and scrollbar handles  
 
 #### Core Features
 
-- siui/core/animation.py – Refactored animation utilities  
-- siui/core/event_filter.py – Various event filters  
-- siui/core/painter.py – Core drawing-related functions  
+- `siui/core/animation.py` – Refactored animation utilities  
+- `siui/core/event_filter.py` – Various event filters  
+- `siui/core/painter.py` – Core drawing-related functions  
 
 
 ## See Also
