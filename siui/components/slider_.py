@@ -1315,7 +1315,12 @@ class SiScrollBar(QScrollBar):
         super().resizeEvent(a0)
         page_step = self.pageStep()
         length = self.width() if self.orientation() == Qt.Horizontal else self.height()
-        self.style_data.thumb_width = int(page_step / (page_step + self.maximum() - self.minimum()) * length)
+        space = (page_step + self.maximum() - self.minimum())
+
+        if space == 0:
+            self.style_data.thumb_width = 0
+        else:
+            self.style_data.thumb_width = page_step / space * length
 
 
 class SiScrollAreaRefactor(QScrollArea):

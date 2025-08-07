@@ -34,6 +34,11 @@ class TooltipManager(QObject):
             return
         self._tooltip_window.hide_()
 
+    def raiseWindow(self) -> None:
+        if self._tooltip_window is None:
+            return
+        self._tooltip_window.raise_()
+
     def isEntered(self) -> bool:
         return self._entered
 
@@ -41,6 +46,7 @@ class TooltipManager(QObject):
         if event.type() == QEvent.Enter:
             text = obj.toolTip()
             self.setToolTip(text)
+            self.raiseWindow()
             self._entered = True
 
         elif event.type() == QEvent.Leave:

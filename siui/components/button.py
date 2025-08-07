@@ -1594,6 +1594,94 @@ class SiRadioButtonWithAvatar(SiRadioButtonRefactor):
             self._drawDescriptionTextRect(painter, desc_rect)
 
 
+class TransparentButtonStyleData:
+    hover_overlay_color_idle = QColor("#00baadc7")
+    hover_overlay_color_hovered = QColor("#1abaadc7")
+    hover_overlay_color_flash = QColor("#50baadc7")
+
+
+class SiTransparentButton(QAbstractButton):
+    class Property:
+        HoverOverlayColor = "hoverOverlayColor"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self.style_data = TransparentButtonStyleData()
+
+        self._is_pressed = False
+        self._border_radius = 4
+        self._hover_overlay_color = self.style_data.hover_overlay_color_idle
+
+        self.ani_hover_overlay_color = SiExpAnimationRefactor(self, self.Property.HoverOverlayColor)
+        self.ani_hover_overlay_color.init(1/8, 1, self._hover_overlay_color, self._hover_overlay_color)
+
+    @pyqtProperty(QColor)
+    def hoverOverlayColor(self):
+        return self._hover_overlay_color
+
+    @hoverOverlayColor.setter
+    def hoverOverlayColor(self, value):
+        self._hover_overlay_color = value
+        self.update()
+
+    def animation(self, prop_name: str) -> SiExpAnimationRefactor:
+        return {
+            self.Property.HoverOverlayColor: self.ani_hover_overlay_color,
+        }.get(prop_name)
+
+    def setBorderRadius(self, r: int) -> None:
+        self._border_radius = r
+        self.update()
+
+    def borderRadius(self) -> int:
+        return self._border_radius
+
+    def flash(self) -> None:
+        self.ani_hover_overlay_color.setCurrentValue(self.style_data.hover_overlay_color_flash)
+        self.ani_hover_overlay_color.start()
+
+    def hover(self) -> None:
+        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_color_hovered)
+        self.ani_hover_overlay_color.start()
+
+    def leave(self) -> None:
+        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_color_idle)
+        self.ani_hover_overlay_color.start()
+
+    def _drawHoverOverlayRect(self, painter: QPainter, rect: QRect) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(rect), self._border_radius, self._border_radius)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._hover_overlay_color)
+        painter.drawPath(path)
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        self.hover()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self.leave()
+
+    def mousePressEvent(self, e):
+        super().mousePressEvent(e)
+        self._is_pressed = True
+
+    def mouseReleaseEvent(self, e):
+        super().mouseReleaseEvent(e)
+        self._is_pressed = False
+
+        if self.rect().contains(e.pos()):
+            self.flash()
+
+    def paintEvent(self, e):
+        rect = self.rect()
+
+        with createPainter(self) as painter:
+            self._drawHoverOverlayRect(painter, rect)
+
+
 class CheckBoxStyleData:
     flash_start_color = QColor("#50baadc7")
     flash_end_color = QColor("#00baadc7")
