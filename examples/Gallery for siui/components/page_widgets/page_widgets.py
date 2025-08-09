@@ -28,7 +28,7 @@ from siui.components.button import (
 )
 from siui.components.chart import SiTrendChart
 from siui.components.combobox import SiComboBox
-from siui.components.editbox import SiLineEdit
+from siui.components.editbox import SiCapsuleLineEdit
 from siui.components.label import HyperRoundBorderTest
 from siui.components.menu import SiMenu
 from siui.components.page import SiPage
@@ -330,11 +330,11 @@ class ExampleWidgets(SiPage):
             # self.trend_chart.adjustViewRect()
             # print(self.trend_chart.viewRect())
 
-            self.linear_edit_box = SiLineEdit(self)
+            self.linear_edit_box = SiCapsuleLineEdit(self)
             self.linear_edit_box.resize(560, 36)
             self.linear_edit_box.setTitle("项目名称")
 
-            self.linear_edit_box2 = SiLineEdit(self)
+            self.linear_edit_box2 = SiCapsuleLineEdit(self)
             self.linear_edit_box2.resize(560, 36)
             self.linear_edit_box2.setTitle("项目所属人")
 

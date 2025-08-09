@@ -43,7 +43,7 @@ class LineEditStyleData:
     text_indicator_color_error: QColor = QColor("#d36764")
 
 
-class SiLineEdit(QLineEdit):
+class SiCapsuleLineEdit(QLineEdit):
     class Property:
         TitleColor = "titleColor"
         TextIndicatorColor = "textIndicatorColor"
@@ -538,7 +538,7 @@ class SiCustomLineEdit(QLineEdit):
 
 
 
-class SiCapsuleEdit(QLineEdit):
+class SiLabeledLineEdit(QLineEdit):
     class Property:
         TitleColor = "titleColor"
         TextIndicatorColor = "textIndicatorColor"
@@ -735,7 +735,7 @@ class SiCapsuleEdit(QLineEdit):
         self._onTextEdited("")
 
 
-class SiSpinBox(SiCapsuleEdit):
+class SiSpinBox(SiLabeledLineEdit):
     def __init__(self, parent: T_WidgetParent = None, title: str = "Untitled Edit Box") -> None:
         super().__init__(parent)
 
