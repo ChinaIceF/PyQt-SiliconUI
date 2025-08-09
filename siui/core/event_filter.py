@@ -16,12 +16,13 @@ class DebugEventFilter(QObject):
         super().__init__(parent)
 
         self._ignorance = []
+        self._name_getter = lambda: self.parent().objectName()
 
     def eventFilter(self, obj, event):
         etype = event.type()
         ename = self.EventNames.get(etype, f"Unknown({etype})")
         parent_type = type(self.parent())
-        parent_name = self.parent().objectName()
+        parent_name = self._name_getter()
 
         if etype not in self._ignorance:
             print(f"{time.asctime()} [{parent_type}] {parent_name} got event: {ename} ({etype})")
@@ -33,6 +34,9 @@ class DebugEventFilter(QObject):
 
     def ignorance(self) -> list:
         return self._ignorance
+
+    def setNameGetter(self, func) -> None:
+        self._name_getter = func
 
 
 class WidgetTooltipRedirectEventFilter(QObject):
