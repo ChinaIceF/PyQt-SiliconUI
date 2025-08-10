@@ -587,11 +587,6 @@ class SiRoundedMenu(QMenu):
         self._initStyle()
         self._initActivationFilter()
 
-        self.event_debugger = DebugEventFilter(self)
-        self.event_debugger.setNameGetter(lambda: self.menuAction().text())
-        self.event_debugger.setIgnorance([QEvent.Paint, QEvent.MouseMove, QEvent.UpdateRequest])
-        self.installEventFilter(self.event_debugger)
-
     def _initStyle(self) -> None:
         background = self.style_data.background_color.name()
         border = self.style_data.border_color.name()
@@ -662,7 +657,6 @@ class SiRoundedMenu(QMenu):
     def _closeMenuTreeUptoActivated(self) -> None:
         widget = self
         while isinstance(widget, SiRoundedMenu) and not widget.isActiveWindow():
-            print(widget.menuAction().text(), "被关闭", self.peekingAction())
             widget.close()
             widget = widget.parent()
 
@@ -683,7 +677,6 @@ class SiRoundedMenu(QMenu):
         self._closeMenuTreeUp()
 
     def _onActionPeeked(self, action: QAction) -> None:
-        print("peeked", action.text())
         self.activateWindow()
         self._peeking_action = action
 
