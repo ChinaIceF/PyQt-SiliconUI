@@ -39,7 +39,7 @@ from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
-from siui.core.event_filter import ButtonScaleOnPressedManager, TooltipManager
+from siui.core.event_filter import ScaleOnPressEventFilter, WidgetTooltipRedirectEventFilter
 from siui.core.globals import toolTipWindow
 from siui.core.painter import getGaussianLinearGradient
 from siui.gui import SiFont
@@ -1744,11 +1744,11 @@ class SiCheckBoxRefactor(QAbstractButton):
         self._description_label.setWordWrap(True)
 
     def _initToolTipManager(self) -> None:
-        self._tooltip_manager = TooltipManager(toolTipWindow())
+        self._tooltip_manager = WidgetTooltipRedirectEventFilter(toolTipWindow())
         self.installEventFilter(self._tooltip_manager)
 
     def _initScaleManager(self) -> None:
-        self._scale_manager = ButtonScaleOnPressedManager(self)
+        self._scale_manager = ScaleOnPressEventFilter(self)
         self._scale_manager.setMinScaleFactor(0.95)
         self.installEventFilter(self._scale_manager)
 
@@ -2049,11 +2049,11 @@ class SiCapsuleButton(QAbstractButton):
         self.toggled.connect(self._onToggled)
 
     def _initToolTipManager(self) -> None:
-        self._tooltip_manager = TooltipManager(toolTipWindow())
+        self._tooltip_manager = WidgetTooltipRedirectEventFilter(toolTipWindow())
         self.installEventFilter(self._tooltip_manager)
 
     def _initScaleManager(self) -> None:
-        self._scale_manager = ButtonScaleOnPressedManager(self)
+        self._scale_manager = ScaleOnPressEventFilter(self)
         self._scale_manager.setMinScaleFactor(0.95)
         self.installEventFilter(self._scale_manager)
 

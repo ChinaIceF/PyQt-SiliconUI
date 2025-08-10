@@ -1,12 +1,57 @@
+import time
+
 from PyQt5.QtCore import QEvent, QObject
 from PyQt5.QtWidgets import QWidget
 
 from siui.components.tooltip import ToolTipWindow
 
 
-class TooltipManager(QObject):
+class DebugEventFilter(QObject):
     """
-    管理工具提示的管理器
+    用于将某个对象的事件打印出来，可以设置屏蔽事件
+    """
+    EventNames = {value: name for name, value in QEvent.__dict__.items() if isinstance(value, QEvent.Type)}
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self._ignorance = []
+        self._name_getter = lambda: self.parent().objectName()
+
+    def eventFilter(self, obj, event):
+        etype = event.type()
+        ename = self.EventNames.get(etype, f"Unknown({etype})")
+        parent_type = type(self.parent())
+        parent_name = self._name_getter()
+
+        if etype not in self._ignorance:
+            print(f"{time.asctime()} [{parent_type}] {parent_name} got event: {ename} ({etype})")
+
+        return False
+
+    def setIgnorance(self, ignorance: list) -> None:
+        self._ignorance = ignorance
+
+    def ignorance(self) -> list:
+        return self._ignorance
+
+    def setNameGetter(self, func) -> None:
+        self._name_getter = func
+
+
+class WidgetTooltipAcceptEventFilter(QObject):
+    """
+    阻断原版工具提示事件
+    """
+    def eventFilter(self, obj: QWidget, event):
+        if event.type() == QEvent.ToolTip:
+            return True
+
+        return False
+
+
+class WidgetTooltipRedirectEventFilter(QObject):
+    """
     忽略原版工具提示，并把工具提示发送到自定义工具提示窗口上，提供操作工具提示窗口的接口
     """
     def __init__(self, tooltip_window: ToolTipWindow):
@@ -14,7 +59,7 @@ class TooltipManager(QObject):
         self._tooltip_window = tooltip_window
         self._entered = False
 
-    def setToolTip(self, text: str, do_flash: bool = True) -> None:
+    def setTooltip(self, text: str, do_flash: bool = True) -> None:
         if self._tooltip_window is None:
             return
         if text == "":
@@ -22,14 +67,14 @@ class TooltipManager(QObject):
         self._tooltip_window.setText(text, flash=do_flash)
         self._tooltip_window.show_()
 
-    def showToolTip(self, do_flash: bool = True) -> None:
+    def showTooltip(self, do_flash: bool = True) -> None:
         if self._tooltip_window is None:
             return
         self._tooltip_window.show_()
         if do_flash:
             self._tooltip_window.flash()
 
-    def hideToolTip(self) -> None:
+    def hideTooltip(self) -> None:
         if self._tooltip_window is None:
             return
         self._tooltip_window.hide_()
@@ -45,12 +90,12 @@ class TooltipManager(QObject):
     def eventFilter(self, obj: QWidget, event):
         if event.type() == QEvent.Enter:
             text = obj.toolTip()
-            self.setToolTip(text)
+            self.setTooltip(text)
             self.raiseWindow()
             self._entered = True
 
         elif event.type() == QEvent.Leave:
-            self.hideToolTip()
+            self.hideTooltip()
             self._entered = False
 
         elif event.type() == QEvent.ToolTip:
@@ -59,9 +104,8 @@ class TooltipManager(QObject):
         return False
 
 
-class ButtonScaleOnPressedManager(QObject):
+class ScaleOnPressEventFilter(QObject):
     """
-    管理 `scaleFactor` 属性的 `SiExpAnimation` 的管理器
     实现鼠标按下控件时产生缩放效果，需要父控件具有 `animation` 方法，且具有 `scaleFactor` 属性
     """
     def __init__(self, parent: QWidget):

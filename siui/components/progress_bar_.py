@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QProgressBar
 
 from siui.core import createPainter
 from siui.core.animation import SiExpAnimationRefactor
-from siui.core.event_filter import TooltipManager
+from siui.core.event_filter import WidgetTooltipRedirectEventFilter
 from siui.core.globals import toolTipWindow
 from siui.typing import T_WidgetParent
 
@@ -72,7 +72,7 @@ class SiProgressBarRefactor(QProgressBar):
         self.stateChanged.connect(self._onStateChanged)
 
     def _initToolTipManager(self) -> None:
-        self._manager = TooltipManager(toolTipWindow())
+        self._manager = WidgetTooltipRedirectEventFilter(toolTipWindow())
         self.installEventFilter(self._manager)
 
     @pyqtProperty(QColor)
@@ -157,7 +157,7 @@ class SiProgressBarRefactor(QProgressBar):
         self.setToolTip(new_tooltip)
 
         if self._manager.isEntered():
-            self._manager.setToolTip(new_tooltip)
+            self._manager.setTooltip(new_tooltip)
 
     def _valueToProgress(self, value: float) -> float:
         return (value - self.minimum()) / (self.maximum() - self.minimum())

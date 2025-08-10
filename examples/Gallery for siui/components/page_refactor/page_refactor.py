@@ -20,7 +20,7 @@ from siui.components.button import (
 )
 from siui.components.chart import SiTrendChart
 from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
-from siui.components.editbox import SiCapsuleEdit, SiDoubleSpinBox, SiLineEdit, SiSpinBox
+from siui.components.editbox import SiLabeledLineEdit, SiDoubleSpinBox, SiCapsuleLineEdit, SiSpinBox
 from siui.components.label import SiLinearIndicator, SiLinearPartitionIndicator
 from siui.components.page import SiPage
 from siui.components.progress_bar_ import SiProgressBarRefactor
@@ -570,17 +570,17 @@ class RefactoredWidgets(SiPage):
             self.editbox = OptionCardPlaneForWidgetDemos(self)
             self.editbox.setTitle("单行文本编辑框")
 
-            self.linear_edit_box = SiLineEdit(self)
+            self.linear_edit_box = SiCapsuleLineEdit(self)
             self.linear_edit_box.resize(560, 36)
             self.linear_edit_box.setTitle("Repository Name")
             self.linear_edit_box.setText("PyQt-SiliconUI")
 
-            self.linear_edit_box2 = SiLineEdit(self)
+            self.linear_edit_box2 = SiCapsuleLineEdit(self)
             self.linear_edit_box2.resize(560, 36)
             self.linear_edit_box2.setTitle("Owner")
             self.linear_edit_box2.setText("ChinaIceF")
 
-            self.linear_edit_box3 = SiLineEdit(self)
+            self.linear_edit_box3 = SiCapsuleLineEdit(self)
             self.linear_edit_box3.resize(560, 36)
             self.linear_edit_box3.setTitle("Description")
             self.linear_edit_box3.setText("A powerful and artistic UI library based on PyQt5")
@@ -602,7 +602,7 @@ class RefactoredWidgets(SiPage):
             self.capsule_editbox = OptionCardPlaneForWidgetDemos(self)
             self.capsule_editbox.setTitle("小型文本编辑框")
 
-            self.capsule_edit = SiCapsuleEdit(self)
+            self.capsule_edit = SiLabeledLineEdit(self)
             self.capsule_edit.setTitle("用户名")
             self.capsule_edit.setPlaceholderText("您的用户名...")
             self.capsule_edit.resize(170, 58)
