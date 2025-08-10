@@ -39,6 +39,17 @@ class DebugEventFilter(QObject):
         self._name_getter = func
 
 
+class WidgetTooltipAcceptEventFilter(QObject):
+    """
+    阻断原版工具提示事件
+    """
+    def eventFilter(self, obj: QWidget, event):
+        if event.type() == QEvent.ToolTip:
+            return True
+
+        return False
+
+
 class WidgetTooltipRedirectEventFilter(QObject):
     """
     忽略原版工具提示，并把工具提示发送到自定义工具提示窗口上，提供操作工具提示窗口的接口

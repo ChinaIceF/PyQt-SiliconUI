@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-from PyQt5.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt, pyqtProperty, pyqtSignal
-from PyQt5.QtGui import QColor, QCursor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption
+from PyQt5.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
+from PyQt5.QtGui import QColor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption
 from PyQt5.QtWidgets import QAction, QActionGroup, QApplication, QHBoxLayout, QLabel, QMenu, QSpacerItem, QWidget
 
 from siui.components.button import SiTransparentButton
 from siui.components.container import SiDenseContainer
-from siui.components.label import SiAnimatedColorWidget, SiRoundPixmapWidget
+from siui.components.label import SiRoundPixmapWidget
 from siui.components.slider_ import SiScrollAreaRefactor
-from siui.core import SiQuickEffect, createPainter, hideToolTip, showToolTip
+from siui.core import SiQuickEffect, createPainter
 from siui.core.animation import SiExpAnimationRefactor
-from siui.core.event_filter import TooltipManager
-from siui.core.globals import SiGlobal, raiseToolTipWindow, toolTipWindow
+from siui.core.event_filter import DebugEventFilter, WidgetTooltipAcceptEventFilter
+from siui.core.globals import SiGlobal
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
 
@@ -126,11 +126,19 @@ class SiMenuItem(QObject):
 class SiMenuItemWidget(QWidget):
     """所有菜单项 widget 的基类"""
     reachedEnd = pyqtSignal()
+    peeked = pyqtSignal(QAction)
 
-    def __init__(self, parent=None):
+    def __init__(self, action: QAction | None, parent=None):
         super().__init__(parent)
+        self._action = action
 
-    def _emitReachedEnd(self):
+    def action(self) -> QAction | None:
+        return self._action
+
+    def peek(self) -> None:
+        self.peeked.emit(self._action)
+
+    def reachEnd(self) -> None:
         self.reachedEnd.emit()
 
     def setCheckedIndicatorVisible(self, state: bool) -> None:
@@ -148,7 +156,7 @@ class SiMenuItemWidget(QWidget):
 
 class ActionItemWidget(SiMenuItemWidget):
     def __init__(self, action: QAction, parent=None):
-        super().__init__(parent)
+        super().__init__(action, parent)
 
         self.setFixedHeight(32)
 
@@ -164,6 +172,7 @@ class ActionItemWidget(SiMenuItemWidget):
         self._applyAction(action)
         self._initWidgets()
         self._initLayout()
+        self._initTooltipAcceptFilter()
 
         self._button.clicked.connect(self._onButtonClicked)
 
@@ -221,6 +230,10 @@ class ActionItemWidget(SiMenuItemWidget):
 
         self.setLayout(layout)
 
+    def _initTooltipAcceptFilter(self) -> None:
+        self._tooltip_accept_filter = WidgetTooltipAcceptEventFilter(self)
+        self.installEventFilter(self._tooltip_accept_filter)
+
     def _applyAction(self, action: QAction) -> None:
         self.addAction(action)
         self._updateFromAction(action)
@@ -238,7 +251,8 @@ class ActionItemWidget(SiMenuItemWidget):
     def _onButtonClicked(self) -> None:
         self._action.trigger()
         self._button.leave()
-        self._emitReachedEnd()
+        self.peek()
+        self.reachEnd()
 
     def setText(self, text: str) -> None:
         self._name_label.setText(text)
@@ -270,12 +284,14 @@ class ActionItemWidget(SiMenuItemWidget):
 
 class SubmenuItemWidget(SiMenuItemWidget):
     def __init__(self, action: QAction, parent=None):
-        super().__init__(parent)
+        super().__init__(action, parent)
 
         self.setFixedHeight(32)
 
         self._action = action
         self.style_data = ActionItemsWidgetStyleData()
+
+        self._peeking_timer = QTimer(self)
 
         self._checked_indicator = ActionItemWidgetCheckedIndicator(action, self)
         self._icon_widget = SiRoundPixmapWidget(self)
@@ -287,6 +303,8 @@ class SubmenuItemWidget(SiMenuItemWidget):
         self._applyAction(action)
         self._initWidgets()
         self._initLayout()
+        self._initTimer()
+        self._initTooltipAcceptFilter()
 
         self._button.clicked.connect(self._onButtonClicked)
 
@@ -348,6 +366,15 @@ class SubmenuItemWidget(SiMenuItemWidget):
 
         self.setLayout(layout)
 
+    def _initTimer(self) -> None:
+        self._peeking_timer.setSingleShot(True)
+        self._peeking_timer.setInterval(400)
+        self._peeking_timer.timeout.connect(self._onPeekingTimerTimeout)
+
+    def _initTooltipAcceptFilter(self) -> None:
+        self._tooltip_accept_filter = WidgetTooltipAcceptEventFilter(self)
+        self.installEventFilter(self._tooltip_accept_filter)
+
     def _applyAction(self, action: QAction) -> None:
         self.addAction(action)
         self._updateFromAction(action)
@@ -368,8 +395,13 @@ class SubmenuItemWidget(SiMenuItemWidget):
         menu.popup(pos)
 
     def _onButtonClicked(self) -> None:
-        self._action.trigger()
+        self.peek()
+        self._peeking_timer.stop()
+        self._showSubmenu()
         self._button.leave()
+
+    def _onPeekingTimerTimeout(self) -> None:
+        self.peek()
         self._showSubmenu()
 
     def setText(self, text: str) -> None:
@@ -401,11 +433,16 @@ class SubmenuItemWidget(SiMenuItemWidget):
     def enterEvent(self, a0):
         super().enterEvent(a0)
         self._action.hover()
+        self._peeking_timer.start()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self._peeking_timer.stop()
 
 
 class SeparatorItemWidget(SiMenuItemWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, action: QAction | None, parent=None):
+        super().__init__(action, parent)
 
         self.setFixedHeight(1)
         self.style_data = SeperatorItemsWidgetStyleData()
@@ -426,7 +463,7 @@ class SeparatorItemWidget(SiMenuItemWidget):
 
 class SectionItemWidget(SiMenuItemWidget):
     def __init__(self, action: QAction, parent=None):
-        super().__init__(parent)
+        super().__init__(action, parent)
 
         self.setFixedHeight(32)
         self.setFont(SiFont.getFont(size=12))
@@ -435,6 +472,12 @@ class SectionItemWidget(SiMenuItemWidget):
 
         self._action = action
         self._margin = QMargins(4, 4, 4, 4)
+
+    def reachEnd(self) -> None:
+        pass
+
+    def peek(self) -> None:
+        pass
 
     def _drawSeparationLine(self, painter: QPainter, rect: QRect) -> None:
         painter.setPen(self.style_data.seperator_color)
@@ -465,7 +508,7 @@ class SiMenuItemWidgetFactory:
             return ActionItemWidget(item.data, parent)
 
         elif item.type == SiMenuItem.Type.Separator:
-            return SeparatorItemWidget(parent)
+            return SeparatorItemWidget(item.data, parent)
 
         elif item.type == SiMenuItem.Type.SubMenu:
             return SubmenuItemWidget(item.data, parent)
@@ -474,15 +517,36 @@ class SiMenuItemWidgetFactory:
             return SectionItemWidget(item.data, parent)
 
         elif item.type == SiMenuItem.Type.Custom:
-            widget = item.data.parentWidget()
+            action, widget_cls = item.data
+            widget = widget_cls(action, parent)
+            widget.setParent(parent)
+
             if not isinstance(widget, SiMenuItemWidget):
                 raise TypeError(f"Custom widgets must inherit from SiMenuItemWidget, encountered {type(widget)}")
 
-            widget.setParent(parent)
             return widget
 
         else:
             raise ValueError(f"Type {item.type} is not implemented in SiMenuItemWidgetFactory.create")
+
+
+class SiRoundedMenuActivationFilter(QObject):
+    def __init__(self, parent: SiRoundedMenu | None = None):
+        super().__init__(parent)
+        self.menu = parent
+
+    def eventFilter(self, obj, event):
+        event_type = event.type()
+
+        if event_type == QEvent.Show:
+            self.menu._clearPeekingAction()  # noqa
+
+        if event_type == QEvent.WindowDeactivate:
+            if self.menu.peekingAction() is not None:
+                return False
+            self.menu._closeMenuTreeUptoActivated()  # noqa
+
+        return False
 
 
 class SiRoundedMenu(QMenu):
@@ -493,21 +557,22 @@ class SiRoundedMenu(QMenu):
         super().__init__(parent)
 
         self.setMouseTracking(True)
-
-        self._items: list[SiMenuItem] = []
-        self._widgets: dict[SiMenuItem, QWidget] = {}
-        self._action_to_items: dict[QAction, SiMenuItem] = {}
-        self._is_layout_dirty = True
-        self._is_mouse_pressed_in_self = False
-
-        self.style_data = MenuStyleData()
-
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowFlags(
             Qt.FramelessWindowHint
             | Qt.Popup
             | Qt.NoDropShadowWindowHint
+            | Qt.Tool
         )
+
+        self._items: list[SiMenuItem] = []
+        self._widgets: dict[SiMenuItem, SiMenuItemWidget] = {}
+        self._action_to_items: dict[QAction, SiMenuItem] = {}
+        self._is_layout_dirty = True
+        self._is_mouse_pressed_in_self = False
+        self._peeking_action = None
+
+        self.style_data = MenuStyleData()
 
         self._margins = QMargins(32, 32, 32, 32)
         self._scroll_area_size = QSize(80, 80)
@@ -520,7 +585,12 @@ class SiRoundedMenu(QMenu):
         self.ani_scroll_area_size.init(1 / 6, 1, self._scroll_area_size, self._scroll_area_size)
 
         self._initStyle()
-        self._applyGraphicEffect()
+        self._initActivationFilter()
+
+        self.event_debugger = DebugEventFilter(self)
+        self.event_debugger.setNameGetter(lambda: self.menuAction().text())
+        self.event_debugger.setIgnorance([QEvent.Paint, QEvent.MouseMove, QEvent.UpdateRequest])
+        self.installEventFilter(self.event_debugger)
 
     def _initStyle(self) -> None:
         background = self.style_data.background_color.name()
@@ -543,8 +613,22 @@ class SiRoundedMenu(QMenu):
         self._container.setContentsMargins(6, 4, 6, 4)
         self._container.layout().removeWidget(self._container.stretchWidget())
 
+    def _initActivationFilter(self) -> None:
+        self._activation_filter = SiRoundedMenuActivationFilter(self)
+        self.installEventFilter(self._activation_filter)
+
     def _applyGraphicEffect(self) -> None:
         SiQuickEffect.applyDropShadowOn(self._background, color=(0, 0, 0, 128))
+
+    @pyqtProperty(QSize)
+    def viewSize(self):
+        return self._scroll_area_size
+
+    @viewSize.setter
+    def viewSize(self, value: QSize):
+        self._scroll_area_size = value
+        self._scroll_area.resize(value)
+        self._background.resize(value)
 
     def _startShowAnimation(self) -> None:
         inner_size = self.size().shrunkBy(self._margins)
@@ -566,64 +650,42 @@ class SiRoundedMenu(QMenu):
         ani.setCurrentValue(QSize(width, int(height * 0.6)))
         ani.toProperty()
 
-    def _updateComponentsVisibility(self) -> None:
-        item_in_section = []
-        has_checkable = False
-        has_icon = False
-        has_shortcut = False
-        has_submenu = False
+    def _closeMenu(self) -> None:
+        self.close()
 
-        for item in self._items:
-            if not item_in_section:
-                has_checkable = False
-                has_icon = False
-                has_shortcut = False
-                has_submenu = False
+    def _closeMenuTreeUp(self) -> None:
+        widget = self
+        while isinstance(widget, SiRoundedMenu):
+            widget.close()
+            widget = widget.parent()
 
-            if item.type in [item.Type.Separator, item.Type.Section]:
-                for item_ in item_in_section:
-                    widget = self._widgets.get(item_)
-                    widget.setCheckedIndicatorVisible(has_checkable)
-                    widget.setIconVisible(has_icon)
-                    widget.setShortcutVisible(has_shortcut)
-                    widget.setSubmenuIndicatorVisible(has_submenu)
+    def _closeMenuTreeUptoActivated(self) -> None:
+        widget = self
+        while isinstance(widget, SiRoundedMenu) and not widget.isActiveWindow():
+            print(widget.menuAction().text(), "被关闭", self.peekingAction())
+            widget.close()
+            widget = widget.parent()
 
-                item_in_section = []
-                continue
+    def _closeMenuTreeDown(self) -> None:
+        widget = self
+        while isinstance(widget, SiRoundedMenu):
+            widget.close()
 
-            action: QAction = item.data
-            has_checkable |= action.isCheckable()
-            has_icon |= not action.icon().isNull()
-            has_shortcut |= not action.shortcut().isEmpty()
-            has_submenu |= action.menu() is not None
+            action = widget._peeking_action
+            if action is None:
+                break
 
-            item_in_section.append(item)
+            item = widget._action_to_items[action]
+            item_widget = widget._widgets[item]
+            widget = item_widget.action().menu()
 
-        for item_ in item_in_section:
-            widget = self._widgets.get(item_)
-            widget.setCheckedIndicatorVisible(has_checkable)
-            widget.setIconVisible(has_icon)
-            widget.setShortcutVisible(has_shortcut)
-            widget.setSubmenuIndicatorVisible(has_submenu)
+    def _onReachedEnd(self) -> None:
+        self._closeMenuTreeUp()
 
-    def _prepareToPopup(self) -> None:
-        self._updateComponentsVisibility()
-
-        if self._is_layout_dirty:
-            self._refreshLayoutOrder()
-            self._is_layout_dirty = False
-
-        self._container.adjustSize()
-
-    @pyqtProperty(QSize)
-    def viewSize(self):
-        return self._scroll_area_size
-
-    @viewSize.setter
-    def viewSize(self, value: QSize):
-        self._scroll_area_size = value
-        self._scroll_area.resize(value)
-        self._background.resize(value)
+    def _onActionPeeked(self, action: QAction) -> None:
+        print("peeked", action.text())
+        self.activateWindow()
+        self._peeking_action = action
 
     # region Action related methods
 
@@ -634,7 +696,8 @@ class SiRoundedMenu(QMenu):
 
     def _addItem(self, item: SiMenuItem) -> None:
         widget = SiMenuItemWidgetFactory.create(item, self._container)
-        widget.reachedEnd.connect(self._closeMenuTree)
+        widget.reachedEnd.connect(self._closeMenuTreeUp)
+        widget.peeked.connect(self._onActionPeeked)
 
         self._items.append(item)
         self._widgets.update([(item, widget)])
@@ -644,7 +707,7 @@ class SiRoundedMenu(QMenu):
 
     def _insertItem(self, before: QAction, item: SiMenuItem) -> None:
         widget = SiMenuItemWidgetFactory.create(item, self._container)
-        widget.reachedEnd.connect(self._closeMenuTree)
+        widget.reachedEnd.connect(self._closeMenuTreeUp)
 
         before_item = self._action_to_items.get(before)
         before_index = self._items.index(before_item)
@@ -688,10 +751,10 @@ class SiRoundedMenu(QMenu):
 
         return new_action
 
-    def addCustomWidget(self, widget: SiMenuItemWidget) -> QAction:
-        new_action = QAction(widget)
+    def addCustomWidget(self, action: QAction, widget_cls: type[SiMenuItemWidget]) -> QAction | None:
+        new_action = super().addAction(action)
 
-        item = SiMenuItem(self, SiMenuItem.Type.Custom, new_action)
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, [action, widget_cls])
         self._addItem(item)
 
         return new_action
@@ -733,10 +796,11 @@ class SiRoundedMenu(QMenu):
 
         return new_action
 
-    def insertCustomWidget(self, before: QAction, widget: SiMenuItemWidget) -> QAction:
-        new_action = QAction(widget)
+    def insertCustomWidget(self, before: QAction, action: QAction,
+                           widget_cls: type[SiMenuItemWidget]) -> QAction | None:
+        new_action = super().addAction(action)
 
-        item = SiMenuItem(self, SiMenuItem.Type.Custom, new_action)
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, [action, widget_cls])
         self._insertItem(before, item)
 
         return new_action
@@ -764,33 +828,14 @@ class SiRoundedMenu(QMenu):
 
     # endregion
 
-    def _refreshLayoutOrder(self) -> None:
-        layout = self._container.layout()
-        current_widgets = [layout.itemAt(i).widget() for i in range(layout.count())]
-        desired_widgets = [self._widgets[item] for item in self._items if item in self._widgets]
+    def _clearPeekingAction(self) -> None:
+        self._peeking_action = None
 
-        for i, widget in enumerate(desired_widgets):
-            if i >= len(current_widgets) or current_widgets[i] is not widget:
-                layout.removeWidget(widget)
-                layout.insertWidget(i, widget)
-
-    def _closeMenu(self) -> None:
-        self.close()
-
-    def _closeMenuTree(self) -> None:
-        widget = self
-        while isinstance(widget, SiRoundedMenu):
-            widget.close()
-            widget = widget.parent()
+    def peekingAction(self) -> QAction | None:
+        return self._peeking_action
 
     def isSubmenu(self) -> bool:
         return isinstance(self.parent(), SiRoundedMenu)
-
-    def refreshLayout(self) -> None:
-        """立即更新布局"""
-        self._refreshLayoutOrder()
-        self._container.adjustSize()
-        self.adjustSize()
 
     def sizeHint(self):
         screen_rect = QApplication.desktop().availableGeometry()
@@ -802,11 +847,78 @@ class SiRoundedMenu(QMenu):
 
         return QSize(width, height)
 
+    def _updateComponentsVisibility(self) -> None:
+        item_in_section = []
+        has_checkable = False
+        has_icon = False
+        has_shortcut = False
+        has_submenu = False
+
+        for item in self._items:
+            if not item_in_section:
+                has_checkable = False
+                has_icon = False
+                has_shortcut = False
+                has_submenu = False
+
+            if item.type in [item.Type.Separator, item.Type.Section]:
+                for item_ in item_in_section:
+                    widget = self._widgets.get(item_)
+                    widget.setCheckedIndicatorVisible(has_checkable)
+                    widget.setIconVisible(has_icon)
+                    widget.setShortcutVisible(has_shortcut)
+                    widget.setSubmenuIndicatorVisible(has_submenu)
+
+                item_in_section = []
+                continue
+
+            action: QAction = item.data
+            has_checkable |= action.isCheckable()
+            has_icon |= not action.icon().isNull()
+            has_shortcut |= not action.shortcut().isEmpty()
+            has_submenu |= action.menu() is not None
+
+            item_in_section.append(item)
+
+        for item_ in item_in_section:
+            widget = self._widgets.get(item_)
+            widget.setCheckedIndicatorVisible(has_checkable)
+            widget.setIconVisible(has_icon)
+            widget.setShortcutVisible(has_shortcut)
+            widget.setSubmenuIndicatorVisible(has_submenu)
+
+    def _refreshLayoutOrder(self) -> None:
+        layout = self._container.layout()
+        current_widgets = [layout.itemAt(i).widget() for i in range(layout.count())]
+        desired_widgets = [self._widgets[item] for item in self._items if item in self._widgets]
+
+        for i, widget in enumerate(desired_widgets):
+            if i >= len(current_widgets) or current_widgets[i] is not widget:
+                layout.removeWidget(widget)
+                layout.insertWidget(i, widget)
+
+    def _prepareToPopup(self) -> None:
+        self._clearPeekingAction()
+        self._updateComponentsVisibility()
+
+        if self._is_layout_dirty:
+            self._refreshLayoutOrder()
+            self._is_layout_dirty = False
+
+        self._container.adjustSize()
+
     def popup(self, pos: QPoint, action: QAction | None = None) -> None:
         self._prepareToPopup()
 
         new_pos = pos - self._scroll_area.pos()
         super().popup(new_pos, action)
+        self.activateWindow()
+
+    def refreshLayout(self) -> None:
+        """立即更新布局"""
+        self._refreshLayoutOrder()
+        self._container.adjustSize()
+        self.adjustSize()
 
     def paintEvent(self, a0):
         pass
