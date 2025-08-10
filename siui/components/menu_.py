@@ -201,11 +201,11 @@ class ActionItemWidget(SiMenuItemWidget):
         self._name_label.setMinimumWidth(32)
         self._name_label.setStyleSheet(f"""
         QLabel {{
-            margin: 0px 8px 0px 0px;
+            margin: 0px 8px 1px 0px;
             color: {sd.label_text_color_enabled.name(QColor.HexArgb)};
         }}
         QLabel:disabled {{
-            margin: 0px 8px 0px 0px;
+            margin: 0px 8px 1px 0px;
             color: {sd.label_text_color_disabled.name(QColor.HexArgb)};
         }}
         """)
@@ -333,11 +333,11 @@ class SubmenuItemWidget(SiMenuItemWidget):
         self._name_label.setMinimumWidth(32)
         self._name_label.setStyleSheet(f"""
         QLabel {{
-            margin: 0px 8px 0px 0px;
+            margin: 0px 8px 1px 0px;
             color: {sd.label_text_color_enabled.name(QColor.HexArgb)};
         }}
         QLabel:disabled {{
-            margin: 0px 8px 0px 0px;
+            margin: 0px 8px 1px 0px;
             color: {sd.label_text_color_disabled.name(QColor.HexArgb)};
         }}
         """)
@@ -747,7 +747,7 @@ class SiRoundedMenu(QMenu):
     def addCustomWidget(self, action: QAction, widget_cls: type[SiMenuItemWidget]) -> QAction | None:
         new_action = super().addAction(action)
 
-        item = SiMenuItem(self, SiMenuItem.Type.Custom, [action, widget_cls])
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, (action, widget_cls))
         self._addItem(item)
 
         return new_action
@@ -793,7 +793,7 @@ class SiRoundedMenu(QMenu):
                            widget_cls: type[SiMenuItemWidget]) -> QAction | None:
         new_action = super().addAction(action)
 
-        item = SiMenuItem(self, SiMenuItem.Type.Custom, [action, widget_cls])
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, (action, widget_cls))
         self._insertItem(before, item)
 
         return new_action
@@ -865,7 +865,7 @@ class SiRoundedMenu(QMenu):
                 item_in_section = []
                 continue
 
-            action: QAction = item.data
+            action: QAction = item.data if item.type != item.Type.Custom else item.data[0]
             has_checkable |= action.isCheckable()
             has_icon |= not action.icon().isNull()
             has_shortcut |= not action.shortcut().isEmpty()
