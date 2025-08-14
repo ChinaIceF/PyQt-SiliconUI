@@ -116,11 +116,12 @@ class SiMenuItem(QObject):
         Section = "Section"
         Custom = "Custom"
 
-    def __init__(self, parent, type_, data):
+    def __init__(self, parent, type_, action: QAction, cls=None):
         super().__init__(parent)
 
         self.type = type_
-        self.data = data
+        self.action = action
+        self.cls = cls
 
 
 class SiMenuItemWidget(QWidget):
@@ -505,19 +506,19 @@ class SiMenuItemWidgetFactory:
     @staticmethod
     def create(item: SiMenuItem, parent=None) -> SiMenuItemWidget:
         if item.type == SiMenuItem.Type.Action:
-            return ActionItemWidget(item.data, parent)
+            return ActionItemWidget(item.action, parent)
 
         elif item.type == SiMenuItem.Type.Separator:
-            return SeparatorItemWidget(item.data, parent)
+            return SeparatorItemWidget(item.action, parent)
 
         elif item.type == SiMenuItem.Type.SubMenu:
-            return SubmenuItemWidget(item.data, parent)
+            return SubmenuItemWidget(item.action, parent)
 
         elif item.type == SiMenuItem.Type.Section:
-            return SectionItemWidget(item.data, parent)
+            return SectionItemWidget(item.action, parent)
 
         elif item.type == SiMenuItem.Type.Custom:
-            action, widget_cls = item.data
+            action, widget_cls = item.action, item.cls
             widget = widget_cls(action, parent)
             widget.setParent(parent)
 
@@ -694,7 +695,7 @@ class SiRoundedMenu(QMenu):
 
         self._items.append(item)
         self._widgets.update([(item, widget)])
-        self._action_to_items.update([(item.data, item)])
+        self._action_to_items.update([(item.action, item)])
 
         self._is_layout_dirty = True
 
@@ -707,7 +708,7 @@ class SiRoundedMenu(QMenu):
 
         self._items.insert(before_index, item)
         self._widgets.update([(item, widget)])
-        self._action_to_items.update([(item.data, item)])
+        self._action_to_items.update([(item.action, item)])
 
         self._is_layout_dirty = True
 
@@ -747,7 +748,7 @@ class SiRoundedMenu(QMenu):
     def addCustomWidget(self, action: QAction, widget_cls: type[SiMenuItemWidget]) -> QAction | None:
         new_action = super().addAction(action)
 
-        item = SiMenuItem(self, SiMenuItem.Type.Custom, (action, widget_cls))
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, action, widget_cls)
         self._addItem(item)
 
         return new_action
@@ -793,7 +794,7 @@ class SiRoundedMenu(QMenu):
                            widget_cls: type[SiMenuItemWidget]) -> QAction | None:
         new_action = super().addAction(action)
 
-        item = SiMenuItem(self, SiMenuItem.Type.Custom, (action, widget_cls))
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, action, widget_cls)
         self._insertItem(before, item)
 
         return new_action
@@ -818,6 +819,16 @@ class SiRoundedMenu(QMenu):
         self._action_to_items.pop(action)
 
         return None
+
+    def clear(self) -> None:
+        for item in self._items:
+            widget = self._widgets.get(item)
+            widget.reachedEnd.disconnect()
+            widget.deleteLater()
+
+        self._widgets.clear()
+        self._items.clear()
+        self._action_to_items.clear()
 
     # endregion
 
@@ -865,7 +876,7 @@ class SiRoundedMenu(QMenu):
                 item_in_section = []
                 continue
 
-            action: QAction = item.data if item.type != item.Type.Custom else item.data[0]
+            action: QAction = item.action
             has_checkable |= action.isCheckable()
             has_icon |= not action.icon().isNull()
             has_shortcut |= not action.shortcut().isEmpty()
