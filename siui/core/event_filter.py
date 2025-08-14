@@ -4,6 +4,7 @@ from PyQt5.QtCore import QEvent, QObject
 from PyQt5.QtWidgets import QWidget
 
 from siui.components.tooltip import ToolTipWindow
+from siui.core import SiGlobal
 
 
 class DebugEventFilter(QObject):
@@ -54,10 +55,13 @@ class WidgetTooltipRedirectEventFilter(QObject):
     """
     忽略原版工具提示，并把工具提示发送到自定义工具提示窗口上，提供操作工具提示窗口的接口
     """
-    def __init__(self, tooltip_window: ToolTipWindow):
-        super().__init__()
-        self._tooltip_window = tooltip_window
+    def __init__(self, parent: QWidget = None):
+        super().__init__(parent)
+        self._tooltip_window = self._initTooltipWindow()
         self._entered = False
+
+    def _initTooltipWindow(self) -> ToolTipWindow:
+        return SiGlobal.siui.windows.get("TOOL_TIP")
 
     def setTooltip(self, text: str, do_flash: bool = True) -> None:
         if self._tooltip_window is None:
