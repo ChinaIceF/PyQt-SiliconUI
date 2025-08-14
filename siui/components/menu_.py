@@ -832,6 +832,9 @@ class SiRoundedMenu(QMenu):
 
     # endregion
 
+    def container(self) -> QWidget:
+        return self._container
+
     def _clearPeekingAction(self) -> None:
         self._peeking_action = None
 
@@ -843,7 +846,7 @@ class SiRoundedMenu(QMenu):
 
     def sizeHint(self):
         screen_rect = QApplication.desktop().availableGeometry()
-        container_size = self._container.sizeHint()
+        container_size = self._container.size()
         expanded_rect = container_size.grownBy(self._margins)
 
         width = expanded_rect.width()
