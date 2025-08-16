@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from PyQt5.QtCore import QMargins, QRect, QRectF, QSize, Qt
-from PyQt5.QtGui import QColor, QIcon, QKeySequence, QPainter, QPainterPath
-from PyQt5.QtWidgets import QAction, QComboBox, QHBoxLayout, QLabel, QSpacerItem, QWidget
+from PyQt5.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt
+from PyQt5.QtGui import QColor, QIcon, QKeySequence, QMouseEvent, QPainter, QPainterPath
+from PyQt5.QtWidgets import QAction, QActionGroup, QComboBox, QHBoxLayout, QLabel, QSpacerItem, QWidget
 
-from siui.components.button import SiTransparentButton, SiFlatButton
+from siui.components.button import SiFlatButton, SiTransparentButton
 from siui.components.editbox import SiCapsuleLineEdit
 from siui.components.label import SiRoundPixmapWidget
 from siui.components.menu_ import ActionItemsWidgetStyleData, SiMenuItemWidget, SiRoundedMenu
-from siui.core import createPainter, SiGlobal
+from siui.core import SiGlobal, createPainter
 from siui.core.event_filter import WidgetTooltipAcceptEventFilter
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
@@ -175,15 +175,52 @@ class ComboboxItemWidget(SiMenuItemWidget):
         self._action.hover()
 
 
-class SiComboBoxRefactor(QComboBox):
+class ComboBoxClickEventFilter(QObject):
+    def __init__(self, combobox: QComboBox, line_edit: SiCapsuleLineEdit, menu: SiRoundedMenu):
+        super().__init__(line_edit)
+        self._combobox = combobox
+        self._line_edit = line_edit
+        self._menu = menu
+
+        self._is_pressed = False
+
+    def eventFilter(self, obj: QWidget, event: QEvent):
+        if self._combobox.isEditable():
+            return False
+
+        if event.type() == QEvent.Type.MouseButtonPress:
+            event: QMouseEvent
+            self._is_pressed = event.button() == Qt.LeftButton
+            return False
+
+        if event.type() == QEvent.Type.MouseButtonRelease:
+            if self._is_pressed:
+                self._combobox.showPopup()
+
+            self._is_pressed = False
+            return True
+
+        return False
+
+
+class SiCapsuleComboBox(QComboBox):
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
-        self._popup = SiRoundedMenu(self)
-        self._popup.clear()
+        self._is_menu_dirty = True
+
+        self._menu = SiRoundedMenu(self)
+        self._text_to_width_hint: dict[str, int] = {}
+        self._max_width_hint = -1
+        self._title = "untitled"
+
+        self._line_edit = SiCapsuleLineEdit(self)
 
         self._initStyleSheet()
         self._initWidget()
+        self._initClickEventFilter()
+        self._initModelSignals()
+        self._initMenuSignals()
 
     def _initStyleSheet(self) -> None:
         self.setStyleSheet("""
@@ -200,32 +237,112 @@ class SiComboBoxRefactor(QComboBox):
         """)
 
     def _initWidget(self) -> None:
-        pass
-
-    def _createLineEdit(self) -> None:
-        line_edit = SiCapsuleLineEdit(self)
-        line_edit.setReadOnly(not self.isEditable())
-
-        button = self._createLineEditDropButton()
-        button.clicked.connect(self.showPopup)
-        line_edit.addWidgetToRight(button)
-
-        self.setLineEdit(line_edit)
-        line_edit.setContextMenuPolicy(Qt.CustomContextMenu)
-
-    def _createLineEditDropButton(self) -> SiFlatButton:
         button = SiFlatButton(self)
         button.setFixedSize(28, 28)
         button.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_chevron_down_regular"))
-        return button
+        button.clicked.connect(self.showPopup)
 
-    def setEditable(self, editable):
-        super().setEditable(editable)
-        self._createLineEdit()
+        super().setLineEdit(self._line_edit)
+        self._line_edit.setReadOnly(not self.isEditable())
+        self._line_edit.setTitle(self._title)
+        self._line_edit.addWidgetToRight(button)
+        self._line_edit.setContextMenuPolicy(Qt.CustomContextMenu)
+
+    def _initClickEventFilter(self) -> None:
+        self._click_event_filter = ComboBoxClickEventFilter(self, self._line_edit, self._menu)
+        self._line_edit.installEventFilter(self._click_event_filter)
+
+    def _initModelSignals(self) -> None:
+        model = self.model()
+        model.dataChanged.connect(self._onModelChanged)
+        model.layoutChanged.connect(self._onModelChanged)
+        model.modelReset.connect(self._onModelChanged)
+        model.rowsInserted.connect(self._onModelChanged)
+        model.rowsRemoved.connect(self._onModelChanged)
+        model.columnsInserted.connect(self._onModelChanged)
+        model.columnsRemoved.connect(self._onModelChanged)
+
+    def _initMenuSignals(self) -> None:
+        self._menu.triggered.connect(self._onMenuActionTriggered)
+
+    def _onMenuActionTriggered(self, action: QAction) -> None:
+        self.setCurrentIndex(action.data())
+
+    def _onModelChanged(self) -> None:
+        self._is_menu_dirty = True
+        self.updateGeometry()
+
+    def _rebuildMenu(self) -> None:
+        self._menu.clear()
+
+        action_group = QActionGroup(self)
+        action_group.setExclusionPolicy(QActionGroup.ExclusionPolicy.Exclusive)
+
+        for i in range(self.count()):
+            text = self.itemText(i)
+            action = QAction(text)
+            action.setData(i)
+            action.setCheckable(True)
+            action.setChecked(i == self.currentIndex())
+
+            action_group.addAction(action)
+            self._menu.addCustomWidget(action, ComboboxItemWidget)
+
+        self._menu.refreshLayout()
+
+    def _calcSizeHintCache(self) -> None:
+        for i in range(self.count()):
+            text = self.itemText(i)
+            if text in self._text_to_width_hint.keys():
+                continue
+
+            width_for_text = self._line_edit.widthForText(text)
+            self._text_to_width_hint.update([(text, width_for_text)])
+
+        self._max_width_hint = max(list(self._text_to_width_hint.values()) + [0])
+
+    def sizeHint(self):
+        if self._is_menu_dirty:
+            self._rebuildMenu()
+            self._calcSizeHintCache()
+            self._is_menu_dirty = False
+        return QSize(self._max_width_hint, super().sizeHint().height())
+
+    def minimumSizeHint(self):
+        min_width = self._line_edit.widthForText("") + 48
+        min_height = 36
+        return QSize(min_width, min_height)
+
+    def setTitle(self, text: str) -> None:
+        self._title = text
+        self._line_edit.setTitle(text)
+        self.updateGeometry()
+
+    def setEditable(self, editable: bool) -> None:
+        self._line_edit.setReadOnly(not editable)
+
+    def isEditable(self) -> bool:
+        return not self._line_edit.isReadOnly()
+
+    def showPopup(self) -> None:
+        if self._is_menu_dirty:
+            self._rebuildMenu()
+            self._calcSizeHintCache()
+            self._is_menu_dirty = False
+
+        title_width = self._line_edit.titleWidth()
+        menu_width = self.width() - title_width
+        self._menu.container().setFixedWidth(menu_width)
+
+        pos = self.rect().bottomLeft() + QPoint(title_width, 0)
+        self._menu.popup(self.mapToGlobal(pos))
+
+    def hidePopup(self) -> None:
+        self._menu.close()
 
     def paintEvent(self, e):
         pass
 
-    def mousePressEvent(self, e):
-        super().mousePressEvent(e)
-        print("pressed")
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        self._line_edit.resize(e.size())
