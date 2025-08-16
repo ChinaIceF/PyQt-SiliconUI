@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import overload
 
 from PyQt5.QtCore import QRectF, QSize, Qt
 from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPixmap
@@ -10,6 +11,25 @@ from siui.components.label import SiRoundPixmapWidget
 from siui.core import GlobalFont, createPainter
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
+
+
+class SiBoxContainer(QWidget):
+    LeftToRight = QBoxLayout.LeftToRight
+    RightToLeft = QBoxLayout.RightToLeft
+    TopToBottom = QBoxLayout.TopToBottom
+    BottomToTop = QBoxLayout.BottomToTop
+
+    def __init__(self,
+                 parent: T_WidgetParent = None,
+                 direction: QBoxLayout.Direction = QBoxLayout.LeftToRight) -> None:
+        super().__init__(parent)
+
+        layout = QBoxLayout(direction)
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+
+    def layout(self) -> QBoxLayout | None:  # overloaded for coding hints, has no effect on any impl.
+        return super().layout()
 
 
 class SiDenseContainer(QWidget):

@@ -72,7 +72,7 @@ class SiProgressBarRefactor(QProgressBar):
         self.stateChanged.connect(self._onStateChanged)
 
     def _initToolTipManager(self) -> None:
-        self._manager = WidgetTooltipRedirectEventFilter(toolTipWindow())
+        self._manager = WidgetTooltipRedirectEventFilter()
         self.installEventFilter(self._manager)
 
     @pyqtProperty(QColor)

@@ -1744,7 +1744,7 @@ class SiCheckBoxRefactor(QAbstractButton):
         self._description_label.setWordWrap(True)
 
     def _initToolTipManager(self) -> None:
-        self._tooltip_manager = WidgetTooltipRedirectEventFilter(toolTipWindow())
+        self._tooltip_manager = WidgetTooltipRedirectEventFilter()
         self.installEventFilter(self._tooltip_manager)
 
     def _initScaleManager(self) -> None:
@@ -2049,7 +2049,7 @@ class SiCapsuleButton(QAbstractButton):
         self.toggled.connect(self._onToggled)
 
     def _initToolTipManager(self) -> None:
-        self._tooltip_manager = WidgetTooltipRedirectEventFilter(toolTipWindow())
+        self._tooltip_manager = WidgetTooltipRedirectEventFilter()
         self.installEventFilter(self._tooltip_manager)
 
     def _initScaleManager(self) -> None:

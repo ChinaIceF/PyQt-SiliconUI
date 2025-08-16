@@ -1,11 +1,8 @@
 from __future__ import annotations
 
 import difflib
-import random
-from dataclasses import dataclass
 
-import numpy
-from PyQt5.QtCore import QEvent, QObject, QPoint, QPointF, QRectF, QSize, Qt, pyqtProperty
+from PyQt5.QtCore import QMargins, QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
 from PyQt5.QtGui import (
     QColor,
     QDoubleValidator,
@@ -14,14 +11,16 @@ from PyQt5.QtGui import (
     QIntValidator,
     QPainter,
     QPainterPath,
+    QTextOption,
 )
-from PyQt5.QtWidgets import QAction, QApplication, QLineEdit
+from PyQt5.QtWidgets import QAction, QApplication, QLineEdit, QWidget
 
 from siui.components.button import SiFlatButton
-from siui.components.container import SiDenseContainer
+from siui.components.container import SiBoxContainer, SiDenseContainer
 from siui.components.menu_ import SiRoundedMenu
-from siui.core import SiGlobal, createPainter, hideToolTip, isToolTipInsideOf, showToolTip
+from siui.core import SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
+from siui.core.event_filter import WidgetTooltipRedirectEventFilter
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
 
@@ -44,18 +43,37 @@ class LineEditStyleData:
 
 
 class SiCapsuleLineEdit(QLineEdit):
+    class TitleWidthMode:
+        Preferred = "Preferred"
+        Fixed = "Fixed"
+        Ratio = "Ratio"
+
     class Property:
         TitleColor = "titleColor"
         TextIndicatorColor = "textIndicatorColor"
         TextIndicatorWidth = "textIndicatorWidth"
 
-    def __init__(self, parent: T_WidgetParent = None, title: str = "Untitled Edit Box") -> None:
+    def __init__(self, parent: T_WidgetParent = None, title: str = "Untitled") -> None:
         super().__init__(parent)
 
+        self.setFont(SiFont.getFont(size=14))
+
         self.style_data = LineEditStyleData()
+
+        self._left_edge_container = SiBoxContainer(self)
+        self._right_edge_container = SiBoxContainer(self)
+
         self._title_font = SiFont.getFont(size=13)
-        self._title = title
-        self._title_width = 160
+        self._title_text = title
+        self._title_text_margins = QMargins(17, 0, 17, 0)
+        self._title_width_mode = self.TitleWidthMode.Preferred
+        self._title_fixed_width = 160
+        self._title_ratio = 0.25
+
+        self._in_rect_container_margins = QMargins(8, 0, 8, 0)
+        self._in_rect_text_margins = QMargins(10, 0, 10, 0)
+        self._user_text_margins = QMargins(0, 0, 0, 0)
+
         self._title_color = self.style_data.title_color_idle
         self._text_indi_color = self.style_data.text_indicator_color_idle
         self._text_indi_width = 0
@@ -70,15 +88,21 @@ class SiCapsuleLineEdit(QLineEdit):
         self.text_indicator_width_ani = SiExpAnimationRefactor(self, self.Property.TextIndicatorWidth)
         self.text_indicator_color_ani.init(1/8, 0.01, 0, 0)
 
-        self.setFont(SiFont.getFont(size=14))
+        self._initWidget()
         self._initStyleSheet()
-        self._createCustomMenu()
+        self._initTooltipRedirectEventFilter()
+        self._initSignals()
 
+        self._updateTextMargins()
+
+        self._createCustomMenu()
         self.setContextMenuPolicy(Qt.CustomContextMenu)
 
-        self.customContextMenuRequested.connect(self._showCustomMenu)
-        self.textChanged.connect(self._onTextEdited)
-        self.returnPressed.connect(self._onReturnPressed)
+    def _initWidget(self) -> None:
+        self._left_edge_container.layout().setDirection(SiBoxContainer.LeftToRight)
+        self._left_edge_container.layout().setSpacing(6)
+        self._right_edge_container.layout().setDirection(SiBoxContainer.RightToLeft)
+        self._right_edge_container.layout().setSpacing(6)
 
     def _initStyleSheet(self) -> None:
         self.setStyleSheet(
@@ -87,11 +111,19 @@ class SiCapsuleLineEdit(QLineEdit):
             "     background-color: transparent;"
             f"    color: {self.style_data.text_color.name()};"
             "     border: 0px;"
-            f"    padding-left: {self._title_width + 18}px;"
-            "     padding-right: 18px;"
-            "     padding-bottom: 1px;"
             "}"
         )
+
+    def _initTooltipRedirectEventFilter(self):
+        self._tooltip_redirect_event_filter = WidgetTooltipRedirectEventFilter()
+        self.installEventFilter(self._tooltip_redirect_event_filter)
+
+    def _initSignals(self) -> None:
+        self.customContextMenuRequested.connect(self._showCustomMenu)
+        self.textChanged.connect(self._onTextEdited)
+        self.returnPressed.connect(self._onReturnPressed)
+
+    # region Property
 
     @pyqtProperty(QColor)
     def titleColor(self):
@@ -129,7 +161,10 @@ class SiCapsuleLineEdit(QLineEdit):
         self._text_indi_width = value
         self.update()
 
+    # endregion
+
     def _showCustomMenu(self, pos: QPoint):
+        print(self.actions())
         self.undo_action.setEnabled(self.isUndoAvailable())
         self.redo_action.setEnabled(self.isRedoAvailable())
         self.cut_action.setEnabled(self.hasSelectedText())
@@ -140,39 +175,32 @@ class SiCapsuleLineEdit(QLineEdit):
         self.menu.popup(self.mapToGlobal(pos))
 
     def _createCustomMenu(self):
-        self.menu = SiRoundedMenu(self)  # 创建菜单
+        self.menu = SiRoundedMenu(self)
 
         self.undo_action = QAction("撤销", self)
         self.undo_action.setShortcut("Ctrl+Z")
         self.undo_action.triggered.connect(self.undo)
-        # self.addAction(self.undo_action)
 
         self.redo_action = QAction("重做", self)
         self.redo_action.setShortcut("Ctrl+Shift+Z")
         self.redo_action.triggered.connect(self.redo)
-        # self.addAction(self.redo_action)
 
         self.cut_action = QAction("剪切", self)
         self.cut_action.setShortcut("Ctrl+X")
         self.cut_action.triggered.connect(self.cut)
-        # self.addAction(self.cut_action)
 
         self.copy_action = QAction("复制", self)
         self.copy_action.setShortcut("Ctrl+C")
         self.copy_action.triggered.connect(self.copy)
-        # self.addAction(self.copy_action)
 
         self.paste_action = QAction("粘贴", self)
         self.paste_action.setShortcut("Ctrl+V")
         self.paste_action.triggered.connect(self.paste)
-        # self.addAction(self.paste_action)
 
         self.select_all_action = QAction("全选", self)
         self.select_all_action.setShortcut("Ctrl+A")
         self.select_all_action.triggered.connect(self.selectAll)
-        # self.addAction(self.select_all_action)
 
-        # 组装菜单
         self.menu.addAction(self.undo_action)
         self.menu.addAction(self.redo_action)
         self.menu.addSeparator()
@@ -186,23 +214,89 @@ class SiCapsuleLineEdit(QLineEdit):
     def title(self) -> str:
         return self._title
 
+    def _updateTextMargins(self) -> None:
+        user_text_margins = self._user_text_margins
+        in_rect_text_margins = self._in_rect_text_margins
+        in_rect_container_margins = self._in_rect_container_margins
+        container_margins = self._calcContainerMargins()
+
+        title_text_margins = self._title_text_margins
+        title_text_width = self._calcTitleTextWidth()
+
+        out_rect_margins = QMargins()
+        out_rect_margins.setLeft(title_text_margins.left() + title_text_margins.right() + title_text_width)
+
+        new_margins = user_text_margins + in_rect_text_margins + container_margins + in_rect_container_margins + out_rect_margins
+        super().setTextMargins(new_margins)
+
+    def _updateContainerGeometry(self) -> None:
+        margins = self._in_rect_container_margins
+        text_rect = self._calcTextRect()
+        available_rect = text_rect.marginsRemoved(margins)
+
+        left_size = self._left_edge_container.sizeHint()
+        x = available_rect.left()
+        self._right_edge_container.setGeometry(x, 0, left_size.width(), self.height())
+
+        right_size = self._right_edge_container.sizeHint()
+        x = available_rect.right() - right_size.width()
+        self._right_edge_container.setGeometry(x, 0, right_size.width(), self.height())
+
     def setTitle(self, title: str) -> None:
-        self._title = title
+        self._title_text = title
+        self._updateTextMargins()
+        self._updateContainerGeometry()
+        self.update()
+
+    def setTitleWidthMode(self, mode) -> None:
+        self._title_width_mode = mode
+        self._updateTextMargins()
+        self._updateContainerGeometry()
+        self.update()
+
+    def setTitleFixedWidth(self, width: int) -> None:
+        self._title_fixed_width = width
+        self._updateTextMargins()
+        self._updateContainerGeometry()
+        self.update()
+
+    def setTitleRatio(self, ratio: float) -> None:
+        self._title_ratio = ratio
+        self._updateTextMargins()
+        self._updateContainerGeometry()
         self.update()
 
     def titleWidth(self) -> int:
-        return self._title_width
+        return self._calcTitleRect().width()
 
-    def setTitleWidth(self, width: int) -> None:
-        self._title_width = width
-        self._initStyleSheet()
-        self.update()
+    def widthForText(self, text: str) -> int:
+        metrics = QFontMetrics(self.font())
+        text_size = QSize(metrics.horizontalAdvance(text) + 8, 0)
+        grown_size = text_size.grownBy(super().textMargins())
+        return grown_size.width()
 
-    @staticmethod
-    def _validationFunc(text: str) -> bool | str:
-        if text == "":
-            return "此项不能为空"
-        return True
+    def setTextMargins(self, left: int, top: int, right: int, bottom: int) -> None:
+        self._user_text_margins = QMargins(left, top, right, bottom)
+        self._updateTextMargins()
+
+    def textMargins(self) -> QMargins:
+        return self._user_text_margins
+
+    def leftEdgeContainer(self) -> QWidget:
+        return self._left_edge_container
+
+    def rightEdgeContainer(self) -> QWidget:
+        return self._right_edge_container
+
+    def addWidgetToLeft(self, widget: QWidget) -> None:
+        self._left_edge_container.addWidget(widget)
+        self._updateTextMargins()
+        self._updateContainerGeometry()
+
+    def addWidgetToRight(self, widget: QWidget) -> None:
+        self._right_edge_container.layout().addWidget(widget)
+        self._updateTextMargins()
+        self._updateContainerGeometry()
 
     def notifyInvalidInput(self):
         self.text_indicator_color_ani.setEndValue(self.style_data.text_indicator_color_error)
@@ -212,18 +306,13 @@ class SiCapsuleLineEdit(QLineEdit):
         self.text_indicator_width_ani.setEndValue(self.width() - self._title_width - 36)
         self.text_indicator_width_ani.start()
 
-    def validate(self):
-        result = self._validationFunc(self.text())
-        if result is True:
-            self.setToolTip("")
-        else:
-            self.setToolTip(result)
-            self.notifyInvalidInput()
-
     def _onTextEdited(self, text: str):
+        margins = self._in_rect_container_margins + self._calcContainerMargins() + self._in_rect_text_margins
         metric = QFontMetrics(self.font())
-        text_rect = QRectF(self._title_width, 0, self.width() - self._title_width, self.height())
-        width = min(metric.boundingRect(text).width(), text_rect.width() - 36)
+        text_rect = self._calcTextRect()
+        text_bounding_width = metric.boundingRect(text).width()
+        available_width = text_rect.marginsRemoved(margins).width()
+        width = min(text_bounding_width, available_width)
 
         self.text_indicator_width_ani.setEndValue(width)
         self.text_indicator_width_ani.start()
@@ -244,63 +333,82 @@ class SiCapsuleLineEdit(QLineEdit):
             target.setFocus()
         self.clearFocus()
 
-        self.validate()
+    def _calcTitleTextWidth(self) -> int:
+        if self._title_width_mode == self.TitleWidthMode.Preferred:
+            metrics = QFontMetrics(self._title_font)
+            return metrics.horizontalAdvance(self._title_text)
 
-    def _drawTitleBackgroundPath(self, rect: QRectF) -> QPainterPath:
+        elif self._title_width_mode == self.TitleWidthMode.Fixed:
+            return self._title_fixed_width
+
+        elif self._title_width_mode == self.TitleWidthMode.Ratio:
+            return int(self.width() * self._title_ratio)
+
+        else:
+            raise ValueError(f"{self._title_width_mode}")
+
+    def _calcTitleRect(self) -> QRect:
+        width = self._calcTitleTextWidth() + self._title_text_margins.left() + self._title_text_margins.right()
+        height = self.height() + self._title_text_margins.top() + self._title_text_margins.bottom()
+        rect = QRect(0, 0, width, height)
+        return rect
+
+    def _calcTextRect(self) -> QRect:
+        rect = self.rect()
+        shrunk_rect = rect.adjusted(self._calcTitleRect().width(), 0, 0, 0)
+        return shrunk_rect
+
+    def _calcContainerMargins(self) -> QMargins:
+        container_margins = QMargins()
+        container_margins.setLeft(self._left_edge_container.sizeHint().width())
+        container_margins.setRight(self._right_edge_container.sizeHint().width())
+        return container_margins
+
+    def _drawBodyBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
-        path.addRoundedRect(rect, 10, 10)
-        return path
-
-    def _drawTitleRect(self, painter: QPainter, rect: QRectF) -> None:
-        sd = self.style_data
-        text_rect = QRectF(rect.x() + 17, rect.y(), rect.width(), rect.height() - 1)
-
-        painter.setBrush(sd.title_background_color)
-        painter.drawPath(self._drawTitleBackgroundPath(rect))
-
-        painter.setPen(self._title_color)
-        painter.setFont(self._title_font)
-        painter.drawText(painter.boundingRect(text_rect, Qt.AlignVCenter | Qt.AlignLeft, self._title), self._title)
-
+        path.addRoundedRect(QRectF(rect), 10, 10)
         painter.setPen(Qt.NoPen)
+        painter.setBrush(self.style_data.title_background_color)
+        painter.drawPath(path)
 
-    def _drawTextBackgroundPath(self, rect: QRectF) -> QPainterPath:
+    def _drawEditBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
-        path.addRoundedRect(rect, 10, 10)
-        return path
+        path.addRoundedRect(QRectF(rect), 10, 10)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self.style_data.text_background_color)
+        painter.drawPath(path)
 
-    def _drawTextIndicatorPath(self, rect: QRectF) -> QPainterPath:
-        indi_rect = QRectF(rect.x() + 16, rect.y() + 34, self._text_indi_width + 8, 2)
+    def _drawTitleText(self, painter: QPainter, rect: QRect) -> None:
+        shrunk_rect = rect.marginsRemoved(self._title_text_margins)
+        option = QTextOption()
+        option.setWrapMode(QTextOption.WrapMode.NoWrap)
+        option.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        painter.setFont(self._title_font)
+        painter.setPen(self._title_color)
+        painter.drawText(QRectF(shrunk_rect), self._title_text, option)
+
+    def _drawIndicatorRect(self, painter: QPainter, rect: QRect) -> None:
+        container_margins = self._calcContainerMargins()
+
+        shrunk_rect = rect.marginsRemoved(container_margins)
+        indi_rect = QRect(shrunk_rect.topLeft() + QPoint(16, 34), QSize(self._text_indi_width + 8, 2))
+
         path = QPainterPath()
-        path.addRoundedRect(indi_rect, 1, 1)
-        return path
-
-    def _drawTextRect(self, painter: QPainter, rect: QRectF) -> None:
-        sd = self.style_data
-        painter.setBrush(sd.text_background_color)
-        painter.drawPath(self._drawTextBackgroundPath(rect))
-
+        path.addRoundedRect(QRectF(indi_rect), 1, 1)
+        painter.setPen(Qt.NoPen)
         painter.setBrush(self._text_indi_color)
-        painter.drawPath(self._drawTextIndicatorPath(rect))
-
-    def event(self, event):
-        if event.type() == QEvent.ToolTip:
-            return True  # 忽略工具提示事件
-        return super().event(event)
+        painter.drawPath(path)
 
     def paintEvent(self, a0):
-        title_rect = QRectF(0, 0, self.width(), self.height())
-        text_rect = QRectF(self._title_width, 0, self.width() - self._title_width, self.height())
+        body_rect = self.rect()
+        title_rect = self._calcTitleRect()
+        text_rect = self._calcTextRect()
 
-        renderHints = (
-                QPainter.RenderHint.SmoothPixmapTransform
-                | QPainter.RenderHint.TextAntialiasing
-                | QPainter.RenderHint.Antialiasing
-        )
-
-        with createPainter(self, renderHints) as painter:
-            self._drawTitleRect(painter, title_rect)
-            self._drawTextRect(painter, text_rect)
+        with createPainter(self) as painter:
+            self._drawBodyBackgroundRect(painter, body_rect)
+            self._drawEditBackgroundRect(painter, text_rect)
+            self._drawTitleText(painter, title_rect)
+            self._drawIndicatorRect(painter, text_rect)
 
         super().paintEvent(a0)
 
@@ -312,10 +420,6 @@ class SiCapsuleLineEdit(QLineEdit):
         self.title_color_ani.start()
 
         self._onTextEdited(self.text())
-        self.setToolTip("")  # clean tooltip once it gets focus.
-
-        if isToolTipInsideOf(self):
-            hideToolTip(self)
 
     def focusOutEvent(self, a0):
         super().focusOutEvent(a0)
@@ -326,14 +430,9 @@ class SiCapsuleLineEdit(QLineEdit):
 
         self._onTextEdited("")
 
-    def enterEvent(self, a0):
-        super().enterEvent(a0)
-        showToolTip(self)
-
-    def leaveEvent(self, a0):
-        super().leaveEvent(a0)
-        hideToolTip(self)
-
+    def resizeEvent(self, a0):
+        super().resizeEvent(a0)
+        self._updateContainerGeometry()
 
 class AnimatedCharObject(QObject):
 

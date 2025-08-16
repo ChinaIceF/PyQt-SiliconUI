@@ -116,11 +116,12 @@ class SiMenuItem(QObject):
         Section = "Section"
         Custom = "Custom"
 
-    def __init__(self, parent, type_, data):
+    def __init__(self, parent, type_, action: QAction, cls=None):
         super().__init__(parent)
 
         self.type = type_
-        self.data = data
+        self.action = action
+        self.cls = cls
 
 
 class SiMenuItemWidget(QWidget):
@@ -201,11 +202,11 @@ class ActionItemWidget(SiMenuItemWidget):
         self._name_label.setMinimumWidth(32)
         self._name_label.setStyleSheet(f"""
         QLabel {{
-            margin: 0px 8px 0px 0px;
+            margin: 0px 8px 1px 0px;
             color: {sd.label_text_color_enabled.name(QColor.HexArgb)};
         }}
         QLabel:disabled {{
-            margin: 0px 8px 0px 0px;
+            margin: 0px 8px 1px 0px;
             color: {sd.label_text_color_disabled.name(QColor.HexArgb)};
         }}
         """)
@@ -333,11 +334,11 @@ class SubmenuItemWidget(SiMenuItemWidget):
         self._name_label.setMinimumWidth(32)
         self._name_label.setStyleSheet(f"""
         QLabel {{
-            margin: 0px 8px 0px 0px;
+            margin: 0px 8px 1px 0px;
             color: {sd.label_text_color_enabled.name(QColor.HexArgb)};
         }}
         QLabel:disabled {{
-            margin: 0px 8px 0px 0px;
+            margin: 0px 8px 1px 0px;
             color: {sd.label_text_color_disabled.name(QColor.HexArgb)};
         }}
         """)
@@ -505,19 +506,19 @@ class SiMenuItemWidgetFactory:
     @staticmethod
     def create(item: SiMenuItem, parent=None) -> SiMenuItemWidget:
         if item.type == SiMenuItem.Type.Action:
-            return ActionItemWidget(item.data, parent)
+            return ActionItemWidget(item.action, parent)
 
         elif item.type == SiMenuItem.Type.Separator:
-            return SeparatorItemWidget(item.data, parent)
+            return SeparatorItemWidget(item.action, parent)
 
         elif item.type == SiMenuItem.Type.SubMenu:
-            return SubmenuItemWidget(item.data, parent)
+            return SubmenuItemWidget(item.action, parent)
 
         elif item.type == SiMenuItem.Type.Section:
-            return SectionItemWidget(item.data, parent)
+            return SectionItemWidget(item.action, parent)
 
         elif item.type == SiMenuItem.Type.Custom:
-            action, widget_cls = item.data
+            action, widget_cls = item.action, item.cls
             widget = widget_cls(action, parent)
             widget.setParent(parent)
 
@@ -694,7 +695,7 @@ class SiRoundedMenu(QMenu):
 
         self._items.append(item)
         self._widgets.update([(item, widget)])
-        self._action_to_items.update([(item.data, item)])
+        self._action_to_items.update([(item.action, item)])
 
         self._is_layout_dirty = True
 
@@ -707,7 +708,7 @@ class SiRoundedMenu(QMenu):
 
         self._items.insert(before_index, item)
         self._widgets.update([(item, widget)])
-        self._action_to_items.update([(item.data, item)])
+        self._action_to_items.update([(item.action, item)])
 
         self._is_layout_dirty = True
 
@@ -747,7 +748,7 @@ class SiRoundedMenu(QMenu):
     def addCustomWidget(self, action: QAction, widget_cls: type[SiMenuItemWidget]) -> QAction | None:
         new_action = super().addAction(action)
 
-        item = SiMenuItem(self, SiMenuItem.Type.Custom, [action, widget_cls])
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, action, widget_cls)
         self._addItem(item)
 
         return new_action
@@ -793,7 +794,7 @@ class SiRoundedMenu(QMenu):
                            widget_cls: type[SiMenuItemWidget]) -> QAction | None:
         new_action = super().addAction(action)
 
-        item = SiMenuItem(self, SiMenuItem.Type.Custom, [action, widget_cls])
+        item = SiMenuItem(self, SiMenuItem.Type.Custom, action, widget_cls)
         self._insertItem(before, item)
 
         return new_action
@@ -810,6 +811,8 @@ class SiRoundedMenu(QMenu):
         super().removeAction(action)
         item = self._action_to_items.get(action)
         widget = self._widgets.get(item)
+
+        self._container.layout().removeWidget(widget)
         widget.reachedEnd.disconnect()
         widget.deleteLater()
 
@@ -819,7 +822,23 @@ class SiRoundedMenu(QMenu):
 
         return None
 
+    def clear(self) -> None:
+        super().clear()
+        for item in self._items:
+            widget = self._widgets.get(item)
+
+            self._container.layout().removeWidget(widget)
+            widget.reachedEnd.disconnect()
+            widget.deleteLater()
+
+        self._widgets.clear()
+        self._items.clear()
+        self._action_to_items.clear()
+
     # endregion
+
+    def container(self) -> QWidget:
+        return self._container
 
     def _clearPeekingAction(self) -> None:
         self._peeking_action = None
@@ -832,7 +851,7 @@ class SiRoundedMenu(QMenu):
 
     def sizeHint(self):
         screen_rect = QApplication.desktop().availableGeometry()
-        container_size = self._container.sizeHint()
+        container_size = self._container.size()
         expanded_rect = container_size.grownBy(self._margins)
 
         width = expanded_rect.width()
@@ -865,7 +884,7 @@ class SiRoundedMenu(QMenu):
                 item_in_section = []
                 continue
 
-            action: QAction = item.data
+            action: QAction = item.action
             has_checkable |= action.isCheckable()
             has_icon |= not action.icon().isNull()
             has_shortcut |= not action.shortcut().isEmpty()
