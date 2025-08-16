@@ -811,6 +811,8 @@ class SiRoundedMenu(QMenu):
         super().removeAction(action)
         item = self._action_to_items.get(action)
         widget = self._widgets.get(item)
+
+        self._container.layout().removeWidget(widget)
         widget.reachedEnd.disconnect()
         widget.deleteLater()
 
@@ -821,8 +823,11 @@ class SiRoundedMenu(QMenu):
         return None
 
     def clear(self) -> None:
+        super().clear()
         for item in self._items:
             widget = self._widgets.get(item)
+
+            self._container.layout().removeWidget(widget)
             widget.reachedEnd.disconnect()
             widget.deleteLater()
 
