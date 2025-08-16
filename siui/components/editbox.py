@@ -266,6 +266,15 @@ class SiCapsuleLineEdit(QLineEdit):
         self._updateContainerGeometry()
         self.update()
 
+    def titleWidth(self) -> int:
+        return self._calcTitleRect().width()
+
+    def widthForText(self, text: str) -> int:
+        metrics = QFontMetrics(self.font())
+        text_size = QSize(metrics.horizontalAdvance(text) + 8, 0)
+        grown_size = text_size.grownBy(super().textMargins())
+        return grown_size.width()
+
     def setTextMargins(self, left: int, top: int, right: int, bottom: int) -> None:
         self._user_text_margins = QMargins(left, top, right, bottom)
         self._updateTextMargins()
