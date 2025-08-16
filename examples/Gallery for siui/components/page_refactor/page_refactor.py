@@ -3,10 +3,12 @@ from contextlib import contextmanager
 
 from PyQt5.QtCore import QPointF, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QWidget, QSizePolicy
+from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QSizePolicy, QWidget
 
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiTitledWidgetGroup
 from siui.components.button import (
+    SiCapsuleButton,
+    SiCheckBoxRefactor,
     SiFlatButton,
     SiFlatButtonWithIndicator,
     SiLongPressButtonRefactor,
@@ -16,11 +18,12 @@ from siui.components.button import (
     SiRadioButtonWithAvatar,
     SiRadioButtonWithDescription,
     SiSwitchRefactor,
-    SiToggleButtonRefactor, SiCheckBoxRefactor, SiCapsuleButton,
+    SiToggleButtonRefactor,
 )
 from siui.components.chart import SiTrendChart
+from siui.components.combobox_ import SiCapsuleComboBox
 from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
-from siui.components.editbox import SiLabeledLineEdit, SiDoubleSpinBox, SiCapsuleLineEdit, SiSpinBox
+from siui.components.editbox import SiCapsuleLineEdit, SiDoubleSpinBox, SiLabeledLineEdit, SiSpinBox
 from siui.components.label import SiLinearIndicator, SiLinearPartitionIndicator
 from siui.components.page import SiPage
 from siui.components.progress_bar_ import SiProgressBarRefactor
@@ -47,6 +50,7 @@ def createDenseContainer(parent: SiDenseContainer,
                          side: Qt.Edges = Qt.LeftEdge | Qt.TopEdge) -> SiDenseContainer:
     container = SiDenseContainer(parent)
     container.layout().setDirection(direction)
+    container.layout().setSpacing(12)
     container.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
     try:
         yield container
@@ -70,6 +74,23 @@ class RefactoredWidgets(SiPage):
 
         with self.titled_widgets_group as group:
             group.addTitle("按钮")
+
+            with createPanelCard(group, "下拉选择器") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                    combo_editable = SiCapsuleComboBox(self)
+                    combo_editable.setTitle("可编辑选择器")
+                    combo_editable.setMinimumHeight(36)
+                    combo_editable.setEditable(True)
+                    combo_editable.addItems(["Python", "C++", "JavaScript"])
+
+                    combo_not_editable = SiCapsuleComboBox(self)
+                    combo_not_editable.setTitle("只读选择器")
+                    combo_not_editable.setMinimumHeight(36)
+                    combo_not_editable.setEditable(False)
+                    combo_not_editable.addItems(["Python", "C++", "JavaScript"])
+
+                    container.addWidget(combo_editable)
+                    container.addWidget(combo_not_editable)
 
             with createPanelCard(group, "胶囊按钮") as card:
                 with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
@@ -572,30 +593,31 @@ class RefactoredWidgets(SiPage):
 
             self.linear_edit_box = SiCapsuleLineEdit(self)
             self.linear_edit_box.resize(560, 36)
+            self.linear_edit_box.setTitleWidthMode(SiCapsuleLineEdit.TitleWidthMode.Ratio)
             self.linear_edit_box.setTitle("Repository Name")
             self.linear_edit_box.setText("PyQt-SiliconUI")
 
             self.linear_edit_box2 = SiCapsuleLineEdit(self)
             self.linear_edit_box2.resize(560, 36)
+            self.linear_edit_box2.setTitleWidthMode(SiCapsuleLineEdit.TitleWidthMode.Ratio)
             self.linear_edit_box2.setTitle("Owner")
             self.linear_edit_box2.setText("ChinaIceF")
 
             self.linear_edit_box3 = SiCapsuleLineEdit(self)
             self.linear_edit_box3.resize(560, 36)
+            self.linear_edit_box3.setTitleWidthMode(SiCapsuleLineEdit.TitleWidthMode.Ratio)
             self.linear_edit_box3.setTitle("Description")
             self.linear_edit_box3.setText("A powerful and artistic UI library based on PyQt5")
 
-            self.check_button = SiPushButtonRefactor(self)
+            self.check_button = SiFlatButton(self)
             self.check_button.setText("确定")
-            self.check_button.clicked.connect(self.linear_edit_box.validate)
-            self.check_button.clicked.connect(self.linear_edit_box2.validate)
-            self.check_button.clicked.connect(self.linear_edit_box3.validate)
+            self.linear_edit_box3.addWidgetToRight(self.check_button)
 
             self.editbox.body().setSpacing(11)
             self.editbox.body().addWidget(self.linear_edit_box)
             self.editbox.body().addWidget(self.linear_edit_box2)
             self.editbox.body().addWidget(self.linear_edit_box3)
-            self.editbox.body().addWidget(self.check_button)
+            # self.editbox.body().addWidget(self.check_button)
             self.editbox.body().addPlaceholder(12)
             self.editbox.adjustSize()
 
