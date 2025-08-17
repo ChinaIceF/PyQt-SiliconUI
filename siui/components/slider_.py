@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
 
 from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
 from PyQt5.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QPixmap, QValidator
@@ -9,11 +8,13 @@ from PyQt5.QtWidgets import (
     QAbstractSlider,
     QAbstractSpinBox,
     QBoxLayout,
+    QGraphicsScene,
+    QGraphicsView,
     QLabel,
     QScrollArea,
     QScrollBar,
     QSpinBox,
-    QWidget, QGraphicsView, QGraphicsScene,
+    QWidget,
 )
 
 from siui.components.container import SiDenseContainer
@@ -31,8 +32,8 @@ class SliderStyleData:
 
     thumb_idle_color: QColor = QColor("#C88CD4")
     thumb_hover_color: QColor = QColor("#EDE1F4")
-    thumb_width: int = 52
-    thumb_height: int = 14
+    thumb_width: int = 36
+    thumb_height: int = 24
 
     track_color: QColor = QColor("#C88CD4") #77568d
     track_height: int = 5
