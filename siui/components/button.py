@@ -2,14 +2,12 @@
 # replace button once it's done. Now it's draft, code may be ugly and verbose temporarily.
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import (
     QEvent,
     QMargins,
     QObject,
-    QPoint,
     QPointF,
     QRect,
     QRectF,
@@ -34,13 +32,12 @@ from PyQt5.QtGui import (
     QTransform,
 )
 from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QAbstractButton, QLabel, QPushButton, QRadioButton, QSizePolicy, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAbstractButton, QLabel, QPushButton, QRadioButton
 from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
 from siui.core.event_filter import ScaleOnPressEventFilter, WidgetTooltipRedirectEventFilter
-from siui.core.globals import toolTipWindow
 from siui.core.painter import getGaussianLinearGradient
 from siui.gui import SiFont
 
@@ -88,8 +85,8 @@ class GlobalStyleManager:
                 SA.BackgroundColor: QColor("#2d2932"),
                 SA.ToggledTextColor: QColor("#DFDFDF"),
                 SA.ToggledButtonColor: QColor("#519868"),
-                SA.BorderInnerRadius: 5,
-                SA.BorderRadius: 7,
+                SA.BorderInnerRadius: 8,
+                SA.BorderRadius: 11,
                 SA.BorderHeight: 3,
                 SA.IconTextGap: 4,
             },
