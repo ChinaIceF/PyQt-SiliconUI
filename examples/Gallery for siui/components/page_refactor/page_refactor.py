@@ -1,9 +1,10 @@
 import random
 from contextlib import contextmanager
 
-from PyQt5.QtCore import QPointF, Qt
+from .example_menu import exampleSiRoundedMenu
+from PyQt5.QtCore import QPoint, QPointF, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QSizePolicy, QWidget
+from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QSizePolicy, QWidget, QLabel
 
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiTitledWidgetGroup
 from siui.components.button import (
@@ -24,7 +25,7 @@ from siui.components.chart import SiTrendChart
 from siui.components.combobox_ import SiCapsuleComboBox
 from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
 from siui.components.editbox import SiCapsuleLineEdit, SiDoubleSpinBox, SiLabeledLineEdit, SiSpinBox
-from siui.components.label import SiLinearIndicator, SiLinearPartitionIndicator
+from siui.components.label import SiLinearIndicator, SiLinearPartitionIndicator, SiLabelRefactor
 from siui.components.page import SiPage
 from siui.components.progress_bar_ import SiProgressBarRefactor
 from siui.components.slider_ import SiCoordinatePicker2D, SiCoordinatePicker3D, SiSlider
@@ -73,45 +74,40 @@ class RefactoredWidgets(SiPage):
         self.titled_widgets_group.setAdjustWidgetsSize(True)  # 禁用调整宽度
 
         with self.titled_widgets_group as group:
-            group.addTitle("按钮")
+            group.addTitle("菜单")
 
-            with createPanelCard(group, "下拉选择器") as card:
+            with createPanelCard(group, "菜单演示") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+
+                    button = SiPushButtonRefactor(self)
+                    button.setText("显示菜单")
+
+                    self.example_menu = exampleSiRoundedMenu(button)
+                    button.clicked.connect(
+                        lambda: self.example_menu.popup(button.mapToGlobal(QPoint(0, button.height())))
+                    )
+
+                    container.addWidget(button)
+
+        with self.titled_widgets_group as group:
+            group.addTitle("组合框")
+
+            with createPanelCard(group, "胶囊下拉组合框") as card:
                 with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
                     combo_editable = SiCapsuleComboBox(self)
-                    combo_editable.setTitle("可编辑选择器")
+                    combo_editable.setTitle("可编辑组合框")
                     combo_editable.setMinimumHeight(36)
                     combo_editable.setEditable(True)
                     combo_editable.addItems(["Python", "C++", "JavaScript"])
 
                     combo_not_editable = SiCapsuleComboBox(self)
-                    combo_not_editable.setTitle("只读选择器")
+                    combo_not_editable.setTitle("只读组合框")
                     combo_not_editable.setMinimumHeight(36)
                     combo_not_editable.setEditable(False)
                     combo_not_editable.addItems(["Python", "C++", "JavaScript"])
 
                     container.addWidget(combo_editable)
                     container.addWidget(combo_not_editable)
-
-            with createPanelCard(group, "胶囊按钮") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
-                    capsule_button_1 = SiCapsuleButton(self)
-                    capsule_button_1.setText("Likes")
-                    capsule_button_1.setValue(114514)
-                    capsule_button_1.setToolTip("你好世界")
-
-                    capsule_button_2 = SiCapsuleButton(self)
-                    capsule_button_2.setText("Comments")
-                    capsule_button_2.setValue(1919)
-                    capsule_button_2.setThemeColor(SiCapsuleButton.Theme.Yellow)
-
-                    capsule_button_3 = SiCapsuleButton(self)
-                    capsule_button_3.setText("Shares")
-                    capsule_button_3.setValue(810)
-                    capsule_button_3.setThemeColor(SiCapsuleButton.Theme.Red)
-
-                    container.addWidget(capsule_button_1)
-                    container.addWidget(capsule_button_2)
-                    container.addWidget(capsule_button_3)
 
         with self.titled_widgets_group as group:
             group.addTitle("进度条")
@@ -126,7 +122,7 @@ class RefactoredWidgets(SiPage):
                     button_random_value.clicked.connect(
                         lambda: progress_bar.setValue(int(random.random() * 1001)))
 
-                    button_random_add = SiPushButtonRefactor.withText("Randomly Increase")
+                    button_random_add = SiPushButtonRefactor.withText("随机增加")
                     button_random_add.clicked.connect(
                         lambda: progress_bar.setValue(progress_bar.value() + int(random.random() * 50 + 2)))
 
@@ -146,8 +142,12 @@ class RefactoredWidgets(SiPage):
                     button_error.clicked.connect(
                         lambda: progress_bar.setState(progress_bar.State.Error))
 
-                    button_toggle_flashing = SiToggleButtonRefactor(self)
-                    button_toggle_flashing.setText("自动闪烁")
+                    label_flashing = QLabel(self)
+                    label_flashing.setFont(SiFont.getFont(size=14))
+                    label_flashing.setText("自动闪烁")
+                    label_flashing.setStyleSheet("color: #D1CBD4")
+
+                    button_toggle_flashing = SiSwitchRefactor(self)
                     button_toggle_flashing.toggled.connect(progress_bar.setFlashing)
 
                     container.addWidget(button_random_value)
@@ -157,275 +157,215 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(button_processing, Qt.RightEdge)
                     container.addWidget(button_loading, Qt.RightEdge)
                     container.addWidget(button_toggle_flashing, Qt.RightEdge)
+                    container.addWidget(label_flashing, Qt.RightEdge)
 
-            with createPanelCard(group, "新多选按钮") as card:
-                checkbox = SiCheckBoxRefactor(self)
-                checkbox.setText("可以多选的选项")
-                checkbox.setDescription("选项的解释说明文本")
-                checkbox.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
-                # checkbox.setAutoExclusive(True)
-
-                checkbox2 = SiCheckBoxRefactor(self)
-                checkbox2.setText("可以多选的选项")
-                checkbox2.setDescription("选项的解释说明文本")
-                checkbox2.setToolTip("上面的你怎么没有工具提示啊")
-                checkbox2.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
-
-                card.body().addWidget(checkbox)
-                card.body().addWidget(checkbox2)
-
-        with self.titled_widgets_group as group:
-            group.addTitle("卡片容器")
-
-            bar_test = SiTriSectionRowCard(self, SiGlobal.siui.iconpack.toPixmap("ic_fluent_slide_text_cursor_filled"))
-            bar_test.actionsContainer().addWidget(SiSwitchRefactor(self))
-            bar_test.adjustSize()
-            group.addWidget(bar_test)
-
-            with createPanelCard(group, "区间指示器") as card:
-
-                indicator = SiLinearPartitionIndicator(self)
-                indicator.activate()
-                indicator.setFixedSize(200, 4)
-                indicator.setNodeAmount(7)
-                indicator.setVisualWidth(200)
-                indicator.setVisualHeight(4)
-
-                indicator.setEndIndex(1)
-
-                def test_func_1():
-                    indicator.setStartIndex((indicator.startIndex() + 1) if indicator.startIndex() < indicator.nodeAmount() - 1 else 0)
-                def test_func_2():
-                    indicator.setEndIndex((indicator.endIndex() + 1) if indicator.endIndex() < indicator.nodeAmount() - 1 else 0)
-
-                btn_container = SiDenseContainer(self, QBoxLayout.LeftToRight)
-
-                button1 = SiPushButtonRefactor.withText("开始增加", self)
-                button2 = SiPushButtonRefactor.withText("结束增加", self)
-                button3 = SiPushButtonRefactor.withText("平移", self)
-                button4 = SiPushButtonRefactor.withText("激活", self)
-                button5 = SiPushButtonRefactor.withText("去激活", self)
-                button6 = SiPushButtonRefactor.withText("错误", self)
-
-                button1.clicked.connect(test_func_1)
-                button2.clicked.connect(test_func_2)
-
-                button3.clicked.connect(test_func_1)
-                button3.clicked.connect(test_func_2)
-
-                button4.clicked.connect(lambda: indicator.activate())
-                button5.clicked.connect(indicator.deactivate)
-                button6.clicked.connect(indicator.warn)
-
-                btn_container.addWidget(button1)
-                btn_container.addWidget(button2)
-                btn_container.addWidget(button3)
-                btn_container.addWidget(button4)
-                btn_container.addWidget(button5)
-                btn_container.addWidget(button6)
-
-                card.body().addWidget(indicator)
-                card.body().addWidget(btn_container)
-
-            with createPanelCard(group, "带指示器的按钮") as card:
-
-                container = SiDenseContainer(self, direction=SiDenseContainer.LeftToRight)
-
-                indicator_button1 = SiFlatButtonWithIndicator(self)
-                indicator_button1.setText("日期设置")
-                indicator_button1.setFixedHeight(40)
-                indicator_button1.setChecked(True)
-
-                indicator_button2 = SiFlatButtonWithIndicator(self)
-                indicator_button2.setText("时间设置")
-                indicator_button2.setFixedHeight(40)
-
-                indicator_button3 = SiFlatButtonWithIndicator(self)
-                indicator_button3.setText("首选项")
-                indicator_button3.setFixedHeight(40)
-
-                container.addWidget(indicator_button1)
-                container.addWidget(indicator_button2)
-                container.addWidget(indicator_button3)
-
-                button_group = QButtonGroup(self)
-                button_group.addButton(indicator_button1)
-                button_group.addButton(indicator_button2)
-                button_group.addButton(indicator_button3)
-                button_group.setExclusive(True)
-
-                card.body().addWidget(container)
-
-
-        # 按钮
         with self.titled_widgets_group as group:
             group.addTitle("按钮")
 
-            # 按压按钮
-            self.push_buttons = OptionCardPlaneForWidgetDemos(self)
-            self.push_buttons.setTitle("按压按钮")
+            with createPanelCard(group, "普通的按钮") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
 
-            container = SiDenseHContainer(self)
+                    demo_push_button_text = SiPushButtonRefactor(self)
+                    demo_push_button_text.setText("按压按钮")
+                    demo_push_button_text.adjustSize()
 
-            self.demo_push_button_text = SiPushButtonRefactor(self)
-            self.demo_push_button_text.setText("按压按钮")
-            self.demo_push_button_text.adjustSize()
+                    demo_push_button_text_icon = SiPushButtonRefactor(self)
+                    demo_push_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_location_filled"))
+                    demo_push_button_text_icon.setText("获取定位")
+                    demo_push_button_text_icon.setToolTip("包括经纬度、朝向信息")
+                    demo_push_button_text_icon.adjustSize()
 
-            self.demo_push_button_text_icon = SiPushButtonRefactor(self)
-            self.demo_push_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_location_filled"))
-            self.demo_push_button_text_icon.setText("获取定位")
-            self.demo_push_button_text_icon.setToolTip("包括经纬度、朝向信息")
-            self.demo_push_button_text_icon.adjustSize()
+                    demo_push_button_icon = SiPushButtonRefactor(self)
+                    demo_push_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_location_filled"))
+                    demo_push_button_icon.setToolTip("获取定位")
+                    demo_push_button_icon.adjustSize()
 
-            self.demo_push_button_icon = SiPushButtonRefactor(self)
-            self.demo_push_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_location_filled"))
-            self.demo_push_button_icon.setToolTip("获取定位")
-            self.demo_push_button_icon.adjustSize()
+                    container.addWidget(demo_push_button_text)
+                    container.addWidget(demo_push_button_text_icon)
+                    container.addWidget(demo_push_button_icon)
 
-            container.addWidget(self.demo_push_button_text)
-            container.addWidget(self.demo_push_button_text_icon)
-            container.addWidget(self.demo_push_button_icon)
+            with createPanelCard(group, "进度按钮") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
 
-            self.push_buttons.body().addWidget(container)
-            self.push_buttons.body().addPlaceholder(12)
-            self.push_buttons.adjustSize()
+                    demo_progress_button_text = SiProgressPushButton(self)
+                    demo_progress_button_text.setText("进度按钮")
+                    demo_progress_button_text.setToolTip("点击以设置随机进度")
+                    demo_progress_button_text.clicked.connect(lambda: demo_progress_button_text.setProgress(random.random() * 1.3))
+                    demo_progress_button_text.clicked.connect(lambda: demo_progress_button_text_icon.setProgress(random.random() * 1.3))
+                    demo_progress_button_text.clicked.connect(lambda: demo_progress_button_icon.setProgress(random.random() * 1.3))
+                    demo_progress_button_text.adjustSize()
 
-            # 进度按钮
-            self.progress_buttons = OptionCardPlaneForWidgetDemos(self)
-            self.progress_buttons.setTitle("进度按钮")
+                    demo_progress_button_text_icon = SiProgressPushButton(self)
+                    demo_progress_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_arrow_download_filled"))
+                    demo_progress_button_text_icon.setText("下载中")
+                    demo_progress_button_text_icon.adjustSize()
 
-            container = SiDenseHContainer(self)
+                    demo_progress_button_icon = SiProgressPushButton(self)
+                    demo_progress_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_arrow_download_filled"))
+                    demo_progress_button_icon.setToolTip("下载中")
+                    demo_progress_button_icon.adjustSize()
 
-            self.demo_progress_button_text = SiProgressPushButton(self)
-            self.demo_progress_button_text.setText("进度按钮")
-            self.demo_progress_button_text.setToolTip("点击以设置随机进度")
-            self.demo_progress_button_text.clicked.connect(lambda: self.demo_progress_button_text.setProgress(random.random() * 1.3))
-            self.demo_progress_button_text.clicked.connect(lambda: self.demo_progress_button_text_icon.setProgress(random.random() * 1.3))
-            self.demo_progress_button_text.clicked.connect(lambda: self.demo_progress_button_icon.setProgress(random.random() * 1.3))
-            self.demo_progress_button_text.adjustSize()
+                    container.addWidget(demo_progress_button_text)
+                    container.addWidget(demo_progress_button_text_icon)
+                    container.addWidget(demo_progress_button_icon)
 
-            self.demo_progress_button_text_icon = SiProgressPushButton(self)
-            self.demo_progress_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_arrow_download_filled"))
-            self.demo_progress_button_text_icon.setText("下载中")
-            self.demo_progress_button_text_icon.adjustSize()
+            with createPanelCard(group, "长按确定按钮") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
 
-            self.demo_progress_button_icon = SiProgressPushButton(self)
-            self.demo_progress_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_arrow_download_filled"))
-            self.demo_progress_button_icon.setToolTip("下载中")
-            self.demo_progress_button_icon.adjustSize()
+                    demo_long_press_button_text = SiLongPressButtonRefactor(self)
+                    demo_long_press_button_text.setText("格式化磁盘")
+                    demo_long_press_button_text.setToolTip("长按以确认")
+                    demo_long_press_button_text.adjustSize()
 
-            container.addWidget(self.demo_progress_button_text)
-            container.addWidget(self.demo_progress_button_text_icon)
-            container.addWidget(self.demo_progress_button_icon)
+                    demo_long_press_button_text_icon = SiLongPressButtonRefactor(self)
+                    demo_long_press_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_delete_filled"))
+                    demo_long_press_button_text_icon.setText("删除备份")
+                    demo_long_press_button_text_icon.setToolTip("长按以确认")
+                    demo_long_press_button_text_icon.adjustSize()
 
-            self.progress_buttons.body().addWidget(container)
-            self.progress_buttons.body().addPlaceholder(12)
-            self.progress_buttons.adjustSize()
+                    demo_long_press_button_icon = SiLongPressButtonRefactor(self)
+                    demo_long_press_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_delete_filled"))
+                    demo_long_press_button_icon.setToolTip("长按以删除备份<br><strong>警告: 此操作将无法撤销</strong>")
+                    demo_long_press_button_icon.adjustSize()
 
-            # 长按确定按钮
-            self.long_press_buttons = OptionCardPlaneForWidgetDemos(self)
-            self.long_press_buttons.setTitle("长按确定按钮")
+                    container.addWidget(demo_long_press_button_text)
+                    container.addWidget(demo_long_press_button_text_icon)
+                    container.addWidget(demo_long_press_button_icon)
 
-            container = SiDenseHContainer(self)
+            with createPanelCard(group, "扁平按钮") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
 
-            self.demo_long_press_button_text = SiLongPressButtonRefactor(self)
-            self.demo_long_press_button_text.setText("格式化磁盘")
-            self.demo_long_press_button_text.setToolTip("长按以确认")
-            self.demo_long_press_button_text.adjustSize()
+                    demo_flat_button_text = SiFlatButton(self)
+                    demo_flat_button_text.setText("扁平按钮")
+                    demo_flat_button_text.adjustSize()
 
-            self.demo_long_press_button_text_icon = SiLongPressButtonRefactor(self)
-            self.demo_long_press_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_delete_filled"))
-            self.demo_long_press_button_text_icon.setText("删除备份")
-            self.demo_long_press_button_text_icon.setToolTip("长按以确认")
-            self.demo_long_press_button_text_icon.adjustSize()
+                    demo_flat_button_text_icon = SiFlatButton(self)
+                    demo_flat_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_zoom_in_filled"))
+                    demo_flat_button_text_icon.setText("放大")
+                    demo_flat_button_text_icon.adjustSize()
 
-            self.demo_long_press_button_icon = SiLongPressButtonRefactor(self)
-            self.demo_long_press_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_delete_filled"))
-            self.demo_long_press_button_icon.setToolTip("长按以删除备份<br><strong>警告: 此操作将无法撤销</strong>")
-            self.demo_long_press_button_icon.adjustSize()
+                    demo_flat_button_icon = SiFlatButton(self)
+                    demo_flat_button_icon.resize(32, 32)
+                    demo_flat_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_zoom_in_filled"))
+                    demo_flat_button_icon.setToolTip("放大")
 
-            container.addWidget(self.demo_long_press_button_text)
-            container.addWidget(self.demo_long_press_button_text_icon)
-            container.addWidget(self.demo_long_press_button_icon)
+                    container.addWidget(demo_flat_button_text)
+                    container.addWidget(demo_flat_button_text_icon)
+                    container.addWidget(demo_flat_button_icon)
 
-            self.long_press_buttons.body().addWidget(container)
-            self.long_press_buttons.body().addPlaceholder(12)
-            self.long_press_buttons.adjustSize()
+            with createPanelCard(group, "状态切换按钮") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
 
-            # 扁平按钮
-            self.flat_buttons = OptionCardPlaneForWidgetDemos(self)
-            self.flat_buttons.setTitle("扁平按钮")
+                    demo_toggle_button_text = SiToggleButtonRefactor(self)
+                    demo_toggle_button_text.setText("自动保存")
+                    demo_toggle_button_text.adjustSize()
 
-            container = SiDenseHContainer(self)
+                    demo_toggle_button_text_icon = SiToggleButtonRefactor(self)
+                    demo_toggle_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_save_filled"))
+                    demo_toggle_button_text_icon.setText("自动保存")
+                    demo_toggle_button_text_icon.adjustSize()
 
-            self.demo_flat_button_text = SiFlatButton(self)
-            self.demo_flat_button_text.setText("扁平按钮")
-            self.demo_flat_button_text.adjustSize()
+                    demo_toggle_button_icon = SiToggleButtonRefactor(self)
+                    demo_toggle_button_icon.resize(32, 32)
+                    demo_toggle_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_save_filled"))
+                    demo_toggle_button_icon.setToolTip("自动保存")
 
-            self.demo_flat_button_text_icon = SiFlatButton(self)
-            self.demo_flat_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_zoom_in_filled"))
-            self.demo_flat_button_text_icon.setText("放大")
-            self.demo_flat_button_text_icon.adjustSize()
+                    container.addWidget(demo_toggle_button_text)
+                    container.addWidget(demo_toggle_button_text_icon)
+                    container.addWidget(demo_toggle_button_icon)
 
-            self.demo_flat_button_icon = SiFlatButton(self)
-            self.demo_flat_button_icon.resize(32, 32)
-            self.demo_flat_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_zoom_in_filled"))
-            self.demo_flat_button_icon.setToolTip("放大")
+            with createPanelCard(group, "胶囊按钮") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
 
-            container.addWidget(self.demo_flat_button_text)
-            container.addWidget(self.demo_flat_button_text_icon)
-            container.addWidget(self.demo_flat_button_icon)
+                    capsule_button_1 = SiCapsuleButton(self)
+                    capsule_button_1.setText("Likes")
+                    capsule_button_1.setValue(114514)
+                    capsule_button_1.setToolTip("你好世界")
 
-            self.flat_buttons.body().addWidget(container)
-            self.flat_buttons.body().addPlaceholder(12)
-            self.flat_buttons.adjustSize()
+                    capsule_button_2 = SiCapsuleButton(self)
+                    capsule_button_2.setText("Comments")
+                    capsule_button_2.setValue(1919)
+                    capsule_button_2.setThemeColor(SiCapsuleButton.Theme.Yellow)
 
-            # 状态切换按钮
-            self.toggle_buttons = OptionCardPlaneForWidgetDemos(self)
-            self.toggle_buttons.setTitle("状态切换按钮")
+                    capsule_button_3 = SiCapsuleButton(self)
+                    capsule_button_3.setText("Shares")
+                    capsule_button_3.setValue(810)
+                    capsule_button_3.setThemeColor(SiCapsuleButton.Theme.Red)
 
-            container = SiDenseHContainer(self)
+                    container.addWidget(capsule_button_1)
+                    container.addWidget(capsule_button_2)
+                    container.addWidget(capsule_button_3)
 
-            self.demo_toggle_button_text = SiToggleButtonRefactor(self)
-            self.demo_toggle_button_text.setText("自动保存")
-            self.demo_toggle_button_text.adjustSize()
+            with createPanelCard(group, "单选/复选按钮") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as h_container:
+                    with createDenseContainer(h_container, QBoxLayout.TopToBottom) as container:
 
-            self.demo_toggle_button_text_icon = SiToggleButtonRefactor(self)
-            self.demo_toggle_button_text_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_save_filled"))
-            self.demo_toggle_button_text_icon.setText("自动保存")
-            self.demo_toggle_button_text_icon.adjustSize()
+                        checkbox1 = SiCheckBoxRefactor(self)
+                        checkbox1.setText("多选选项 1")
+                        checkbox1.setDescription("唱，跳，Rap，篮球")
+                        checkbox1.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
 
-            self.demo_toggle_button_icon = SiToggleButtonRefactor(self)
-            self.demo_toggle_button_icon.resize(32, 32)
-            self.demo_toggle_button_icon.setSvgIcon(SiGlobal.siui.iconpack.get("ic_fluent_save_filled"))
-            self.demo_toggle_button_icon.setToolTip("自动保存")
+                        checkbox2 = SiCheckBoxRefactor(self)
+                        checkbox2.setText("多选选项 2")
+                        checkbox2.setDescription("Music~")
+                        checkbox2.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
 
-            container.addWidget(self.demo_toggle_button_text)
-            container.addWidget(self.demo_toggle_button_text_icon)
-            container.addWidget(self.demo_toggle_button_icon)
+                        container.layout().setSpacing(0)
+                        container.addWidget(checkbox1)
+                        container.addWidget(checkbox2)
 
-            self.toggle_buttons.body().addWidget(container)
-            self.toggle_buttons.body().addPlaceholder(12)
-            self.toggle_buttons.adjustSize()
+                    with createDenseContainer(h_container, QBoxLayout.TopToBottom) as container:
 
-            # 开关
-            self.switches = OptionCardPlaneForWidgetDemos(self)
-            self.switches.setTitle("开关")
+                        checkbox1 = SiCheckBoxRefactor(self)
+                        checkbox1.setText("单选选项 1")
+                        checkbox1.setDescription("唱，跳，Rap，篮球")
+                        checkbox1.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+                        checkbox1.setAutoExclusive(True)
+                        checkbox1.setChecked(True)
 
-            self.demo_switch = SiSwitchRefactor(self)
+                        checkbox2 = SiCheckBoxRefactor(self)
+                        checkbox2.setText("单选选项 2")
+                        checkbox2.setDescription("Music~")
+                        checkbox2.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+                        checkbox2.setAutoExclusive(True)
 
-            self.switches.body().addWidget(self.demo_switch)
-            self.switches.body().addPlaceholder(12)
-            self.switches.adjustSize()
+                        container.layout().setSpacing(0)
+                        container.addWidget(checkbox1)
+                        container.addWidget(checkbox2)
 
-            group.addWidget(self.push_buttons)
-            group.addWidget(self.progress_buttons)
-            group.addWidget(self.long_press_buttons)
-            group.addWidget(self.flat_buttons)
-            group.addWidget(self.toggle_buttons)
-            group.addWidget(self.switches)
+            with createPanelCard(group, "带指示器的按钮") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
 
-        # 单选框
+                    indicator_button1 = SiFlatButtonWithIndicator(self)
+                    indicator_button1.setText("日期设置")
+                    indicator_button1.setFixedHeight(40)
+                    indicator_button1.setChecked(True)
+
+                    indicator_button2 = SiFlatButtonWithIndicator(self)
+                    indicator_button2.setText("时间设置")
+                    indicator_button2.setFixedHeight(40)
+
+                    indicator_button3 = SiFlatButtonWithIndicator(self)
+                    indicator_button3.setText("首选项")
+                    indicator_button3.setFixedHeight(40)
+
+                    container.addWidget(indicator_button1)
+                    container.addWidget(indicator_button2)
+                    container.addWidget(indicator_button3)
+
+                    button_group = QButtonGroup(self)
+                    button_group.addButton(indicator_button1)
+                    button_group.addButton(indicator_button2)
+                    button_group.addButton(indicator_button3)
+                    button_group.setExclusive(True)
+
+            with createPanelCard(group, "开关") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+
+                    switch = SiSwitchRefactor(self)
+
+                    container.addWidget(switch)
+
         with self.titled_widgets_group as group:
             group.addTitle("单选框")
 
@@ -529,7 +469,6 @@ class RefactoredWidgets(SiPage):
             group.addWidget(self.refactor_radiobuttons_desc)
             group.addWidget(self.refactor_radiobuttons_avatar)
 
-        # 滑动条
         with self.titled_widgets_group as group:
             group.addTitle("滑动条")
 
@@ -647,6 +586,59 @@ class RefactoredWidgets(SiPage):
 
             group.addWidget(self.editbox)
             group.addWidget(self.capsule_editbox)
+
+        with self.titled_widgets_group as group:
+            group.addTitle("卡片容器")
+
+            bar_test = SiTriSectionRowCard(self, SiGlobal.siui.iconpack.toPixmap("ic_fluent_slide_text_cursor_filled"))
+            bar_test.actionsContainer().addWidget(SiSwitchRefactor(self))
+            bar_test.adjustSize()
+            group.addWidget(bar_test)
+
+            with createPanelCard(group, "区间指示器") as card:
+
+                indicator = SiLinearPartitionIndicator(self)
+                indicator.activate()
+                indicator.setFixedSize(200, 4)
+                indicator.setNodeAmount(7)
+                indicator.setVisualWidth(200)
+                indicator.setVisualHeight(4)
+
+                indicator.setEndIndex(1)
+
+                def test_func_1():
+                    indicator.setStartIndex((indicator.startIndex() + 1) if indicator.startIndex() < indicator.nodeAmount() - 1 else 0)
+                def test_func_2():
+                    indicator.setEndIndex((indicator.endIndex() + 1) if indicator.endIndex() < indicator.nodeAmount() - 1 else 0)
+
+                btn_container = SiDenseContainer(self, QBoxLayout.LeftToRight)
+
+                button1 = SiPushButtonRefactor.withText("开始增加", self)
+                button2 = SiPushButtonRefactor.withText("结束增加", self)
+                button3 = SiPushButtonRefactor.withText("平移", self)
+                button4 = SiPushButtonRefactor.withText("激活", self)
+                button5 = SiPushButtonRefactor.withText("去激活", self)
+                button6 = SiPushButtonRefactor.withText("错误", self)
+
+                button1.clicked.connect(test_func_1)
+                button2.clicked.connect(test_func_2)
+
+                button3.clicked.connect(test_func_1)
+                button3.clicked.connect(test_func_2)
+
+                button4.clicked.connect(lambda: indicator.activate())
+                button5.clicked.connect(indicator.deactivate)
+                button6.clicked.connect(indicator.warn)
+
+                btn_container.addWidget(button1)
+                btn_container.addWidget(button2)
+                btn_container.addWidget(button3)
+                btn_container.addWidget(button4)
+                btn_container.addWidget(button5)
+                btn_container.addWidget(button6)
+
+                card.body().addWidget(indicator)
+                card.body().addWidget(btn_container)
 
         with self.titled_widgets_group as group:
             group.addTitle("统计图表")
