@@ -326,7 +326,7 @@ class ExampleWidgets(SiPage):
 
             self.original_rect = QLabel(self)
             self.original_rect.resize(64, 64)
-            self.original_rect.setStyleSheet("background-color: transparent; border-radius: 14px; border: 1px solid #C88CD4")
+            self.original_rect.setStyleSheet("background-color: transparent; border-radius: 14px; border: 1px solid #D087DF")
             # self.trend_chart.adjustViewRect()
             # print(self.trend_chart.viewRect())
 

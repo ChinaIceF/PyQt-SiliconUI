@@ -30,12 +30,12 @@ from siui.typing import T_WidgetParent
 class SliderStyleData:
     STYLE_TYPES = ["Slider"]
 
-    thumb_idle_color: QColor = QColor("#C88CD4")
+    thumb_idle_color: QColor = QColor("#D087DF")
     thumb_hover_color: QColor = QColor("#EDE1F4")
     thumb_width: int = 36
     thumb_height: int = 24
 
-    track_color: QColor = QColor("#C88CD4") #77568d
+    track_color: QColor = QColor("#D087DF") #77568d
     track_height: int = 5
 
     background_color: QColor = QColor("#1C191F")
@@ -286,12 +286,12 @@ class CoordinatePickerStyleData:
     slider_y_width: int = 64
 
     indicator_size: int = 26
-    indicator_idle_color: QColor = QColor("#C88CD4")
+    indicator_idle_color: QColor = QColor("#D087DF")
     indicator_hover_color: QColor = QColor("#EDE1F4")
     indicator_outline_weight: int = 10
     indicator_stroke_weight: int = 6
     indicator_background_color: QColor = QColor("#25222a")
-    indicator_stroke_color: QColor = QColor("#C88CD4")
+    indicator_stroke_color: QColor = QColor("#D087DF")
 
     base_line_weight: int = 2
     base_line_color: QColor = QColor("#3b3143")
@@ -820,7 +820,7 @@ class SiWeekdaySpinBox(QSpinBox):
 
 
 class WheelPickerStyleData:
-    indicator_hover = QColor("#C88CD4")
+    indicator_hover = QColor("#D087DF")
     indicator_idle = QColor("#4C4554")
     indicator_flash = QColor("#F5EBF9")
 

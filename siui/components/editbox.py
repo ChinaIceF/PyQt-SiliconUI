@@ -37,8 +37,8 @@ class LineEditStyleData:
     text_background_color: QColor = QColor("#201d23")
     text_color: QColor = QColor("#D1CBD4")
 
-    text_indicator_color_idle: QColor = QColor("#00C88CD4")
-    text_indicator_color_editing: QColor = QColor("#C88CD4")
+    text_indicator_color_idle: QColor = QColor("#00D087DF")
+    text_indicator_color_editing: QColor = QColor("#D087DF")
     text_indicator_color_error: QColor = QColor("#d36764")
 
 

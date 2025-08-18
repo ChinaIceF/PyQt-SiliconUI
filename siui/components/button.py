@@ -162,10 +162,10 @@ class ButtonStyleData(QObject):
 
 # @dataclass(init=False)
 class FlatButtonStyleData(ButtonStyleData):
-    indicator_hover_color = QColor("#C88CD4")
-    indicator_selected_color = QColor("#C88CD4")
+    indicator_hover_color = QColor("#D087DF")
+    indicator_selected_color = QColor("#D087DF")
     indicator_flash_color = QColor("#F5EBF9")
-    indicator_idle_color = QColor("#00C88CD4")
+    indicator_idle_color = QColor("#00D087DF")
 
 
 # @dataclass(init=False)
@@ -1116,7 +1116,7 @@ class RadioButtonStyleData(QObject):
     unchecked_indicator_color: QColor = QColor("#25222A")
     unchecked_indicator_width: float = 33
 
-    checked_indicator_color: QColor = QColor("#C88CD4")
+    checked_indicator_color: QColor = QColor("#D087DF")
     checked_indicator_width: float = 51
 
 
@@ -1692,7 +1692,7 @@ class CheckBoxStyleData:
     title_bold_color = QColor("#FFFFFF")
     description_color = QColor("#918497")
     indicator_deactivated_color = QColor("#25222A")
-    indicator_activated_color = QColor("#C88CD4")
+    indicator_activated_color = QColor("#D087DF")
 
 
 class SiCheckBoxRefactor(QAbstractButton):

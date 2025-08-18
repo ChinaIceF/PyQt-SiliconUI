@@ -331,7 +331,7 @@ class HyperRoundBorderTest(QWidget):
         return getSuperRoundedRectPath(rect, 24, 24)
 
     def _drawTest(self, painter: QPainter, rect: QRect) -> None:
-        painter.setBrush(QColor("#C88CD4"))
+        painter.setBrush(QColor("#D087DF"))
         painter.drawPath(self._drawPath(rect))
 
     def paintEvent(self, a0):
@@ -356,9 +356,9 @@ class HyperRoundBorderTest(QWidget):
 
 
 class LinearIndicatorStyleData:
-    hl_color_inactive = QColor("#00C88CD4")
+    hl_color_inactive = QColor("#00D087DF")
     hl_color_flash = QColor("#F5EBF9")
-    hl_color_active = QColor("#C88CD4")
+    hl_color_active = QColor("#D087DF")
     hl_color_warn_flash = QColor("#ed716c")
     track_color = QColor("#4d4753")
 

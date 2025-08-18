@@ -19,7 +19,7 @@ class TrendChartStyleData:
     axis_label_color: QColor = QColor("#918497")
     axis_name_color: QColor = QColor("#DFDFDF")
 
-    line_color: QColor = QColor("#C88CD4")
+    line_color: QColor = QColor("#D087DF")
     indicator_idle_color: QColor = QColor("#00DFDFDF")
     indicator_hover_color: QColor = QColor("#FFDFDFDF")
     tick_text_color: QColor = QColor("#918497")
