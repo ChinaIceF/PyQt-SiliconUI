@@ -1,10 +1,9 @@
 import random
 from contextlib import contextmanager
 
-from .example_menu import exampleSiRoundedMenu
 from PyQt5.QtCore import QPoint, QPointF, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QSizePolicy, QWidget, QLabel
+from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QLabel, QSizePolicy, QWidget
 
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiTitledWidgetGroup
 from siui.components.button import (
@@ -25,7 +24,7 @@ from siui.components.chart import SiTrendChart
 from siui.components.combobox_ import SiCapsuleComboBox
 from siui.components.container import SiDenseContainer, SiTriSectionPanelCard, SiTriSectionRowCard
 from siui.components.editbox import SiCapsuleLineEdit, SiDoubleSpinBox, SiLabeledLineEdit, SiSpinBox
-from siui.components.label import SiLinearIndicator, SiLinearPartitionIndicator, SiLabelRefactor
+from siui.components.label import SiLabelRefactor, SiLinearIndicator, SiLinearPartitionIndicator
 from siui.components.page import SiPage
 from siui.components.progress_bar_ import SiProgressBarRefactor
 from siui.components.slider_ import SiCoordinatePicker2D, SiCoordinatePicker3D, SiSlider
@@ -33,6 +32,8 @@ from siui.core import SiGlobal
 from siui.gui import SiFont
 
 from ..option_card import OptionCardPlaneForWidgetDemos
+from .example_menu import exampleSiRoundedMenu
+from .example_popover import exampleDatePickerPopover, exampleCalenderPickerPopover
 
 
 @contextmanager
@@ -74,20 +75,33 @@ class RefactoredWidgets(SiPage):
         self.titled_widgets_group.setAdjustWidgetsSize(True)  # 禁用调整宽度
 
         with self.titled_widgets_group as group:
-            group.addTitle("菜单")
+            group.addTitle("菜单及弹出框")
 
             with createPanelCard(group, "菜单演示") as card:
                 with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
 
-                    button = SiPushButtonRefactor(self)
-                    button.setText("显示菜单")
+                    button_menu = SiPushButtonRefactor(self)
+                    button_menu.setText("显示菜单")
 
-                    self.example_menu = exampleSiRoundedMenu(button)
-                    button.clicked.connect(
-                        lambda: self.example_menu.popup(button.mapToGlobal(QPoint(0, button.height())))
+                    self.example_menu = exampleSiRoundedMenu(button_menu)
+                    button_menu.clicked.connect(
+                        lambda: self.example_menu.popup(button_menu.mapToGlobal(QPoint(0, button_menu.height())))
                     )
 
-                    container.addWidget(button)
+                    container.addWidget(button_menu)
+
+            with createPanelCard(group, "日期选择器") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                    button_date_picker = exampleDatePickerPopover(container)
+
+                    container.addWidget(button_date_picker)
+
+            with createPanelCard(group, "日历选择器") as card:
+                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                    button_date_picker = exampleCalenderPickerPopover(container)
+
+                    container.addWidget(button_date_picker)
+
 
         with self.titled_widgets_group as group:
             group.addTitle("组合框")
