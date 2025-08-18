@@ -691,7 +691,7 @@ class SiPopoverCalenderPicker(SiDenseContainer):
         self._all_btn_container.addWidget(self._picker_btn_container, Qt.RightEdge)
 
     def _initStyle(self) -> None:
-        self.layout().setSpacing(0)
+        self.layout().setSpacing(4)
 
         self._separator.setFixedWidth(1)
         self._separator.setStyleSheet("background-color: #25222A; margin: 24px 0px 20px 0px")

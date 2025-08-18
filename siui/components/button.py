@@ -96,9 +96,13 @@ class GlobalStyleManager:
                 SA.BackgroundColor: QColor("#642d41"),
                 SA.ClickColor: QColor("#40FFFFFF"),
             },
-            "FlatButtonStyleData": {SA.ButtonColor: QColor("#004C4554")},
+            "FlatButtonStyleData": {
+                SA.ButtonColor: QColor("#004C4554"),
+                SA.BorderRadius: 7,
+            },
             "ToggleButtonStyleData": {
                 SA.ButtonColor: QColor("#004C4554"),
+                SA.BorderRadius: 7,
             },
             "PushButtonStyleData": {},
             "ProgressPushButtonStyleData": {},
