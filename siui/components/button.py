@@ -32,13 +32,13 @@ from PyQt5.QtGui import (
     QTransform,
 )
 from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QAbstractButton, QLabel, QPushButton, QRadioButton
+from PyQt5.QtWidgets import QAbstractButton, QLabel, QPushButton, QRadioButton, QSizePolicy
 from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
-from siui.core.event_filter import ScaleOnPressEventFilter, WidgetTooltipRedirectEventFilter
-from siui.core.painter import getGaussianLinearGradient
+from siui.core.event_filter import ScaleOnPressEventFilter, WidgetToolTipRedirectEventFilter
+from siui.core.painter import getGaussianLinearGradient, getRoundedRectPathArc
 from siui.gui import SiFont
 
 if TYPE_CHECKING:
@@ -1733,8 +1733,8 @@ class SiCheckBoxRefactor(QAbstractButton):
         self.setMinimumHeight(64)
         self.setCheckable(True)
         self._initStyle()
-        self._initToolTipManager()
-        self._initScaleManager()
+        self._initToolTipRedirectEventFilter()
+        self._initScaleOnPressEventFilter()
 
     def _initStyle(self) -> None:
         self._title_label.setFont(self._font_title_normal)
@@ -1744,11 +1744,11 @@ class SiCheckBoxRefactor(QAbstractButton):
         self._description_label.setStyleSheet(f"color: {self.style_data.description_color.name()}")
         self._description_label.setWordWrap(True)
 
-    def _initToolTipManager(self) -> None:
-        self._tooltip_manager = WidgetTooltipRedirectEventFilter()
+    def _initToolTipRedirectEventFilter(self) -> None:
+        self._tooltip_manager = WidgetToolTipRedirectEventFilter()
         self.installEventFilter(self._tooltip_manager)
 
-    def _initScaleManager(self) -> None:
+    def _initScaleOnPressEventFilter(self) -> None:
         self._scale_manager = ScaleOnPressEventFilter(self)
         self._scale_manager.setMinScaleFactor(0.95)
         self.installEventFilter(self._scale_manager)
@@ -2045,15 +2045,15 @@ class SiCapsuleButton(QAbstractButton):
         self.ani_scale_factor = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
         self.ani_scale_factor.init(1/8, 0.001, self._scale_factor, self._scale_factor)
 
-        self._initScaleManager()
-        self._initToolTipManager()
+        self._initScaleOnPressEventFilter()
+        self._initToolTipRedirectEventFilter()
         self.toggled.connect(self._onToggled)
 
-    def _initToolTipManager(self) -> None:
-        self._tooltip_manager = WidgetTooltipRedirectEventFilter()
+    def _initToolTipRedirectEventFilter(self) -> None:
+        self._tooltip_manager = WidgetToolTipRedirectEventFilter()
         self.installEventFilter(self._tooltip_manager)
 
-    def _initScaleManager(self) -> None:
+    def _initScaleOnPressEventFilter(self) -> None:
         self._scale_manager = ScaleOnPressEventFilter(self)
         self._scale_manager.setMinScaleFactor(0.95)
         self.installEventFilter(self._scale_manager)
@@ -2281,7 +2281,9 @@ class SiCapsuleButton(QAbstractButton):
         indicator_rect = value_rect.marginsRemoved(QMargins(0, full_rect.height() - 2, 0, 0)).marginsRemoved(self._indicator_margin)
 
         renderHints = (
-            QPainter.RenderHint.SmoothPixmapTransform
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
         )
 
         buffer = QPixmap(full_rect.size() * self.devicePixelRatioF())
@@ -2298,3 +2300,262 @@ class SiCapsuleButton(QAbstractButton):
 
         with createPainter(self, renderHints) as painter:
             self._drawBuffer(painter, buffer, full_rect)
+
+
+class OptionButtonStyleData:
+    hover_overlay_idle = QColor("#00202020")
+    hover_overlay_hovered = QColor("#202020")
+    hover_overlay_flash = QColor("#7F7F7F")
+    indicator_deactivated = QColor("#201D24")
+    indicator_flash = QColor("#FFFFFF")
+    indicator_activated = QColor("#D087DF")
+    glyph_color = QColor("#201D24")
+    text_color = QColor("#D1CBD4")
+    body_background_color = QColor("#29252E")
+
+
+class SiOptionButton(QAbstractButton):
+    class Property:
+        ScaleFactor = "scaleFactor"
+        IndicatorColor = "indicatorColor"
+        HoverOverlayColor = "hoverOverlayColor"
+
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.setFont(SiFont.getFont(size=14))
+        self.setCheckable(True)
+
+        self.style_data = OptionButtonStyleData()
+
+        self._text_margins = QMargins(16, 0, 16, 2)
+
+        self._scale_factor = 1.0
+        self._indicator_color = self.style_data.indicator_deactivated
+        self._hover_overlay_color = self.style_data.hover_overlay_idle
+
+        self.ani_scale_factor = SiExpAnimationRefactor(self, self.Property.ScaleFactor)
+        self.ani_scale_factor.init(1/8, 0.001, self._scale_factor, self._scale_factor)
+
+        self.ani_indicator_color = SiExpAnimationRefactor(self, self.Property.IndicatorColor)
+        self.ani_indicator_color.init(1/16, 0.1, self._indicator_color, self._indicator_color)
+
+        self.ani_hover_overlay_color = SiExpAnimationRefactor(self, self.Property.HoverOverlayColor)
+        self.ani_hover_overlay_color.init(1/8, 1, self._hover_overlay_color, self._hover_overlay_color)
+
+        self._initScaleOnPressEventFilter()
+        self._initToolTipRedirectEventFilter()
+        self.toggled.connect(self._onToggled)
+        self.clicked.connect(self._onClicked)
+
+    def _initToolTipRedirectEventFilter(self) -> None:
+        self._tooltip_manager = WidgetToolTipRedirectEventFilter()
+        self.installEventFilter(self._tooltip_manager)
+
+    def _initScaleOnPressEventFilter(self) -> None:
+        self._scale_manager = ScaleOnPressEventFilter(self)
+        self._scale_manager.setMinScaleFactor(0.95)
+        self.installEventFilter(self._scale_manager)
+
+    # region animation property
+
+    @pyqtProperty(float)
+    def scaleFactor(self):
+        return self._scale_factor
+
+    @scaleFactor.setter
+    def scaleFactor(self, value):
+        self._scale_factor = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def indicatorColor(self):
+        return self._indicator_color
+
+    @indicatorColor.setter
+    def indicatorColor(self, value):
+        self._indicator_color = value
+        self.update()
+
+    @pyqtProperty(QColor)
+    def hoverOverlayColor(self):
+        return self._hover_overlay_color
+
+    @hoverOverlayColor.setter
+    def hoverOverlayColor(self, value):
+        self._hover_overlay_color = value
+        self.update()
+
+    def animation(self, prop_name: str) -> SiExpAnimationRefactor:
+        return {
+            self.Property.ScaleFactor: self.ani_scale_factor,
+            self.Property.IndicatorColor: self.ani_indicator_color,
+            self.Property.HoverOverlayColor: self.ani_hover_overlay_color,
+        }.get(prop_name)
+
+    # endregion
+
+    def _onToggled(self, checked: bool) -> None:
+        if checked:
+            self.ani_indicator_color.setCurrentValue(self.style_data.indicator_flash)
+            self.ani_indicator_color.setEndValue(self.style_data.indicator_activated)
+            self.ani_indicator_color.start()
+
+        else:
+            self.ani_indicator_color.setCurrentValue(self.style_data.indicator_deactivated)
+            self.ani_indicator_color.setEndValue(self.style_data.indicator_deactivated)
+            self.ani_indicator_color.toProperty()
+
+    def _onClicked(self, _) -> None:
+        self.ani_hover_overlay_color.setCurrentValue(self.style_data.hover_overlay_flash)
+        self.ani_hover_overlay_color.start()
+
+    def _calcTextWidth(self) -> int:
+        metrics = QFontMetrics(self.font())
+        text_width = metrics.horizontalAdvance(self.text())
+        return text_width
+
+    def _calcIndicatorRect(self) -> QRect:
+        return QRect(0, 0, 36, self.height())
+
+    def _calcTextAreaRect(self) -> QRect:
+        return QRect(36, 0, self.width() - 36, self.height())
+
+    def sizeHint(self) -> QSize:
+        width = self._calcTextWidth() + self._text_margins.left() + self._text_margins.right() + 36
+        height = 36
+        return QSize(width, height)
+
+    def _getGlyphPath(self) -> QPainterPath:
+        points = [QPointF(x, y) for x, y in [
+            (9.76497, 3.20474), (10.0661, 3.48915), (9.79526, 4.26497),
+            (5.54526, 8.76497), (5.40613, 8.91228), (5.01071, 8.99993),
+            (4.8081, 9.00282), (4.46967, 8.78033), (2.21967, 6.53033),
+            (1.92678, 6.23744), (2.21967, 5.46967), (2.51256, 5.17678),
+            (3.28033, 5.46967), (4.98463, 7.17397), (8.70474, 3.23503),
+            (8.98915, 2.9339), (9.76497, 3.20474)
+        ]]
+
+        quad_control_end_pairs = [
+            (1, 2), (2, 3), (4, 5), (6, 7), (7, 8),
+            (9, 10), (11, 12), (12, 13), (13, 14), (15, 16)
+        ]
+
+        path = QPainterPath()
+        path.moveTo(points[0])
+        for control_idx, end_idx in quad_control_end_pairs:
+            path.quadTo(points[control_idx], points[end_idx])
+        path.closeSubpath()
+
+        transform = QTransform()
+        transform.scale(1.75, 1.75)
+
+        return transform.map(path)
+
+    def _drawBodyRect(self, painter: QPainter, rect: QRect) -> None:
+        if self.autoExclusive():
+            path = getRoundedRectPathArc(QRectF(rect), 18, 10, 10, 18)
+        else:
+            path = QPainterPath()
+            path.addRoundedRect(QRectF(rect), 10, 10)
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self.style_data.body_background_color)
+        painter.drawPath(path)
+
+    def _drawIndicatorRect(self, painter: QPainter, rect: QRect) -> None:
+        if self.autoExclusive():
+            path = QPainterPath()
+            path.addRoundedRect(QRectF(rect), 18, 18)
+        else:
+            path = QPainterPath()
+            path.addRoundedRect(QRectF(rect), 10, 10)
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._indicator_color)
+        painter.drawPath(path)
+
+    def _drawGlyph(self, painter: QPainter, rect: QRect) -> None:
+        glyph_path = self._getGlyphPath()
+        glyph_path.translate(rect.center() - QPointF(9.5, 9.25))
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self.style_data.glyph_color)
+        painter.drawPath(glyph_path)
+
+    def _drawText(self, painter: QPainter, rect: QRect) -> None:
+        shrunk_rect = rect.marginsRemoved(self._text_margins)
+        metrics = QFontMetrics(self.font())
+        elided = metrics.elidedText(self.text(), Qt.ElideRight, shrunk_rect.width())
+
+        painter.setPen(self.style_data.text_color)
+        painter.setBrush(Qt.NoBrush)
+        painter.setFont(self.font())
+        painter.drawText(shrunk_rect, Qt.AlignVCenter | Qt.AlignLeft, elided)
+
+    def _drawHoverOverlayRect(self, painter: QPainter, rect: QRect) -> None:
+        if self.autoExclusive():
+            path = getRoundedRectPathArc(QRectF(rect), 18, 10, 10, 18)
+        else:
+            path = QPainterPath()
+            path.addRoundedRect(QRectF(rect), 10, 10)
+
+        painter.setCompositionMode(QPainter.CompositionMode_Plus)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._hover_overlay_color)
+        painter.drawPath(path)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+
+    def _drawBuffer(self, painter: QPainter, buffer: QPixmap, rect: QRect):
+        a = self._scale_factor
+        painter.translate(QPointF(rect.width() * (1 - a) / 2, rect.height() * (1 - a) / 2))
+        painter.scale(a, a)
+        painter.drawPixmap(rect, buffer)
+
+    def paintEvent(self, e):
+        full_rect = self.rect()
+        body_rect = self.rect()
+        indicator_rect = self._calcIndicatorRect()
+        text_area_rect = self._calcTextAreaRect()
+
+        renderHints = (
+                QPainter.RenderHint.SmoothPixmapTransform
+                | QPainter.RenderHint.TextAntialiasing
+                | QPainter.RenderHint.Antialiasing
+        )
+
+        buffer = QPixmap(full_rect.size() * self.devicePixelRatioF())
+        buffer.setDevicePixelRatio(self.devicePixelRatioF())
+        buffer.fill(Qt.transparent)
+
+        with createPainter(buffer) as painter:
+            self._drawBodyRect(painter, body_rect)
+            self._drawIndicatorRect(painter, indicator_rect)
+            self._drawGlyph(painter, indicator_rect)
+            self._drawText(painter, text_area_rect)
+            self._drawHoverOverlayRect(painter, body_rect)
+
+        with createPainter(self, renderHints) as painter:
+            self._drawBuffer(painter, buffer, full_rect)
+
+    def enterEvent(self, a0):
+        super().enterEvent(a0)
+        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_hovered)
+        self.ani_hover_overlay_color.start()
+
+    def leaveEvent(self, a0):
+        super().leaveEvent(a0)
+        self.ani_hover_overlay_color.setEndValue(self.style_data.hover_overlay_idle)
+        self.ani_hover_overlay_color.start()
+
+
+class SiCheckBox(SiOptionButton):
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+        self.setAutoExclusive(False)
+
+
+class SiRadioButton(SiOptionButton):
+    def __init__(self, parent: T_WidgetParent = None) -> None:
+        super().__init__(parent)
+        self.setAutoExclusive(True)
