@@ -51,7 +51,7 @@ class WidgetTooltipAcceptEventFilter(QObject):
         return False
 
 
-class WidgetTooltipRedirectEventFilter(QObject):
+class WidgetToolTipRedirectEventFilter(QObject):
     """
     忽略原版工具提示，并把工具提示发送到自定义工具提示窗口上，提供操作工具提示窗口的接口
     """

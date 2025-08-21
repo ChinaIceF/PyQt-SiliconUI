@@ -8,12 +8,15 @@ from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QLabel, QSizePolicy, QWidg
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiTitledWidgetGroup
 from siui.components.button import (
     SiCapsuleButton,
+    SiCheckBox,
     SiCheckBoxRefactor,
     SiFlatButton,
     SiFlatButtonWithIndicator,
     SiLongPressButtonRefactor,
+    SiOptionButton,
     SiProgressPushButton,
     SiPushButtonRefactor,
+    SiRadioButton,
     SiRadioButtonR,
     SiRadioButtonWithAvatar,
     SiRadioButtonWithDescription,
@@ -33,7 +36,7 @@ from siui.gui import SiFont
 
 from ..option_card import OptionCardPlaneForWidgetDemos
 from .example_menu import exampleSiRoundedMenu
-from .example_popover import exampleDatePickerPopover, exampleCalenderPickerPopover
+from .example_popover import exampleCalenderPickerPopover, exampleDatePickerPopover
 
 
 @contextmanager
@@ -346,6 +349,31 @@ class RefactoredWidgets(SiPage):
                         container.layout().setSpacing(0)
                         container.addWidget(checkbox1)
                         container.addWidget(checkbox2)
+
+            with createPanelCard(group, "多选框") as card:
+                with createDenseContainer(card.body(), QBoxLayout.TopToBottom) as container:
+                    checkbox_1 = SiCheckBox(self)
+                    checkbox_1.setText("在时间不足时提醒我")
+
+                    checkbox_2 = SiCheckBox(self)
+                    checkbox_2.setText("重复创建任务")
+
+                    container.layout().setSpacing(16)
+                    container.addWidget(checkbox_1)
+                    container.addWidget(checkbox_2)
+
+            with createPanelCard(group, "单选框") as card:
+                with createDenseContainer(card.body(), QBoxLayout.TopToBottom) as container:
+                    radio_button_1 = SiRadioButton(self)
+                    radio_button_1.setChecked(True)
+                    radio_button_1.setText("Load data when posible")
+
+                    radio_button_2 = SiRadioButton(self)
+                    radio_button_2.setText("Never load data")
+
+                    container.layout().setSpacing(16)
+                    container.addWidget(radio_button_1)
+                    container.addWidget(radio_button_2)
 
             with createPanelCard(group, "带指示器的按钮") as card:
                 with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:

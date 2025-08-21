@@ -20,7 +20,7 @@ from siui.components.container import SiBoxContainer, SiDenseContainer
 from siui.components.menu_ import SiRoundedMenu
 from siui.core import SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
-from siui.core.event_filter import WidgetTooltipRedirectEventFilter
+from siui.core.event_filter import WidgetToolTipRedirectEventFilter
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
 
@@ -115,7 +115,7 @@ class SiCapsuleLineEdit(QLineEdit):
         )
 
     def _initTooltipRedirectEventFilter(self):
-        self._tooltip_redirect_event_filter = WidgetTooltipRedirectEventFilter()
+        self._tooltip_redirect_event_filter = WidgetToolTipRedirectEventFilter()
         self.installEventFilter(self._tooltip_redirect_event_filter)
 
     def _initSignals(self) -> None:
