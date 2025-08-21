@@ -20,7 +20,7 @@ from siui.components.container import SiBoxContainer, SiDenseContainer
 from siui.components.menu_ import SiRoundedMenu
 from siui.core import SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor
-from siui.core.event_filter import WidgetTooltipRedirectEventFilter
+from siui.core.event_filter import WidgetToolTipRedirectEventFilter
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
 
@@ -37,8 +37,8 @@ class LineEditStyleData:
     text_background_color: QColor = QColor("#201d23")
     text_color: QColor = QColor("#D1CBD4")
 
-    text_indicator_color_idle: QColor = QColor("#00C88CD4")
-    text_indicator_color_editing: QColor = QColor("#C88CD4")
+    text_indicator_color_idle: QColor = QColor("#00D087DF")
+    text_indicator_color_editing: QColor = QColor("#D087DF")
     text_indicator_color_error: QColor = QColor("#d36764")
 
 
@@ -115,7 +115,7 @@ class SiCapsuleLineEdit(QLineEdit):
         )
 
     def _initTooltipRedirectEventFilter(self):
-        self._tooltip_redirect_event_filter = WidgetTooltipRedirectEventFilter()
+        self._tooltip_redirect_event_filter = WidgetToolTipRedirectEventFilter()
         self.installEventFilter(self._tooltip_redirect_event_filter)
 
     def _initSignals(self) -> None:

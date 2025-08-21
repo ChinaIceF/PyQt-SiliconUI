@@ -28,8 +28,8 @@ class ActionItemsWidgetStyleData:
     label_text_color_disabled: QColor = QColor("#50D1CBD4")
     shortcut_text_color: QColor = QColor("#918497")
     shortcut_background_color: QColor = QColor("#201d23")
-    checked_indicator_color_unchecked = QColor("#00C88CD4")
-    checked_indicator_color_checked = QColor("#C88CD4")
+    checked_indicator_color_unchecked = QColor("#00D087DF")
+    checked_indicator_color_checked = QColor("#D087DF")
 
 
 class SeperatorItemsWidgetStyleData:

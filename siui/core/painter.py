@@ -107,6 +107,79 @@ def getSuperRoundedRectPath(rect: QRectF,
     return _cachedGetSuperRoundedRectPath(rect_tuple, radius_x, radius_y, power, quality)
 
 
+def getRoundedRectPathQuad(rect: QRectF,
+                       radius_tl: float, radius_tr: float,
+                       radius_br: float, radius_bl: float) -> QPainterPath:
+    """
+    使用 quadTo 绘制不对称圆角矩形
+    :param rect: QRectF 矩形区域
+    :param radius_tl: 左上角半径
+    :param radius_tr: 右上角半径
+    :param radius_br: 右下角半径
+    :param radius_bl: 左下角半径
+    """
+    path = QPainterPath()
+
+    # 左上角开始
+    path.moveTo(rect.left() + radius_tl, rect.top())
+    path.lineTo(rect.right() - radius_tr, rect.top())
+    if radius_tr > 0:
+        path.quadTo(rect.right(), rect.top(), rect.right(), rect.top() + radius_tr)
+    else:
+        path.lineTo(rect.right(), rect.top())
+
+    path.lineTo(rect.right(), rect.bottom() - radius_br)
+    if radius_br > 0:
+        path.quadTo(rect.right(), rect.bottom(), rect.right() - radius_br, rect.bottom())
+    else:
+        path.lineTo(rect.right(), rect.bottom())
+
+    path.lineTo(rect.left() + radius_bl, rect.bottom())
+    if radius_bl > 0:
+        path.quadTo(rect.left(), rect.bottom(), rect.left(), rect.bottom() - radius_bl)
+    else:
+        path.lineTo(rect.left(), rect.bottom())
+
+    path.lineTo(rect.left(), rect.top() + radius_tl)
+    if radius_tl > 0:
+        path.quadTo(rect.left(), rect.top(), rect.left() + radius_tl, rect.top())
+    else:
+        path.lineTo(rect.left(), rect.top())
+
+    path.closeSubpath()
+    return path
+
+
+def getRoundedRectPathArc(rect: QRectF,
+                          radius_tl: float, radius_tr: float,
+                          radius_br: float, radius_bl: float) -> QPainterPath:
+    """
+    使用 arcTo 绘制不对称圆角矩形
+    :param rect: QRectF 矩形区域
+    :param radius_tl: 左上角半径
+    :param radius_tr: 右上角半径
+    :param radius_br: 右下角半径
+    :param radius_bl: 左下角半径
+    """
+    path = QPainterPath()
+
+    path.moveTo(rect.left() + radius_tl, rect.top())
+
+    path.lineTo(rect.right() - radius_tr, rect.top())
+    path.arcTo(QRectF(rect.right() - 2*radius_tr, rect.top(), 2*radius_tr, 2*radius_tr), 90, -90)
+
+    path.lineTo(rect.right(), rect.bottom() - radius_br)
+    path.arcTo(QRectF(rect.right() - 2*radius_br, rect.bottom() - 2*radius_br, 2*radius_br, 2*radius_br), 0, -90)
+
+    path.lineTo(rect.left() + radius_bl, rect.bottom())
+    path.arcTo(QRectF(rect.left(), rect.bottom() - 2*radius_bl, 2*radius_bl, 2*radius_bl), 270, -90)
+
+    path.lineTo(rect.left(), rect.top() + radius_tl)
+    path.arcTo(QRectF(rect.left(), rect.top(), 2*radius_tl, 2*radius_tl), 180, -90)
+
+    path.closeSubpath()
+    return path
+
 @lru_cache(maxsize=None)
 def _cachedGaussianLinearGradient(start_x, start_y, final_stop_x, final_stop_y, color_code, quality):
 

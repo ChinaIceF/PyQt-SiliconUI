@@ -37,7 +37,7 @@ class SiPopover(QMenu):
 
     def _initStyle(self) -> None:
         self.setStyleSheet("background: transparent;")
-        self._shadow_frame.setStyleSheet("background-color: #C88CD4; border-radius: 6px")
+        self._shadow_frame.setStyleSheet("background-color: #D087DF; border-radius: 6px")
 
     def wrapper(self) -> SiGraphicWrapperWidget:
         return self._wrapper
@@ -333,8 +333,8 @@ class SiCalenderDateWidget(QWidget):
 
 
 class AnimatedCalenderStyleData:
-    indi_color_idle = QColor("#00C88CD4")
-    indi_color_active = QColor("#C88CD4")
+    indi_color_idle = QColor("#00D087DF")
+    indi_color_active = QColor("#D087DF")
     cur_indi_color_idle = QColor("#004C4554")
     cur_indi_color_active = QColor("#4C4554")
 
@@ -362,7 +362,7 @@ class SiAnimatedCalender(SiDenseContainer):
 
         self._indi_size = QSize(36, 36)
         self._indi_pos = QPointF(0, 0)
-        self._indi_color = QColor("#00C88CD4")
+        self._indi_color = QColor("#00D087DF")
         self._cur_indi_pos = QPointF(0, 0)
         self._cur_indi_color = QColor("#004C4554")
 
@@ -691,7 +691,7 @@ class SiPopoverCalenderPicker(SiDenseContainer):
         self._all_btn_container.addWidget(self._picker_btn_container, Qt.RightEdge)
 
     def _initStyle(self) -> None:
-        self.layout().setSpacing(0)
+        self.layout().setSpacing(4)
 
         self._separator.setFixedWidth(1)
         self._separator.setStyleSheet("background-color: #25222A; margin: 24px 0px 20px 0px")

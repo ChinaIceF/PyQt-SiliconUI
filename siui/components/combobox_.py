@@ -15,7 +15,7 @@ from siui.typing import T_WidgetParent
 
 
 class CheckedIndicatorStyleData:
-    indicator_color = QColor("#C88CD4")
+    indicator_color = QColor("#D087DF")
 
 
 class ComboboxItemWidgetCheckedIndicator(QWidget):
