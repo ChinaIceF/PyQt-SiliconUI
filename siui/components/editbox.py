@@ -391,7 +391,8 @@ class SiCapsuleLineEdit(QLineEdit):
         container_margins = self._calcContainerMargins()
 
         shrunk_rect = rect.marginsRemoved(container_margins)
-        indi_rect = QRect(shrunk_rect.topLeft() + QPoint(16, 34), QSize(self._text_indi_width + 8, 2))
+        indi_rect = QRect(shrunk_rect.topLeft() + QPoint(16, 34), QSize(int(self._text_indi_width + 8), 2))
+       #indi_rect = QRect(shrunk_rect.topLeft() + QPoint(16, 34), QSize(self._text_indi_width + 8, 2))
 
         path = QPainterPath()
         path.addRoundedRect(QRectF(indi_rect), 1, 1)
