@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import difflib
 
-from PyQt5.QtCore import QMargins, QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
+from PyQt5.QtCore import QMargins, QObject, QPoint, QPointF, QRect, QRectF, QSize, QSizeF, Qt, pyqtProperty
 from PyQt5.QtGui import (
     QColor,
     QDoubleValidator,
@@ -391,10 +391,10 @@ class SiCapsuleLineEdit(QLineEdit):
         container_margins = self._calcContainerMargins()
 
         shrunk_rect = rect.marginsRemoved(container_margins)
-        indi_rect = QRect(shrunk_rect.topLeft() + QPoint(16, 34), QSize(self._text_indi_width + 8, 2))
+        indi_rect = QRectF(shrunk_rect.topLeft() + QPoint(16, 34), QSizeF(self._text_indi_width + 8, 2))
 
         path = QPainterPath()
-        path.addRoundedRect(QRectF(indi_rect), 1, 1)
+        path.addRoundedRect(indi_rect, 1, 1)
         painter.setPen(Qt.NoPen)
         painter.setBrush(self._text_indi_color)
         painter.drawPath(path)
