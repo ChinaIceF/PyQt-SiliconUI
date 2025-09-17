@@ -2,7 +2,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
-from siui.components import SiPixLabel
+from siui.components import SiPixLabel, SiLongPressPushButton
 from siui.components.option_card import SiOptionCardLinear, SiOptionCardPlane
 from siui.components.page import SiPage
 from siui.components.slider import SiSliderH
@@ -187,9 +187,14 @@ class WidgetsExamplePanel(SiDenseVContainer):
         button_c.resize(128, 32)
         button_c.attachment().setText("Hold-to-Confirm")
 
+        button_d = SiLongPressPushButton(self)
+        button_d.resize(100, 32)
+        button_d.attachment().setText("Push Button")
+
         option_card_button_container_h.addWidget(button_a)
         option_card_button_container_h.addWidget(button_b)
         option_card_button_container_h.addWidget(button_c)
+        option_card_button_container_h.addWidget(button_d)
 
         self.option_card_button.body().addWidget(option_card_button_container_h)
 
