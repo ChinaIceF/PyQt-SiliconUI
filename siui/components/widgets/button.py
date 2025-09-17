@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QPoint, Qt, pyqtSignal
+from PyQt5.QtCore import QPoint, Qt, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QAbstractButton
 
 from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
@@ -67,6 +67,56 @@ class SiPushButton(ABCPushButton):
         :return:
         """
         self.use_transition = b
+
+class SiLongPressPushButton(ABCPushButton):
+    """
+    长按点击事件的按钮，可以设置文字、图标或是兼有\n
+    被绑定部件是一个 SiIconLabel，需要使用 attachment 方法来访问它
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # 关闭自身触发点击的动画，以仅在按下超时后子再触发
+        self.setFlashOnClicked(False)
+
+        # 实例化按压线程，并绑定槽函数
+        self.hold_timer = QTimer(self)
+        self.hold_timer.setSingleShot(True)
+        self.hold_timer.timeout.connect(self._process_changed_handler)
+        self.pressed.connect(self._start_timer)
+        self.released.connect(self._stop_timer)
+
+        # 实例化文本标签
+        self.label = SiIconLabel(self)
+        self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
+        self.label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
+        self.label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignHCenter)
+
+        # 设置偏移量，以保证在按钮明亮面显示
+        self.setAttachmentShifting(0, -1)
+
+        # 绑定到主体
+        self.setAttachment(self.label)
+
+    def _start_timer(self):
+        self.hold_timer.start(1)
+
+    def _stop_timer(self):
+        self.hold_timer.stop()
+        self.reloadStyleSheet()
+
+    def _process_changed_handler(self):
+        self.body_top.setColor(self.getColor(SiColor.BUTTON_FLASH))
+
+    def reloadStyleSheet(self):
+        super().reloadStyleSheet()
+
+        # 设置文字颜色
+        self.label.setTextColor(self.getColor(SiColor.TEXT_B))
+
+        self.body_top.setColor(self.getColor(SiColor.BUTTON_LONG_PRESS_PANEL))
+        self.body_bottom.setColor(self.getColor(SiColor.BUTTON_LONG_PRESS_SHADOW))
 
 
 class SiLongPressButton(ABCPushButton):
