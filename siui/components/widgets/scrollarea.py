@@ -109,8 +109,14 @@ class SiScrollArea(SiWidget):
         self.scroll_bar_frame_horizontal.setGeometry(0, self.height() - 8, self.width(), 8)
 
         # 根据滚动区域的大小和子控件的大小，计算出滚动条的长度或宽度
-        self.scroll_bar_horizontal.resize(self.width() * self.width() // self.attachment_.width(), 8)
-        self.scroll_bar_vertical.resize(8, self.height() * self.height() // self.attachment_.height())
+        if self.attachment_.width() > 0:
+            self.scroll_bar_horizontal.resize(self.width() * self.width() // self.attachment_.width(), 8)
+        else:
+            self.scroll_bar_horizontal.resize(self.width(), 8)
+        if self.attachment_.height() > 0:
+            self.scroll_bar_vertical.resize(8, self.height() * self.height() // self.attachment_.height())
+        else:
+            self.scroll_bar_vertical.resize(8, self.height())
 
         # 判断长宽是否超过自身的长宽，从而确定是否显示滚动条
         # 水平
