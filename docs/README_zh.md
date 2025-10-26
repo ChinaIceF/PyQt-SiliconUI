@@ -35,7 +35,7 @@ python setup.py install
 #### 控件
 - `siui/components/button.py` 包含了重构的按钮控件
 - `siui/components/container.py` 包含了重构的容器。新的容器全部采用 Qt 的 Layout 系统进行管理。
-- `siui/components/container.py` 包含了重构的编辑框控件
+- `siui/components/editor.py` 包含了重构的编辑框控件
 - `siui/components/graphic.py` 包含图形代理控件，包装器等与图形代理相关的控件和功能
 - `siui/components/label.py` 包含以展示简单文本和图像为功能的控件，以及一些暂未归类的控件
 - `siui/components/layout.py` 包含流式布局，瀑布流布局的新实现。与重构的容器一样采用 Layout 系统进行管理
