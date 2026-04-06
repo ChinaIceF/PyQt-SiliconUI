@@ -10,7 +10,7 @@ class SiLabelHasClickedSignal(SiLabel):
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit()
             event.accept()
 

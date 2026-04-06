@@ -499,7 +499,7 @@ class SiSwitch(QAbstractButton):
         """
         处理鼠标按下事件，记录鼠标点击位置与滑杆的相对位置。
         """
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self._drag_offset = event.pos().x() - self.switch_lever.x()  # 记录偏移量
             self._initial_pos = event.pos()  # 记录初始点击位置
         super().mousePressEvent(event)
@@ -508,7 +508,7 @@ class SiSwitch(QAbstractButton):
         """
         处理滑条的鼠标移动事件，拖动时移动滑杆。
         """
-        if event.buttons() & Qt.LeftButton:  # 检查鼠标左键是否按下
+        if event.buttons() & Qt.MouseButton.LeftButton:  # 检查鼠标左键是否按下
             # 获取鼠标在 slider 上的位置，并使用之前记录的偏移量来移动滑杆
             mouse_pos = event.pos()
             target_pos = mouse_pos.x() - self._drag_offset  # 保持相对位置
@@ -519,7 +519,7 @@ class SiSwitch(QAbstractButton):
         """
         处理鼠标松开事件，区分点击和拖动操作。
         """
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             release_pos = event.pos()
             drag_distance = abs(release_pos.x() - self._initial_pos.x())
 

@@ -154,7 +154,7 @@ class SiSlider(QAbstractSlider):
             thumb_rect = QRectF((self.width() - thumb_w) * p, (self.height() - thumb_h) / 2, thumb_w, thumb_h)
         else:
             thumb_rect = QRectF((self.width() - thumb_h) / 2, (self.height() - thumb_w) * (1 - p), thumb_h, thumb_w)
-        return thumb_rect.contains(pos)
+        return thumb_rect.contains(pos.toPointF())
 
     def _setValueToMousePos(self, pos: QPoint) -> None:
         thumb_width = self.style_data.thumb_width
@@ -181,7 +181,7 @@ class SiSlider(QAbstractSlider):
             thumb_rect = QRectF((self.width() - thumb_w) * p, (self.height() - thumb_h) / 2, thumb_w, thumb_h)
         else:
             thumb_rect = QRectF((self.width() - thumb_h) / 2, (self.height() - thumb_w) * (1 - p), thumb_h, thumb_w)
-        self._dragging_anchor_pos = thumb_rect.center()
+        self._dragging_anchor_pos = thumb_rect.center().toPoint()
 
     def _showToolTip(self) -> None:
         tool_tip_window = SiGlobal.siui.windows.get("TOOL_TIP")
@@ -351,8 +351,6 @@ class SiCoordinatePicker2D(QWidget):
         self.slider_y.setOrientation(Qt.Orientation.Vertical)
         self.slider_x.setDrawTrack(False)
         self.slider_y.setDrawTrack(False)
-        self.slider_x.leaveEvent = self.enterEvent
-        self.slider_y.leaveEvent = self.enterEvent
 
         # self.slider_x.style_data.thumb_idle_color = QColor("#b9e2e6")
         # self.slider_x.style_data.track_color = QColor("#83b4b9")
@@ -404,14 +402,14 @@ class SiCoordinatePicker2D(QWidget):
         self.setToolTip(func(self.value()))
 
     def _isMouseInThumbRect(self, pos: QPoint) -> bool:
-        rect: QRect = self.property(self.Property.IndicatorRect)
-        return rect.contains(pos)
+        rect: QRectF = self.property(self.Property.IndicatorRect)
+        return rect.contains(pos.toPointF())
 
     def _isMousePosValid(self, pos: QPoint) -> bool:
         slider_x_height = self.style_data.slider_y_width
         slider_y_width = self.style_data.slider_x_height
         background_rect = QRectF(slider_y_width, 0, self.width() - slider_y_width, self.height() - slider_x_height)
-        return background_rect.contains(pos)
+        return background_rect.contains(pos.toPointF())
 
     def _setThumbHovering(self, state: bool) -> None:
         if state:
@@ -422,8 +420,8 @@ class SiCoordinatePicker2D(QWidget):
             self.thumb_color_ani.start()
 
     def _updateDraggingAnchor(self) -> None:
-        indicator_outline_rect = self.property(self.Property.IndicatorRect)
-        self._dragging_anchor_pos = indicator_outline_rect.center()
+        indicator_outline_rect: QRectF = self.property(self.Property.IndicatorRect)
+        self._dragging_anchor_pos = indicator_outline_rect.center().toPoint()
 
     def _setValueToMousePos(self, pos: QPoint) -> None:
         margin = self.slider_x.style_data.thumb_width / 2
@@ -1208,7 +1206,7 @@ class SiScrollBar(QScrollBar):
             thumb_rect = QRectF((self.width() - thumb_w) * p, (self.height() - thumb_h) / 2, thumb_w, thumb_h)
         else:
             thumb_rect = QRectF((self.width() - thumb_h) / 2, (self.height() - thumb_w) * p, thumb_h, thumb_w)
-        return thumb_rect.contains(pos)
+        return thumb_rect.contains(pos.toPointF())
 
     def _setValueToMousePos(self, pos: QPoint) -> None:
         thumb_width = self.style_data.thumb_width

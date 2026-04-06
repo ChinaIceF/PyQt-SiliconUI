@@ -240,13 +240,13 @@ class SiDraggableLabel(SiLabel):
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.anchor = event.pos()
             event.accept()
 
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
-        if not (event.buttons() & Qt.LeftButton):
+        if not (event.buttons() & Qt.MouseButton.LeftButton):
             return
         new_pos = event.pos() - self.anchor + self.frameGeometry().topLeft()
         x, y = self._legalize_moving_target(new_pos.x(), new_pos.y())

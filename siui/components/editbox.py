@@ -392,7 +392,10 @@ class SiCapsuleLineEdit(QLineEdit):
         container_margins = self._calcContainerMargins()
 
         shrunk_rect = rect.marginsRemoved(container_margins)
-        indi_rect = QRectF(shrunk_rect.topLeft() + QPoint(16, 34), QSizeF(self._text_indi_width + 8, 2))
+        indi_rect = QRectF(
+            QPointF(shrunk_rect.topLeft() + QPoint(16, 34)),
+            QSizeF(self._text_indi_width + 8, 2)
+        )
 
         path = QPainterPath()
         path.addRoundedRect(indi_rect, 1, 1)
@@ -632,12 +635,6 @@ class SiCustomLineEdit(QLineEdit):
         self.cursor_x_ani.start()
 
 
-
-
-
-
-
-
 class SiLabeledLineEdit(QLineEdit):
     class Property:
         TitleColor = "titleColor"
@@ -662,7 +659,7 @@ class SiLabeledLineEdit(QLineEdit):
         self.text_indicator_color_ani.init(1/4, 0.01, self._text_indi_color, self._text_indi_color)
 
         self.text_indicator_width_ani = SiExpAnimationRefactor(self, self.Property.TextIndicatorWidth)
-        self.text_indicator_color_ani.init(1/8, 0.01, 0, 0)
+        self.text_indicator_width_ani.init(1/8, 0.01, 0, 0)
 
         self.setFont(SiFont.getFont(size=14))
         self._initStyleSheet()
@@ -942,10 +939,10 @@ class SiSpinBox(SiLabeledLineEdit):
 
     def keyPressEvent(self, a0):
         super().keyPressEvent(a0)
-        if a0.key() == Qt.Key_Up:
+        if a0.key() == Qt.Key.Key_Up:
             self.stepForth()
             self.button_increase.flash()
-        elif a0.key() == Qt.Key_Down:
+        elif a0.key() == Qt.Key.Key_Down:
             self.stepBack()
             self.button_decrease.flash()
         a0.accept()

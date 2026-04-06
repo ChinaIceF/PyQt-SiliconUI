@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 
 from PyQt6.QtCore import QEvent, QLineF, QPoint, QPointF, QRect, QRectF, Qt, pyqtProperty
 from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
@@ -253,13 +252,13 @@ class SiTrendChart(QWidget):
 
         return [minor_ticks, major_ticks, minor_points, major_points]
 
-    def _drawBackgroundPath(self, rect: QRect) -> QPainterPath:
+    def _drawBackgroundPath(self, rect: QRectF) -> QPainterPath:
         radius = self.style_data.border_radius
         path = QPainterPath()
         path.addRoundedRect(rect, radius, radius)
         return path
 
-    def _drawBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
+    def _drawBackgroundRect(self, painter: QPainter, rect: QRectF) -> None:
         painter.setBrush(self.style_data.background_color)
         painter.drawPath(self._drawBackgroundPath(rect))
 
@@ -353,7 +352,7 @@ class SiTrendChart(QWidget):
         super().mouseMoveEvent(a0)
 
         chart_rect = self._getChartRect()
-        pos = a0.pos() - chart_rect.topLeft()
+        pos = a0.pos().toPointF() - chart_rect.topLeft()
         cpos = self.posToCoordinate(pos, chart_rect)
         closest_point = self._findClosestDataPoint(cpos.x())
 

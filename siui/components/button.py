@@ -432,7 +432,7 @@ class SiPushButtonRefactor(ABCButton):
 
     def textRectAndIconRect(self) -> (QRectF, QRect):
         font_metrics = QFontMetrics(self.font())
-        text_width = font_metrics.width(self.text())
+        text_width = font_metrics.horizontalAdvance(self.text())
         icon_width = self.iconSize().width() if not self.icon().isNull() else 0
         icon_height = self.iconSize().height() if not self.icon().isNull() else 0
         gap = self.style_data.icon_text_gap if text_width > 0 and icon_width > 0 else 0
@@ -684,7 +684,7 @@ class SiFlatButton(ABCButton):
 
     def textRectAndIconRect(self) -> (QRectF, QRect):
         font_metrics = QFontMetrics(self.font())
-        text_width = font_metrics.width(self.text())
+        text_width = font_metrics.horizontalAdvance(self.text())
         icon_width = self.iconSize().width() if not self.icon().isNull() else 0
         icon_height = self.iconSize().height() if not self.icon().isNull() else 0
         gap = self.style_data.icon_text_gap if text_width > 0 and icon_width > 0 else 0
@@ -1889,21 +1889,21 @@ class SiCheckBoxRefactor(QAbstractButton):
 
     def _drawTitleText(self, painter: QPainter, rect: QRect) -> None:
         option = QTextOption()
-        option.setWrapMode(QTextOption.WordWrap)
+        option.setWrapMode(QTextOption.WrapMode.WordWrap)
         painter.setFont(self._font_title_normal)
         painter.setPen(self.style_data.title_normal_color)
         painter.drawText(QRectF(rect), self.text(), option)
 
     def _drawDescriptionText(self, painter: QPainter, rect: QRect) -> None:
         option = QTextOption()
-        option.setWrapMode(QTextOption.WordWrap)
+        option.setWrapMode(QTextOption.WrapMode.WordWrap)
         painter.setFont(self._font_description)
         painter.setPen(self.style_data.description_color)
         painter.drawText(QRectF(rect), self._description_text, option)
 
     def _drawIndicator(self, painter: QPainter, rect: QRect) -> None:
         checkmark_path = self._getCheckmarkPath()
-        checkmark_path.translate(rect.center() - QPointF(9.5, 9.25))
+        checkmark_path.translate(rect.center().toPointF() - QPointF(9.5, 9.25))
 
         if self.autoExclusive():
             outer_path = QPainterPath()
@@ -2478,7 +2478,7 @@ class SiOptionButton(QAbstractButton):
 
     def _drawGlyph(self, painter: QPainter, rect: QRect) -> None:
         glyph_path = self._getGlyphPath()
-        glyph_path.translate(rect.center() - QPointF(9.5, 9.25))
+        glyph_path.translate(rect.center().toPointF() - QPointF(9.5, 9.25))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.glyph_color)
         painter.drawPath(glyph_path)
@@ -2486,7 +2486,7 @@ class SiOptionButton(QAbstractButton):
     def _drawText(self, painter: QPainter, rect: QRect) -> None:
         shrunk_rect = rect.marginsRemoved(self._text_margins)
         metrics = QFontMetrics(self.font())
-        elided = metrics.elidedText(self.text(), Qt.ElideRight, shrunk_rect.width())
+        elided = metrics.elidedText(self.text(), Qt.TextElideMode.ElideRight, shrunk_rect.width())
 
         painter.setPen(self.style_data.text_color)
         painter.setBrush(Qt.BrushStyle.NoBrush)

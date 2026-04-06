@@ -190,7 +190,7 @@ class ComboBoxClickEventFilter(QObject):
 
         if event.type() == QEvent.Type.MouseButtonPress:
             event: QMouseEvent
-            self._is_pressed = event.button() == Qt.LeftButton
+            self._is_pressed = event.button() == Qt.MouseButton.LeftButton
             return False
 
         if event.type() == QEvent.Type.MouseButtonRelease:

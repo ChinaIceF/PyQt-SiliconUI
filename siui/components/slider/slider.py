@@ -82,7 +82,7 @@ class SiSliderH(QAbstractSlider):
         它会获取鼠标相对于滑块的位置，并计算出对应的
         滑块值。然后更新滑块的值以反映该位置。
         """
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             # 获取鼠标在 slider 上的位置
             mouse_pos = event.pos()
             # 根据鼠标位置计算对应的 value
@@ -99,7 +99,7 @@ class SiSliderH(QAbstractSlider):
         并根据当前鼠标的位置计算滑块的值。然后更新滑块的值以反映该位置，
         使滑块在拖动时能够实时调整。
         """
-        if event.buttons() & Qt.LeftButton:  # 检查鼠标左键是否按下
+        if event.buttons() & Qt.MouseButton.LeftButton:  # 检查鼠标左键是否按下
             # 获取鼠标在 slider 上的位置
             mouse_pos = event.pos()
             # 根据鼠标位置计算对应的 value
