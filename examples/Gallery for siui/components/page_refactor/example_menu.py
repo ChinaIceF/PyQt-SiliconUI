@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 
-from PyQt6.QtWidgets import QAction, QActionGroup, QWidget
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtGui import QAction, QActionGroup
 
 from siui.components.combobox_ import ComboboxItemWidget
 from siui.components.menu_ import SiRoundedMenu
