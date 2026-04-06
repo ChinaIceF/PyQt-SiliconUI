@@ -56,7 +56,7 @@ def createDenseContainer(parent: SiDenseContainer,
     container = SiDenseContainer(parent)
     container.layout().setDirection(direction)
     container.layout().setSpacing(12)
-    container.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Preferred)
+    container.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
     try:
         yield container
     finally:
@@ -320,12 +320,12 @@ class RefactoredWidgets(SiPage):
                         checkbox1 = SiCheckBoxRefactor(self)
                         checkbox1.setText("多选选项 1")
                         checkbox1.setDescription("唱，跳，Rap，篮球")
-                        checkbox1.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Minimum)
+                        checkbox1.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
 
                         checkbox2 = SiCheckBoxRefactor(self)
                         checkbox2.setText("多选选项 2")
                         checkbox2.setDescription("Music~")
-                        checkbox2.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Minimum)
+                        checkbox2.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
 
                         container.layout().setSpacing(0)
                         container.addWidget(checkbox1)
@@ -336,14 +336,14 @@ class RefactoredWidgets(SiPage):
                         checkbox1 = SiCheckBoxRefactor(self)
                         checkbox1.setText("单选选项 1")
                         checkbox1.setDescription("唱，跳，Rap，篮球")
-                        checkbox1.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Minimum)
+                        checkbox1.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
                         checkbox1.setAutoExclusive(True)
                         checkbox1.setChecked(True)
 
                         checkbox2 = SiCheckBoxRefactor(self)
                         checkbox2.setText("单选选项 2")
                         checkbox2.setDescription("Music~")
-                        checkbox2.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Minimum)
+                        checkbox2.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
                         checkbox2.setAutoExclusive(True)
 
                         container.layout().setSpacing(0)

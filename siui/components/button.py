@@ -301,7 +301,7 @@ class ABCButton(QPushButton):
 
     def setSvgIcon(self, svg_data: bytes) -> None:
         pixmap = QPixmap(64, 64)
-        pixmap.fill(Qt.transparent)
+        pixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
         svg_renderer = QSvgRenderer(svg_data)
@@ -312,7 +312,7 @@ class ABCButton(QPushButton):
 
     def sizeHint(self) -> QSize:
         font_metrics = QFontMetrics(self.font())
-        text_width = font_metrics.width(self.text())
+        text_width = font_metrics.horizontalAdvance(self.text())
         text_height = font_metrics.height()
         icon_width = self.iconSize().width() if not self.icon().isNull() else 0
         icon_height = self.iconSize().height() if not self.icon().isNull() else 0
@@ -340,7 +340,7 @@ class ABCButton(QPushButton):
             tool_tip_window.setText(self.toolTip())
 
     def event(self, event):
-        if event.type() == QEvent.ToolTip:
+        if event.type() == QEvent.Type.ToolTip:
             return True  # 忽略工具提示事件
         return super().event(event)
 
@@ -491,7 +491,7 @@ class SiPushButtonRefactor(ABCButton):
 
         buffer = QPixmap(rect.size() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         with createPainter(buffer, renderHints) as bufferPainter:
             self._drawBackgroundRect(bufferPainter, rect)
@@ -712,7 +712,7 @@ class SiFlatButton(ABCButton):
 
         buffer = QPixmap(rect.size() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         buffer_painter = QPainter(buffer)
         buffer_painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
@@ -835,7 +835,7 @@ class SiFlatButtonWithIndicator(SiFlatButton):
         path = QPainterPath()
         path.addRoundedRect(rect, 1, 1)
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._indicator_color)
         painter.drawPath(path)
 
@@ -867,7 +867,7 @@ class SiFlatButtonWithIndicator(SiFlatButton):
 
         buffer = QPixmap(rect.size() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         buffer_painter = QPainter(buffer)
         buffer_painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
@@ -1043,7 +1043,7 @@ class SiSwitchRefactor(QPushButton):
             pen.setWidth(1)
             painter.setPen(pen)
             painter.drawPath(self._drawFramePath(rect))
-            painter.setPen(Qt.NoPen)
+            painter.setPen(Qt.PenStyle.NoPen)
 
     def _drawThumbRect(self, painter: QPainter, rect: QRect) -> None:
         color = self.style_data.thumb_color_checked if self._progress > 0.5 else self.style_data.thumb_color_unchecked
@@ -1056,7 +1056,7 @@ class SiSwitchRefactor(QPushButton):
 
         buffer = QPixmap(rect.size() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         buffer_painter = QPainter(buffer)
         buffer_painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
@@ -1276,7 +1276,7 @@ class SiRadioButtonR(QRadioButton):
 
         buffer = QPixmap(buffer_rect.size().toSize() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         renderHints = (
                 QPainter.RenderHint.SmoothPixmapTransform
@@ -1428,7 +1428,7 @@ class SiRadioButtonRefactor(QRadioButton):
         painter.setPen(self.style_data.text_color)
         painter.setFont(self.font())
         painter.drawText(rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, self.text())
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
     def _onButtonToggled(self) -> None:
         sd = self.style_data
@@ -1538,14 +1538,14 @@ class SiRadioButtonWithAvatar(SiRadioButtonRefactor):
         painter.setPen(self.style_data.description_color)
         painter.setFont(self._description_font)
         painter.drawText(rect, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft, self._description)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
     def _drawAvatarIcon(self, painter: QPainter, rect: QRect) -> None:
         device_pixel_ratio = self.devicePixelRatioF()
 
         buffer = QPixmap(rect.size() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         buffer_painter = QPainter(buffer)
         buffer_painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
@@ -1653,7 +1653,7 @@ class SiTransparentButton(QAbstractButton):
     def _drawHoverOverlayRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), self._border_radius, self._border_radius)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._hover_overlay_color)
         painter.drawPath(path)
 
@@ -1791,7 +1791,7 @@ class SiCheckBoxRefactor(QAbstractButton):
         title_metrics = QFontMetrics(self._font_title_normal)
         title_rect = title_metrics.boundingRect(
             QRect(0, 0, content_width, 10000),  # 高度足够大以容纳多行
-            Qt.TextWordWrap,
+            Qt.TextFlag.TextWordWrap,
             self.text()
         )
         title_height = title_rect.height()
@@ -1800,7 +1800,7 @@ class SiCheckBoxRefactor(QAbstractButton):
         description_metrics = QFontMetrics(self._font_description)
         desc_rect = description_metrics.boundingRect(
             QRect(0, 0, content_width, 10000),
-            Qt.TextWordWrap,
+            Qt.TextFlag.TextWordWrap,
             self._description_text
         )
         description_height = desc_rect.height()
@@ -1876,14 +1876,14 @@ class SiCheckBoxRefactor(QAbstractButton):
     def _drawHoverRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 12, 12)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._hover_color)
         painter.drawPath(path)
 
     def _drawFlashRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 12, 12)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._flash_color)
         painter.drawPath(path)
 
@@ -1918,12 +1918,12 @@ class SiCheckBoxRefactor(QAbstractButton):
             inner_path.addRoundedRect(QRectF(rect.marginsRemoved(QMargins(5, 5, 5, 5))), 3, 3)
 
         if self.isChecked():
-            painter.setPen(Qt.NoPen)
+            painter.setPen(Qt.PenStyle.NoPen)
             painter.setBrush(self.style_data.indicator_activated_color)
             painter.drawPath(outer_path - checkmark_path)
 
         else:
-            painter.setPen(Qt.NoPen)
+            painter.setPen(Qt.PenStyle.NoPen)
             painter.setBrush(self.style_data.indicator_deactivated_color)
             painter.drawPath(outer_path - inner_path)
 
@@ -1961,7 +1961,7 @@ class SiCheckBoxRefactor(QAbstractButton):
 
         buffer = QPixmap(full_rect.size() * self.devicePixelRatioF())
         buffer.setDevicePixelRatio(self.devicePixelRatioF())
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         with createPainter(buffer) as painter:
             self._drawHoverRect(painter, full_rect)
@@ -2199,7 +2199,7 @@ class SiCapsuleButton(QAbstractButton):
     def _drawBodyBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 10, 10)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._value_bg_color)
         painter.drawPath(path)
 
@@ -2207,7 +2207,7 @@ class SiCapsuleButton(QAbstractButton):
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 10, 10)
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.label_background_color)
         painter.drawPath(path)
 
@@ -2217,7 +2217,7 @@ class SiCapsuleButton(QAbstractButton):
         color = QColor(self.style_data.value_background_color_activated)
         color.setAlpha(int(0.2 * 255))
         gradient = getGaussianLinearGradient(rect.topRight(), rect.topLeft(), color)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(gradient)
         painter.drawPath(path)
 
@@ -2227,7 +2227,7 @@ class SiCapsuleButton(QAbstractButton):
 
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 1, 1)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.indicator_color)
         painter.drawPath(path)
 
@@ -2249,7 +2249,7 @@ class SiCapsuleButton(QAbstractButton):
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 10, 10)
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Plus)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._hover_overlay_color)
         painter.drawPath(path)
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceOver)
@@ -2288,7 +2288,7 @@ class SiCapsuleButton(QAbstractButton):
 
         buffer = QPixmap(full_rect.size() * self.devicePixelRatioF())
         buffer.setDevicePixelRatio(self.devicePixelRatioF())
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         with createPainter(buffer) as painter:
             self._drawBodyBackgroundRect(painter, body_rect)
@@ -2323,7 +2323,7 @@ class SiOptionButton(QAbstractButton):
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
-        self.setSizePolicy(QSizePolicy.PolicyFlag.Fixed, QSizePolicy.PolicyFlag.Fixed)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setFont(SiFont.getFont(size=14))
         self.setCheckable(True)
 
@@ -2460,7 +2460,7 @@ class SiOptionButton(QAbstractButton):
             path = QPainterPath()
             path.addRoundedRect(QRectF(rect), 10, 10)
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.body_background_color)
         painter.drawPath(path)
 
@@ -2472,14 +2472,14 @@ class SiOptionButton(QAbstractButton):
             path = QPainterPath()
             path.addRoundedRect(QRectF(rect), 10, 10)
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._indicator_color)
         painter.drawPath(path)
 
     def _drawGlyph(self, painter: QPainter, rect: QRect) -> None:
         glyph_path = self._getGlyphPath()
         glyph_path.translate(rect.center() - QPointF(9.5, 9.25))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.glyph_color)
         painter.drawPath(glyph_path)
 
@@ -2489,7 +2489,7 @@ class SiOptionButton(QAbstractButton):
         elided = metrics.elidedText(self.text(), Qt.ElideRight, shrunk_rect.width())
 
         painter.setPen(self.style_data.text_color)
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.setFont(self.font())
         painter.drawText(shrunk_rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, elided)
 
@@ -2501,7 +2501,7 @@ class SiOptionButton(QAbstractButton):
             path.addRoundedRect(QRectF(rect), 10, 10)
 
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Plus)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._hover_overlay_color)
         painter.drawPath(path)
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceOver)
@@ -2526,7 +2526,7 @@ class SiOptionButton(QAbstractButton):
 
         buffer = QPixmap(full_rect.size() * self.devicePixelRatioF())
         buffer.setDevicePixelRatio(self.devicePixelRatioF())
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         with createPainter(buffer) as painter:
             self._drawBodyRect(painter, body_rect)

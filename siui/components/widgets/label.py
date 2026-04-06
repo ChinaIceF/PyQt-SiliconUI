@@ -66,12 +66,12 @@ class SiPixLabel(SiLabel):
         w, h = self.width(), self.height()
 
         target = QPixmap(self.size())
-        target.fill(Qt.transparent)
+        target.fill(Qt.GlobalColor.transparent)
 
         p = QPixmap(self.path_).scaled(
             w, h,
             Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-            Qt.AspectRatioMode.SmoothTransformation
+            Qt.TransformationMode.SmoothTransformation
         )
 
         painter = QPainter(target)

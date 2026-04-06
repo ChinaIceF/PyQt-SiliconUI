@@ -17,7 +17,7 @@ class DemoLabel(SiLabel):
         super().__init__(parent)
 
         self.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.setAlignment(Qt.AlignmentFlag.Alignment.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setFixedHeight(32)
 
         self.setFixedStyleSheet("border-radius: 4px")
@@ -38,7 +38,7 @@ class ExampleContainer(SiPage):
 
         self.setPadding(64)
         self.setScrollMaximumWidth(1000)
-        self.setScrollAlignment(Qt.AlignmentFlag.Alignment.AlignLeft)
+        self.setScrollAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setTitle("容器")
 
         # 创建控件组
@@ -132,7 +132,7 @@ class ExampleContainer(SiPage):
 
             self.demo_divided_h_container = SiDividedHContainer(self)
             self.demo_divided_h_container.setFixedWidth(540)
-            self.demo_divided_h_container.addSection(width=120, height=32, alignment=Qt.AlignmentFlag.Alignment.AlignLeft)
+            self.demo_divided_h_container.addSection(width=120, height=32, alignment=Qt.AlignmentFlag.AlignLeft)
             self.demo_divided_h_container.addSection(width=180, height=32, alignment=Qt.AlignmentFlag.AlignCenter)
             self.demo_divided_h_container.addSection(width=240, height=32, alignment=Qt.AlignmentFlag.AlignRight)
             self.demo_divided_h_container.addWidget(DemoLabel(self, "120左对齐"))
@@ -225,7 +225,7 @@ class ExampleContainer(SiPage):
                 button.colorGroup().assign(SiColor.BUTTON_OFF, button.getColor(SiColor.INTERFACE_BG_D))
                 button.setFixedHeight(32)
                 button.adjustSize()
-                button.setAttribute(Qt.WA_TransparentForMouseEvents)
+                button.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
                 label.button = button
                 label.resize(button.size())
                 self.demo_flow_container.addWidget(label, ani=False)
@@ -284,7 +284,7 @@ class ExampleContainer(SiPage):
                 button = SiSimpleButton(label)
                 button.colorGroup().assign(SiColor.BUTTON_OFF, button.getColor(SiColor.INTERFACE_BG_D))
                 button.resize(160, int(random.random() * 50 + 70))
-                button.setAttribute(Qt.WA_TransparentForMouseEvents)
+                button.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
                 label.button = button
                 label.setFixedStyleSheet("border-radius: 4px")
                 label.setColor(self.getColor(SiColor.INTERFACE_BG_D))

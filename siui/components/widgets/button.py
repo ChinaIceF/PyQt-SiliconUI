@@ -93,7 +93,7 @@ class SiLongPressButton(ABCPushButton):
         self.hold_thread.holdTimeout.connect(self._run_clicked_ani)
         self.hold_thread.holdTimeout.connect(self.longPressed.emit)
         # self.destroyed.connect(self.hold_thread.stopRunning, Qt.AutoConnection)
-        self.destroyed.connect(self.hold_thread.terminate, Qt.AutoConnection)
+        self.destroyed.connect(self.hold_thread.terminate)
 
         # 实例化文本标签
         self.label = SiIconLabel(self)

@@ -10,11 +10,11 @@ from PyQt6.QtGui import QColor, QLinearGradient, QPaintDevice, QPainter, QPainte
 
 @contextmanager
 def createPainter(device: QPaintDevice,
-                  render_hints: QPainter.RenderHints = QPainter.RenderHint.Antialiasing) -> QPainter:
+                  render_hints: QPainter.RenderHint = QPainter.RenderHint.Antialiasing) -> QPainter:
     painter = QPainter(device)
     painter.setRenderHints(render_hints)
-    painter.setPen(Qt.NoPen)
-    painter.setBrush(Qt.NoBrush)
+    painter.setPen(Qt.PenStyle.NoPen)
+    painter.setBrush(Qt.BrushStyle.NoBrush)
     try:
         yield painter
     finally:

@@ -115,18 +115,18 @@ class DraggingEventFilter(QObject):
         if obj != self._trigger:
             return super().eventFilter(obj, event)
 
-        if event.type() == QEvent.MouseButtonPress:
-            if event.button() == Qt.LeftButton:
+        if event.type() == QEvent.Type.MouseButtonPress:
+            if event.button() == Qt.MouseButton.LeftButton:
                 self._onTriggerPressed(event)
                 return False
 
-        elif event.type() == QEvent.MouseMove:
-            if self._is_dragging and (event.buttons() & Qt.LeftButton):
+        elif event.type() == QEvent.Type.MouseMove:
+            if self._is_dragging and (event.buttons() & Qt.MouseButton.LeftButton):
                 self._onTriggerMouseMoved(event)
                 return False
 
-        elif event.type() == QEvent.MouseButtonRelease:
-            if event.button() == Qt.LeftButton:
+        elif event.type() == QEvent.Type.MouseButtonRelease:
+            if event.button() == Qt.MouseButton.LeftButton:
                 self._onTriggerReleased(event)
                 return False
 

@@ -85,7 +85,7 @@ class GlobalIconPack:
     def toPixmap(self, name: str, size: QSize = QSize(64, 64), color_code: str = None):
         svg_bytes = self.get(name, color_code)
         pixmap = QPixmap(size)
-        pixmap.fill(Qt.transparent)
+        pixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
         svg_renderer = QSvgRenderer(svg_bytes)

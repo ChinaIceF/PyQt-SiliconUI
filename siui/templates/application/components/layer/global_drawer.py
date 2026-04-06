@@ -38,12 +38,12 @@ class SiLayerDrawer(SiLayer):
 
     def showLayer(self):
         super().showLayer()
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, False)
         self.setOpened(True)
 
     def closeLayer(self):
         super().closeLayer()
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self.setOpened(False)
 
     def resizeEvent(self, event):

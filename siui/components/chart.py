@@ -154,7 +154,7 @@ class SiTrendChart(QWidget):
                        (1 - py) * self._view_rect.height() + self._view_rect.y())
 
     def event(self, event):
-        if event.type() == QEvent.ToolTip:
+        if event.type() == QEvent.Type.ToolTip:
             return True  # 忽略工具提示事件
         return super().event(event)
 
@@ -179,7 +179,7 @@ class SiTrendChart(QWidget):
 
         buffer = QPixmap(chart_rect.size() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         with createPainter(buffer, renderHints) as painter:
             self._drawDataLine(painter, chart_rect)
@@ -268,13 +268,13 @@ class SiTrendChart(QWidget):
 
         pen_minor = QPen(self.style_data.minor_tick_color)
         pen_minor.setWidthF(1)
-        pen_minor.setCapStyle(Qt.RoundCap)
+        pen_minor.setCapStyle(Qt.PenCapStyle.RoundCap)
         pen_major = QPen(self.style_data.major_tick_color)
         pen_major.setWidthF(1)
-        pen_major.setCapStyle(Qt.RoundCap)
+        pen_major.setCapStyle(Qt.PenCapStyle.RoundCap)
         pen_axis = QPen(self.style_data.axis_tick_color)
         pen_axis.setWidthF(1)
-        pen_axis.setCapStyle(Qt.RoundCap)
+        pen_axis.setCapStyle(Qt.PenCapStyle.RoundCap)
 
         painter.setPen(pen_minor)
         for line in minor_ticks:
@@ -290,7 +290,7 @@ class SiTrendChart(QWidget):
         #     if cp.x() == 0 or cp.y() == 0:
         #         painter.drawLine(line)
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
     def _drawTickText(self, painter: QPainter, rect: QRectF) -> None:
         _, major_ticks, _, major_points = self._getTickLine(rect)
@@ -312,7 +312,7 @@ class SiTrendChart(QWidget):
 
         pen = QPen(self.style_data.line_color)
         pen.setWidthF(2)
-        pen.setCapStyle(Qt.RoundCap)
+        pen.setCapStyle(Qt.PenCapStyle.RoundCap)
         painter.setPen(pen)
         painter.drawPolyline(*points)
 

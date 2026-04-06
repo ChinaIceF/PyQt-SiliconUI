@@ -69,7 +69,7 @@ class SiLabelRefactor(QLabel):
         self.update()
 
     def event(self, event):
-        if event.type() == QEvent.ToolTip:
+        if event.type() == QEvent.Type.ToolTip:
             return True  # 忽略工具提示事件
         return super().event(event)
 
@@ -231,7 +231,7 @@ class SiRoundPixmapWidget(QWidget):
 
         buffer = QPixmap(rect.size() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         renderHints = (
                 QPainter.RenderHint.SmoothPixmapTransform
@@ -480,7 +480,7 @@ class SiLinearIndicator(QWidget):
         path = QPainterPath()
         path.addRoundedRect(rect, self._borderRadiusLegalized(), self._borderRadiusLegalized())
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.track_color)
         painter.drawPath(path)
 
@@ -488,7 +488,7 @@ class SiLinearIndicator(QWidget):
         path = QPainterPath()
         path.addRoundedRect(rect, self._borderRadiusLegalized(), self._borderRadiusLegalized())
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._color)
         painter.drawPath(path)
 
@@ -513,7 +513,7 @@ class SiLinearPartitionIndicator(SiLinearIndicator):
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
-        self._orientation = Qt.Horizontal
+        self._orientation = Qt.Orientation.Horizontal
         self._node_amount = 2
         self._indicator_start_index = 0
         self._indicator_end_index = 1
@@ -532,7 +532,7 @@ class SiLinearPartitionIndicator(SiLinearIndicator):
         self.update()
 
     def setOrientation(self, ori: Qt.Orientation):
-        if ori != Qt.Horizontal and ori != Qt.Vertical:
+        if ori != Qt.Orientation.Horizontal and ori != Qt.Orientation.Vertical:
             raise ValueError(f"{ori} is not in Qt.Orientation.")
 
         self._orientation = ori
@@ -555,11 +555,11 @@ class SiLinearPartitionIndicator(SiLinearIndicator):
             self.hl_rect_ani.start()
             return
 
-        if self._orientation == Qt.Horizontal:
+        if self._orientation == Qt.Orientation.Horizontal:
             section_span = self._visual_width / section_amount
             rect = QRectF(x + start_i * section_span, y, (end_i - start_i) * section_span, self._visual_height)
 
-        elif self._orientation == Qt.Vertical:
+        elif self._orientation == Qt.Orientation.Vertical:
             section_span = self._visual_height / section_amount
             rect = QRectF(x, y + start_i * section_span, self._visual_width, (end_i - start_i) * section_span)
 

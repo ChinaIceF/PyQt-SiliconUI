@@ -115,7 +115,7 @@ class SiPanelCard(SiDenseContainer):
         return path
 
     def _drawBackgroundRect(self, painter: QPainter, rect: QRectF) -> None:
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.background_back_color)
         painter.drawPath(self._drawBackgroundBackPath(rect))
 
@@ -146,9 +146,9 @@ class SiTriSectionPanelCard(SiPanelCard):
         self.addWidget(self._body)
         self.addWidget(self._footer, Qt.Edge.BottomEdge)
 
-        self._header.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Preferred)
-        self._body.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Preferred)
-        self._footer.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Preferred)
+        self._header.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        self._body.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        self._footer.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
 
         self._initStyle()
 
@@ -213,7 +213,7 @@ class SiRowCard(SiDenseContainer):
         return path
 
     def _drawBackgroundRect(self, painter: QPainter, rect: QRectF) -> None:
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.background_color)
         painter.drawPath(self._drawBackgroundPath(rect))
 

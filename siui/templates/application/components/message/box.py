@@ -45,7 +45,7 @@ class SiSideMessageContent(SiWidget):
         self.close_button.clicked.connect(self.parent().closeLater)
 
         self.flash_layer = SiLabel(self)
-        self.flash_layer.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self.flash_layer.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.flash_layer.setFixedStyleSheet("border-radius: 6px")
         self.flash_layer.setColor(SiColor.trans(self.getColor(SiColor.SIDE_MSG_FLASH), 0))
         self.flash_layer.animationGroup().fromToken("color").setFactor(1/8)

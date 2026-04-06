@@ -17,7 +17,7 @@ class OptionCardPlaneForWidgetDemos(SiOptionCardPlane):
         self.additional_description = SiLabel(self)
         self.additional_description.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.additional_description.setFixedHeight(24)
-        self.additional_description.setAlignment(Qt.AlignmentFlag.Alignment.AlignLeft | Qt.AlignmentFlag.Alignment.AlignBottom)
+        self.additional_description.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignBottom)
 
         self.button_bug = SiSimpleButton(self)
         self.button_bug.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_bug_regular"))

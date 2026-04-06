@@ -8,7 +8,7 @@ class LayerChildPage(SiLayer):
         super().__init__(*args, **kwargs)
 
         self.child_page = None
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
 
     def childPage(self):
         return self.child_page
@@ -36,11 +36,11 @@ class LayerChildPage(SiLayer):
         self.closeChildPage()
 
     def showChildPage(self):
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, False)
         self.child_page.moveTo((self.width() - self.childPage().width()) // 2, self.height() - self.childPage().height())
 
     def closeChildPage(self):
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self.child_page.moveTo((self.width() - self.childPage().width()) // 2, self.height())
         self.child_page.delete_timer = QTimer()
         self.child_page.delete_timer.singleShot(500, self.child_page.deleteLater)

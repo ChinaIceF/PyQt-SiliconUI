@@ -97,7 +97,7 @@ class SiCapsuleLineEdit(QLineEdit):
         self._updateTextMargins()
 
         self._createCustomMenu()
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
     def _initWidget(self) -> None:
         self._left_edge_container.layout().setDirection(SiBoxContainer.LeftToRight)
@@ -368,14 +368,14 @@ class SiCapsuleLineEdit(QLineEdit):
     def _drawBodyBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 10, 10)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.title_background_color)
         painter.drawPath(path)
 
     def _drawEditBackgroundRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 10, 10)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.text_background_color)
         painter.drawPath(path)
 
@@ -396,7 +396,7 @@ class SiCapsuleLineEdit(QLineEdit):
 
         path = QPainterPath()
         path.addRoundedRect(indi_rect, 1, 1)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._text_indi_color)
         painter.drawPath(path)
 
@@ -514,7 +514,7 @@ class SiCustomLineEdit(QLineEdit):
         self.cursor_x_ani.init(1/2, 0.001, self._cursor_x, self._cursor_x)
 
         font = SiFont.getFont(size=14)
-        font.setLetterSpacing(QFont.AbsoluteSpacing, 0)
+        font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 0)
         self.setFont(font)
         self.setMaxLength(100)
 
@@ -565,7 +565,7 @@ class SiCustomLineEdit(QLineEdit):
             path = QPainterPath()
             path.addRoundedRect(self._cursor_x + 1, (line_rect.height() - 20) / 2, 5, 20, 2.0, 2.0)
             painter.setBrush(QColor("#30EDE1F4"))
-            painter.setPen(Qt.NoPen)
+            painter.setPen(Qt.PenStyle.NoPen)
             painter.drawPath(path)
 
     def _drawBackgroundRect(self, painter: QPainter, rect: QRectF) -> None:
@@ -648,7 +648,7 @@ class SiLabeledLineEdit(QLineEdit):
         super().__init__(parent)
 
         self.style_data = LineEditStyleData()
-        self._title_font = SiFont.getFont(size=10, weight=QFont.Normal)
+        self._title_font = SiFont.getFont(size=10, weight=QFont.Weight.Normal)
         self._title = title
         self._title_color = self.style_data.title_color_idle
         self._text_indi_color = self.style_data.text_indicator_color_idle
@@ -771,7 +771,7 @@ class SiLabeledLineEdit(QLineEdit):
         text_rect = QRectF(rect.x() + 11, rect.y(), rect.width(), 22 - 1)
         text_drawing_rect = painter.boundingRect(text_rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, self._title)
         background_rect = QRectF(rect.x(), rect.y(), text_drawing_rect.width() + 22, 48)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         painter.setBrush(sd.title_background_color)
         painter.drawPath(self._drawTitleBackgroundPath(background_rect))
@@ -779,7 +779,7 @@ class SiLabeledLineEdit(QLineEdit):
         painter.setPen(self._title_color)
         painter.drawText(text_drawing_rect, self._title)
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
     def _drawTextBackgroundPath(self, rect: QRectF) -> QPainterPath:
         path = QPainterPath()

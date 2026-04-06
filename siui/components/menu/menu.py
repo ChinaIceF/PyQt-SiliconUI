@@ -1,6 +1,4 @@
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
-from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components import SiWidget, SiLabel, SiDenseVContainer
 from siui.components.menu.abstracts import ABCSiMenu, AnimationManager
@@ -47,8 +45,12 @@ class SiInteractionMenu(SiWidget):
 
         self.setMoveAnchor(self.margin + self.padding, self.margin + self.padding)
         self.setMinimumSize(self.margin*2, self.margin*2)
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setWindowFlags(
+            Qt.WindowType.Popup |
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.NoDropShadowWindowHint
+        )
 
         self.body_frame = SiWidget(self)
 
@@ -57,7 +59,7 @@ class SiInteractionMenu(SiWidget):
 
         self.flash_layer = SiLabel(self)
         self.flash_layer.setFixedStyleSheet("border-radius: 6px")
-        self.flash_layer.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self.flash_layer.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.flash_layer.animationGroup().fromToken("color").setFactor(1/16)
 
         self.body_ = SiDenseVContainer(self.body_panel)

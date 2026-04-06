@@ -22,8 +22,13 @@ class ToolTipWindow(SiWidget):
         self.shadow_size = 8
         """ 阴影大小 """
 
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowTransparentForInput)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowFlags(
+            Qt.WindowType.Tool |
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint |
+            Qt.WindowType.WindowTransparentForInput
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         SiQuickEffect.applyDropShadowOn(self, (0, 0, 0, 128), blur_radius=int(self.shadow_size*1.5))
 
         self._initWidget()

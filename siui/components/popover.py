@@ -21,8 +21,12 @@ class SiPopover(QMenu):
 
         self._padding = 32
 
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)  # *
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setWindowFlags(
+            Qt.WindowType.Window |
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.NoDropShadowWindowHint
+        )  # *
 
         # 2025.5.3  * 如果使用 Qt.Popup, QGraphicProxyWidget 中的控件不能接收到 WheelEvent,
         #             因此通过重写 event 方法来实现类似 Popup 的行为
@@ -30,7 +34,7 @@ class SiPopover(QMenu):
         self._shadow_frame = QWidget(self)
 
         self._wrapper = SiGraphicWrapperWidget(self)
-        self._wrapper.setAttribute(Qt.WA_TranslucentBackground)
+        self._wrapper.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         self._initStyle()
         SiQuickEffect.applyDropShadowOn(self._shadow_frame, (0, 0, 0, 180), blur_radius=32)
@@ -52,7 +56,7 @@ class SiPopover(QMenu):
         return QSize(size.width() + 2 * self._padding, size.height() + 2 * self._padding)
 
     def event(self, event):
-        if event.type() == QEvent.WindowDeactivate:
+        if event.type() == QEvent.Type.WindowDeactivate:
             self.close()
         return super().event(event)
 
@@ -89,13 +93,13 @@ class SiPopoverStackedWidget(SiDenseContainer):
         self._no_button_label.setStyleSheet("color: #918497")
         self._no_button_label.setFont(SiFont.getFont(size=14))
         self._no_button_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._no_button_label.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._no_button_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
 
         self._no_page_label.setText("弹窗没有可供展示的页面")
         self._no_page_label.setStyleSheet("color: #D1CBD4")
         self._no_page_label.setFont(SiFont.getFont(size=14, weight=SiFont.Weight.Bold))
         self._no_page_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._no_page_label.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._no_page_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
 
         self._button_container.setFixedHeight(64)
         self._button_container.setContentsMargins(10, 8, 16, 10)
@@ -147,7 +151,7 @@ class SiPopoverDatePicker(SiDenseContainer):
 
         self._date = QDate.currentDate()
 
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background-color: transparent")
 
         self._year_picker = SiWheelPickerHorizontal(self)
@@ -172,23 +176,23 @@ class SiPopoverDatePicker(SiDenseContainer):
         self.setContentsMargins(24, 12, 16, 12)
 
         self._year_picker.setTitle("年份")
-        self._year_picker.spinBox().setAttribute(Qt.WA_TranslucentBackground)
+        self._year_picker.spinBox().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self._year_picker.spinBox().setValue(2025)
         self._year_picker.spinBox().setMaximum(2999)
 
         self._month_picker.setTitle("月份")
-        self._month_picker.spinBox().setAttribute(Qt.WA_TranslucentBackground)
+        self._month_picker.spinBox().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self._month_picker.spinBox().setValue(1)
 
         self._day_picker.setTitle("日期")
-        self._day_picker.spinBox().setAttribute(Qt.WA_TranslucentBackground)
+        self._day_picker.spinBox().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self._day_picker.spinBox().setValue(1)
 
         self._day_of_week_picker.setMinimumWidth(135)
         self._day_of_week_picker.setTitle("星期")
         self._day_of_week_picker.setSpinBox(SiWeekdaySpinBox(self))
         self._day_of_week_picker.spinBox().setFont(SiFont.getFont(size=24, weight=SiFont.Weight.Bold))
-        self._day_of_week_picker.spinBox().setAttribute(Qt.WA_TranslucentBackground)
+        self._day_of_week_picker.spinBox().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self._day_of_week_picker.spinBox().lineEdit().setValidator(None)
         self._day_of_week_picker.spinBox().lineEdit().setText("w")
 
@@ -623,7 +627,7 @@ class SiPopoverCalenderPicker(SiDenseContainer):
 
         self._date = QDate.currentDate()
 
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background-color: transparent")
 
         self._calender = SiAnimatedCalender(self)

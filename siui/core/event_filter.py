@@ -45,7 +45,7 @@ class WidgetTooltipAcceptEventFilter(QObject):
     阻断原版工具提示事件
     """
     def eventFilter(self, obj: QWidget, event):
-        if event.type() == QEvent.ToolTip:
+        if event.type() == QEvent.Type.ToolTip:
             return True
 
         return False
@@ -92,17 +92,17 @@ class WidgetToolTipRedirectEventFilter(QObject):
         return self._entered
 
     def eventFilter(self, obj: QWidget, event):
-        if event.type() == QEvent.Enter:
+        if event.type() == QEvent.Type.Enter:
             text = obj.toolTip()
             self.setTooltip(text)
             self.raiseWindow()
             self._entered = True
 
-        elif event.type() == QEvent.Leave:
+        elif event.type() == QEvent.Type.Leave:
             self.hideTooltip()
             self._entered = False
 
-        elif event.type() == QEvent.ToolTip:
+        elif event.type() == QEvent.Type.ToolTip:
             return True
 
         return False
@@ -131,14 +131,14 @@ class ScaleOnPressEventFilter(QObject):
         return self._min_scale_factor
 
     def eventFilter(self, obj: QWidget, event):
-        if event.type() == QEvent.MouseButtonPress or event.type() == QEvent.MouseButtonDblClick:
+        if event.type() == QEvent.Type.MouseButtonPress or event.type() == QEvent.Type.MouseButtonDblClick:
             ani = self.parent().animation("scaleFactor")
             ani.setFactor(1/16)
             ani.setBias(0)
             ani.setEndValue(self._min_scale_factor)
             ani.start()
 
-        elif event.type() == QEvent.MouseButtonRelease:
+        elif event.type() == QEvent.Type.MouseButtonRelease:
             ani = self.parent().animation("scaleFactor")
             ani.setFactor(1/4)
             ani.setBias(0.001)

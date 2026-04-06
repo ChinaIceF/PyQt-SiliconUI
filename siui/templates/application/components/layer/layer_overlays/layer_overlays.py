@@ -110,7 +110,7 @@ class LayerOverLays(SiLayer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self.state_change_overlay = StateChangeOverlay(self)
         self.state_change_overlay.adjustSize()
         self.state_change_overlay.setFixedSize(216, 120)

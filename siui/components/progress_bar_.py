@@ -166,7 +166,7 @@ class SiProgressBarRefactor(QProgressBar):
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 2, 2)
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.background_color)
         painter.drawPath(path)
 
@@ -174,7 +174,7 @@ class SiProgressBarRefactor(QProgressBar):
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 2, 2)
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._prog_color)
         painter.drawPath(path)
 
@@ -182,7 +182,7 @@ class SiProgressBarRefactor(QProgressBar):
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 2, 2)
 
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._flash_color)
         painter.drawPath(path)
 

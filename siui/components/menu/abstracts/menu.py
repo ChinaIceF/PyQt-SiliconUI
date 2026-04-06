@@ -28,8 +28,12 @@ class ABCSiMenu(SiWidget):
 
         self.setMoveAnchor(self.margin + self.padding, self.margin + self.padding)
         self.setMinimumSize(self.margin*2, self.margin*2)
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setWindowFlags(
+            Qt.WindowType.Popup |
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.NoDropShadowWindowHint
+        )
 
         self.frame_debugging = SiLabel(self)
         self.frame_debugging.setStyleSheet("background-color: transparent")
@@ -41,7 +45,7 @@ class ABCSiMenu(SiWidget):
 
         self.flash_layer = SiLabel(self)
         self.flash_layer.setFixedStyleSheet("border-radius: 6px")
-        self.flash_layer.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self.flash_layer.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.flash_layer.animationGroup().fromToken("color").setFactor(1/16)
 
         self.body_ = SiDenseVContainer(self.body_panel)

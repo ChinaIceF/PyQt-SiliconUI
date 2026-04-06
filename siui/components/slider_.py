@@ -205,7 +205,7 @@ class SiSlider(QAbstractSlider):
         return QSize(max(self.size().width(), 64), max(self.size().height(), 32))
 
     def event(self, event):
-        if event.type() == QEvent.ToolTip:
+        if event.type() == QEvent.Type.ToolTip:
             return True  # 忽略工具提示事件
         return super().event(event)
 
@@ -488,7 +488,7 @@ class SiCoordinatePicker2D(QWidget):
         painter.setBrush(self.style_data.indicator_background_color)
         painter.setPen(QPen(self._thumb_color, self.style_data.indicator_stroke_weight))
         painter.drawPath(self._drawIndicatorPath(indicator_rect))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
     def _drawBaseLine(self, painter: QPainter, rect: QRect) -> None:  # the rect should be the rect of background.
         margin = self.slider_x.style_data.thumb_width / 2
@@ -502,7 +502,7 @@ class SiCoordinatePicker2D(QWidget):
         painter.setPen(QPen(self.style_data.base_line_color, self.style_data.base_line_weight))
         painter.drawLine(QPointF(x, margin - d), QPointF(x, margin + d + available_h))
         painter.drawLine(QPointF(margin + rect.x() - d, y), QPointF(margin + available_w + rect.x() + d, y))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
@@ -560,7 +560,7 @@ class SiCoordinatePicker2D(QWidget):
             tool_tip_window.setText(self.toolTip(), flash=flash)
 
     def event(self, event):
-        if event.type() == QEvent.ToolTip:
+        if event.type() == QEvent.Type.ToolTip:
             return True  # 忽略工具提示事件
         return super().event(event)
 
@@ -665,7 +665,7 @@ class SiCoordinatePicker3D(SiCoordinatePicker2D):
         painter.setPen(QPen(self.style_data.base_line_color, self.style_data.base_line_weight))
         painter.drawLine(QPointF(x, margin - d), QPointF(x, margin + d + available_h))
         painter.drawLine(QPointF(margin + rect.x() - d, y), QPointF(margin + available_w + rect.x() + d, y))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
     def _drawIndicatorRect(self, painter: QPainter, rect: QRect) -> None:  # the rect should be the rect of background.
         margin = self.slider_x.style_data.thumb_width / 2
@@ -686,7 +686,7 @@ class SiCoordinatePicker3D(SiCoordinatePicker2D):
         painter.setBrush(self.style_data.indicator_background_color)
         painter.setPen(QPen(self._thumb_color, self.style_data.indicator_stroke_weight))
         painter.drawPath(self._drawIndicatorPath(indicator_rect))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
     def wheelEvent(self, a0):
         super().wheelEvent(a0)
@@ -706,7 +706,7 @@ class SiCoordinatePicker3D(SiCoordinatePicker2D):
 
         buffer = QPixmap(background_rect.size() * device_pixel_ratio)
         buffer.setDevicePixelRatio(device_pixel_ratio)
-        buffer.fill(Qt.transparent)
+        buffer.fill(Qt.GlobalColor.transparent)
 
         renderHints = (
                 QPainter.RenderHint.SmoothPixmapTransform
@@ -799,8 +799,8 @@ class SiWeekdaySpinBox(QSpinBox):
 
     def validate(self, text, pos):
         if text in self.WEEKDAYS:
-            return QValidator.Acceptable, text, pos
-        return QValidator.Invalid, text, pos
+            return QValidator.State.Acceptable, text, pos
+        return QValidator.State.Invalid, text, pos
 
     def wheelEvent(self, e):
         super().wheelEvent(e)
@@ -863,16 +863,16 @@ class SiWheelPickerVertical(SiDenseContainer):
 
         self._title_label.setFixedHeight(11)
         self._title_label.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.Bold))
+        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.Weight.Bold))
         self._title_label.setStyleSheet(
             "color: #918497;"
             # "background-color: red;"
         )
 
         self._spinbox.setFixedHeight(33)
-        font = SiFont.getFont(size=32, weight=QFont.Bold)
+        font = SiFont.getFont(size=32, weight=QFont.Weight.Bold)
         self._spinbox.setFont(font)
-        self._spinbox.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self._spinbox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
         self._spinbox.setReadOnly(True)
         self._spinbox.setStyleSheet(
             # "background-color: blue;"
@@ -905,7 +905,7 @@ class SiWheelPickerVertical(SiDenseContainer):
 
         if direction == QBoxLayout.Direction.RightToLeft:
             self.layout().setDirection(self.RightToLeft)
-            self._title_label.setAlignment(Qt.AlignmentFlag.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            self._title_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             self._spinbox.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
 
     def setTitle(self, value: str) -> None:
@@ -975,7 +975,7 @@ class SiWheelPickerHorizontal(SiDenseContainer):
         self._indicator.setColor(self.style_data.indicator_idle)
 
         # self._title_label.setFixedHeight(12)
-        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.Bold))
+        self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.Weight.Bold))
         self._title_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self._title_label.setStyleSheet(
             # "background-color: red;"
@@ -984,8 +984,8 @@ class SiWheelPickerHorizontal(SiDenseContainer):
         )
 
         self._spinbox.setFixedHeight(40)
-        self._spinbox.setFont(SiFont.getFont(size=32, weight=QFont.Bold))
-        self._spinbox.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self._spinbox.setFont(SiFont.getFont(size=32, weight=QFont.Weight.Bold))
+        self._spinbox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
         self._spinbox.setReadOnly(True)
         self._spinbox.setStyleSheet(
             # "background-color: blue;"
@@ -1238,7 +1238,7 @@ class SiScrollBar(QScrollBar):
         self._dragging_anchor_pos = thumb_rect.center()
 
     def event(self, event):
-        if event.type() == QEvent.ToolTip:
+        if event.type() == QEvent.Type.ToolTip:
             return True  # 忽略工具提示事件
         return super().event(event)
 
@@ -1315,7 +1315,7 @@ class SiScrollBar(QScrollBar):
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
         page_step = self.pageStep()
-        length = self.width() if self.orientation() == Qt.Horizontal else self.height()
+        length = self.width() if self.orientation() == Qt.Orientation.Horizontal else self.height()
         space = (page_step + self.maximum() - self.minimum())
 
         if space == 0:
@@ -1362,7 +1362,7 @@ class SiScrollAreaRefactor(QScrollArea):
 
     def _initScrollBar(self) -> None:
         self.scrollbar_v = SiScrollBar(self)
-        self.scrollbar_v.setOrientation(Qt.Vertical)
+        self.scrollbar_v.setOrientation(Qt.Orientation.Vertical)
         self.scrollbar_v.setFixedWidth(8)
         self.scrollbar_v.setStyleSheet(
             "QScrollBar:vertical {"
@@ -1373,7 +1373,7 @@ class SiScrollAreaRefactor(QScrollArea):
         )
 
         self.scrollbar_h = SiScrollBar(self)
-        self.scrollbar_h.setOrientation(Qt.Horizontal)
+        self.scrollbar_h.setOrientation(Qt.Orientation.Horizontal)
         self.scrollbar_h.setFixedHeight(8)
         self.scrollbar_h.setStyleSheet(
             "QScrollBar:horizontal {"

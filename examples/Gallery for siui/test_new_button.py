@@ -127,7 +127,7 @@ class Window(QWidget):
         self.btn.clicked.connect(lambda: print("clicked!"))
 
         self.main_layout = QVBoxLayout(self)
-        self.main_layout.addWidget(self.btn, alignment=Qt.AlignmentFlag.AlignmentFlag.AlignCenter)
+        self.main_layout.addWidget(self.btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
 
 if __name__ == "__main__":

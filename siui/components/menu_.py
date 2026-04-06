@@ -84,7 +84,7 @@ class ActionItemWidgetCheckedIndicator(QWidget):
         point3 = QPoint(12, 0) + top_left
 
         painter.setPen(self.style_data.independent_indicator_color)
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.drawLine(point1, point2)
         painter.drawLine(point2, point3)
 
@@ -94,7 +94,7 @@ class ActionItemWidgetCheckedIndicator(QWidget):
 
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 3, 3)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.exclusive_indicator_color)
         painter.drawPath(path)
 
@@ -206,11 +206,11 @@ class ActionItemWidget(SiMenuItemWidget):
         self._name_label.setStyleSheet(f"""
         QLabel {{
             margin: 0px 8px 1px 0px;
-            color: {sd.label_text_color_enabled.name(QColor.HexArgb)};
+            color: {sd.label_text_color_enabled.name(QColor.NameFormat.HexArgb)};
         }}
         QLabel:disabled {{
             margin: 0px 8px 1px 0px;
-            color: {sd.label_text_color_disabled.name(QColor.HexArgb)};
+            color: {sd.label_text_color_disabled.name(QColor.NameFormat.HexArgb)};
         }}
         """)
 
@@ -338,11 +338,11 @@ class SubmenuItemWidget(SiMenuItemWidget):
         self._name_label.setStyleSheet(f"""
         QLabel {{
             margin: 0px 8px 1px 0px;
-            color: {sd.label_text_color_enabled.name(QColor.HexArgb)};
+            color: {sd.label_text_color_enabled.name(QColor.NameFormat.HexArgb)};
         }}
         QLabel:disabled {{
             margin: 0px 8px 1px 0px;
-            color: {sd.label_text_color_disabled.name(QColor.HexArgb)};
+            color: {sd.label_text_color_disabled.name(QColor.NameFormat.HexArgb)};
         }}
         """)
 
@@ -454,7 +454,7 @@ class SeparatorItemWidget(SiMenuItemWidget):
 
     def _drawSeparationLine(self, painter: QPainter, rect: QRect) -> None:
         painter.setPen(self.style_data.seperator_color)
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.drawLine(rect.bottomLeft(), rect.bottomRight())
 
     def paintEvent(self, a0):
@@ -485,7 +485,7 @@ class SectionItemWidget(SiMenuItemWidget):
 
     def _drawSeparationLine(self, painter: QPainter, rect: QRect) -> None:
         painter.setPen(self.style_data.seperator_color)
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.drawLine(rect.bottomLeft(), rect.bottomRight())
 
     def _drawSectionText(self, painter: QPainter, rect: QRect) -> None:
@@ -542,10 +542,10 @@ class SiRoundedMenuActivationFilter(QObject):
     def eventFilter(self, obj, event):
         event_type = event.type()
 
-        if event_type == QEvent.Show:
+        if event_type == QEvent.Type.Show:
             self.menu._clearPeekingAction()  # noqa
 
-        if event_type == QEvent.WindowDeactivate:
+        if event_type == QEvent.Type.WindowDeactivate:
             if self.menu.peekingAction() is not None:
                 return False
             self.menu._closeMenuTreeUptoActivated()  # noqa
@@ -561,12 +561,12 @@ class SiRoundedMenu(QMenu):
         super().__init__(parent)
 
         self.setMouseTracking(True)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowFlags(
-            Qt.FramelessWindowHint
-            | Qt.Popup
-            | Qt.NoDropShadowWindowHint
-            | Qt.Tool
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.Popup |
+            Qt.WindowType.NoDropShadowWindowHint |
+            Qt.WindowType.Tool
         )
 
         self._items: list[SiMenuItem] = []
@@ -605,8 +605,8 @@ class SiRoundedMenu(QMenu):
         self._scroll_area.setWidget(self._container)
         self._scroll_area.setViewportMargins(0, 1, -8, 1)
         self._scroll_area.move(self._margins.left(), self._margins.top())
-        self._scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self._scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self._scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self._scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
         self._container.layout().setSpacing(4)
         self._container.setContentsMargins(6, 4, 6, 4)

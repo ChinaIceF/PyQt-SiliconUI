@@ -326,6 +326,6 @@ class ABCAnimatedLabel(QLabel):
             SiGlobal.siui.windows["TOOL_TIP"].hide_()
 
     def event(self, event):
-        if event.type() == QEvent.ToolTip:
+        if event.type() == QEvent.Type.ToolTip:
             return True  # 忽略工具提示事件
         return super().event(event)

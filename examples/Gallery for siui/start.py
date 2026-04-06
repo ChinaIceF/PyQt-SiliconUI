@@ -45,4 +45,4 @@ if __name__ == "__main__":
     timer = QTimer(window)
     timer.singleShot(500, lambda: show_version_message(window))
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

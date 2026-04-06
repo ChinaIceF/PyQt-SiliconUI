@@ -36,7 +36,7 @@ class ComboboxItemWidgetCheckedIndicator(QWidget):
             return
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 2, 2)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self.style_data.indicator_color)
         painter.drawPath(path)
 
@@ -95,11 +95,11 @@ class ComboboxItemWidget(SiMenuItemWidget):
         self._name_label.setStyleSheet(f"""
         QLabel {{
             margin: 0px 8px 1px 0px;
-            color: {sd.label_text_color_enabled.name(QColor.HexArgb)};
+            color: {sd.label_text_color_enabled.name(QColor.NameFormat.HexArgb)};
         }}
         QLabel:disabled {{
             margin: 0px 8px 1px 0px;
-            color: {sd.label_text_color_disabled.name(QColor.HexArgb)};
+            color: {sd.label_text_color_disabled.name(QColor.NameFormat.HexArgb)};
         }}
         """)
 
@@ -246,7 +246,7 @@ class SiCapsuleComboBox(QComboBox):
         self._line_edit.setReadOnly(not self.isEditable())
         self._line_edit.setTitle(self._title)
         self._line_edit.addWidgetToRight(button)
-        self._line_edit.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._line_edit.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
     def _initClickEventFilter(self) -> None:
         self._click_event_filter = ComboBoxClickEventFilter(self, self._line_edit, self._menu)

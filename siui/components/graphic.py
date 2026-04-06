@@ -117,9 +117,9 @@ class SiAnimatedTransformGraphicProxyWidget(QGraphicsProxyWidget):
         transform = QTransform()
         transform.translate(self._center.x(), self._center.y())
 
-        transform.rotate(self._x_rotate, Qt.XAxis)
-        transform.rotate(self._y_rotate, Qt.YAxis)
-        transform.rotate(self._z_rotate, Qt.ZAxis)
+        transform.rotate(self._x_rotate, Qt.Axis.XAxis)
+        transform.rotate(self._y_rotate, Qt.Axis.YAxis)
+        transform.rotate(self._z_rotate, Qt.Axis.ZAxis)
         transform.scale(self._scale, self._scale)
 
         transform.translate(-self._center.x(), -self._center.y())

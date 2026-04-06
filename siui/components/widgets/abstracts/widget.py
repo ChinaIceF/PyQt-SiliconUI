@@ -343,7 +343,7 @@ class SiWidget(QWidget):
         # render self to pixmap
         pixmap = QPixmap(self.center_widget.size() * qt_scale_factor)
         pixmap.setDevicePixelRatio(qt_scale_factor)
-        pixmap.fill(Qt.transparent)
+        pixmap.fill(Qt.GlobalColor.transparent)
         self.center_widget.render(pixmap, flags=QWidget.RenderFlag.DrawChildren)  # render all its children
 
         # get rect of this widget, translate the painter to center of the rect
