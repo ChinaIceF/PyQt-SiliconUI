@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QApplication
 
 from siui.core.token import FontStyle, GlobalFont, GlobalFontSize, GlobalFontWeight
 
@@ -45,7 +44,6 @@ class SiFont:
         """
         if families is None:
             families = (
-                    QApplication.instance().font().families() or
                     ["Segoe UI", "Microsoft YaHei", "San Francisco Fonts", ".PingFang TC", "PingFang SC"]
             )
 
