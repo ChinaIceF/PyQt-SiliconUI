@@ -114,8 +114,8 @@ class DateDisplay(SiWidget):
         self.month_label.setTextColor(self.getColor(SiColor.TEXT_D))
         self.date_label.setTextColor(self.getColor(SiColor.TEXT_B))
 
-        self.month_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
-        self.date_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.month_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        self.date_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
 
         self.month_label.setFixedSize(128, 56)
         self.date_label.setFixedSize(128, 56)
@@ -288,7 +288,7 @@ class DataItem(SiDenseVContainer):
         self.data.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.data.setText(str(data))
 
-        self.setAlignment(Qt.AlignLeft)
+        self.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setSpacing(0)
         self.addWidget(self.title)
         self.addWidget(self.data)

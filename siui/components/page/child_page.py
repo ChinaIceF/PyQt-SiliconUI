@@ -37,7 +37,7 @@ class SiChildPage(SiWidget):
         SiQuickEffect.applyDropShadowOn(self.background_panel, (0, 0, 0, 60), blur_radius=48)
 
         self.panel_ = SiDenseHContainer(self.view_)
-        self.panel_.setAlignment(Qt.AlignCenter)
+        self.panel_.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.panel_.setFixedHeight(80)
 
         # set self.view as center widget

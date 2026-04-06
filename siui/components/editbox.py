@@ -12,8 +12,9 @@ from PyQt6.QtGui import (
     QPainter,
     QPainterPath,
     QTextOption,
+    QAction,
 )
-from PyQt6.QtWidgets import QAction, QApplication, QLineEdit, QWidget
+from PyQt6.QtWidgets import QApplication, QLineEdit, QWidget
 
 from siui.components.button import SiFlatButton
 from siui.components.container import SiBoxContainer, SiDenseContainer
@@ -382,7 +383,7 @@ class SiCapsuleLineEdit(QLineEdit):
         shrunk_rect = rect.marginsRemoved(self._title_text_margins)
         option = QTextOption()
         option.setWrapMode(QTextOption.WrapMode.NoWrap)
-        option.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        option.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         painter.setFont(self._title_font)
         painter.setPen(self._title_color)
         painter.drawText(QRectF(shrunk_rect), self._title_text, option)
@@ -556,7 +557,7 @@ class SiCustomLineEdit(QLineEdit):
             char_color = self._getCharColor(index)
 
             painter.setPen(char_color)
-            painter.drawText(char_rect, Qt.AlignVCenter | Qt.AlignLeft, char)
+            painter.drawText(char_rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, char)
             sum_x += metrics.width(char)
 
     def _drawCursorRect(self, painter: QPainter, line_rect: QRectF) -> None:
@@ -768,7 +769,7 @@ class SiLabeledLineEdit(QLineEdit):
         painter.setPen(self._title_color)
         painter.setFont(self._title_font)
         text_rect = QRectF(rect.x() + 11, rect.y(), rect.width(), 22 - 1)
-        text_drawing_rect = painter.boundingRect(text_rect, Qt.AlignVCenter | Qt.AlignLeft, self._title)
+        text_drawing_rect = painter.boundingRect(text_rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, self._title)
         background_rect = QRectF(rect.x(), rect.y(), text_drawing_rect.width() + 22, 48)
         painter.setPen(Qt.NoPen)
 
@@ -864,8 +865,8 @@ class SiSpinBox(SiLabeledLineEdit):
 
         self.button_container = SiDenseContainer(self, SiDenseContainer.LeftToRight)
         self.button_container.setCursor(Qt.CursorShape.ArrowCursor)
-        self.button_container.addWidget(self.button_decrease, Qt.RightEdge)
-        self.button_container.addWidget(self.button_increase, Qt.RightEdge)
+        self.button_container.addWidget(self.button_decrease, Qt.Edge.RightEdge)
+        self.button_container.addWidget(self.button_increase, Qt.Edge.RightEdge)
         self.button_container.layout().setContentsMargins(11, 0, 11, 0)
         self.button_container.layout().setSpacing(6)
         self.button_container.setFixedWidth(68)

@@ -14,14 +14,14 @@ from siui.typing import T_WidgetParent
 
 
 class SiBoxContainer(QWidget):
-    LeftToRight = QBoxLayout.LeftToRight
-    RightToLeft = QBoxLayout.RightToLeft
-    TopToBottom = QBoxLayout.TopToBottom
-    BottomToTop = QBoxLayout.BottomToTop
+    LeftToRight = QBoxLayout.Direction.LeftToRight
+    RightToLeft = QBoxLayout.Direction.RightToLeft
+    TopToBottom = QBoxLayout.Direction.TopToBottom
+    BottomToTop = QBoxLayout.Direction.BottomToTop
 
     def __init__(self,
                  parent: T_WidgetParent = None,
-                 direction: QBoxLayout.Direction = QBoxLayout.LeftToRight) -> None:
+                 direction: QBoxLayout.Direction = QBoxLayout.Direction.LeftToRight) -> None:
         super().__init__(parent)
 
         layout = QBoxLayout(direction)
@@ -33,14 +33,14 @@ class SiBoxContainer(QWidget):
 
 
 class SiDenseContainer(QWidget):
-    LeftToRight = QBoxLayout.LeftToRight
-    RightToLeft = QBoxLayout.RightToLeft
-    TopToBottom = QBoxLayout.TopToBottom
-    BottomToTop = QBoxLayout.BottomToTop
+    LeftToRight = QBoxLayout.Direction.LeftToRight
+    RightToLeft = QBoxLayout.Direction.RightToLeft
+    TopToBottom = QBoxLayout.Direction.TopToBottom
+    BottomToTop = QBoxLayout.Direction.BottomToTop
 
     def __init__(self,
                  parent: T_WidgetParent = None,
-                 direction: QBoxLayout.Direction = QBoxLayout.LeftToRight) -> None:
+                 direction: QBoxLayout.Direction = QBoxLayout.Direction.LeftToRight) -> None:
         super().__init__(parent)
 
         self._is_stretch_widget_muted = False
@@ -68,14 +68,15 @@ class SiDenseContainer(QWidget):
     def isStretchWidgetMuted(self) -> bool:
         return self._is_stretch_widget_muted
 
-    def addWidget(self, widget: QWidget, side: Qt.Edges = Qt.LeftEdge | Qt.TopEdge) -> None:
+    def addWidget(self, widget: QWidget, side: Qt.Edge.Edges = Qt.Edge.LeftEdge | Qt.Edge.TopEdge) -> None:
         sw_index = self.layout().indexOf(self.stretch_widget)
-        if side & Qt.LeftEdge or side & Qt.TopEdge:
+        if side & Qt.Edge.LeftEdge or side & Qt.Edge.TopEdge:
             self.layout().insertWidget(sw_index, widget)
-        elif side & Qt.RightEdge or side & Qt.BottomEdge:
+        elif side & Qt.Edge.RightEdge or side & Qt.Edge.BottomEdge:
             self.layout().insertWidget(sw_index+1, widget)
         else:
             raise ValueError(f"Unexpected side: {side}")
+
 
 class PanelCardStyleData:
     background_fore_color: QColor = QColor("#332e38")
@@ -91,7 +92,7 @@ class SiPanelCard(SiDenseContainer):
 
     def __init__(self,
                  parent: T_WidgetParent = None,
-                 direction: QBoxLayout.Direction = QBoxLayout.LeftToRight) -> None:
+                 direction: QBoxLayout.Direction = QBoxLayout.Direction.LeftToRight) -> None:
         super().__init__(parent, direction)
 
         self.style_data = PanelCardStyleData()
@@ -143,11 +144,11 @@ class SiTriSectionPanelCard(SiPanelCard):
 
         self.addWidget(self._header)
         self.addWidget(self._body)
-        self.addWidget(self._footer, Qt.BottomEdge)
+        self.addWidget(self._footer, Qt.Edge.BottomEdge)
 
-        self._header.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        self._body.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        self._footer.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self._header.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Preferred)
+        self._body.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Preferred)
+        self._footer.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Preferred)
 
         self._initStyle()
 
@@ -197,7 +198,7 @@ class SiRowCard(SiDenseContainer):
 
     def __init__(self,
                  parent: T_WidgetParent = None,
-                 direction: QBoxLayout.Direction = QBoxLayout.LeftToRight) -> None:
+                 direction: QBoxLayout.Direction = QBoxLayout.Direction.LeftToRight) -> None:
         super().__init__(parent, direction)
 
         self.style_data = RowCardStyleData()
@@ -245,7 +246,7 @@ class SiTriSectionRowCard(SiRowCard):
 
         self.addWidget(self._icon_container)
         self.addWidget(self._text_container)
-        self.addWidget(self._action_container, Qt.RightEdge)
+        self.addWidget(self._action_container, Qt.Edge.RightEdge)
 
         self._initStyle()
 
@@ -269,7 +270,7 @@ class SiTriSectionRowCard(SiRowCard):
 
         self._icon_container.setFixedWidth(80)
         self._icon_container.layout().setSpacing(0)
-        self._icon_container.layout().setAlignment(self._icon, Qt.AlignCenter)
+        self._icon_container.layout().setAlignment(self._icon, Qt.AlignmentFlag.AlignCenter)
         self._icon_container.layout().setStretchFactor(self._icon_container.stretchWidget(), 0)
 
         self._text_container.layout().setSpacing(0)

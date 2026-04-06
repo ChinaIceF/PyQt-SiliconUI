@@ -13,7 +13,7 @@ class SiLineEdit(ABCSiLineEdit):
 
         self.line_edit = SiSimpleLineEdit(self)
         self.line_edit.setTextMargins(12, 0, 12, 1)
-        self.line_edit.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.line_edit.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         self.line_edit.onFocus.connect(self.on_focus_changed)
         self.line_edit.returnPressed.connect(self.line_edit.clearFocus)  # 按下回车，移出焦点
         self.container().addWidget(self.line_edit)
@@ -63,10 +63,10 @@ class SiLineEditWithItemName(SiWidget):
 
         self.name_label = SiLabel(self)
         self.name_label.setContentsMargins(16, 0, 16, 0)
-        self.name_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.name_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
         self.line_edit = SiSimpleLineEdit(self.edit_panel)
-        self.line_edit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.line_edit.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.line_edit.setTextMargins(16, 0, 16, 0)
         self.line_edit.textEdited.connect(self.flash_on_edited)
 

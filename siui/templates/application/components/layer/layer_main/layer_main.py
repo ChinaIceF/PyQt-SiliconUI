@@ -24,7 +24,7 @@ class LayerMain(SiLayer):
         # -> 标题栏处的水平容器，左侧是图标和标题，右侧是操作按钮
         self.container_title = SiDenseHContainer(self)
         self.container_title.setSpacing(0)
-        self.container_title.setAlignment(Qt.AlignCenter)
+        self.container_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.container_title.setFixedHeight(64)
 
         # 应用内图标
@@ -34,7 +34,7 @@ class LayerMain(SiLayer):
 
         # 应用标题
         self.app_title = SiLabel(self)
-        self.app_title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.app_title.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         self.app_title.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.app_title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.app_title.setText("Silicon 应用模版")

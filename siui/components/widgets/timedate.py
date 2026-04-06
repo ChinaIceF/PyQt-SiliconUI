@@ -6,8 +6,8 @@ from dateutil.relativedelta import relativedelta
 from PyQt6.QtCore import QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
-from siui.components import SiDenseHContainer, SiDenseVContainer, SiFlashLabel, SiLabel, SiSimpleButton, SiWidget, \
-    SiSvgLabel, SiIconLabel
+from siui.components import (
+    SiDenseHContainer, SiDenseVContainer, SiFlashLabel, SiLabel, SiSimpleButton, SiWidget, SiIconLabel)
 from siui.components.menu.abstracts import AnimationManager
 from siui.components.menu.menu import SiInteractionMenu
 from siui.core import SiColor, SiGlobal
@@ -33,7 +33,7 @@ class CalenderDateWidget(SiWidget):
 
         self.day_label = SiLabel(self)
         self.day_label.setFixedSize(36, 36)
-        self.day_label.setAlignment(Qt.AlignCenter)
+        self.day_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.day_label.setTextColor(self.getColor(SiColor.TEXT_B))
 
         self.setDate(date)
@@ -66,20 +66,20 @@ class CalenderWidget(SiDenseVContainer):
 
         self.selected_date = datetime.date.today()
         self.displayed_date = datetime.date.today()
-        self.setAlignment(Qt.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         year_month_container = SiDenseHContainer(self)
         year_month_container.setFixedWidth(300 - 24)
         year_month_container.setFixedHeight(64)
         year_month_container.setSpacing(0)
-        year_month_container.setAlignment(Qt.AlignCenter)
+        year_month_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.year_month_label = SiFlashLabel(self)
         self.year_month_label.flash_layer.setFixedStyleSheet("border-radius: 4px")
         self.year_month_label.setTextColor(self.getColor(SiColor.TEXT_B))
         self.year_month_label.resize(96, 32)
         self.year_month_label.setContentsMargins(12, 6, 12, 6)
-        self.year_month_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.year_month_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
         self.prev_month_button = SiSimpleButton(self)
         self.prev_month_button.attachment().setSvgSize(16, 16)
@@ -126,7 +126,7 @@ class CalenderWidget(SiDenseVContainer):
             this_widget = SiLabel(self.calender_date_container)
             this_widget.setFont(SiFont.getFont(size=12, weight=QFont.Weight.DemiBold))
             this_widget.resize(36, 36)
-            this_widget.setAlignment(Qt.AlignCenter)
+            this_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
             this_widget.setTextColor(self.getColor(SiColor.TEXT_B))
             this_widget.setText(weekday_name[i])
             this_widget.move(i * 40, 0)
@@ -280,12 +280,12 @@ class TimeNumberScroller(SiWidget):
 
         self.num_label = SiLabel(self)
         self.num_label.setFont(SiFont.getFont(size=40, weight=QFont.Weight.DemiBold))
-        self.num_label.setAlignment(Qt.AlignCenter)
+        self.num_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.num_label.setTextColor(self.getColor(SiColor.TEXT_B))
         self.num_label.setText("00")
         self.num_label.setFixedSize(80, 48)
 
-        self.container.setAlignment(Qt.AlignCenter)
+        self.container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.container.setSpacing(8)
         self.container.addWidget(self.button_increase)
         self.container.addWidget(self.num_label)
@@ -349,7 +349,7 @@ class TimePickerWidget(SiDenseVContainer):
 
         # 上方按钮
         self.ctrl_container = SiDenseHContainer(self)
-        self.ctrl_container.setAlignment(Qt.AlignCenter)
+        self.ctrl_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ctrl_container.setFixedHeight(64)
         self.ctrl_container.setFixedWidth(274)
 
@@ -397,19 +397,19 @@ class TimePickerWidget(SiDenseVContainer):
         self.colon1 = SiLabel(self)
         self.colon1.setFixedSize(16, 130)
         self.colon1.setFont(SiFont.getFont(size=24))
-        self.colon1.setAlignment(Qt.AlignCenter)
+        self.colon1.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.colon1.setTextColor(self.getColor(SiColor.TEXT_D))
         self.colon1.setText(":")
 
         self.colon2 = SiLabel(self)
         self.colon2.setFixedSize(16, 130)
         self.colon2.setFont(SiFont.getFont(size=24))
-        self.colon2.setAlignment(Qt.AlignCenter)
+        self.colon2.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.colon2.setTextColor(self.getColor(SiColor.TEXT_D))
         self.colon2.setText(":")
 
         self.time_scroller_container.setSpacing(0)
-        self.time_scroller_container.setAlignment(Qt.AlignCenter)
+        self.time_scroller_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.time_scroller_container.addWidget(self.hour_scroller)
         self.time_scroller_container.addWidget(self.colon1)
         self.time_scroller_container.addWidget(self.min_scroller)
@@ -417,7 +417,7 @@ class TimePickerWidget(SiDenseVContainer):
         self.time_scroller_container.addWidget(self.sec_scroller)
 
         self.setSpacing(18)
-        self.setAlignment(Qt.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.addWidget(self.ctrl_container)
         self.addWidget(self.time_scroller_container)
 
@@ -470,7 +470,7 @@ class SiTimePicker(SiWidget):
         self.time_picker_widget.editFinished.connect(self.on_confirm_button_clicked)
 
         self.menu.body_.setAdjustWidgetsSize(True)
-        self.menu.body_.setAlignment(Qt.AlignHCenter)
+        self.menu.body_.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.menu.body_.addWidget(self.time_picker_widget)
 
     def on_time_changed(self, time: datetime.time):
@@ -508,7 +508,7 @@ class TimeSpanPickerWidget(SiDenseVContainer):
 
         # 上方按钮
         self.ctrl_container = SiDenseHContainer(self)
-        self.ctrl_container.setAlignment(Qt.AlignCenter)
+        self.ctrl_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ctrl_container.setFixedHeight(64)
         self.ctrl_container.setFixedWidth(274)
 
@@ -556,19 +556,19 @@ class TimeSpanPickerWidget(SiDenseVContainer):
         self.colon1 = SiLabel(self)
         self.colon1.setFixedSize(16, 130)
         self.colon1.setFont(SiFont.getFont(size=24))
-        self.colon1.setAlignment(Qt.AlignCenter)
+        self.colon1.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.colon1.setTextColor(self.getColor(SiColor.TEXT_D))
         self.colon1.setText(":")
 
         self.colon2 = SiLabel(self)
         self.colon2.setFixedSize(16, 130)
         self.colon2.setFont(SiFont.getFont(size=24))
-        self.colon2.setAlignment(Qt.AlignCenter)
+        self.colon2.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.colon2.setTextColor(self.getColor(SiColor.TEXT_D))
         self.colon2.setText(":")
 
         self.time_scroller_container.setSpacing(0)
-        self.time_scroller_container.setAlignment(Qt.AlignCenter)
+        self.time_scroller_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.time_scroller_container.addWidget(self.hour_scroller)
         self.time_scroller_container.addWidget(self.colon1)
         self.time_scroller_container.addWidget(self.min_scroller)
@@ -576,7 +576,7 @@ class TimeSpanPickerWidget(SiDenseVContainer):
         self.time_scroller_container.addWidget(self.sec_scroller)
 
         self.setSpacing(18)
-        self.setAlignment(Qt.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.addWidget(self.ctrl_container)
         self.addWidget(self.time_scroller_container)
 
@@ -630,7 +630,7 @@ class SiTimeSpanPicker(SiWidget):
         self.time_picker_widget.editFinished.connect(self.on_confirm_button_clicked)
 
         self.menu.body_.setAdjustWidgetsSize(True)
-        self.menu.body_.setAlignment(Qt.AlignHCenter)
+        self.menu.body_.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.menu.body_.addWidget(self.time_picker_widget)
 
     def on_time_changed(self, time: datetime.timedelta):

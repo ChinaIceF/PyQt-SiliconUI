@@ -18,7 +18,7 @@ class ExampleFunctional(SiPage):
 
         self.setPadding(64)
         self.setScrollMaximumWidth(1040)
-        self.setScrollAlignment(Qt.AlignHCenter)
+        self.setScrollAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.setTitle("功能组件")
 
         # 创建控件组

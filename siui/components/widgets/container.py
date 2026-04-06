@@ -58,9 +58,9 @@ class ABCDenseContainer(SiWidget):
         :param b: 是否放置在中轴线上
         :return:
         """
-        print("Warning: method `setAlignCenter` is deprecated, use setAlignment(Qt.AlignCenter) instead.")  # noqa: T201
+        print("Warning: method `setAlignCenter` is deprecated, use setAlignment(Qt.AlignmentFlag.AlignCenter) instead.")  # noqa: T201
         if b is True:
-            self.setAlignment(self.alignment() | Qt.AlignCenter)
+            self.setAlignment(self.alignment() | Qt.AlignmentFlag.AlignCenter)
 
     def setAlignment(self, alignment):
         self.alignment_ = alignment
@@ -103,7 +103,7 @@ class SiDenseHContainer(ABCDenseContainer):
         super().__init__(*args, *kwargs)
         self.widgets_left = []
         self.widgets_right = []
-        self.alignment_ = Qt.AlignTop
+        self.alignment_ = Qt.AlignmentFlag.AlignTop
 
     def addPlaceholder(self, length, side="left", index=10000):
         """
@@ -213,11 +213,11 @@ class SiDenseHContainer(ABCDenseContainer):
                 obj.resize(obj.width(), self.height())
 
             # 判断并设置对齐方式
-            if (self.alignment_ & Qt.AlignTop) == Qt.AlignTop:
+            if (self.alignment_ & Qt.AlignmentFlag.AlignTop) == Qt.AlignmentFlag.AlignTop:
                 y = 0
-            elif (self.alignment_ & Qt.AlignVCenter) == Qt.AlignVCenter:
+            elif (self.alignment_ & Qt.AlignmentFlag.AlignVCenter) == Qt.AlignmentFlag.AlignVCenter:
                 y = (self.height() - obj.height()) // 2
-            elif (self.alignment_ & Qt.AlignBottom) == Qt.AlignBottom:
+            elif (self.alignment_ & Qt.AlignmentFlag.AlignBottom) == Qt.AlignmentFlag.AlignBottom:
                 y = self.height() - obj.height()
             else:
                 y = 0
@@ -238,11 +238,11 @@ class SiDenseHContainer(ABCDenseContainer):
                 obj.resize(obj.width(), self.height())
 
             # 判断并设置对齐方式
-            if (self.alignment_ & Qt.AlignTop) == Qt.AlignTop:
+            if (self.alignment_ & Qt.AlignmentFlag.AlignTop) == Qt.AlignmentFlag.AlignTop:
                 y = 0
-            elif (self.alignment_ & Qt.AlignVCenter) == Qt.AlignVCenter:
+            elif (self.alignment_ & Qt.AlignmentFlag.AlignVCenter) == Qt.AlignmentFlag.AlignVCenter:
                 y = (self.height() - obj.height()) // 2
-            elif (self.alignment_ & Qt.AlignBottom) == Qt.AlignBottom:
+            elif (self.alignment_ & Qt.AlignmentFlag.AlignBottom) == Qt.AlignmentFlag.AlignBottom:
                 y = self.height() - obj.height()
             else:
                 y = 0
@@ -286,7 +286,7 @@ class SiDenseVContainer(ABCDenseContainer):
         super().__init__(*args, *kwargs)
         self.widgets_bottom = []
         self.widgets_top = []
-        self.alignment_ = Qt.AlignLeft
+        self.alignment_ = Qt.AlignmentFlag.AlignLeft
 
     def addPlaceholder(self, length, side="top", index=10000):
         """
@@ -396,11 +396,11 @@ class SiDenseVContainer(ABCDenseContainer):
                 obj.resize(self.width(), obj.height())
 
             # 判断并设置对齐方式
-            if (self.alignment_ & Qt.AlignLeft) == Qt.AlignLeft:
+            if (self.alignment_ & Qt.AlignmentFlag.AlignLeft) == Qt.AlignmentFlag.AlignLeft:
                 x = 0
-            elif (self.alignment_ & Qt.AlignHCenter) == Qt.AlignHCenter:
+            elif (self.alignment_ & Qt.AlignmentFlag.AlignHCenter) == Qt.AlignmentFlag.AlignHCenter:
                 x = (self.width() - obj.width()) // 2
-            elif (self.alignment_ & Qt.AlignRight) == Qt.AlignRight:
+            elif (self.alignment_ & Qt.AlignmentFlag.AlignRight) == Qt.AlignmentFlag.AlignRight:
                 x = self.width() - obj.width()
             else:
                 x = 0
@@ -421,11 +421,11 @@ class SiDenseVContainer(ABCDenseContainer):
                 obj.resize(self.width(), obj.height())
 
             # 判断并设置对齐方式
-            if (self.alignment_ & Qt.AlignLeft) == Qt.AlignLeft:
+            if (self.alignment_ & Qt.AlignmentFlag.AlignLeft) == Qt.AlignmentFlag.AlignLeft:
                 x = 0
-            elif (self.alignment_ & Qt.AlignHCenter) == Qt.AlignHCenter:
+            elif (self.alignment_ & Qt.AlignmentFlag.AlignHCenter) == Qt.AlignmentFlag.AlignHCenter:
                 x = (self.width() - obj.width()) // 2
-            elif (self.alignment_ & Qt.AlignRight) == Qt.AlignRight:
+            elif (self.alignment_ & Qt.AlignmentFlag.AlignRight) == Qt.AlignmentFlag.AlignRight:
                 x = self.width() - obj.width()
             else:
                 x = 0
@@ -471,23 +471,23 @@ class SiDividedHContainer(ABCSiDividedContainer):
         x_counter = 0
         for section, widget in zip(self.sections(), self.widgets()):
             alignment = section.alignment()
-            if (alignment & Qt.AlignLeft) == Qt.AlignLeft:
+            if (alignment & Qt.AlignmentFlag.AlignLeft) == Qt.AlignmentFlag.AlignLeft:
                 x = x_counter
-            elif (alignment & Qt.AlignHCenter) == Qt.AlignHCenter:
+            elif (alignment & Qt.AlignmentFlag.AlignHCenter) == Qt.AlignmentFlag.AlignHCenter:
                 x = x_counter + (section.width() - widget.width()) // 2
-            elif (alignment & Qt.AlignRight) == Qt.AlignRight:
+            elif (alignment & Qt.AlignmentFlag.AlignRight) == Qt.AlignmentFlag.AlignRight:
                 x = x_counter + (section.width() - widget.width())
             else:
-                x = x_counter   # use Qt.AlignLeft if horizontal alignment arg is not assign
+                x = x_counter   # use Qt.AlignmentFlag.AlignLeft if horizontal alignment arg is not assign
 
-            if (alignment & Qt.AlignTop) == Qt.AlignTop:
+            if (alignment & Qt.AlignmentFlag.AlignTop) == Qt.AlignmentFlag.AlignTop:
                 y = 0
-            elif (alignment & Qt.AlignVCenter) == Qt.AlignVCenter:
+            elif (alignment & Qt.AlignmentFlag.AlignVCenter) == Qt.AlignmentFlag.AlignVCenter:
                 y = (section.height() - widget.height()) // 2
-            elif (alignment & Qt.AlignBottom) == Qt.AlignBottom:
+            elif (alignment & Qt.AlignmentFlag.AlignBottom) == Qt.AlignmentFlag.AlignBottom:
                 y = section.height() - widget.height()
             else:
-                y = 0   # use Qt.AlignTop if vertical alignment arg is not assign
+                y = 0   # use Qt.AlignmentFlag.AlignTop if vertical alignment arg is not assign
 
             widget.move(x, y)
             x_counter += section.width() + self.spacing()
@@ -504,22 +504,22 @@ class SiDividedVContainer(ABCSiDividedContainer):
         y_counter = 0
         for section, widget in zip(self.sections(), self.widgets()):
             alignment = section.alignment()
-            if (alignment & Qt.AlignLeft) == Qt.AlignLeft:
+            if (alignment & Qt.AlignmentFlag.AlignLeft) == Qt.AlignmentFlag.AlignLeft:
                 x = 0
-            elif (alignment & Qt.AlignHCenter) == Qt.AlignHCenter:
+            elif (alignment & Qt.AlignmentFlag.AlignHCenter) == Qt.AlignmentFlag.AlignHCenter:
                 x = (section.width() - widget.width()) // 2
-            elif (alignment & Qt.AlignRight) == Qt.AlignRight:
+            elif (alignment & Qt.AlignmentFlag.AlignRight) == Qt.AlignmentFlag.AlignRight:
                 x = section.width() - widget.width()
             else:
-                x = 0   # use Qt.AlignLeft if horizontal alignment arg is not assign
+                x = 0   # use Qt.AlignmentFlag.AlignLeft if horizontal alignment arg is not assign
 
-            if (alignment & Qt.AlignTop) == Qt.AlignTop:
+            if (alignment & Qt.AlignmentFlag.AlignTop) == Qt.AlignmentFlag.AlignTop:
                 y = y_counter
-            elif (alignment & Qt.AlignVCenter) == Qt.AlignVCenter:
+            elif (alignment & Qt.AlignmentFlag.AlignVCenter) == Qt.AlignmentFlag.AlignVCenter:
                 y = y_counter + (section.height() - widget.height()) // 2
-            elif (alignment & Qt.AlignBottom) == Qt.AlignBottom:
+            elif (alignment & Qt.AlignmentFlag.AlignBottom) == Qt.AlignmentFlag.AlignBottom:
                 y = y_counter + (section.height() - widget.height())
-            else:   # use Qt.AlignTop if vertical alignment arg is not assign
+            else:   # use Qt.AlignmentFlag.AlignTop if vertical alignment arg is not assign
                 y = y_counter
 
             widget.move(x, y)

@@ -110,7 +110,7 @@ class SiPushButton(QPushButton):
         text_rect = QRect(0, 0, self.width(), self.height() - 4)
         painter.setPen(QColor(239, 239, 239))  # 设置文本颜色
         painter.setFont(self.font())  # 设置字体和大小
-        painter.drawText(text_rect, Qt.AlignCenter, self.text())  # 在按钮中心绘制文本
+        painter.drawText(text_rect, Qt.AlignmentFlag.AlignCenter, self.text())  # 在按钮中心绘制文本
         painter.end()
 
 
@@ -127,7 +127,7 @@ class Window(QWidget):
         self.btn.clicked.connect(lambda: print("clicked!"))
 
         self.main_layout = QVBoxLayout(self)
-        self.main_layout.addWidget(self.btn, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.main_layout.addWidget(self.btn, alignment=Qt.AlignmentFlag.AlignmentFlag.AlignCenter)
 
 
 if __name__ == "__main__":

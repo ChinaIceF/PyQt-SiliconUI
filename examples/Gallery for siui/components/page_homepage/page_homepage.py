@@ -52,14 +52,14 @@ class ExampleHomepage(SiPage):
         # 创建大标题和副标题
         self.title = SiLabel(self.head_area)
         self.title.setGeometry(64, 0, 500, 128)
-        self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.title.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         self.title.setText("Silicon UI")
         self.title.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_A"]))
         self.title.setFont(SiFont.tokenized(GlobalFont.XL_MEDIUM))
 
         self.subtitle = SiLabel(self.head_area)
         self.subtitle.setGeometry(64, 72, 500, 48)
-        self.subtitle.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.subtitle.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         self.subtitle.setText("A powerful and artistic UI library based on PyQt5")
         self.subtitle.setStyleSheet("color: {}".format(SiColor.trans(SiGlobal.siui.colors["TEXT_A"], 0.9)))
         self.subtitle.setFont(SiFont.tokenized(GlobalFont.S_MEDIUM))
@@ -68,7 +68,7 @@ class ExampleHomepage(SiPage):
         self.container_for_cards = SiDenseHContainer(self.head_area)
         self.container_for_cards.move(0, 130)
         self.container_for_cards.setFixedHeight(310)
-        self.container_for_cards.setAlignment(Qt.AlignCenter)
+        self.container_for_cards.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.container_for_cards.setSpacing(32)
 
         # 添加卡片
@@ -200,7 +200,7 @@ class WidgetsExamplePanel(SiDenseVContainer):
 
         option_card_switch_container_h = SiDenseHContainer(self)
         option_card_switch_container_h.setFixedHeight(40)
-        option_card_switch_container_h.setAlignment(Qt.AlignCenter)
+        option_card_switch_container_h.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         switch = SiSwitch(self)
         switch.setFixedHeight(32)
@@ -256,7 +256,7 @@ class WidgetsExamplePanel(SiDenseVContainer):
 
         # 查看更多容器
         container_v_button = SiDenseVContainer(self)
-        container_v_button.setAlignment(Qt.AlignCenter)
+        container_v_button.setAlignment(Qt.AlignmentFlag.AlignCenter)
         container_v_button.addWidget(button_description)
 
         # 添加两个水平容器到自己
@@ -331,7 +331,7 @@ class OptionCardsExamplePanel(SiDenseVContainer):
         self.option_card_plane_beginning.body().addWidget(body_label, side="top")
         self.option_card_plane_beginning.footer().setFixedHeight(64)
         self.option_card_plane_beginning.footer().setSpacing(8)
-        self.option_card_plane_beginning.footer().setAlignment(Qt.AlignCenter)
+        self.option_card_plane_beginning.footer().setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.option_card_plane_beginning.footer().addWidget(footer_button_a, side="left")
         self.option_card_plane_beginning.footer().addWidget(footer_button_b, side="left")
         self.option_card_plane_beginning.footer().addWidget(footer_button_c, side="left")
@@ -351,7 +351,7 @@ class OptionCardsExamplePanel(SiDenseVContainer):
 
         # 查看更多容器
         container_v_button = SiDenseVContainer(self)
-        container_v_button.setAlignment(Qt.AlignCenter)
+        container_v_button.setAlignment(Qt.AlignmentFlag.AlignCenter)
         container_v_button.addWidget(button_description)
 
         self.addWidget(container_v_button)

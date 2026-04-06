@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from PyQt6.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt
-from PyQt6.QtGui import QColor, QIcon, QKeySequence, QMouseEvent, QPainter, QPainterPath
-from PyQt6.QtWidgets import QAction, QActionGroup, QComboBox, QHBoxLayout, QLabel, QSpacerItem, QWidget
+from PyQt6.QtCore import QEvent, QObject, QPoint, QRect, QRectF, QSize, Qt
+from PyQt6.QtGui import QColor, QIcon, QKeySequence, QMouseEvent, QPainter, QPainterPath, QAction, QActionGroup
+from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSpacerItem, QWidget
 
 from siui.components.button import SiFlatButton, SiTransparentButton
 from siui.components.editbox import SiCapsuleLineEdit
@@ -89,7 +89,7 @@ class ComboboxItemWidget(SiMenuItemWidget):
 
         self._name_label.setFont(SiFont.getFont(size=14))
         self._name_label.setText(self._action.text())
-        self._name_label.setAlignment(Qt.AlignVCenter)
+        self._name_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self._name_label.setFixedHeight(32)
         self._name_label.setMinimumWidth(32)
         self._name_label.setStyleSheet(f"""
@@ -104,7 +104,7 @@ class ComboboxItemWidget(SiMenuItemWidget):
         """)
 
         self._shortcut_widget.setFont(SiFont.getFont(size=9))
-        self._shortcut_widget.setAlignment(Qt.AlignCenter)
+        self._shortcut_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._shortcut_widget.setFixedHeight(18)
 
         self._button.setBorderRadius(6)

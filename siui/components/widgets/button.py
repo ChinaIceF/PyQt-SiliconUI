@@ -23,7 +23,7 @@ class SiPushButton(ABCPushButton):
         self.label = SiIconLabel(self)
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-        self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
         self.setAttachmentShifting(0, -1)
@@ -99,7 +99,7 @@ class SiLongPressButton(ABCPushButton):
         self.label = SiIconLabel(self)
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-        self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignHCenter)
 
         # 设置偏移量，以保证在按钮明亮面显示
         self.setAttachmentShifting(0, -1)
@@ -158,7 +158,7 @@ class SiToggleButton(ABCToggleButton):
         self.label = SiIconLabel(self)
         self.label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-        self.label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignHCenter)
 
         # 绑定到主体
         self.setAttachment(self.label)
@@ -211,7 +211,7 @@ class SiRadioButton(SiLabel):
 
         # 创建选项文字
         self.text_label = SiLabel(self)
-        self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.text_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         self.text_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
@@ -331,7 +331,7 @@ class SiCheckBox(SiLabel):
 
         # 创建选项文字
         self.text_label = SiLabel(self)
-        self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.text_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         self.text_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
         self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 

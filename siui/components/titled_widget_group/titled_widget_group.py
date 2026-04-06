@@ -17,7 +17,7 @@ class GroupTitle(SiLabel):
         self.title_label = SiLabel(self)
         self.title_label.setFont(SiFont.tokenized(GlobalFont.M_BOLD))
         self.title_label.setFixedHeight(26)
-        self.title_label.setAlignment(Qt.AlignBottom)
+        self.title_label.setAlignment(Qt.AlignmentFlag.Alignment.AlignBottom)
         self.title_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
         # 标题高光，显示在文字下方

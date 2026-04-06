@@ -73,7 +73,7 @@ class SiPopoverStackedWidget(SiDenseContainer):
         self._no_page_label = QLabel(self)
         self._close_button = SiFlatButton(self)
 
-        self._button_container.addWidget(self._close_button, Qt.RightEdge)
+        self._button_container.addWidget(self._close_button, Qt.Edge.RightEdge)
 
         self.addWidget(self._button_container)
         self.addWidget(self._stack_widget)
@@ -88,13 +88,13 @@ class SiPopoverStackedWidget(SiDenseContainer):
         self._no_button_label.setText("无页面")
         self._no_button_label.setStyleSheet("color: #918497")
         self._no_button_label.setFont(SiFont.getFont(size=14))
-        self._no_button_label.setAlignment(Qt.AlignCenter)
+        self._no_button_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._no_button_label.setAttribute(Qt.WA_TransparentForMouseEvents)
 
         self._no_page_label.setText("弹窗没有可供展示的页面")
         self._no_page_label.setStyleSheet("color: #D1CBD4")
         self._no_page_label.setFont(SiFont.getFont(size=14, weight=SiFont.Weight.Bold))
-        self._no_page_label.setAlignment(Qt.AlignCenter)
+        self._no_page_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._no_page_label.setAttribute(Qt.WA_TransparentForMouseEvents)
 
         self._button_container.setFixedHeight(64)
@@ -160,7 +160,7 @@ class SiPopoverDatePicker(SiDenseContainer):
         self.addWidget(self._month_picker)
         self.addWidget(self._day_picker)
         self.addWidget(self._day_of_week_picker)
-        self.addWidget(self._set_to_today_button, side=Qt.RightEdge)
+        self.addWidget(self._set_to_today_button, side=Qt.Edge.RightEdge)
 
         self._initStyle()
         self._initSignal()
@@ -260,7 +260,7 @@ class SiCalenderDateWidget(QWidget):
         self._font_bold = SiFont.getFont(size=12, weight=SiFont.Weight.Bold)
 
         label = QLabel(self)
-        label.setAlignment(Qt.AlignCenter)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         label.setFont(self._font_normal)
 
         self._center_widget = label
@@ -500,7 +500,7 @@ class SiAnimatedCalender(SiDenseContainer):
             new_label = QLabel(self)
             new_label.setFont(font)
             new_label.setText(text[i])
-            new_label.setAlignment(Qt.AlignCenter)
+            new_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             new_label.setStyleSheet("color: #D1CBD4")
 
             container.addWidget(new_label)
@@ -638,11 +638,11 @@ class SiPopoverCalenderPicker(SiDenseContainer):
         self._createCalenderButton()
         self._createPickerButton()
 
-        self._pickers_container.addWidget(self._all_btn_container, Qt.BottomEdge)
+        self._pickers_container.addWidget(self._all_btn_container, Qt.Edge.BottomEdge)
 
         self.addWidget(self._calender)
         self.addWidget(self._separator)
-        self.addWidget(self._pickers_container, side=Qt.RightEdge)
+        self.addWidget(self._pickers_container, side=Qt.Edge.RightEdge)
 
         self._initStyle()
         self._initSignal()
@@ -670,7 +670,7 @@ class SiPopoverCalenderPicker(SiDenseContainer):
         self._pickers_container.addWidget(self._month_picker)
         self._pickers_container.addWidget(self._day_picker)
 
-        self._pickers_container.layout().setAlignment(self._year_picker, Qt.AlignRight)
+        self._pickers_container.layout().setAlignment(self._year_picker, Qt.AlignmentFlag.AlignRight)
 
     def _createCalenderButton(self) -> None:
         self._prev_page_btn = SiFlatButton(self)
@@ -678,17 +678,17 @@ class SiPopoverCalenderPicker(SiDenseContainer):
         self._next_page_btn = SiFlatButton(self)
         self._next_page_btn.setToolTip("下一页")
 
-        self._calender_btn_container.addWidget(self._next_page_btn, Qt.BottomEdge)
-        self._calender_btn_container.addWidget(self._prev_page_btn, Qt.BottomEdge)
+        self._calender_btn_container.addWidget(self._next_page_btn, Qt.Edge.BottomEdge)
+        self._calender_btn_container.addWidget(self._prev_page_btn, Qt.Edge.BottomEdge)
 
-        self._all_btn_container.addWidget(self._calender_btn_container, Qt.LeftEdge)
+        self._all_btn_container.addWidget(self._calender_btn_container, Qt.Edge.LeftEdge)
 
     def _createPickerButton(self) -> None:
         self._set_to_today_btn = SiFlatButton(self)
         self._set_to_today_btn.setToolTip("设为今天")
 
-        self._picker_btn_container.addWidget(self._set_to_today_btn, Qt.BottomEdge)
-        self._all_btn_container.addWidget(self._picker_btn_container, Qt.RightEdge)
+        self._picker_btn_container.addWidget(self._set_to_today_btn, Qt.Edge.BottomEdge)
+        self._all_btn_container.addWidget(self._picker_btn_container, Qt.Edge.RightEdge)
 
     def _initStyle(self) -> None:
         self.layout().setSpacing(4)

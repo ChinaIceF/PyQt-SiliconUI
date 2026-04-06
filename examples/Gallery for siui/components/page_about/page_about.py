@@ -28,7 +28,7 @@ class About(SiPage):
         self.titled_widget_group.setSiliconWidgetFlag(Si.EnableAnimationSignals)
 
         version_picture_container = SiDenseVContainer(self)
-        version_picture_container.setAlignment(Qt.AlignCenter)
+        version_picture_container.setAlignment(Qt.AlignmentFlag.Alignment.AlignCenter)
         version_picture_container.setFixedHeight(128 + 48)
         SiQuickEffect.applyDropShadowOn(version_picture_container, color=(28, 25, 31, 255), blur_radius=48)
 

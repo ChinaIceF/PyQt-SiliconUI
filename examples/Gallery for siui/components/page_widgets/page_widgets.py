@@ -67,7 +67,7 @@ class ExampleWidgets(SiPage):
 
         self.setPadding(64)
         self.setScrollMaximumWidth(1000)
-        self.setScrollAlignment(Qt.AlignLeft)
+        self.setScrollAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setTitle("控件")
 
         # 创建控件组
@@ -111,7 +111,7 @@ class ExampleWidgets(SiPage):
             self.pix_label.setTitle("图片标签")
 
             container_pix_label = SiDenseHContainer(self)
-            container_pix_label.setAlignment(Qt.AlignCenter)
+            container_pix_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             container_pix_label.setFixedHeight(80 + 24)
 
             self.demo_pix_label_a = SiPixLabel(self)
@@ -888,10 +888,10 @@ class ExampleWidgets(SiPage):
 
             self.demo_table_simple = SiTableView(self)
             self.demo_table_simple.resize(752, 360)
-            self.demo_table_simple.addColumn("歌曲名", 190, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_simple.addColumn("歌手", 160, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_simple.addColumn("专辑", 240, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_simple.addColumn("时长", 64, 40, Qt.AlignRight | Qt.AlignVCenter)
+            self.demo_table_simple.addColumn("歌曲名", 190, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_simple.addColumn("歌手", 160, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_simple.addColumn("专辑", 240, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_simple.addColumn("时长", 64, 40, Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             self.demo_table_simple.addRow(data=["どうして", "高瀬統也", "どうして (feat. 野田愛実)", "03:01"])
             self.demo_table_simple.addRow(data=["風色Letter", "水瀬いのり", "glow", "04:38"])
             self.demo_table_simple.addRow(data=["ステンドノクターン", "初音ミク", "ステンドノクターン", "03:39"])
@@ -919,17 +919,17 @@ class ExampleWidgets(SiPage):
             self.demo_table_managed = SiTableView(self)
             self.demo_table_managed.resize(952, 250)
             self.demo_table_managed.setManager(DemoOsuPlayerRankingTableManager(self.demo_table_managed))
-            self.demo_table_managed.addColumn("排名", 32, 40, Qt.AlignRight | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("", 80, 40, Qt.AlignHCenter | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("得分", 80, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("准确度", 80, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("", 33, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("玩家用户名", 244, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("GREAT", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("OK", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("MEM", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("MISS", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
-            self.demo_table_managed.addColumn("PP", 54, 40, Qt.AlignLeft | Qt.AlignVCenter)
+            self.demo_table_managed.addColumn("排名", 32, 40, Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("", 80, 40, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("得分", 80, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("准确度", 80, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("", 33, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("玩家用户名", 244, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("GREAT", 54, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("OK", 54, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("MEM", 54, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("MISS", 54, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.demo_table_managed.addColumn("PP", 54, 40, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
             self.demo_table_managed.addRow(
                 data=["#1", "S", "1,144,713", "99.36%", "China", "PrettyChicken", "514", "3", "0", "0", "114"]
             )

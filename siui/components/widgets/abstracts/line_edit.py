@@ -45,7 +45,7 @@ class ABCSiLineEdit(SiWidget):
         self.padding_ = 0
 
         self.container_ = SiDenseHContainer(self)
-        self.container_.setAlignment(Qt.AlignVCenter)
+        self.container_.setAlignment(Qt.AlignmentFlag.AlignVCenter)
 
         self.outfit_label_top = SiLabel(self)
         self.outfit_label_top.lower()

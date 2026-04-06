@@ -68,11 +68,14 @@ class SiPixLabel(SiLabel):
         target = QPixmap(self.size())
         target.fill(Qt.transparent)
 
-        p = QPixmap(self.path_).scaled(w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        p = QPixmap(self.path_).scaled(
+            w, h,
+            Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+            Qt.AspectRatioMode.SmoothTransformation
+        )
 
         painter = QPainter(target)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
-        painter.setRenderHint(QPainter.RenderHint.HighQualityAntialiasing, True)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
 
         path = QPainterPath()
@@ -148,7 +151,7 @@ class SiIconLabel(SiLabel):
         # 创建文本标签
         self.text_label = SiLabel(self)
         self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.text_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.text_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         self.text_label.setFixedHeight(20)  # 固定高度
 
     def setStyleSheet(self, stylesheet: str):

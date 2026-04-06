@@ -22,7 +22,7 @@ class ExampleOptionCards(SiPage):
         # Set X Offset for better outfit.
         self.setPadding(64)
         self.setScrollMaximumWidth(1000)
-        self.setScrollAlignment(Qt.AlignLeft)
+        self.setScrollAlignment(Qt.AlignmentFlagFlag.AlignLeft)
         self.setTitle("选项卡")
 
         # Create a SiTitledWidgetGroup object
@@ -86,7 +86,7 @@ class ExampleOptionCards(SiPage):
         self.option_card_plane_beginning.body().addWidget(body_label, side="top")
         self.option_card_plane_beginning.footer().setFixedHeight(64)
         self.option_card_plane_beginning.footer().setSpacing(8)
-        self.option_card_plane_beginning.footer().setAlignment(Qt.AlignCenter)
+        self.option_card_plane_beginning.footer().setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.option_card_plane_beginning.footer().addWidget(footer_button_a, side="left")
         self.option_card_plane_beginning.footer().addWidget(footer_button_b, side="left")
         self.option_card_plane_beginning.footer().addWidget(footer_button_c, side="left")
@@ -158,7 +158,7 @@ class ExampleOptionCards(SiPage):
         label_nothing = SiLabel()
         label_nothing.setStyleSheet("color: {}".format(SiGlobal.siui.colors["TEXT_D"]))
         label_nothing.setText("这里好像什么也没有")
-        label_nothing.setAlignment(Qt.AlignCenter)
+        label_nothing.setAlignment(Qt.AlignmentFlag.AlignCenter)
         label_nothing.setFixedHeight(220)
 
         container_plane_right.body().setAdjustWidgetsSize(True)

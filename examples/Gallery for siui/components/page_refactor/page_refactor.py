@@ -52,11 +52,11 @@ def createPanelCard(parent: QWidget, title: str) -> SiTriSectionPanelCard:
 @contextmanager
 def createDenseContainer(parent: SiDenseContainer,
                          direction: QBoxLayout.Direction,
-                         side: Qt.Edges = Qt.LeftEdge | Qt.TopEdge) -> SiDenseContainer:
+                         side: Qt.Edge = Qt.Edge.LeftEdge | Qt.Edge.TopEdge) -> SiDenseContainer:
     container = SiDenseContainer(parent)
     container.layout().setDirection(direction)
     container.layout().setSpacing(12)
-    container.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+    container.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Preferred)
     try:
         yield container
     finally:
@@ -69,7 +69,7 @@ class RefactoredWidgets(SiPage):
 
         self.setPadding(64)
         self.setScrollMaximumWidth(1000)
-        self.setScrollAlignment(Qt.AlignLeft)
+        self.setScrollAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setTitle("重构控件")
 
         # 创建控件组
@@ -81,7 +81,7 @@ class RefactoredWidgets(SiPage):
             group.addTitle("菜单及弹出框")
 
             with createPanelCard(group, "菜单演示") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
 
                     button_menu = SiPushButtonRefactor(self)
                     button_menu.setText("显示菜单")
@@ -94,13 +94,13 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(button_menu)
 
             with createPanelCard(group, "日期选择器") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
                     button_date_picker = exampleDatePickerPopover(container)
 
                     container.addWidget(button_date_picker)
 
             with createPanelCard(group, "日历选择器") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
                     button_date_picker = exampleCalenderPickerPopover(container)
 
                     container.addWidget(button_date_picker)
@@ -110,7 +110,7 @@ class RefactoredWidgets(SiPage):
             group.addTitle("组合框")
 
             with createPanelCard(group, "胶囊下拉组合框") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
                     combo_editable = SiCapsuleComboBox(self)
                     combo_editable.setTitle("可编辑组合框")
                     combo_editable.setMinimumHeight(36)
@@ -134,7 +134,7 @@ class RefactoredWidgets(SiPage):
                 progress_bar.setMaximum(1000)
                 card.body().addWidget(progress_bar)
 
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
                     button_random_value = SiPushButtonRefactor.withText("随机赋值")
                     button_random_value.clicked.connect(
                         lambda: progress_bar.setValue(int(random.random() * 1001)))
@@ -169,18 +169,18 @@ class RefactoredWidgets(SiPage):
 
                     container.addWidget(button_random_value)
                     container.addWidget(button_random_add)
-                    container.addWidget(button_error, Qt.RightEdge)
-                    container.addWidget(button_paused, Qt.RightEdge)
-                    container.addWidget(button_processing, Qt.RightEdge)
-                    container.addWidget(button_loading, Qt.RightEdge)
-                    container.addWidget(button_toggle_flashing, Qt.RightEdge)
-                    container.addWidget(label_flashing, Qt.RightEdge)
+                    container.addWidget(button_error, Qt.Edge.RightEdge)
+                    container.addWidget(button_paused, Qt.Edge.RightEdge)
+                    container.addWidget(button_processing, Qt.Edge.RightEdge)
+                    container.addWidget(button_loading, Qt.Edge.RightEdge)
+                    container.addWidget(button_toggle_flashing, Qt.Edge.RightEdge)
+                    container.addWidget(label_flashing, Qt.Edge.RightEdge)
 
         with self.titled_widgets_group as group:
             group.addTitle("按钮")
 
             with createPanelCard(group, "普通的按钮") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
 
                     demo_push_button_text = SiPushButtonRefactor(self)
                     demo_push_button_text.setText("按压按钮")
@@ -202,7 +202,7 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(demo_push_button_icon)
 
             with createPanelCard(group, "进度按钮") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
 
                     demo_progress_button_text = SiProgressPushButton(self)
                     demo_progress_button_text.setText("进度按钮")
@@ -227,7 +227,7 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(demo_progress_button_icon)
 
             with createPanelCard(group, "长按确定按钮") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
 
                     demo_long_press_button_text = SiLongPressButtonRefactor(self)
                     demo_long_press_button_text.setText("格式化磁盘")
@@ -250,7 +250,7 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(demo_long_press_button_icon)
 
             with createPanelCard(group, "扁平按钮") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
 
                     demo_flat_button_text = SiFlatButton(self)
                     demo_flat_button_text.setText("扁平按钮")
@@ -271,7 +271,7 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(demo_flat_button_icon)
 
             with createPanelCard(group, "状态切换按钮") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
 
                     demo_toggle_button_text = SiToggleButtonRefactor(self)
                     demo_toggle_button_text.setText("自动保存")
@@ -292,7 +292,7 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(demo_toggle_button_icon)
 
             with createPanelCard(group, "胶囊按钮") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
 
                     capsule_button_1 = SiCapsuleButton(self)
                     capsule_button_1.setText("Likes")
@@ -314,36 +314,36 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(capsule_button_3)
 
             with createPanelCard(group, "单选/复选按钮") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as h_container:
-                    with createDenseContainer(h_container, QBoxLayout.TopToBottom) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as h_container:
+                    with createDenseContainer(h_container, QBoxLayout.Direction.TopToBottom) as container:
 
                         checkbox1 = SiCheckBoxRefactor(self)
                         checkbox1.setText("多选选项 1")
                         checkbox1.setDescription("唱，跳，Rap，篮球")
-                        checkbox1.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+                        checkbox1.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Minimum)
 
                         checkbox2 = SiCheckBoxRefactor(self)
                         checkbox2.setText("多选选项 2")
                         checkbox2.setDescription("Music~")
-                        checkbox2.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+                        checkbox2.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Minimum)
 
                         container.layout().setSpacing(0)
                         container.addWidget(checkbox1)
                         container.addWidget(checkbox2)
 
-                    with createDenseContainer(h_container, QBoxLayout.TopToBottom) as container:
+                    with createDenseContainer(h_container, QBoxLayout.Direction.TopToBottom) as container:
 
                         checkbox1 = SiCheckBoxRefactor(self)
                         checkbox1.setText("单选选项 1")
                         checkbox1.setDescription("唱，跳，Rap，篮球")
-                        checkbox1.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+                        checkbox1.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Minimum)
                         checkbox1.setAutoExclusive(True)
                         checkbox1.setChecked(True)
 
                         checkbox2 = SiCheckBoxRefactor(self)
                         checkbox2.setText("单选选项 2")
                         checkbox2.setDescription("Music~")
-                        checkbox2.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+                        checkbox2.setSizePolicy(QSizePolicy.PolicyFlag.Preferred, QSizePolicy.PolicyFlag.Minimum)
                         checkbox2.setAutoExclusive(True)
 
                         container.layout().setSpacing(0)
@@ -351,7 +351,7 @@ class RefactoredWidgets(SiPage):
                         container.addWidget(checkbox2)
 
             with createPanelCard(group, "多选框") as card:
-                with createDenseContainer(card.body(), QBoxLayout.TopToBottom) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.TopToBottom) as container:
                     checkbox_1 = SiCheckBox(self)
                     checkbox_1.setText("在时间不足时提醒我")
 
@@ -363,7 +363,7 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(checkbox_2)
 
             with createPanelCard(group, "单选框") as card:
-                with createDenseContainer(card.body(), QBoxLayout.TopToBottom) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.TopToBottom) as container:
                     radio_button_1 = SiRadioButton(self)
                     radio_button_1.setChecked(True)
                     radio_button_1.setText("Load data when posible")
@@ -376,7 +376,7 @@ class RefactoredWidgets(SiPage):
                     container.addWidget(radio_button_2)
 
             with createPanelCard(group, "带指示器的按钮") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
 
                     indicator_button1 = SiFlatButtonWithIndicator(self)
                     indicator_button1.setText("日期设置")
@@ -402,7 +402,7 @@ class RefactoredWidgets(SiPage):
                     button_group.setExclusive(True)
 
             with createPanelCard(group, "开关") as card:
-                with createDenseContainer(card.body(), QBoxLayout.LeftToRight) as container:
+                with createDenseContainer(card.body(), QBoxLayout.Direction.LeftToRight) as container:
 
                     switch = SiSwitchRefactor(self)
 
@@ -653,7 +653,7 @@ class RefactoredWidgets(SiPage):
                 def test_func_2():
                     indicator.setEndIndex((indicator.endIndex() + 1) if indicator.endIndex() < indicator.nodeAmount() - 1 else 0)
 
-                btn_container = SiDenseContainer(self, QBoxLayout.LeftToRight)
+                btn_container = SiDenseContainer(self, QBoxLayout.Direction.LeftToRight)
 
                 button1 = SiPushButtonRefactor.withText("开始增加", self)
                 button2 = SiPushButtonRefactor.withText("结束增加", self)

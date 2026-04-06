@@ -422,7 +422,7 @@ class SiPushButtonRefactor(ABCButton):
     def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
         painter.setPen(self.style_data.text_color)
         painter.setFont(self.font())
-        painter.drawText(rect, Qt.AlignCenter, self.text())
+        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, self.text())
 
     def _drawPixmapRect(self, painter: QPainter, rect: QRectF) -> None:
         painter.drawPixmap(rect, self.icon().pixmap(64, 64))
@@ -677,7 +677,7 @@ class SiFlatButton(ABCButton):
     def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
         painter.setPen(self.style_data.text_color)
         painter.setFont(self.font())
-        painter.drawText(rect, Qt.AlignCenter, self.text())
+        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, self.text())
 
     def _drawPixmapRect(self, painter: QPainter, rect: QRectF) -> None:
         painter.drawPixmap(rect, self.icon().pixmap(64, 64))
@@ -937,7 +937,7 @@ class SiToggleButtonRefactor(SiFlatButton):
     def _drawTextRect(self, painter: QPainter, rect: QRect) -> None:
         painter.setPen(self._text_color)  # use property variable
         painter.setFont(self.font())
-        painter.drawText(rect, Qt.AlignCenter, self.text())
+        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, self.text())
 
 
 # @dataclass
@@ -1427,7 +1427,7 @@ class SiRadioButtonRefactor(QRadioButton):
     def _drawNameTextRect(self, painter: QPainter, rect: QRect) -> None:
         painter.setPen(self.style_data.text_color)
         painter.setFont(self.font())
-        painter.drawText(rect, Qt.AlignVCenter | Qt.AlignLeft, self.text())
+        painter.drawText(rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, self.text())
         painter.setPen(Qt.NoPen)
 
     def _onButtonToggled(self) -> None:
@@ -1537,7 +1537,7 @@ class SiRadioButtonWithAvatar(SiRadioButtonRefactor):
     def _drawDescriptionTextRect(self, painter: QPainter, rect: QRect) -> None:
         painter.setPen(self.style_data.description_color)
         painter.setFont(self._description_font)
-        painter.drawText(rect, Qt.AlignTop | Qt.AlignLeft, self._description)
+        painter.drawText(rect, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft, self._description)
         painter.setPen(Qt.NoPen)
 
     def _drawAvatarIcon(self, painter: QPainter, rect: QRect) -> None:
@@ -2233,14 +2233,14 @@ class SiCapsuleButton(QAbstractButton):
 
     def _drawLabelText(self, painter: QPainter, rect: QRect) -> None:
         option = QTextOption()
-        option.setAlignment(Qt.AlignCenter)
+        option.setAlignment(Qt.AlignmentFlag.AlignCenter)
         painter.setFont(self.font())
         painter.setPen(self.style_data.label_text_color)
         painter.drawText(QRectF(rect), self.text(), option)
 
     def _drawValueText(self, painter: QPainter, rect: QRect) -> None:
         option = QTextOption()
-        option.setAlignment(Qt.AlignCenter)
+        option.setAlignment(Qt.AlignmentFlag.AlignCenter)
         painter.setFont(self.font())
         painter.setPen(self._value_text_color)
         painter.drawText(QRectF(rect), str(self._value), option)
@@ -2323,7 +2323,7 @@ class SiOptionButton(QAbstractButton):
     def __init__(self, parent: T_WidgetParent = None) -> None:
         super().__init__(parent)
 
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.setSizePolicy(QSizePolicy.PolicyFlag.Fixed, QSizePolicy.PolicyFlag.Fixed)
         self.setFont(SiFont.getFont(size=14))
         self.setCheckable(True)
 
@@ -2491,7 +2491,7 @@ class SiOptionButton(QAbstractButton):
         painter.setPen(self.style_data.text_color)
         painter.setBrush(Qt.NoBrush)
         painter.setFont(self.font())
-        painter.drawText(shrunk_rect, Qt.AlignVCenter | Qt.AlignLeft, elided)
+        painter.drawText(shrunk_rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, elided)
 
     def _drawHoverOverlayRect(self, painter: QPainter, rect: QRect) -> None:
         if self.autoExclusive():

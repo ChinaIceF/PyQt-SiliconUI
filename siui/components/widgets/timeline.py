@@ -34,14 +34,14 @@ class SiTimeLineItem(SiWidget):
         self.title = SiLabel(self)
         self.title.setFont(SiFont.getFont(size=12))
         self.title.setTextColor(self.getColor(SiColor.TEXT_D))
-        self.title.setAlignment(Qt.AlignLeft)
+        self.title.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.title.setContentsMargins(0, 8, 0, 2)
         self.title.move(112, 0)
         self.title.adjustSize()
 
         self.description = SiLabel(self)
         self.description.setTextColor(self.getColor(SiColor.TEXT_B))
-        self.description.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.description.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         self.description.move(112, self.title.height())
         self.description.adjustSize()
 

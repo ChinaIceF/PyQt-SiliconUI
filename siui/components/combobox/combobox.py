@@ -28,7 +28,7 @@ class ABCSiComboBox(SiWidget):
         self.panel_label.setFixedStyleSheet("border-radius: 4px")
 
         self.container_ = SiDenseHContainer(self)
-        self.container_.setAlignment(Qt.AlignCenter)
+        self.container_.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.container_.setSpacing(0)
 
         self.unfold_menu_indicator = SiSvgLabel(self)
@@ -94,7 +94,7 @@ class SiComboBox(ABCSiComboBox):
 
         self.value_label = SiLabel(self)
         self.value_label.setFont(SiFont.tokenized(GlobalFont.S_NORMAL))
-        self.value_label.setAlignment(Qt.AlignVCenter)
+        self.value_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.value_label.setFixedHeight(32)
         self.value_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.value_label.setFixedStyleSheet("padding-left: 8px; padding-right: 8px")

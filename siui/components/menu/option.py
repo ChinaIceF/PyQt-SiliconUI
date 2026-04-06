@@ -49,7 +49,7 @@ class SiMenuOption(SiDenseHContainer):
 
         self.setSpacing(0)
         self.setFixedHeight(32)
-        self.setAlignment(Qt.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.chosen_indicator = SiLabel(self)
         self.chosen_indicator.setFixedSize(4, 20)
@@ -65,7 +65,7 @@ class SiMenuOption(SiDenseHContainer):
         self.text_label = SiLabel(self)
         self.text_label.setFixedHeight(32)
         self.text_label.setText(text)
-        self.text_label.setAlignment(Qt.AlignVCenter)
+        self.text_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.text_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
         self.has_child_menu_indicator = SiSvgLabel(self)

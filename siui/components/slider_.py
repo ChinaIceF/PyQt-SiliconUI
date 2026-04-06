@@ -862,7 +862,7 @@ class SiWheelPickerVertical(SiDenseContainer):
         self._indicator.setColor(self.style_data.indicator_idle)
 
         self._title_label.setFixedHeight(11)
-        self._title_label.setAlignment(Qt.AlignTop)
+        self._title_label.setAlignment(Qt.AlignmentFlag.AlignTop)
         self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.Bold))
         self._title_label.setStyleSheet(
             "color: #918497;"
@@ -898,15 +898,15 @@ class SiWheelPickerVertical(SiDenseContainer):
         self._spinbox.limitReached.connect(self._onLimitReached)
 
     def setDirection(self, direction: QBoxLayout.Direction):
-        if direction == QBoxLayout.LeftToRight:
+        if direction == QBoxLayout.Direction.LeftToRight:
             self.layout().setDirection(self.LeftToRight)
-            self._title_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-            self._spinbox.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+            self._title_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self._spinbox.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
-        if direction == QBoxLayout.RightToLeft:
+        if direction == QBoxLayout.Direction.RightToLeft:
             self.layout().setDirection(self.RightToLeft)
-            self._title_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-            self._spinbox.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            self._title_label.setAlignment(Qt.AlignmentFlag.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            self._spinbox.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
 
     def setTitle(self, value: str) -> None:
         self._title_label.setText(value)
@@ -976,7 +976,7 @@ class SiWheelPickerHorizontal(SiDenseContainer):
 
         # self._title_label.setFixedHeight(12)
         self._title_label.setFont(SiFont.getFont(size=11, weight=QFont.Bold))
-        self._title_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self._title_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self._title_label.setStyleSheet(
             # "background-color: red;"
             "color: #918497;"

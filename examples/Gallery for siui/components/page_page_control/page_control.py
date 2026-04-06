@@ -16,7 +16,7 @@ class ExamplePageControl(SiPage):
 
         self.setPadding(64)
         self.setScrollMaximumWidth(950)
-        self.setScrollAlignment(Qt.AlignLeft)
+        self.setScrollAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setTitle("页面控制")
 
         # 创建控件组

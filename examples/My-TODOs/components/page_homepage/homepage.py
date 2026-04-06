@@ -31,7 +31,7 @@ class Homepage(SiPage):
         # self.setTitle("主页")
 
         self.head_pic_and_content = SiDenseVContainer(self)
-        self.head_pic_and_content.setAlignment(Qt.AlignHCenter)
+        self.head_pic_and_content.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.head_pic_and_content.setSpacing(0)
 
         self.background_image = SiPixLabel(self)

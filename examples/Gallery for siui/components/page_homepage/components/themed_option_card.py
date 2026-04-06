@@ -23,7 +23,7 @@ class ThemedOptionCardPlane(SiOptionCardPlane):
         self.description = SiLabel(self)
         self.description.setWordWrap(True)
         self.description.setFixedHeight(128)
-        self.description.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.description.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         self.body().setAdjustWidgetsSize(True)
         self.body().addWidget(self.description)
 
@@ -33,7 +33,7 @@ class ThemedOptionCardPlane(SiOptionCardPlane):
         self.link_button.attachment().load(SiGlobal.siui.iconpack.get("ic_fluent_open_regular"))
 
         link_button_container = SiDenseVContainer(self)
-        link_button_container.setAlignment(Qt.AlignCenter)
+        link_button_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         link_button_container.setFixedHeight(48)
         link_button_container.addWidget(self.link_button)
         self.footer().setSiliconWidgetFlag(Si.EnableAnimationSignals)

@@ -17,7 +17,7 @@ class DemoLabel(SiLabel):
         super().__init__(parent)
 
         self.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
-        self.setAlignment(Qt.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.Alignment.AlignCenter)
         self.setFixedHeight(32)
 
         self.setFixedStyleSheet("border-radius: 4px")
@@ -38,7 +38,7 @@ class ExampleContainer(SiPage):
 
         self.setPadding(64)
         self.setScrollMaximumWidth(1000)
-        self.setScrollAlignment(Qt.AlignLeft)
+        self.setScrollAlignment(Qt.AlignmentFlag.Alignment.AlignLeft)
         self.setTitle("容器")
 
         # 创建控件组
@@ -132,9 +132,9 @@ class ExampleContainer(SiPage):
 
             self.demo_divided_h_container = SiDividedHContainer(self)
             self.demo_divided_h_container.setFixedWidth(540)
-            self.demo_divided_h_container.addSection(width=120, height=32, alignment=Qt.AlignLeft)
-            self.demo_divided_h_container.addSection(width=180, height=32, alignment=Qt.AlignCenter)
-            self.demo_divided_h_container.addSection(width=240, height=32, alignment=Qt.AlignRight)
+            self.demo_divided_h_container.addSection(width=120, height=32, alignment=Qt.AlignmentFlag.Alignment.AlignLeft)
+            self.demo_divided_h_container.addSection(width=180, height=32, alignment=Qt.AlignmentFlag.AlignCenter)
+            self.demo_divided_h_container.addSection(width=240, height=32, alignment=Qt.AlignmentFlag.AlignRight)
             self.demo_divided_h_container.addWidget(DemoLabel(self, "120左对齐"))
             self.demo_divided_h_container.addWidget(DemoLabel(self, "180中心对齐"))
             self.demo_divided_h_container.addWidget(DemoLabel(self, "240右对齐"))
@@ -183,9 +183,9 @@ class ExampleContainer(SiPage):
 
             self.demo_divided_v_container = SiDividedVContainer(self)
             self.demo_divided_v_container.setFixedSize(300, 192)
-            self.demo_divided_v_container.addSection(width=256, height=48, alignment=Qt.AlignTop)
-            self.demo_divided_v_container.addSection(width=256, height=64, alignment=Qt.AlignVCenter)
-            self.demo_divided_v_container.addSection(width=256, height=80, alignment=Qt.AlignBottom)
+            self.demo_divided_v_container.addSection(width=256, height=48, alignment=Qt.AlignmentFlag.AlignTop)
+            self.demo_divided_v_container.addSection(width=256, height=64, alignment=Qt.AlignmentFlag.AlignVCenter)
+            self.demo_divided_v_container.addSection(width=256, height=80, alignment=Qt.AlignmentFlag.AlignBottom)
             self.demo_divided_v_container.addWidget(DemoLabel(self, "48上对齐"))
             self.demo_divided_v_container.addWidget(DemoLabel(self, "64中心对齐"))
             self.demo_divided_v_container.addWidget(DemoLabel(self, "80下对齐"))

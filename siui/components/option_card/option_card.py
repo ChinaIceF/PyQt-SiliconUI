@@ -21,7 +21,7 @@ class SiOptionCardLinear(SiWidget):
         # 创建整体容器
         self.container = SiDenseHContainer(self)
         self.container.setSpacing(0)
-        self.container.setAlignment(Qt.AlignCenter)
+        self.container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.container.setAdjustWidgetsSize(True)
 
         # 开始从左到右构建所需控件
@@ -37,7 +37,7 @@ class SiOptionCardLinear(SiWidget):
 
         # 控件紧密排列容器
         self.widgets_container = SiDenseHContainer(self)
-        self.widgets_container.setAlignment(Qt.AlignCenter)
+        self.widgets_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.widgets_container.resize(0, 0)
 
         # 添加到整体容器中
@@ -119,10 +119,10 @@ class SiOptionCardPlane(ABCSiOptionCardPlane):
         self.title = SiLabel(self)
         self.title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.title.setFont(SiFont.tokenized(GlobalFont.M_BOLD))
-        self.title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.title.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         self.title.setFixedHeight(32)
 
-        self.header().setAlignment(Qt.AlignCenter)
+        self.header().setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.header().setFixedHeight(64)
         self.header().addWidget(self.title, "left")
 

@@ -22,7 +22,7 @@ class InfoPanel(SiWidget):
 
         self.content_container = SiDenseVContainer(self)
         self.content_container.setAdjustWidgetsSize(True)
-        self.content_container.setAlignment(Qt.AlignLeft)
+        self.content_container.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.content_container.setSpacing(0)
         SiQuickEffect.applyDropShadowOn(self.content_container, blur_radius=8, color=(0, 0, 0, 255))
 
@@ -48,7 +48,7 @@ class InfoPanel(SiWidget):
         self.achievement_label.setFixedStyleSheet("border-radius: 10px; padding-left: 12px; padding-right: 12px")
         self.achievement_label.setFixedHeight(20)
         self.achievement_label.setFont(SiFont.getFont(size=10))
-        self.achievement_label.setAlignment(Qt.AlignCenter)
+        self.achievement_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.achievement_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.achievement_label.setVisible(False)
 
@@ -147,7 +147,7 @@ class SiMusicDisplayer(SiWidget):
         self.state_label.setColor(self.getColor(SiColor.INTERFACE_BG_C))
 
         self.folded_container = SiDenseVContainer(self.state_label)
-        self.folded_container.setAlignment(Qt.AlignHCenter)
+        self.folded_container.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.folded_container.setFixedSize(48, 128 - 24)
         self.folded_container.setSpacing(4)
 

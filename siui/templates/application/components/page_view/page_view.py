@@ -91,7 +91,7 @@ class PageNavigator(ABCSiNavigationBar):
         self.container = SiDenseVContainer(self)
         self.container.setSpacing(8)
         self.container.setShrinking(False)
-        self.container.setAlignment(Qt.AlignHCenter)
+        self.container.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
         # 所有按钮
         self.buttons = []

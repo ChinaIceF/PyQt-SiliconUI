@@ -27,7 +27,7 @@ class ExampleDialogs(SiPage):
 
         self.setPadding(64)
         self.setScrollMaximumWidth(950)
-        self.setScrollAlignment(Qt.AlignLeft)
+        self.setScrollAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setTitle("消息与二级界面")
 
         # 创建控件组

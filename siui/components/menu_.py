@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from PyQt6.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
-from PyQt6.QtGui import QColor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption, QGuiApplication
-from PyQt6.QtWidgets import QAction, QActionGroup, QApplication, QHBoxLayout, QLabel, QMenu, QSpacerItem, QWidget
+from PyQt6.QtGui import (
+    QColor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption, QGuiApplication,
+    QAction, QActionGroup
+)
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QMenu, QSpacerItem, QWidget
 
 from siui.components.button import SiTransparentButton
 from siui.components.container import SiDenseContainer
@@ -10,7 +13,7 @@ from siui.components.label import SiRoundPixmapWidget
 from siui.components.slider_ import SiScrollAreaRefactor
 from siui.core import SiQuickEffect, createPainter
 from siui.core.animation import SiExpAnimationRefactor
-from siui.core.event_filter import DebugEventFilter, WidgetTooltipAcceptEventFilter
+from siui.core.event_filter import WidgetTooltipAcceptEventFilter
 from siui.core.globals import SiGlobal
 from siui.gui import SiFont
 from siui.typing import T_WidgetParent
@@ -197,7 +200,7 @@ class ActionItemWidget(SiMenuItemWidget):
 
         self._name_label.setFont(SiFont.getFont(size=14))
         self._name_label.setText(self._action.text())
-        self._name_label.setAlignment(Qt.AlignVCenter)
+        self._name_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self._name_label.setFixedHeight(32)
         self._name_label.setMinimumWidth(32)
         self._name_label.setStyleSheet(f"""
@@ -212,7 +215,7 @@ class ActionItemWidget(SiMenuItemWidget):
         """)
 
         self._shortcut_widget.setFont(SiFont.getFont(size=9))
-        self._shortcut_widget.setAlignment(Qt.AlignCenter)
+        self._shortcut_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._shortcut_widget.setFixedHeight(18)
 
         self._button.setBorderRadius(6)
@@ -329,7 +332,7 @@ class SubmenuItemWidget(SiMenuItemWidget):
 
         self._name_label.setFont(SiFont.getFont(size=14))
         self._name_label.setText(self._action.text())
-        self._name_label.setAlignment(Qt.AlignVCenter)
+        self._name_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self._name_label.setFixedHeight(32)
         self._name_label.setMinimumWidth(32)
         self._name_label.setStyleSheet(f"""
@@ -344,7 +347,7 @@ class SubmenuItemWidget(SiMenuItemWidget):
         """)
 
         self._shortcut_widget.setFont(SiFont.getFont(size=9))
-        self._shortcut_widget.setAlignment(Qt.AlignCenter)
+        self._shortcut_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._shortcut_widget.setFixedHeight(18)
 
         self._submenu_indicator.setPixmap(SiGlobal.siui.iconpack.toPixmap("ic_fluent_chevron_right_filled"))
@@ -488,7 +491,7 @@ class SectionItemWidget(SiMenuItemWidget):
     def _drawSectionText(self, painter: QPainter, rect: QRect) -> None:
         text = self._action.text()
         option = QTextOption()
-        option.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        option.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         painter.setFont(self.font())
         painter.setPen(self.style_data.text_color)
         painter.drawText(QRectF(rect), text, option)

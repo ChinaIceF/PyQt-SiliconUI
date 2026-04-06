@@ -20,7 +20,7 @@ class LayerLeftGlobalDrawer(SiLayerDrawer):
         self.drawer_page.setPadding(48)
         self.drawer_page.setTitle("全局左侧抽屉")
         self.drawer_page.title.setContentsMargins(32, 0, 0, 0)
-        self.drawer_page.setScrollAlignment(Qt.AlignLeft)
+        self.drawer_page.setScrollAlignment(Qt.AlignmentFlag.AlignLeft)
 
         with self.drawer_widget_group as group:
             group.addTitle("全局性")

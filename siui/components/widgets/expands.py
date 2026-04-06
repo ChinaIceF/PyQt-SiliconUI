@@ -114,7 +114,7 @@ class SiHoverExpandWidget(SiVExpandWidget):
 
         self.label = SiLabel(self)
         self.label.setTextColor(self.getColor(SiColor.TEXT_B))
-        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label.setText("重载成功")
         self.label.setFixedHeight(32)
         self.label.adjustSize()

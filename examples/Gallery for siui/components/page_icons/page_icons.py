@@ -57,20 +57,20 @@ class ExampleIcons(SiPage):
 
         self.setPadding(64)
         self.setScrollMaximumWidth(950)
-        self.setScrollAlignment(Qt.AlignLeft)
+        self.setScrollAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setTitle("图标库")
 
         self.content_container = SiDenseVContainer(self)
-        self.content_container.setAlignment(Qt.AlignCenter)
+        self.content_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.content_container.setAdjustWidgetsSize(True)
 
         self.package_operation_container = SiDenseHContainer(self)
         self.package_operation_container.setFixedHeight(48)
-        self.package_operation_container.setAlignment(Qt.AlignCenter)
+        self.package_operation_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.package_selection_description = SiLabel(self)
         self.package_selection_description.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_D)}")
-        self.package_selection_description.setAlignment(Qt.AlignVCenter)
+        self.package_selection_description.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.package_selection_description.setText("当前图标包")
         self.package_selection_description.adjustSize()
 
@@ -88,7 +88,7 @@ class ExampleIcons(SiPage):
 
         self.search_description = SiLabel(self)
         self.search_description.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_D)}")
-        self.search_description.setAlignment(Qt.AlignVCenter)
+        self.search_description.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.search_description.setText("搜索图标")
         self.search_description.adjustSize()
 
@@ -116,11 +116,11 @@ class ExampleIcons(SiPage):
         self.icon_scroll_area.setAttachment(self.icon_container)
 
         self.operation_panel_container_v = SiDenseVContainer(self)
-        self.operation_panel_container_v.setAlignment(Qt.AlignCenter)
+        self.operation_panel_container_v.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.operation_panel_container_h = SiDenseHContainer(self)
         self.operation_panel_container_h.setFixedHeight(48)
-        self.operation_panel_container_h.setAlignment(Qt.AlignCenter)
+        self.operation_panel_container_h.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.page_up_button = SiPushButton(self)
         self.page_up_button.attachment().setText("上一页")
@@ -128,7 +128,7 @@ class ExampleIcons(SiPage):
         self.page_up_button.clicked.connect(lambda: self.load_icon_page_to(self.icon_page_index - 1))
 
         self.page_index_label = SiLabel(self)
-        self.page_index_label.setAlignment(Qt.AlignCenter)
+        self.page_index_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.page_index_label.setFixedSize(128, 32)
         self.page_index_label.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
         self.page_index_label.setStyleSheet(f"color: {self.getColor(SiColor.TEXT_D)}")

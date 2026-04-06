@@ -102,7 +102,7 @@ class SiNavigationBarV(ABCSiNavigationBar):
         self.is_no_indicator = False
 
         self.item_container = SiDenseVContainer(self)
-        self.item_container.setAlignment(Qt.AlignRight)
+        self.item_container.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.item_container.setSpacing(2)
 
         self.indicator_frame = SiWidget(self)

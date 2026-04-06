@@ -21,7 +21,7 @@ class SiPage(SiDenseVContainer):
         self.padding = 0                    # 左右空白区域的宽度
 
         # 滚动区域对齐方式
-        self.scroll_alignment = Qt.AlignCenter
+        self.scroll_alignment = Qt.AlignmentFlag.AlignCenter
 
         # 滚动区域
         self.scroll_area = SiScrollArea(self)
@@ -71,14 +71,14 @@ class SiPage(SiDenseVContainer):
         self.title_container = SiDenseHContainer(self)
         self.title_container.setSpacing(0)
         self.title_container.setFixedHeight(32)
-        self.title_container.setAlignment(Qt.AlignCenter)
+        self.title_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # 标题
         self.title = SiLabel(self)
         self.title.setFont(SiFont.tokenized(GlobalFont.L_BOLD))
         self.title.setFixedHeight(32)
         self.title.setContentsMargins(64, 0, 0, 0)
-        self.title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.title.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.title.setSiliconWidgetFlag(Si.AdjustSizeOnTextChanged)
 
         # 添加到水平容器
@@ -105,11 +105,11 @@ class SiPage(SiDenseVContainer):
         self.scroll_area.attachment().setFixedWidth(min(size.width() - self.padding * 2, self.scroll_maximum_width))
 
         # 处理对齐
-        if (self.scroll_alignment & Qt.AlignHCenter) == Qt.AlignHCenter:
+        if (self.scroll_alignment & Qt.AlignmentFlag.AlignHCenter) == Qt.AlignmentFlag.AlignHCenter:
             scroll_widget_x = (size.width() - self.scroll_area.attachment().width())//2
-        elif (self.scroll_alignment & Qt.AlignLeft) == Qt.AlignLeft:
+        elif (self.scroll_alignment & Qt.AlignmentFlag.AlignLeft) == Qt.AlignmentFlag.AlignLeft:
             scroll_widget_x = self.padding
-        elif (self.scroll_alignment & Qt.AlignRight) == Qt.AlignRight:
+        elif (self.scroll_alignment & Qt.AlignmentFlag.AlignRight) == Qt.AlignmentFlag.AlignRight:
             scroll_widget_x = size.width() - self.scroll_area.attachment().width() - self.padding
         else:
             raise ValueError(f"Invalid alignment value: {self.scroll_alignment}")

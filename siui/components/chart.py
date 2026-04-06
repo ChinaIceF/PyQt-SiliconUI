@@ -116,7 +116,7 @@ class SiTrendChart(QWidget):
         self._updateShownPointPixmap()
         self.update()
 
-    def adjustViewRect(self, policy: Qt.AspectRatioMode = Qt.KeepAspectRatio):
+    def adjustViewRect(self, policy: Qt.AspectRatioMode = Qt.AspectRatioMode.KeepAspectRatio):
         xs = [point.x() for point in self._point_list]
         ys = [point.y() for point in self._point_list]
         rect = QRectF(min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys))
@@ -124,16 +124,16 @@ class SiTrendChart(QWidget):
         pixel_rate_x = rect.width() / self._getChartRect().width()
         pixel_rate_y = rect.height() / self._getChartRect().height()
 
-        if policy == Qt.IgnoreAspectRatio:
+        if policy == Qt.AspectRatioMode.IgnoreAspectRatio:
             self._view_rect = rect
             self.update()
 
-        if policy == Qt.KeepAspectRatio:
+        if policy == Qt.AspectRatioMode.KeepAspectRatio:
             self._y_tick_delta = self._y_tick_delta / (pixel_rate_x / pixel_rate_y)
             self._view_rect = rect
             self.update()
 
-        if policy == Qt.KeepAspectRatioByExpanding:
+        if policy == Qt.AspectRatioMode.KeepAspectRatioByExpanding:
             rate = (rect.width() / rect.height()) / (pixel_rate_x / pixel_rate_y)
             delta = rect.height() * (rate - 1)
             rect.setHeight(rect.height() * rate)
@@ -299,10 +299,10 @@ class SiTrendChart(QWidget):
         for line, point in zip(major_ticks, major_points):
             if line.dx() == 0:  # 竖直线
                 text = self._x_tick_name_func(point.x())
-                painter.drawText(QRectF(line.p1().x() - 32, rect.bottom() + 32, 64, 32), Qt.AlignCenter, text)
+                painter.drawText(QRectF(line.p1().x() - 32, rect.bottom() + 32, 64, 32), Qt.AlignmentFlag.AlignCenter, text)
             if line.dy() == 0:  # 水平线
                 text = self._y_tick_name_func(point.y())
-                painter.drawText(QRectF(rect.left() - 64 - 32, line.p1().y() - 16, 64, 32), Qt.AlignCenter, text)
+                painter.drawText(QRectF(rect.left() - 64 - 32, line.p1().y() - 16, 64, 32), Qt.AlignmentFlag.AlignCenter, text)
 
     def _drawDataLine(self, painter: QPainter, rect: QRect) -> None:
         chart_rect = self._getChartRect()
