@@ -1,6 +1,6 @@
 
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QCursor
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QCursor
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel

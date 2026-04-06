@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt6.QtCore import Qt
 
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiLabel, SiPixLabel
 from siui.core import GlobalFont, Si, SiColor

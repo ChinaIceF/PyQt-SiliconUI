@@ -1,6 +1,6 @@
 
-from PyQt5.QtCore import QPoint, pyqtSignal, QEvent
-from PyQt5.QtWidgets import QLabel
+from PyQt6.QtCore import QPoint, pyqtSignal, QEvent
+from PyQt6.QtWidgets import QLabel
 
 from siui.core import Si, SiAnimationGroup, SiColor, SiExpAnimation, SiGlobal, SiQuickEffect
 from siui.gui.color_group import SiColorGroup

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import (
+from PyQt6.QtCore import (
     QEvent,
     QMargins,
     QObject,
@@ -17,7 +17,7 @@ from PyQt5.QtCore import (
     pyqtProperty,
     pyqtSignal,
 )
-from PyQt5.QtGui import (
+from PyQt6.QtGui import (
     QColor,
     QFont,
     QFontMetrics,
@@ -31,8 +31,8 @@ from PyQt5.QtGui import (
     QTextOption,
     QTransform,
 )
-from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QAbstractButton, QLabel, QPushButton, QRadioButton, QSizePolicy
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtWidgets import QAbstractButton, QLabel, QPushButton, QRadioButton, QSizePolicy
 from typing_extensions import Self
 
 from siui.core import GlobalFont, SiGlobal, createPainter
@@ -1409,10 +1409,10 @@ class SiRadioButtonRefactor(QRadioButton):
         painter.drawPath(self._drawIndicatorPath(rect))
 
     def _drawHighlightRect(self, painter: QPainter, rect: QRect) -> None:
-        painter.setCompositionMode(QPainter.CompositionMode_Plus)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Plus)
         painter.setBrush(self._hl_color)
         painter.drawPath(self._drawIndicatorPath(rect))
-        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
     def _drawIndicatorInnerPath(self, rect: QRect) -> QPainterPath:
         path = QPainterPath()
@@ -2248,11 +2248,11 @@ class SiCapsuleButton(QAbstractButton):
     def _drawHoverOverlayRect(self, painter: QPainter, rect: QRect) -> None:
         path = QPainterPath()
         path.addRoundedRect(QRectF(rect), 10, 10)
-        painter.setCompositionMode(QPainter.CompositionMode_Plus)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Plus)
         painter.setPen(Qt.NoPen)
         painter.setBrush(self._hover_overlay_color)
         painter.drawPath(path)
-        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
     def _drawBuffer(self, painter: QPainter, buffer: QPixmap, rect: QRect):
         a = self._scale_factor
@@ -2500,11 +2500,11 @@ class SiOptionButton(QAbstractButton):
             path = QPainterPath()
             path.addRoundedRect(QRectF(rect), 10, 10)
 
-        painter.setCompositionMode(QPainter.CompositionMode_Plus)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Plus)
         painter.setPen(Qt.NoPen)
         painter.setBrush(self._hover_overlay_color)
         painter.drawPath(path)
-        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
     def _drawBuffer(self, painter: QPainter, buffer: QPixmap, rect: QRect):
         a = self._scale_factor

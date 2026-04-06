@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
 
 from siui.components import SiDenseVContainer, SiLabel, SiPixLabel, SiSimpleButton, SiWidget
 from siui.core import Si, SiColor, SiGlobal, SiQuickEffect

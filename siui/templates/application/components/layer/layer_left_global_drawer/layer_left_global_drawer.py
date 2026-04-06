@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt6.QtCore import Qt
 
 from siui.components import SiLabel, SiTitledWidgetGroup, SiWidget
 from siui.components.slider.slider import SiSliderH

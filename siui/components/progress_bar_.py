@@ -1,7 +1,7 @@
 
-from PyQt5.QtCore import QTimer, QRect, QRectF, Qt, pyqtProperty, pyqtSignal
-from PyQt5.QtGui import QColor, QPainter, QPainterPath
-from PyQt5.QtWidgets import QProgressBar
+from PyQt6.QtCore import QTimer, QRect, QRectF, Qt, pyqtProperty, pyqtSignal
+from PyQt6.QtGui import QColor, QPainter, QPainterPath
+from PyQt6.QtWidgets import QProgressBar
 
 from siui.core import createPainter
 from siui.core.animation import SiExpAnimationRefactor

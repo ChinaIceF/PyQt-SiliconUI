@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt6.QtCore import Qt
 
 from siui.components import SiDenseHContainer, SiLabel, SiSimpleButton, SiWidget, SiDenseVContainer
 from siui.components.widgets.abstracts.navigation_bar import ABCSiNavigationBar

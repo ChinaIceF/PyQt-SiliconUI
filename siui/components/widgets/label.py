@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QPoint, Qt, pyqtSignal
-from PyQt5.QtGui import QPainter, QPainterPath, QPixmap
-from PyQt5.QtSvg import QSvgWidget
+from PyQt6.QtCore import QPoint, Qt, pyqtSignal
+from PyQt6.QtGui import QPainter, QPainterPath, QPixmap
+from PyQt6.QtSvg import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
 from siui.core import GlobalFont, Si, SiColor, SiQuickAlignmentManager
@@ -71,9 +71,9 @@ class SiPixLabel(SiLabel):
         p = QPixmap(self.path_).scaled(w, h, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
 
         painter = QPainter(target)
-        painter.setRenderHint(QPainter.Antialiasing, True)
-        painter.setRenderHint(QPainter.HighQualityAntialiasing, True)
-        painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.HighQualityAntialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
 
         path = QPainterPath()
         path.addRoundedRect(0,                  0,

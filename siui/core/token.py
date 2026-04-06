@@ -1,6 +1,6 @@
 from enum import Enum
 
-from PyQt5.QtGui import QFont
+from PyQt6.QtGui import QFont
 
 
 class GlobalFontSize(Enum):

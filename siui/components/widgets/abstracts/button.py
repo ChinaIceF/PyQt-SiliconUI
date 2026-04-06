@@ -1,8 +1,8 @@
 import time
 
 import numpy
-from PyQt5.QtCore import QThread, pyqtSignal, QTimer
-from PyQt5.QtWidgets import QPushButton
+from PyQt6.QtCore import QThread, pyqtSignal, QTimer
+from PyQt6.QtWidgets import QPushButton
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel

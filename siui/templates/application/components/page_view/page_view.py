@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt6.QtCore import pyqtSignal, Qt
 
 from siui.core import SiGlobal
 from siui.components.widgets import SiLabel, SiToggleButton

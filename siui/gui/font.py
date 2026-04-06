@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import qApp
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QApplication
 
 from siui.core.token import FontStyle, GlobalFont, GlobalFontSize, GlobalFontWeight
 
@@ -25,7 +25,7 @@ class SiFont:
         size: int = 14,
         weight: QFont.Weight = QFont.Weight.Normal,
         italic: bool = False,
-        hinting_preference: QFont.HintingPreference = QFont.PreferFullHinting
+        hinting_preference: QFont.HintingPreference = QFont.HintingPreference.PreferFullHinting
     ) -> QFont:
         """Low-level API for creating font instance
 
@@ -45,7 +45,7 @@ class SiFont:
         """
         if families is None:
             families = (
-                    qApp.font().families() or
+                    QApplication.instance().font().families() or
                     ["Segoe UI", "Microsoft YaHei", "San Francisco Fonts", ".PingFang TC", "PingFang SC"]
             )
 

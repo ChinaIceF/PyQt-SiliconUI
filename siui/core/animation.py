@@ -1,7 +1,7 @@
 from typing import Any
 
 import numpy
-from PyQt5.QtCore import (
+from PyQt6.QtCore import (
     QAbstractAnimation,
     QObject,
     QPoint,
@@ -13,7 +13,7 @@ from PyQt5.QtCore import (
     QTimer,
     pyqtSignal,
 )
-from PyQt5.QtGui import QColor
+from PyQt6.QtGui import QColor
 
 global_fps = 60
 

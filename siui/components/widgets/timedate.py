@@ -3,8 +3,8 @@ import datetime
 import time
 
 from dateutil.relativedelta import relativedelta
-from PyQt5.QtCore import QPoint, Qt, pyqtSignal
-from PyQt5.QtGui import QFont
+from PyQt6.QtCore import QPoint, Qt, pyqtSignal
+from PyQt6.QtGui import QFont
 
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiFlashLabel, SiLabel, SiSimpleButton, SiWidget, \
     SiSvgLabel, SiIconLabel

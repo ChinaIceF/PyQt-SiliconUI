@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt6.QtCore import Qt
 
 from siui.components import SiWidget, SiDenseHContainer, SiLabel, SiTitledWidgetGroup
 from siui.components.page import SiPage

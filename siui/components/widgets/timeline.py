@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QSize
+from PyQt6.QtCore import Qt, QSize
 
 from siui.components import SiLabel, SiMasonryContainer, SiSvgLabel, SiWidget
 from siui.core import SiColor, SiGlobal

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from PyQt5.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
-from PyQt5.QtGui import QColor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption
-from PyQt5.QtWidgets import QAction, QActionGroup, QApplication, QHBoxLayout, QLabel, QMenu, QSpacerItem, QWidget
+from PyQt6.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
+from PyQt6.QtGui import QColor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption
+from PyQt6.QtWidgets import QAction, QActionGroup, QApplication, QHBoxLayout, QLabel, QMenu, QSpacerItem, QWidget
 
 from siui.components.button import SiTransparentButton
 from siui.components.container import SiDenseContainer

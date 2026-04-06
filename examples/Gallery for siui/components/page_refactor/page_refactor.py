@@ -1,9 +1,9 @@
 import random
 from contextlib import contextmanager
 
-from PyQt5.QtCore import QPoint, QPointF, Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QBoxLayout, QButtonGroup, QLabel, QSizePolicy, QWidget
+from PyQt6.QtCore import QPoint, QPointF, Qt
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QBoxLayout, QButtonGroup, QLabel, QSizePolicy, QWidget
 
 from siui.components import SiDenseHContainer, SiDenseVContainer, SiTitledWidgetGroup
 from siui.components.button import (

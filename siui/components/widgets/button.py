@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QPoint, Qt, pyqtSignal
-from PyQt5.QtWidgets import QAbstractButton
+from PyQt6.QtCore import QPoint, Qt, pyqtSignal
+from PyQt6.QtWidgets import QAbstractButton
 
 from siui.components.widgets.abstracts import ABCButton, ABCPushButton, ABCToggleButton, LongPressThread
 from siui.components.widgets.label import SiIconLabel, SiLabel, SiSvgLabel

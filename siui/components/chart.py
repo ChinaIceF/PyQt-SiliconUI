@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QEvent, QLineF, QPoint, QPointF, QRect, QRectF, Qt, pyqtProperty
-from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtCore import QEvent, QLineF, QPoint, QPointF, QRect, QRectF, Qt, pyqtProperty
+from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPen, QPixmap
+from PyQt6.QtWidgets import QWidget
 
 from siui.core import createPainter, hideToolTip, isTooltipShown, showToolTip
 from siui.core.animation import SiExpAnimationRefactor

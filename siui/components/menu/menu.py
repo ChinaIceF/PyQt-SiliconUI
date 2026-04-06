@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt, pyqtSignal, QSize
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+from PyQt6.QtCore import Qt, pyqtSignal, QSize
+from PyQt6.QtGui import QColor
+from PyQt6.QtWidgets import QGraphicsDropShadowEffect
 
 from siui.components import SiWidget, SiLabel, SiDenseVContainer
 from siui.components.menu.abstracts import ABCSiMenu, AnimationManager

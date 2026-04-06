@@ -2,7 +2,7 @@
 
 # 定义项目需要的依赖项
 install_requires = [
-    "PyQt5>=5.15.10",
+    "PyQt6",
     "numpy",
     "pyperclip",
 ]

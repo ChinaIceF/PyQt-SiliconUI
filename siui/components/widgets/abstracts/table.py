@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 
 from siui.components import SiDividedHContainer, SiLabel, SiWidget
 from siui.components.widgets.abstracts.container import SiSectionTemplate

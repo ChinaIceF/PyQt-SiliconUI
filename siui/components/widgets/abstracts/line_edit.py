@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QLineEdit
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QLineEdit
 
 from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.container import SiDenseHContainer

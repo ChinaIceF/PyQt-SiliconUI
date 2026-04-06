@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLineEdit
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QLineEdit
 
 from siui.components.widgets import SiLabel, SiWidget
 from siui.components.widgets.abstracts import ABCSiLineEdit, SiSimpleLineEdit

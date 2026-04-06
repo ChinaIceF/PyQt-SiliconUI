@@ -2,9 +2,9 @@ import datetime
 import random
 
 import numpy
-from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QCursor, QIcon
-from PyQt5.QtWidgets import QGraphicsBlurEffect, QLabel
+from PyQt6.QtCore import QPointF, QRectF, Qt
+from PyQt6.QtGui import QCursor, QIcon
+from PyQt6.QtWidgets import QGraphicsBlurEffect, QLabel
 
 from siui.components import (
     SiCircularProgressBar,

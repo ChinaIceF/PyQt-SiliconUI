@@ -9,8 +9,8 @@ from components.page_option_cards import ExampleOptionCards
 from components.page_page_control import ExamplePageControl
 from components.page_refactor import RefactoredWidgets
 from components.page_widgets import ExampleWidgets
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QDesktopWidget
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QDesktopWidget
 
 import siui
 from siui.core import SiColor, SiGlobal

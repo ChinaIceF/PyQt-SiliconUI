@@ -1,5 +1,5 @@
 
-from PyQt5.QtCore import QPoint, Qt, pyqtSignal
+from PyQt6.QtCore import QPoint, Qt, pyqtSignal
 
 from siui.components.menu.abstracts.ani_manager import AnimationManager
 from siui.components.menu.menu import SiMenu

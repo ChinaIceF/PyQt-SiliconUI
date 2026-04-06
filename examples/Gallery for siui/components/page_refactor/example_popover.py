@@ -1,8 +1,8 @@
 from contextlib import contextmanager
 from typing import Callable, List, Iterable
 
-from PyQt5.QtCore import QPoint
-from PyQt5.QtWidgets import QAbstractButton, QWidget
+from PyQt6.QtCore import QPoint
+from PyQt6.QtWidgets import QAbstractButton, QWidget
 
 from siui.components.button import SiPushButtonRefactor
 from siui.components.graphic import SiGraphicWrapperWidget

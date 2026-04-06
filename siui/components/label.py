@@ -4,9 +4,9 @@ import math
 import warnings
 
 import numpy
-from PyQt5.QtCore import QEvent, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
-from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPaintEvent, QPixmap
-from PyQt5.QtWidgets import QLabel, QWidget
+from PyQt6.QtCore import QEvent, QPointF, QRect, QRectF, QSize, Qt, pyqtProperty
+from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPaintEvent, QPixmap
+from PyQt6.QtWidgets import QLabel, QWidget
 
 from siui.core import SiColor, SiGlobal, createPainter
 from siui.core.animation import SiExpAnimationRefactor

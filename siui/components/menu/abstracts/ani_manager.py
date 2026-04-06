@@ -1,7 +1,7 @@
 import time
 from enum import Enum
 
-from PyQt5.QtWidgets import QApplication, QDesktopWidget
+from PyQt6.QtWidgets import QApplication, QDesktopWidget
 
 from siui.components.menu.abstracts.menu import ABCSiMenu
 from siui.core import SiColor

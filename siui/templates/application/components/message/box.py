@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 
 from siui.components.widgets.label import SiLabel, SiSvgLabel
 from siui.components.widgets.button import SiSimpleButton

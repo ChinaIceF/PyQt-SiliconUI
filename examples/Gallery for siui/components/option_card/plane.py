@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtCore import Qt
+from PyQt6.QtCore import Qt
 
 from siui.components import SiOptionCardPlane
 from siui.components.widgets import SiLabel, SiSimpleButton

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import math
 
-from PyQt5.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
-from PyQt5.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QPixmap, QValidator
-from PyQt5.QtWidgets import (
+from PyQt6.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
+from PyQt6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QPixmap, QValidator
+from PyQt6.QtWidgets import (
     QAbstractSlider,
     QAbstractSpinBox,
     QBoxLayout,
@@ -1470,9 +1470,9 @@ class SiScrollAreaGraphicWidget(QWidget):
     def _initStyle(self) -> None:
         self._view.setStyleSheet("background-color: transparent; border: none")
         self._view.setRenderHints(
-            QPainter.Antialiasing
-            | QPainter.SmoothPixmapTransform
-            | QPainter.TextAntialiasing
+            QPainter.RenderHint.Antialiasing
+            | QPainter.RenderHint.SmoothPixmapTransform
+            | QPainter.RenderHint.TextAntialiasing
         )
 
     def scrollArea(self) -> SiScrollAreaRefactor:

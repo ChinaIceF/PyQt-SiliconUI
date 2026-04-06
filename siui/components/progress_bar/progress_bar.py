@@ -1,6 +1,6 @@
 import numpy
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QColor, QPainter, QPen
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QColor, QPainter, QPen
 
 from siui.components.widgets import SiLabel
 from siui.core import ABCSiAnimation, SiColor, SiExpAnimation

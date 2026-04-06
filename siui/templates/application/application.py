@@ -1,5 +1,5 @@
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QMainWindow
 
 from siui.components.tooltip import ToolTipWindow
 from siui.components.widgets.abstracts import SiWidget

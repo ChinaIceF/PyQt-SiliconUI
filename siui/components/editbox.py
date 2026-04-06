@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import difflib
 
-from PyQt5.QtCore import QMargins, QObject, QPoint, QPointF, QRect, QRectF, QSize, QSizeF, Qt, pyqtProperty
-from PyQt5.QtGui import (
+from PyQt6.QtCore import QMargins, QObject, QPoint, QPointF, QRect, QRectF, QSize, QSizeF, Qt, pyqtProperty
+from PyQt6.QtGui import (
     QColor,
     QDoubleValidator,
     QFont,
@@ -13,7 +13,7 @@ from PyQt5.QtGui import (
     QPainterPath,
     QTextOption,
 )
-from PyQt5.QtWidgets import QAction, QApplication, QLineEdit, QWidget
+from PyQt6.QtWidgets import QAction, QApplication, QLineEdit, QWidget
 
 from siui.components.button import SiFlatButton
 from siui.components.container import SiBoxContainer, SiDenseContainer

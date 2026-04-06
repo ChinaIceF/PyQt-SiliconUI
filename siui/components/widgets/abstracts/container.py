@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QSize
+from PyQt6.QtCore import QSize
 
 from siui.components.widgets.abstracts.widget import SiWidget
 

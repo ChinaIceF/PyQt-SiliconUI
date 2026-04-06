@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import os
 
-from PyQt5.QtCore import QRect, QRectF, Qt
-from PyQt5.QtGui import QColor, QIcon, QPainter, QPainterPath, QPaintEvent
-from PyQt5.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtCore import QRect, QRectF, Qt
+from PyQt6.QtGui import QColor, QIcon, QPainter, QPainterPath, QPaintEvent
+from PyQt6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
 
 from siui.core import GlobalFont, SiColor, SiExpAnimation
 from siui.gui import SiFont
@@ -99,7 +99,7 @@ class SiPushButton(QPushButton):
     def paintEvent(self, event: QPaintEvent) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setRenderHint(QPainter.TextAntialiasing)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
 
         painter.setPen(Qt.PenStyle.NoPen)
         rect = self.rect()

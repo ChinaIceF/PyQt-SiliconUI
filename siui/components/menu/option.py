@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QPoint, Qt, QTimer
-from PyQt5.QtWidgets import QAction
+from PyQt6.QtCore import QPoint, Qt, QTimer
+from PyQt6.QtWidgets import QAction
 
 from siui.components.widgets.button import SiSimpleButton
 from siui.components.widgets.container import SiDenseHContainer

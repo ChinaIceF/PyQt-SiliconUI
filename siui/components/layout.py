@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from PyQt5.QtCore import QEvent, QObject, QPoint, QRect, QSize, Qt, pyqtSignal
-from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import QLayout, QLayoutItem, QWidget, QWidgetItem
+from PyQt6.QtCore import QEvent, QObject, QPoint, QRect, QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QMouseEvent
+from PyQt6.QtWidgets import QLayout, QLayoutItem, QWidget, QWidgetItem
 
 from siui.core import SiQuickEffect
 from siui.core.animation import SiExpAnimationRefactor

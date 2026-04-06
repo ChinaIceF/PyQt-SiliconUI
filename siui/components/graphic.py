@@ -1,8 +1,8 @@
 from typing import List
 
-from PyQt5.QtCore import QPointF, QRectF, Qt, pyqtProperty
-from PyQt5.QtGui import QPainter, QTransform, QWheelEvent
-from PyQt5.QtWidgets import QGraphicsProxyWidget, QGraphicsScene, QGraphicsView, QWidget
+from PyQt6.QtCore import QPointF, QRectF, Qt, pyqtProperty
+from PyQt6.QtGui import QPainter, QTransform, QWheelEvent
+from PyQt6.QtWidgets import QGraphicsProxyWidget, QGraphicsScene, QGraphicsView, QWidget
 
 from siui.core.animation import SiExpAnimationRefactor
 from siui.typing import T_WidgetParent
@@ -223,9 +223,9 @@ class SiGraphicWrapperWidget(QWidget):
     def _initStyle(self) -> None:
         self._view.setStyleSheet("background-color: transparent; border: none")
         self._view.setRenderHints(
-            QPainter.Antialiasing
-            | QPainter.SmoothPixmapTransform
-            | QPainter.TextAntialiasing
+            QPainter.RenderHint.Antialiasing
+            | QPainter.RenderHint.SmoothPixmapTransform
+            | QPainter.RenderHint.TextAntialiasing
         )
 
     def sizeHint(self):

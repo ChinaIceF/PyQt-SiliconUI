@@ -4,13 +4,13 @@ import math
 from contextlib import contextmanager
 from functools import lru_cache
 
-from PyQt5.QtCore import QPoint, QPointF, QRectF, Qt
-from PyQt5.QtGui import QColor, QLinearGradient, QPaintDevice, QPainter, QPainterPath
+from PyQt6.QtCore import QPoint, QPointF, QRectF, Qt
+from PyQt6.QtGui import QColor, QLinearGradient, QPaintDevice, QPainter, QPainterPath
 
 
 @contextmanager
 def createPainter(device: QPaintDevice,
-                  render_hints: QPainter.RenderHints = QPainter.Antialiasing) -> QPainter:
+                  render_hints: QPainter.RenderHints = QPainter.RenderHint.Antialiasing) -> QPainter:
     painter = QPainter(device)
     painter.setRenderHints(render_hints)
     painter.setPen(Qt.NoPen)

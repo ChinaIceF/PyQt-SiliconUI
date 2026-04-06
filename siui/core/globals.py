@@ -1,6 +1,6 @@
 import time
 
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget
 
 from siui.core import SiColor
 from siui.gui.color_group import DarkColorGroup
