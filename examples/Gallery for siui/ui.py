@@ -1,3 +1,5 @@
+from PyQt6.QtWidgets import QApplication
+
 import icons
 from components.page_about import About
 from components.page_container import ExampleContainer
@@ -9,8 +11,7 @@ from components.page_option_cards import ExampleOptionCards
 from components.page_page_control import ExamplePageControl
 from components.page_refactor import RefactoredWidgets
 from components.page_widgets import ExampleWidgets
-from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QDesktopWidget
+from PyQt6.QtGui import QIcon, QGuiApplication
 
 import siui
 from siui.core import SiColor, SiGlobal
@@ -26,7 +27,7 @@ class MySiliconApp(SiliconApplication):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        screen_geo = QDesktopWidget().screenGeometry()
+        screen_geo = QGuiApplication.primaryScreen().availableGeometry()
         self.setMinimumSize(1024, 380)
         self.resize(1366, 916)
         self.move((screen_geo.width() - self.width()) // 2, (screen_geo.height() - self.height()) // 2)

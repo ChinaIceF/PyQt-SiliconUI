@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from PyQt6.QtCore import QEvent, QMargins, QObject, QPoint, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty, pyqtSignal
-from PyQt6.QtGui import QColor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption
+from PyQt6.QtGui import QColor, QIcon, QKeySequence, QPainter, QPainterPath, QTextOption, QGuiApplication
 from PyQt6.QtWidgets import QAction, QActionGroup, QApplication, QHBoxLayout, QLabel, QMenu, QSpacerItem, QWidget
 
 from siui.components.button import SiTransparentButton
@@ -850,7 +850,7 @@ class SiRoundedMenu(QMenu):
         return isinstance(self.parent(), SiRoundedMenu)
 
     def sizeHint(self):
-        screen_rect = QApplication.desktop().availableGeometry()
+        screen_rect = QGuiApplication.primaryScreen().availableGeometry()
         container_size = self._container.size()
         expanded_rect = container_size.grownBy(self._margins)
 
