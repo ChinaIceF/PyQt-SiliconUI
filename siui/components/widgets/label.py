@@ -1,6 +1,6 @@
 from PyQt6.QtCore import QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QPainter, QPainterPath, QPixmap
-from PyQt6.QtSvg import QSvgWidget
+from PyQt6.QtSvgWidgets import QSvgWidget
 
 from siui.components.widgets.abstracts.label import ABCAnimatedLabel
 from siui.core import GlobalFont, Si, SiColor, SiQuickAlignmentManager
