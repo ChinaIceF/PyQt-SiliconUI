@@ -1,7 +1,7 @@
 import random
 from typing import Union
 
-from PyQt6.Qt import QColor
+from PyQt6.QtGui import QColor
 from PyQt6.QtCore import Qt, QTimer, QSize
 from PyQt6.QtWidgets import QGraphicsDropShadowEffect, QWidget
 
