@@ -38,6 +38,7 @@ def show_version_message(window):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyle("Fusion")
 
     window = MySiliconApp()
     window.show()

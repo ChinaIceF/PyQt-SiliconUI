@@ -159,7 +159,7 @@ class SiTrendChart(QWidget):
 
     def _isMousePosValid(self, pos: QPoint) -> bool:
         rect = self._getChartRect()
-        return rect.contains(pos)
+        return rect.contains(pos.toPointF())
 
     def _findClosestDataPoint(self, cx: float) -> QPointF:
         distances = [(abs(point.x() - cx), point) for point in self._shown_point_list]
