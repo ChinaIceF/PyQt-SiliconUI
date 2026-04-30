@@ -92,14 +92,14 @@ class DraggingEventFilter(QObject):
     def _onTriggerPressed(self, event: QMouseEvent) -> None:
         self.pressed.emit()
         self._is_dragging = True
-        self._drag_start_pos = event.globalPos()
+        self._drag_start_pos = event.globalPosition()
         self._widget_start_pos = self._target.pos()
         self._target.raise_()
         SiQuickEffect.applyDropShadowOn(self._target, (0, 0, 0, 127), blur_radius=32)
 
     def _onTriggerMouseMoved(self, event: QMouseEvent) -> None:
-        delta = event.globalPos() - self._drag_start_pos
-        new_pos = self._widget_start_pos + delta
+        delta = event.globalPosition() - self._drag_start_pos
+        new_pos = self._widget_start_pos + delta.toPoint()
         self.dragged.emit(new_pos)
         ani: SiExpAnimationRefactor = self._item.animation("geometry")
         ani.setEndValue(QRect(new_pos, self._target.size()))

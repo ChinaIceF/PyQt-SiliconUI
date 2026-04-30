@@ -1233,7 +1233,7 @@ class SiScrollBar(QScrollBar):
             thumb_rect = QRectF((self.width() - thumb_w) * p, (self.height() - thumb_h) / 2, thumb_w, thumb_h)
         else:
             thumb_rect = QRectF((self.width() - thumb_h) / 2, (self.height() - thumb_w) * p, thumb_h, thumb_w)
-        self._dragging_anchor_pos = thumb_rect.center()
+        self._dragging_anchor_pos = thumb_rect.center().toPoint()
 
     def event(self, event):
         if event.type() == QEvent.Type.ToolTip:
