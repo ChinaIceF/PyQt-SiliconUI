@@ -22,5 +22,6 @@ def reload_scale_factor():
 
 
 def set_scale_factor(factor, identity="External calls"):
+    return
     os.environ["QT_SCALE_FACTOR"] = str(factor)
     print("已将环境变量 QT_SCALE_FACTOR 设为", factor, f" (来源: {identity})")
