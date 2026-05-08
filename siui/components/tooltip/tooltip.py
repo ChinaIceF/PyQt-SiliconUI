@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from PyQt6 import sip
 from PyQt6.QtCore import QMargins, QPoint, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty
 from PyQt6.QtGui import QColor, QCursor, QPainter, QPainterPath
@@ -334,3 +336,219 @@ class ToolTipWindowRefactor(QWidget):
 
         with createPainter(self) as painter:
             self._drawBackground(painter, bg_rect)
+
+
+class ToolTipPanel(QWidget):
+    class Property:
+        FlashOverlayAlpha = "flashOverlayAlpha"
+
+    def __init__(self, parent: QWidget = None):
+        super().__init__(parent)
+
+        # -- declaration ------
+        self._flashAlphaAni: SiExpAnimationRefactor
+        self._content: QWidget | None
+        self._contentMargins: QMargins
+        self._flashOverlayAlpha: int
+
+        # -- init ------
+        self._content = None
+        self._contentMargins = QMargins(8, 8, 8, 8)
+        self._flashOverlayAlpha = 0
+
+        self._initAnimation()
+        self._initLayout()
+
+    def _initAnimation(self) -> None:
+        self._flashAlphaAni = SiExpAnimationRefactor(self, self.Property.FlashOverlayAlpha)
+        self._flashAlphaAni.init(1 / 8, 0.01, 0, 0)
+
+    def _initLayout(self) -> None:
+        layout = QHBoxLayout()
+        layout.setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint)
+        layout.setContentsMargins(self._contentMargins)
+        self.setLayout(layout)
+
+    @pyqtProperty(int)
+    def flashOverlayAlpha(self) -> int:
+        return self._flashOverlayAlpha
+
+    @flashOverlayAlpha.setter
+    def flashOverlayAlpha(self, value: int) -> None:
+        self._flashOverlayAlpha = value
+        self.update()
+
+    def flash(self) -> None:
+        self._flashAlphaAni.setCurrentValue(99)
+        self._flashAlphaAni.start()
+
+    def setContent(self, widget: QWidget) -> None:
+        layout = self.layout()
+        if self._content:
+            layout.removeWidget(self._content)
+            self._content.deleteLater()
+
+        layout.addWidget(widget)
+        self._content = widget
+
+    @property
+    def contentMargins(self) -> QMargins:
+        return self._contentMargins
+
+    def _drawBackgroundRect(self, painter: QPainter, rect: QRectF) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(rect, 8, 8)
+
+        painter.setBrush(QColor("#222222"))
+        painter.drawPath(path)
+
+    def _drawFlashOverlay(self, painter: QPainter, rect: QRectF) -> None:
+        path = QPainterPath()
+        path.addRoundedRect(rect, 8, 8)
+
+        flashColor = QColor("#FFFFFF")
+        flashColor.setAlpha(self._flashOverlayAlpha)
+        painter.setBrush(flashColor)
+        painter.drawPath(path)
+
+    def paintEvent(self, event) -> None:
+        bgRect = self.rect().toRectF()
+
+        with createPainter(self) as painter:
+            self._drawBackgroundRect(painter, bgRect)
+            self._drawFlashOverlay(painter, bgRect)
+
+
+class ToolTipContainer(QWidget):
+    _instance = None
+
+    class Property:
+        Geometry = "geometry"
+        Opacity = "opacity"
+
+    @classmethod
+    def getInstance(cls) -> ToolTipContainer:
+        if cls._instance is None or sip.isdeleted(cls._instance):
+            cls._instance = cls()
+        return cls._instance
+
+    def __init__(self):
+        super().__init__()
+
+        # -- declaration ------
+        self._geometryAni: SiExpAnimationRefactor
+        self._opacityAni: SiExpAnimationRefactor
+        self._mouseTimer: QTimer
+        self._panel: ToolTipPanel
+        self._shadowMargins: QMargins
+        self._desiredSize: QSize
+        self._emptySize: QSize
+
+        # -- init ------
+        self._shadowMargins = QMargins(16, 16, 16, 16)
+        self._desiredSize = QSize(0, 19)
+        self._emptySize = QSize(0, 19)
+
+        self.setWindowFlags(
+            Qt.WindowType.Tool |
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint |
+            Qt.WindowType.WindowTransparentForInput
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setWindowOpacity(0)
+
+        self._initLayout()
+        self._initAnimation()
+        self._initTimer()
+
+    def _initLayout(self) -> None:
+        layout = QHBoxLayout()
+        layout.setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint)
+        layout.setContentsMargins(self._shadowMargins)
+
+        self._panel = ToolTipPanel(self)
+        layout.addWidget(self._panel)
+        self.setLayout(layout)
+
+        SiQuickEffect.applyDropShadowOn(
+            self._panel, (0, 0, 0, 128), blur_radius=self._shadowMargins.top()
+        )
+
+    def _initAnimation(self) -> None:
+        self._geometryAni = SiExpAnimationRefactor(self, self.Property.Geometry)
+        self._opacityAni = SiExpAnimationRefactor(self, self.Property.Opacity)
+
+        g = self._getAdjustedGeometry(self._emptySize)
+        self._geometryAni.init(1 / 4, 0.1, g, g)
+        self._opacityAni.init(1 / 4, 0.01, 0, 0)
+
+    def _initTimer(self) -> None:
+        self._mouseTimer = QTimer()
+        self._mouseTimer.setInterval(1000 // 60)
+        self._mouseTimer.timeout.connect(self._onMouseTimerTimeout)
+
+    def _getAdjustedGeometry(self, contentSize: QSize) -> QRect:
+        panelMargins = self._panel.contentMargins
+        totalMargins = self._shadowMargins + panelMargins
+
+        mouseOffset = QPoint(8, 0) - QPoint(0, contentSize.height() + panelMargins.bottom())
+        targetPos = QCursor.pos() + mouseOffset
+
+        g = QRect(targetPos, contentSize)
+        g = g.marginsAdded(totalMargins)
+        return g
+
+    def _onMouseTimerTimeout(self) -> None:
+        g = self._getAdjustedGeometry(self._desiredSize)
+        self._geometryAni.setEndValue(g)
+        self._geometryAni.start()
+
+    def _onAboutToAppear(self) -> None:
+        g = self._getAdjustedGeometry(self._emptySize)
+        self._geometryAni.setCurrentValue(g)
+        self.setGeometry(g)
+
+    def _onOpacityEqualsZero(self) -> None:
+        g = self._getAdjustedGeometry(self._emptySize)
+        self._mouseTimer.stop()
+        self._geometryAni.stop()
+        self._geometryAni.setCurrentValue(g)
+        self.setGeometry(g)
+        self.hide()
+
+    @pyqtProperty(float)
+    def opacity(self) -> float:
+        return self.windowOpacity()
+
+    @opacity.setter
+    def opacity(self, value: float) -> None:
+        if value == 0:
+            self._onOpacityEqualsZero()
+        self.setWindowOpacity(value)
+
+    def appear(self) -> None:
+        if self.windowOpacity() == 0:
+            self._onAboutToAppear()
+
+        self._opacityAni.setEndValue(1.0)
+        self._opacityAni.start()
+
+        self._mouseTimer.start()
+        self.show()
+
+    def disappear(self) -> None:
+        self._opacityAni.setEndValue(0.0)
+        self._opacityAni.start()
+
+    def flash(self) -> None:
+        self._panel.flash()
+
+    def setContent(self, widget: QWidget) -> None:
+        self._panel.setContent(widget)
+        self._desiredSize = widget.sizeHint()
+
+    def setText(self, text: str) -> None:
+        label = QLabel(text, self._panel)
+        label.setFont(SiFont.getFont(size=14))
+        self.setContent(label)
