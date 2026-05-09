@@ -4,6 +4,7 @@ from PyQt6.QtCore import QEvent, QObject
 from PyQt6.QtWidgets import QWidget
 
 from siui.components.tooltip import ToolTipWindow
+from siui.components.tooltip.tooltip import ToolTipContainer
 from siui.core import SiGlobal
 
 
@@ -46,6 +47,34 @@ class WidgetTooltipAcceptEventFilter(QObject):
     """
     def eventFilter(self, obj: QWidget, event):
         if event.type() == QEvent.Type.ToolTip:
+            return True
+
+        return False
+
+
+class ToolTipRedirectEventFilter(QObject):
+    def eventFilter(self, obj: QWidget, event: QEvent) -> bool:
+        eventType = event.type()
+        tooltipText = obj.toolTip()
+        tooltipWindow = ToolTipContainer.getInstance()
+
+        if eventType == event.Type.Enter:
+            tooltipWindow.appear(obj)
+            tooltipWindow.setText(tooltipText)
+            tooltipWindow.flash()
+
+        elif eventType == event.Type.Leave:
+            tooltipWindow.disappear()
+
+        elif eventType == event.Type.FocusOut:
+            if tooltipWindow.isTargetAt(obj):
+                tooltipWindow.disappear()
+
+        elif eventType == event.Type.ToolTipChange:
+            if tooltipWindow.isTargetAt(obj):
+                tooltipWindow.setText(tooltipText)
+
+        elif eventType == event.Type.ToolTip:
             return True
 
         return False

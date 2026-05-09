@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import weakref
+
 from PyQt6 import sip
 from PyQt6.QtCore import QMargins, QPoint, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty
 from PyQt6.QtGui import QColor, QCursor, QPainter, QPainterPath
@@ -259,6 +261,7 @@ class ToolTipContainer(QWidget):
         super().__init__()
 
         # -- declaration ------
+        self._currentTarget: weakref.ReferenceType | None
         self._geometryAni: SiExpAnimationRefactor
         self._opacityAni: SiExpAnimationRefactor
         self._mouseTimer: QTimer
@@ -268,6 +271,7 @@ class ToolTipContainer(QWidget):
         self._emptySize: QSize
 
         # -- init ------
+        self._currentTarget = None
         self._shadowMargins = QMargins(16, 16, 16, 16)
         self._desiredSize = QSize(0, 19)
         self._emptySize = QSize(0, 19)
@@ -350,7 +354,19 @@ class ToolTipContainer(QWidget):
             self._onOpacityEqualsZero()
         self.setWindowOpacity(value)
 
-    def appear(self) -> None:
+    def isTargetAt(self, widget: QWidget) -> bool:
+        if self._currentTarget is None:
+            return False
+        target = self._currentTarget()
+        if target is None:
+            return False
+        if sip.isdeleted(target):
+            return False
+        return target is widget
+
+    def appear(self, target: QWidget) -> None:
+        self._currentTarget = weakref.ref(target)
+
         if self.windowOpacity() == 0:
             self._onAboutToAppear()
 
@@ -361,6 +377,7 @@ class ToolTipContainer(QWidget):
         self.show()
 
     def disappear(self) -> None:
+        self._currentTarget = None
         self._opacityAni.setEndValue(0.0)
         self._opacityAni.start()
 
@@ -375,3 +392,7 @@ class ToolTipContainer(QWidget):
         label = QLabel(text, self._panel)
         label.setFont(SiFont.getFont(size=14))
         self.setContent(label)
+
+    def tryUpdateText(self, target: QWidget, text: str) -> None:
+        if self.isTargetAt(target):
+            self.setText(text)
