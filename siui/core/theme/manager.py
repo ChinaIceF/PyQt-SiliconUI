@@ -1,3 +1,4 @@
+import warnings
 from enum import Enum, auto
 from typing import Any
 
@@ -11,6 +12,10 @@ class SiThemeManager(QObject):
     themeChanged = pyqtSignal()
     _instance = None
 
+    class Preset:
+        Light = "PresetLight"
+        Dark = "PresetDark"
+
     @classmethod
     def getInstance(cls) -> "SiThemeManager":
         if cls._instance is None or sip.isdeleted(cls._instance):
@@ -22,14 +27,24 @@ class SiThemeManager(QObject):
         self._currentTheme: str
         self._themeMappings: dict[str, dict]
 
-        self._currentTheme = "normal"
-        self._themeMappings = {"normal": {
-            TestStyleData: {TestStyleData.Token.BackgroundColor: QColor("#114514")}
-        }}
+        self._currentTheme = self.Preset.Light
+        self._themeMappings = {}
 
-    def getMapping(self, cls: type) -> dict:
+    def register(self, themeName: str, styleDataName: str, mapping: dict[Enum, object]) -> None:
+        if themeName not in self._themeMappings:
+            self._themeMappings[themeName] = {}
+        themeMapping: dict = self._themeMappings[themeName]
+
+        if styleDataName not in themeMapping:
+            themeMapping[styleDataName] = {}
+        existMapping: dict = themeMapping[styleDataName]
+
+        for token, color_value in mapping.items():
+            existMapping[token] = color_value
+
+    def getMapping(self, className: str) -> dict:
         mapping = self._themeMappings[self._currentTheme]
-        return mapping[cls]
+        return mapping[className]
 
     def changeTheme(self, name: str) -> None:
         self._currentTheme = name
@@ -57,11 +72,14 @@ class StyleData(QObject):
     def _initSignal(self) -> None:
         mgr = SiThemeManager.getInstance()
         mgr.themeChanged.connect(self._onThemeChanged)
-        self.destroyed.connect(self._onSelfDestroyed)
+        self.parent().destroyed.connect(self._onParentDestroyed)
 
-    def _onSelfDestroyed(self) -> None:
+    def _onParentDestroyed(self) -> None:
         mgr = SiThemeManager.getInstance()
-        mgr.themeChanged.disconnect(self._onThemeChanged)
+        try:
+            mgr.themeChanged.disconnect(self._onThemeChanged)
+        except (TypeError, RuntimeError) as e:
+            warnings.warn(f"_onParentDestroyed 断开信号失败：{e}")
 
     def _onThemeChanged(self) -> None:
         self._isMappingDirty = True
@@ -69,7 +87,7 @@ class StyleData(QObject):
 
     def _loadMapping(self) -> None:
         mgr = SiThemeManager.getInstance()
-        self._mapping = mgr.getMapping(self.__class__)
+        self._mapping = mgr.getMapping(self.__class__.__name__)
 
     def get(self, token: Enum) -> Any:
         if not isinstance(token, Enum):
@@ -79,6 +97,7 @@ class StyleData(QObject):
 
         if self._isMappingDirty:
             self._loadMapping()
+            self._isMappingDirty = False
 
         return self._mapping[token]
 
@@ -86,5 +105,20 @@ class StyleData(QObject):
 class TestStyleData(StyleData):
     class Token(Enum):
         BackgroundColor = auto()
+        TextColor = auto()
+        AccentColor = auto()
 
 
+SiThemeManager.getInstance().register(
+    themeName=SiThemeManager.Preset.Light,
+    styleDataName=TestStyleData.__name__,
+    mapping={
+        TestStyleData.Token.BackgroundColor: QColor("#111111"),
+        TestStyleData.Token.TextColor: QColor("#222222"),
+        TestStyleData.Token.AccentColor: QColor("#333333")
+    }
+)
+
+
+sd = TestStyleData(QObject())
+print(sd.get(sd.Token.TextColor).name())
