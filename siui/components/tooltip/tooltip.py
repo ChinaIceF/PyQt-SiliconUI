@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import weakref
+from enum import Enum
 
 from PyQt6 import sip
 from PyQt6.QtCore import QMargins, QPoint, QRect, QRectF, QSize, Qt, QTimer, pyqtProperty
@@ -11,6 +12,7 @@ from siui.components.widgets.abstracts.widget import SiWidget
 from siui.components.widgets.label import SiLabel
 from siui.core import GlobalFont, Si, SiGlobal, SiQuickEffect, createPainter
 from siui.core.animation import SiExpAnimationRefactor
+from siui.core.theme import GlobalStyleData, SiThemeManager, StyleData
 from siui.gui import SiFont
 
 
@@ -163,6 +165,22 @@ class ToolTipWindow(SiWidget):
         event.ignore()
 
 
+class ToolTipStyleData(StyleData):
+    class Token(Enum):
+        pass
+
+
+ToolTipStyleData.registerData(
+    themeName=SiThemeManager.Preset.Light,
+    mapping={}
+)
+
+ToolTipStyleData.registerData(
+    themeName=SiThemeManager.Preset.Dark,
+    mapping={}
+)
+
+
 class ToolTipPanel(QWidget):
     class Property:
         FlashOverlayAlpha = "flashOverlayAlpha"
@@ -171,12 +189,14 @@ class ToolTipPanel(QWidget):
         super().__init__(parent)
 
         # -- declaration ------
+        self._sd: StyleData
         self._flashAlphaAni: SiExpAnimationRefactor
         self._content: QWidget | None
         self._contentMargins: QMargins
         self._flashOverlayAlpha: int
 
         # -- init ------
+        self._sd = ToolTipStyleData(self, self._onStyleUpdated)
         self._content = None
         self._contentMargins = QMargins(8, 8, 8, 8)
         self._flashOverlayAlpha = 0
@@ -193,6 +213,9 @@ class ToolTipPanel(QWidget):
         layout.setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint)
         layout.setContentsMargins(self._contentMargins)
         self.setLayout(layout)
+
+    def _onStyleUpdated(self) -> None:
+        self.update()
 
     @pyqtProperty(int)
     def flashOverlayAlpha(self) -> int:
@@ -224,14 +247,15 @@ class ToolTipPanel(QWidget):
         path = QPainterPath()
         path.addRoundedRect(rect, 8, 8)
 
-        painter.setBrush(QColor("#222222"))
+        bgColor: QColor = self._sd.fromToken(GlobalStyleData.Token.SurfaceLevel3)
+        painter.setBrush(bgColor)
         painter.drawPath(path)
 
     def _drawFlashOverlay(self, painter: QPainter, rect: QRectF) -> None:
         path = QPainterPath()
         path.addRoundedRect(rect, 8, 8)
 
-        flashColor = QColor("#FFFFFF")
+        flashColor: QColor = self._sd.fromToken(GlobalStyleData.Token.Flash)
         flashColor.setAlpha(self._flashOverlayAlpha)
         painter.setBrush(flashColor)
         painter.drawPath(path)

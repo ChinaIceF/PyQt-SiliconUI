@@ -1,10 +1,9 @@
 import warnings
-from enum import Enum, auto
+from enum import Enum
 from typing import Any
 
 from PyQt6 import sip
 from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QWidget
 
 
@@ -27,7 +26,7 @@ class SiThemeManager(QObject):
         self._currentTheme: str
         self._themeMappings: dict[str, dict]
 
-        self._currentTheme = self.Preset.Light
+        self._currentTheme = self.Preset.Dark
         self._themeMappings = {}
 
     def register(self, themeName: str, styleDataName: str, mapping: dict[Enum, object]) -> None:
@@ -63,12 +62,28 @@ class StyleData(QObject):
     @classmethod
     def setGlobalStyleData(cls, styleDataClass: type) -> None:
         if not issubclass(styleDataClass, cls):
-            raise TypeError(f"传入的全局 StyleData 类型 {styleDataClass} 不是一个 StyleData 类型")
+            raise TypeError(f"{styleDataClass} 不是一个 StyleData 类型")
 
         cls._globalStyleData = styleDataClass
         cls._globalTokenClass = styleDataClass.Token
 
-    def __init__(self, parent: QWidget):
+    @classmethod
+    def registerData(cls, themeName: str, mapping: dict[Enum, object]) -> None:
+        requiredTokens = set(cls.Token)
+        providedTokens = set(mapping.keys())
+
+        difference = requiredTokens.difference(providedTokens)
+        if difference:
+            raise ValueError(f"注册数据时以下项缺失或多余: {difference}")
+
+        mgr = SiThemeManager.getInstance()
+        mgr.register(
+            themeName=themeName,
+            styleDataName=cls.__name__,
+            mapping=mapping
+        )
+
+    def __init__(self, parent: QWidget, slot: Any = None):
         super().__init__(parent)
         self._mapping: dict
         self._globalMapping: dict
@@ -80,17 +95,20 @@ class StyleData(QObject):
         self._isMappingDirty = True
         self._tokenClass = self.__class__.Token
 
-        self._initSignal()
+        self._initSignal(slot)
         self._checkHasGlobalStyleData()
 
-    def _initSignal(self) -> None:
+    def _initSignal(self, slot: Any) -> None:
         mgr = SiThemeManager.getInstance()
         mgr.themeChanged.connect(self._onThemeChanged)
         self.parent().destroyed.connect(self._onParentDestroyed)
 
+        if slot:
+            self.styleUpdated.connect(slot)
+
     def _checkHasGlobalStyleData(self) -> None:
         if self._globalStyleData is None:
-            raise RuntimeError("在指定全局 StyleData 前尝试实例化 StyleData。请首先使用 StyleData.setGlobalStyleData")
+            raise RuntimeError("全局 StyleData 未指定。请首先使用 StyleData.setGlobalStyleData")
         if self._globalTokenClass is None:
             raise RuntimeError("指定的全局 StyleData 不具有 Token 成员")
 
@@ -110,7 +128,7 @@ class StyleData(QObject):
         self._mapping = mgr.getMapping(self.__class__.__name__)
         self._globalMapping = mgr.getMapping(self._globalStyleData.__name__)
 
-    def get(self, token: Enum) -> Any:
+    def fromToken(self, token: Enum) -> Any:
         if not isinstance(token, Enum):
             raise ValueError(f"Token {token} 的类型 {type(token)} 不是 Enum")
 
@@ -119,27 +137,11 @@ class StyleData(QObject):
             self._isMappingDirty = False
 
         if token.__class__ == self._tokenClass:
-            return self._mapping[token]
+            obj = self._mapping[token]
+            return obj.__class__(obj)
 
         if token.__class__ == self._globalTokenClass:
-            return self._globalMapping[token]
+            obj = self._globalMapping[token]
+            return obj.__class__(obj)
 
         raise ValueError(f"{token} 不是此 StyleData 和设定的全局 StyleData 的 Token")
-
-
-class TestStyleData(StyleData):
-    class Token(Enum):
-        BackgroundColor = auto()
-        TextColor = auto()
-        AccentColor = auto()
-
-
-SiThemeManager.getInstance().register(
-    themeName=SiThemeManager.Preset.Light,
-    styleDataName=TestStyleData.__name__,
-    mapping={
-        TestStyleData.Token.BackgroundColor: QColor("#111111"),
-        TestStyleData.Token.TextColor: QColor("#222222"),
-        TestStyleData.Token.AccentColor: QColor("#333333")
-    }
-)
